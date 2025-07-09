@@ -1,0 +1,15 @@
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\bin\Debug\net9.0\Hephaestus.Application.deps.json
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\bin\Debug\net9.0\Hephaestus.Application.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\bin\Debug\net9.0\Hephaestus.Application.pdb
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\bin\Debug\net9.0\Hephaestus.Domain.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\bin\Debug\net9.0\Hephaestus.Domain.pdb
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\Hephaestus.Application.csproj.AssemblyReference.cache
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\Hephaestus.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\Hephaestus.Application.AssemblyInfoInputs.cache
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\Hephaestus.Application.AssemblyInfo.cs
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\Hephaestus.Application.csproj.CoreCompileInputs.cache
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\Hephaest.EB811D48.Up2Date
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\Hephaestus.Application.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\refint\Hephaestus.Application.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\Hephaestus.Application.pdb
+C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Application\obj\Debug\net9.0\ref\Hephaestus.Application.dll

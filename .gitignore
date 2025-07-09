@@ -1,0 +1,16 @@
+# .NET
+/Hephaestus/bin/
+/Hephaestus/obj/
+/Hephaestus/*.csproj.user
+/Hephaestus/appsettings.Development.json
+
+# Angular
+/Prometheus/node_modules/
+/Prometheus/dist/
+/Prometheus/.angular/
+/Prometheus/.vscode/
+
+# Geral
+*.log
+*.env
+*.DS_Store

@@ -1,9 +1,10 @@
 ﻿using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
+using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
-namespace Hephaestus.Infrastructure.Data;
+namespace Hephaestus.Infrastructure.Repositories;
 
 public class CompanyRepository : ICompanyRepository
 {
@@ -12,6 +13,25 @@ public class CompanyRepository : ICompanyRepository
     public CompanyRepository(HephaestusDbContext context)
     {
         _context = context;
+    }
+
+    public async Task<IEnumerable<Company>> GetAllAsync(bool? isEnabled)
+    {
+        Console.WriteLine($"Buscando empresas com isEnabled: {isEnabled}");
+        var query = _context.Companies.AsQueryable();
+        if (isEnabled.HasValue)
+            query = query.Where(c => c.IsEnabled == isEnabled.Value);
+        var companies = await query.ToListAsync();
+        Console.WriteLine($"Empresas encontradas: {JsonSerializer.Serialize(companies)}");
+        return companies;
+    }
+
+    public async Task<Company?> GetByIdAsync(string id)
+    {
+        Console.WriteLine($"Buscando empresa por ID: {id}");
+        var company = await _context.Companies.FindAsync(id);
+        Console.WriteLine($"Empresa encontrada: {JsonSerializer.Serialize(company)}");
+        return company;
     }
 
     public async Task<Company?> GetByEmailAsync(string email)
@@ -40,13 +60,9 @@ public class CompanyRepository : ICompanyRepository
             var changes = await _context.SaveChangesAsync();
             Console.WriteLine($"Alterações salvas: {changes}");
             if (changes == 0)
-            {
                 Console.WriteLine("Nenhuma alteração foi salva no banco de dados.");
-            }
             else
-            {
                 Console.WriteLine("Empresa salva com sucesso.");
-            }
         }
         catch (Exception ex)
         {
@@ -66,13 +82,9 @@ public class CompanyRepository : ICompanyRepository
             var changes = await _context.SaveChangesAsync();
             Console.WriteLine($"Alterações salvas: {changes}");
             if (changes == 0)
-            {
                 Console.WriteLine("Nenhuma alteração foi salva no banco de dados.");
-            }
             else
-            {
                 Console.WriteLine("Empresa atualizada com sucesso.");
-            }
         }
         catch (Exception ex)
         {

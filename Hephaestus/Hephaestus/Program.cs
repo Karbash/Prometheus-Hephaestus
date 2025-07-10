@@ -39,6 +39,7 @@ public static class Program
         // Adiciona logging
         services.AddLogging(logging => logging.AddConsole());
 
+
         // Adiciona serviços
         services.AddControllers();
         services.AddApplicationServices();

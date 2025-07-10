@@ -1,6 +1,7 @@
 # .NET
 /Hephaestus/bin/
 /Hephaestus/obj/
+/Hephaestus/.vs/
 /Hephaestus/*.csproj.user
 /Hephaestus/appsettings.Development.json
 

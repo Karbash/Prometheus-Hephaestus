@@ -1,9 +1,9 @@
 ﻿using Hephaestus.Domain.Entities;
 
-namespace Hephaestus.Domain.Repositories
+namespace Hephaestus.Domain.Repositories;
+
+public interface IAuditLogRepository
 {
-    public interface IAuditLogRepository
-    {
-        Task AddAsync(AuditLog auditLog);
-    }
+    Task<IEnumerable<AuditLog>> GetLogsAsync(string? adminId, DateTime? startDate, DateTime? endDate);
+    Task AddAsync(AuditLog auditLog);
 }

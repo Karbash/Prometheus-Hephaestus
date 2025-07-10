@@ -1,6 +1,7 @@
 ﻿using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Hephaestus.Infrastructure.Data;
+using Hephaestus.Infrastructure.Repositories;
 using Hephaestus.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+        services.AddScoped<ISalesRepository, SalesRepository>();
     }
 
     private static void AddServices(IServiceCollection services)

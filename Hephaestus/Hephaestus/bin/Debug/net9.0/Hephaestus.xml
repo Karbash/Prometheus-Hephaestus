@@ -4,6 +4,44 @@
         <name>Hephaestus</name>
     </assembly>
     <members>
+        <member name="T:Hephaestus.Controllers.AdministrationController">
+            <summary>
+            Controller para gerenciamento administrativo de empresas, vendas e logs.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetCompanies(System.Nullable{System.Boolean})">
+            <summary>
+            Lista todas as empresas.
+            </summary>
+            <param name="isEnabled">Filtro opcional para empresas habilitadas (true) ou desabilitadas (false).</param>
+            <returns>Lista de empresas.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.UpdateCompany(System.String,Hephaestus.Application.DTOs.Request.CompanyRequest)">
+            <summary>
+            Atualiza configurações de uma empresa.
+            </summary>
+            <param name="id">ID da empresa a ser atualizada.</param>
+            <param name="request">Dados atualizados da empresa.</param>
+            <returns>Status da atualização.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetSalesReport(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Relatório consolidado de vendas de todas as empresas.
+            </summary>
+            <param name="startDate">Data inicial do relatório no formato ISO 8601 (ex.: 2024-01-01). Opcional.</param>
+            <param name="endDate">Data final do relatório no formato ISO 8601 (ex.: 2024-12-31). Opcional.</param>
+            <param name="tenantId">ID da empresa (tenant) para filtrar vendas. Opcional.</param>
+            <returns>Relatório de vendas consolidado.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAuditLogs(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Lista logs de auditoria de ações administrativas.
+            </summary>
+            <param name="adminId">ID do administrador (GUID) para filtrar logs. Opcional.</param>
+            <param name="startDate">Data inicial do log no formato ISO 8601 (ex.: 2024-01-01). Opcional.</param>
+            <param name="endDate">Data final do log no formato ISO 8601 (ex.: 2024-12-31). Opcional.</param>
+            <returns>Lista de logs de auditoria.</returns>
+        </member>
         <member name="T:Hephaestus.Controllers.AuthController">
             <summary>
             Controller para autenticação e gerenciamento de usuários.

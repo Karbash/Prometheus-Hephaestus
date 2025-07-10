@@ -55,4 +55,30 @@ public class CompanyRepository : ICompanyRepository
             throw;
         }
     }
+
+    public async Task UpdateAsync(Company company)
+    {
+        Console.WriteLine($"Atualizando empresa: {JsonSerializer.Serialize(company)}");
+        try
+        {
+            _context.Companies.Update(company);
+            Console.WriteLine($"Estado da entidade antes de salvar: {_context.Entry(company).State}");
+            var changes = await _context.SaveChangesAsync();
+            Console.WriteLine($"Alterações salvas: {changes}");
+            if (changes == 0)
+            {
+                Console.WriteLine("Nenhuma alteração foi salva no banco de dados.");
+            }
+            else
+            {
+                Console.WriteLine("Empresa atualizada com sucesso.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao atualizar empresa: {ex.Message}");
+            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+            throw;
+        }
+    }
 }

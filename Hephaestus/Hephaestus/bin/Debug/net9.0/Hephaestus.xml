@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Hephaestus</name>
+    </assembly>
+    <members>
+        <member name="T:Hephaestus.Controllers.AuthController">
+            <summary>
+            Controller para autenticação e gerenciamento de usuários.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.#ctor(Hephaestus.Application.Interfaces.Auth.ILoginUseCase,Hephaestus.Application.Interfaces.Auth.IRegisterCompanyUseCase,Hephaestus.Application.Interfaces.Auth.IResetPasswordUseCase,Hephaestus.Application.Interfaces.Auth.IMfaUseCase,Hephaestus.Domain.Services.ILoggedUserService,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AuthController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.AuthController"/>.
+            </summary>
+            <param name="loginUseCase">Caso de uso para login.</param>
+            <param name="registerCompanyUseCase">Caso de uso para registro de empresas.</param>
+            <param name="resetPasswordUseCase">Caso de uso para redefinição de senha.</param>
+            <param name="mfaUseCase">Caso de uso para autenticação multifator (MFA).</param>
+            <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+            <param name="logger">Logger para registro de erros.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.Login(Hephaestus.Application.DTOs.Request.LoginRequest,System.String)">
+            <summary>
+            Autentica um usuário e retorna um token JWT.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Credenciais inválidas."
+            }
+            ```
+            </remarks>
+            <param name="request">Dados de login (e-mail e senha).</param>
+            <param name="mfaCode">Código MFA opcional para administradores.</param>
+            <returns>Token JWT.</returns>
+            <exception cref="T:System.InvalidOperationException">Credenciais inválidas ou código MFA inválido.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.Register(Hephaestus.Application.DTOs.Request.RegisterCompanyRequest)">
+            <summary>
+            Registra uma nova empresa (apenas administradores com MFA validado).
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "companyId": "123e4567-e89b-12d3-a456-426614174001"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "E-mail já registrado."
+            }
+            ```
+            </remarks>
+            <param name="request">Dados da empresa a ser registrada.</param>
+            <returns>ID da empresa registrada.</returns>
+            <exception cref="T:System.InvalidOperationException">E-mail ou telefone já registrado.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.ResetPasswordRequest(Hephaestus.Application.DTOs.Request.ResetPasswordRequest)">
+            <summary>
+            Solicita um token para redefinição de senha.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "token": "ABC123"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "E-mail não encontrado."
+            }
+            ```
+            </remarks>
+            <param name="request">E-mail do usuário.</param>
+            <returns>Token de redefinição de senha.</returns>
+            <exception cref="T:System.InvalidOperationException">E-mail não encontrado.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.ResetPassword(Hephaestus.Application.DTOs.Request.ResetPasswordConfirmRequest)">
+            <summary>
+            Confirma a redefinição de senha com um token.
+            </summary>
+            <remarks>
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Token inválido ou expirado."
+            }
+            ```
+            </remarks>
+            <param name="request">E-mail, token e nova senha.</param>
+            <returns>Status de sucesso.</returns>
+            <exception cref="T:System.InvalidOperationException">Token inválido ou expirado.</exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">E-mail não encontrado.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.SetupMfa">
+            <summary>
+            Configura a autenticação multifator (MFA) para um administrador.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "secret": "JBSWY3DPEHPK3PXP"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Apenas administradores podem configurar MFA."
+            }
+            ```
+            </remarks>
+            <returns>Segredo TOTP para configuração no aplicativo autenticador.</returns>
+            <exception cref="T:System.InvalidOperationException">Apenas administradores podem configurar MFA.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.ValidateMfa(Hephaestus.Application.DTOs.Request.MfaRequest)">
+            <summary>
+            Valida um código MFA e retorna um novo token JWT com MFA validado.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Código MFA inválido."
+            }
+            ```
+            </remarks>
+            <param name="request">E-mail e código MFA.</param>
+            <returns>Novo token JWT com claim MfaValidated.</returns>
+            <exception cref="T:System.InvalidOperationException">Código MFA inválido ou usuário não é administrador.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.GetLoggedUser">
+            <summary>
+            Retorna os dados do usuário logado.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "name": "Admin",
+              "email": "admin@example.com",
+              "role": "Admin"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Usuário não encontrado."
+            }
+            ```
+            </remarks>
+            <returns>Dados do usuário logado (ID, nome, e-mail, função).</returns>
+            <exception cref="T:System.InvalidOperationException">Usuário não autenticado ou dados inválidos.</exception>
+        </member>
+        <member name="T:Hephaestus.Program">
+            <summary>
+            Configurações da aplicação principal.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Program.Main(System.String[])">
+            <summary>
+            Ponto de entrada da aplicação.
+            </summary>
+            <param name="args">Argumentos da linha de comando.</param>
+        </member>
+        <member name="M:Hephaestus.Program.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Configura os serviços no contêiner de injeção de dependência.
+            </summary>
+            <param name="services">Coleção de serviços.</param>
+            <param name="configuration">Configuração da aplicação.</param>
+        </member>
+        <member name="M:Hephaestus.Program.ConfigureJwtAuthentication(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Configura a autenticação JWT no contêiner de serviços.
+            </summary>
+            <param name="services">Coleção de serviços.</param>
+            <param name="configuration">Configuração da aplicação.</param>
+        </member>
+        <member name="M:Hephaestus.Program.ConfigureAuthorizationPolicies(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configura as políticas de autorização no contêiner de serviços.
+            </summary>
+            <param name="services">Coleção de serviços.</param>
+        </member>
+        <member name="M:Hephaestus.Program.ConfigureSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configura o Swagger com suporte para autenticação Bearer e documentação XML opcional.
+            </summary>
+            <param name="services">Coleção de serviços.</param>
+        </member>
+        <member name="M:Hephaestus.Program.ConfigureMiddleware(Microsoft.AspNetCore.Builder.WebApplication)">
+            <summary>
+            Configura o pipeline de middleware da aplicação.
+            </summary>
+            <param name="app">Aplicação web configurada.</param>
+        </member>
+    </members>
+</doc>

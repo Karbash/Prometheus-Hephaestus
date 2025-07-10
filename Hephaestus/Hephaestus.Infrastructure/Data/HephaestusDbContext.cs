@@ -1,4 +1,5 @@
 ﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Infrastructure.Configuration;
 using Hephaestus.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ public class HephaestusDbContext : DbContext
     public DbSet<Promotion> Promotions { get; set; }
     public DbSet<Coupon> Coupons { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
     public HephaestusDbContext(DbContextOptions<HephaestusDbContext> options) : base(options) { }
 
@@ -35,5 +37,6 @@ public class HephaestusDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PromotionConfiguration());
         modelBuilder.ApplyConfiguration(new CouponConfiguration());
         modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
+        modelBuilder.ApplyConfiguration(new PasswordResetTokenConfiguration());
     }
 }

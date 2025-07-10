@@ -14,6 +14,7 @@ public class Company
     public bool IsEnabled { get; set; } = true;
     public FeeType FeeType { get; set; }
     public decimal FeeValue { get; set; }
+    public string? MfaSecret { get; set; } // Chave secreta para TOTP
 }
 
 

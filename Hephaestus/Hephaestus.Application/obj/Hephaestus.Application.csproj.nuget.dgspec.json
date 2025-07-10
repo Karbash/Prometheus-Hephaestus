@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Application\\Hephaestus.Application.csproj": {}
+    "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\Hephaestus.Application.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Application\\Hephaestus.Application.csproj": {
+    "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\Hephaestus.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Application\\Hephaestus.Application.csproj",
+        "projectUniqueName": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\Hephaestus.Application.csproj",
         "projectName": "Hephaestus.Application",
-        "projectPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Application\\Hephaestus.Application.csproj",
+        "projectPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\Hephaestus.Application.csproj",
         "packagesPath": "C:\\Users\\jorda\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Application\\obj\\",
+        "outputPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj": {
-                "projectPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj"
+              "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj": {
+                "projectPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj"
               }
             }
           }
@@ -99,14 +99,14 @@
         }
       }
     },
-    "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj": {
+    "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj",
         "projectName": "Hephaestus.Domain",
-        "projectPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj",
+        "projectPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj",
         "packagesPath": "C:\\Users\\jorda\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\obj\\",
+        "outputPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

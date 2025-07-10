@@ -9,3 +9,15 @@ C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Domain\o
 C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\refint\Hephaestus.Domain.dll
 C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\Hephaestus.Domain.pdb
 C:\Users\jorda\OneDrive\Área de Trabalho\Projeto\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\ref\Hephaestus.Domain.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\bin\Debug\net9.0\Hephaestus.Domain.deps.json
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\bin\Debug\net9.0\Hephaestus.Domain.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\bin\Debug\net9.0\Hephaestus.Domain.pdb
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\Hephaestus.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\Hephaestus.Domain.AssemblyInfoInputs.cache
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\Hephaestus.Domain.AssemblyInfo.cs
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\Hephaestus.Domain.csproj.CoreCompileInputs.cache
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\Hephaestus.Domain.sourcelink.json
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\Hephaestus.Domain.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\refint\Hephaestus.Domain.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\Hephaestus.Domain.pdb
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus.Domain\obj\Debug\net9.0\ref\Hephaestus.Domain.dll

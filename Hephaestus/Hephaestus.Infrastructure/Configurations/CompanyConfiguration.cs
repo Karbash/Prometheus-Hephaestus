@@ -22,6 +22,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder.Property(c => c.IsEnabled).IsRequired();
         builder.Property(c => c.FeeType).IsRequired().HasConversion<string>();
         builder.Property(c => c.FeeValue).IsRequired().HasPrecision(18, 2);
+        builder.Property(c => c.MfaSecret).HasMaxLength(100);
 
         builder.HasIndex(c => c.Email).IsUnique();
         builder.HasIndex(c => c.PhoneNumber).IsUnique();

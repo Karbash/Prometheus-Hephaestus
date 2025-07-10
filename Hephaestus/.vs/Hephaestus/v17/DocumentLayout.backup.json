@@ -1,12 +1,105 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\Projeto\\Hephaestus\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2A0F1768-FB59-41B2-8C2B-471A82401B38}|Hephaestus\\Hephaestus.csproj|c:\\users\\jorda\\onedrive\\\u00E1rea de trabalho\\prometheus-hephaestus\\hephaestus\\hephaestus\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A0F1768-FB59-41B2-8C2B-471A82401B38}|Hephaestus\\Hephaestus.csproj|solutionrelative:hephaestus\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A0F1768-FB59-41B2-8C2B-471A82401B38}|Hephaestus\\Hephaestus.csproj|c:\\users\\jorda\\onedrive\\\u00E1rea de trabalho\\prometheus-hephaestus\\hephaestus\\hephaestus\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A0F1768-FB59-41B2-8C2B-471A82401B38}|Hephaestus\\Hephaestus.csproj|solutionrelative:hephaestus\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA2E20B9-AB6A-4172-BDB0-A42328BFB625}|Hephaestus.Application\\Hephaestus.Application.csproj|c:\\users\\jorda\\onedrive\\\u00E1rea de trabalho\\prometheus-hephaestus\\hephaestus\\hephaestus.application\\usecases\\auth\\registercompanyusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FA2E20B9-AB6A-4172-BDB0-A42328BFB625}|Hephaestus.Application\\Hephaestus.Application.csproj|solutionrelative:hephaestus.application\\usecases\\auth\\registercompanyusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA2E20B9-AB6A-4172-BDB0-A42328BFB625}|Hephaestus.Application\\Hephaestus.Application.csproj|c:\\users\\jorda\\onedrive\\\u00E1rea de trabalho\\prometheus-hephaestus\\hephaestus\\hephaestus.application\\interfaces\\auth\\iregistercompanyusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FA2E20B9-AB6A-4172-BDB0-A42328BFB625}|Hephaestus.Application\\Hephaestus.Application.csproj|solutionrelative:hephaestus.application\\interfaces\\auth\\iregistercompanyusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A0F1768-FB59-41B2-8C2B-471A82401B38}|Hephaestus\\Hephaestus.csproj|c:\\users\\jorda\\onedrive\\\u00E1rea de trabalho\\prometheus-hephaestus\\hephaestus\\hephaestus\\hephaestus.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2A0F1768-FB59-41B2-8C2B-471A82401B38}|Hephaestus\\Hephaestus.csproj|solutionrelative:hephaestus\\hephaestus.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RegisterCompanyUseCase.cs",
+              "DocumentMoniker": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\UseCases\\Auth\\RegisterCompanyUseCase.cs",
+              "RelativeDocumentMoniker": "Hephaestus.Application\\UseCases\\Auth\\RegisterCompanyUseCase.cs",
+              "ToolTip": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\UseCases\\Auth\\RegisterCompanyUseCase.cs",
+              "RelativeToolTip": "Hephaestus.Application\\UseCases\\Auth\\RegisterCompanyUseCase.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwAYAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-10T16:14:01.007Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IRegisterCompanyUseCase.cs",
+              "DocumentMoniker": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\Interfaces\\Auth\\IRegisterCompanyUseCase.cs",
+              "RelativeDocumentMoniker": "Hephaestus.Application\\Interfaces\\Auth\\IRegisterCompanyUseCase.cs",
+              "ToolTip": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Application\\Interfaces\\Auth\\IRegisterCompanyUseCase.cs",
+              "RelativeToolTip": "Hephaestus.Application\\Interfaces\\Auth\\IRegisterCompanyUseCase.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-10T16:13:29.104Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Hephaestus\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Hephaestus\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAG0BAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-10T16:07:20.944Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Hephaestus",
+              "DocumentMoniker": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus\\Hephaestus.csproj",
+              "RelativeDocumentMoniker": "Hephaestus\\Hephaestus.csproj",
+              "ToolTip": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus\\Hephaestus.csproj",
+              "RelativeToolTip": "Hephaestus\\Hephaestus.csproj",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAkAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-07-10T16:04:49.796Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus\\Program.cs",
+              "RelativeDocumentMoniker": "Hephaestus\\Program.cs",
+              "ToolTip": "C:\\Users\\jorda\\OneDrive\\\u00C1rea de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus\\Program.cs",
+              "RelativeToolTip": "Hephaestus\\Program.cs",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAcwGwAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-10T15:55:12.905Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

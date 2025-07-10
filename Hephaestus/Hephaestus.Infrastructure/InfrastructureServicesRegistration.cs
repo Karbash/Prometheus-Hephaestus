@@ -1,5 +1,7 @@
 ﻿using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Services;
 using Hephaestus.Infrastructure.Data;
+using Hephaestus.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,12 +12,30 @@ public static class InfrastructureServicesRegistration
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<HephaestusDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("PostgresConnection")));
+        AddDbContext(services, configuration);
+        AddRepositories(services);
+        AddServices(services);
+        return services;
+    }
 
+    private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<HephaestusDbContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("PostgresConnection")));
+    }
+
+    private static void AddRepositories(IServiceCollection services)
+    {
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+    }
 
-        return services;
+    private static void AddServices(IServiceCollection services)
+    {
+        services.AddScoped<IMessageService, MessageService>();
+        services.AddHttpClient<IMessageService, MessageService>();
+        services.AddScoped<IMfaService, MfaService>();
+        services.AddScoped<ILoggedUserService, LoggedUserService>();
     }
 }

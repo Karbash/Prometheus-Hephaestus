@@ -1,4 +1,5 @@
 ﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Enum;
 
 namespace Hephaestus.Application.DTOs.Request
 {

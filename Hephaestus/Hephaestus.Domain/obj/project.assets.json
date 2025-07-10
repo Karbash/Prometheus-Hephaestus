@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj",
+      "projectUniqueName": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj",
       "projectName": "Hephaestus.Domain",
-      "projectPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj",
+      "projectPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\Hephaestus.Domain.csproj",
       "packagesPath": "C:\\Users\\jorda\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\Projeto\\Hephaestus\\Hephaestus.Domain\\obj\\",
+      "outputPath": "C:\\Users\\jorda\\OneDrive\\Área de Trabalho\\prometheus-hephaestus\\Hephaestus\\Hephaestus.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

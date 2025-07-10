@@ -11,11 +11,13 @@ public class AuditLogConfiguration : IEntityTypeConfiguration<AuditLog>
         builder.ToTable("AuditLogs");
 
         builder.HasKey(a => a.Id);
-        builder.Property(a => a.AdminId).IsRequired();
+        builder.Property(a => a.TenantId).IsRequired(false);
+        builder.Property(a => a.UserId).IsRequired(false); 
         builder.Property(a => a.Action).IsRequired();
         builder.Property(a => a.EntityId).IsRequired();
         builder.Property(a => a.Details).IsRequired();
         builder.Property(a => a.CreatedAt).IsRequired();
-        builder.HasIndex(a => a.AdminId);
+        builder.HasIndex(a => a.UserId).IsUnique(false);
+        builder.HasIndex(a => a.TenantId).IsUnique(false); 
     }
 }

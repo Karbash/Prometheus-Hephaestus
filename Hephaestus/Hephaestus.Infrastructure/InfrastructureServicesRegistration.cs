@@ -31,6 +31,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         services.AddScoped<ISalesRepository, SalesRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
     }
 
     private static void AddServices(IServiceCollection services)

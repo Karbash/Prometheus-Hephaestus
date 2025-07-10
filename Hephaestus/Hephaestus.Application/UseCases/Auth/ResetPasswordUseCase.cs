@@ -103,7 +103,7 @@ public class ResetPasswordUseCase : IResetPasswordUseCase
         {
             var auditLog = new AuditLog
             {
-                AdminId = "System",
+                UserId = "System",
                 Action = "Redefinição de Senha",
                 EntityId = company.Id,
                 Details = $"Senha da empresa {company.Name} redefinida.",

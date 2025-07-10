@@ -57,22 +57,25 @@ public class LoginUseCase : ILoginUseCase
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, company.Id),
+            new Claim(ClaimTypes.Name, company.Name ?? "Unknown"),
+            new Claim(ClaimTypes.Email, company.Email),
+            new Claim(ClaimTypes.Role, company.Role.ToString()),
+            new Claim("TenantId", company.Role == Role.Tenant ? company.Id : string.Empty), // Define TenantId para Role=Tenant
+            new Claim("MfaValidated", company.Role == Role.Admin && !string.IsNullOrEmpty(company.MfaSecret) ? "true" : "false")
+        };
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, company.Id),
-                new Claim(ClaimTypes.Name, company.Name),
-                new Claim(ClaimTypes.Email, company.Email),
-                new Claim(ClaimTypes.Role, company.Role.ToString()),
-                new Claim("TenantId", string.Empty),
-                new Claim("MfaValidated", company.Role == Role.Admin ? "true" : "false")
-            }),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(1),
             Issuer = _configuration["Jwt:Issuer"],
             Audience = _configuration["Jwt:Audience"],
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
+
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }

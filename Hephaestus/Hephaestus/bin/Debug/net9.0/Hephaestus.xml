@@ -209,6 +209,32 @@
             <returns>Dados do usuário logado (ID, nome, e-mail, função).</returns>
             <exception cref="T:System.InvalidOperationException">Usuário não autenticado ou dados inválidos.</exception>
         </member>
+        <member name="T:Hephaestus.Controllers.CustomerController">
+            <summary>
+            Controller para gerenciamento de clientes.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CustomerController.UpdateCustomer(Hephaestus.Application.DTOs.Request.CustomerRequest)">
+            <summary>
+            Atualiza ou cadastra dados de um cliente.
+            </summary>
+            <param name="request">Dados do cliente (nome, endereço, latitude, longitude).</param>
+            <returns>Status da atualização ou criação.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.CustomerController.GetCustomers(System.String)">
+            <summary>
+            Lista clientes do tenant.
+            </summary>
+            <param name="phoneNumber">Número de telefone para filtrar clientes (opcional).</param>
+            <returns>Lista de clientes.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.CustomerController.GetCustomerById(System.String)">
+            <summary>
+            Obtém detalhes de um cliente específico.
+            </summary>
+            <param name="id">ID do cliente (GUID).</param>
+            <returns>Detalhes do cliente.</returns>
+        </member>
         <member name="T:Hephaestus.Program">
             <summary>
             Configurações da aplicação principal.

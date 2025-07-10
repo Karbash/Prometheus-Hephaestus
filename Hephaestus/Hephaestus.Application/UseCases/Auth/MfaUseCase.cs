@@ -59,7 +59,7 @@ public class MfaUseCase : IMfaUseCase
 
         await _auditLogRepository.AddAsync(new AuditLog
         {
-            AdminId = company.Id,
+            UserId = company.Id,
             Action = "Validação MFA",
             EntityId = company.Id,
             Details = $"MFA validado para {company.Email}.",
@@ -104,7 +104,7 @@ public class MfaUseCase : IMfaUseCase
 
         await _auditLogRepository.AddAsync(new AuditLog
         {
-            AdminId = company.Id,
+            UserId = company.Id,
             Action = "Configuração MFA",
             EntityId = company.Id,
             Details = $"MFA configurado para {company.Email}.",

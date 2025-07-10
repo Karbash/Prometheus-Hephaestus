@@ -1,7 +1,10 @@
-﻿using Hephaestus.Application.Interfaces.Administration;
+﻿using Hephaestus.Application.Interfaces;
+using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Interfaces.Auth;
+using Hephaestus.Application.Interfaces.Customer;
 using Hephaestus.Application.UseCases.Administration;
 using Hephaestus.Application.UseCases.Auth;
+using Hephaestus.Application.UseCases.Customer;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hephaestus.Application;
@@ -27,5 +30,10 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IUpdateCompanyUseCase, UpdateCompanyUseCase>();
         services.AddScoped<ISalesReportUseCase, SalesReportUseCase>();
         services.AddScoped<IAuditLogUseCase, AuditLogUseCase>();
+
+        // Customer UseCases
+        services.AddScoped<IUpdateCustomerUseCase, UpdateCustomerUseCase>();
+        services.AddScoped<IGetCustomerUseCase, GetCustomerUseCase>();
+        services.AddScoped<IGetByIdCustomerUseCase, GetByIdCustomerUseCase>();
     }
 }

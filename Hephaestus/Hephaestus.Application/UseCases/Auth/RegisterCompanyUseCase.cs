@@ -86,7 +86,7 @@ public class RegisterCompanyUseCase : IRegisterCompanyUseCase
 
         await _auditLogRepository.AddAsync(new AuditLog
         {
-            AdminId = adminId,
+            UserId = adminId,
             Action = "Registro de Empresa",
             EntityId = company.Id,
             Details = $"Empresa {company.Name} registrada com e-mail {company.Email}.",

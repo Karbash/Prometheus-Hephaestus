@@ -151,8 +151,8 @@ public static class Program
     /// <param name="app">Aplicação web configurada.</param>
     private static void ConfigureMiddleware(WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
-        {
+        //if (app.Environment.IsDevelopment())
+        //{
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(options =>
@@ -160,7 +160,7 @@ public static class Program
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Hephaestus API v1");
                 options.RoutePrefix = string.Empty; // Swagger UI na raiz
             });
-        }
+        //}//
 
         app.UseHttpsRedirection();
         app.UseAuthentication();

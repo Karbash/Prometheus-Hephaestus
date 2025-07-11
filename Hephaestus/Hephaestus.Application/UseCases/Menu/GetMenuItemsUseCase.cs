@@ -25,7 +25,7 @@ public class GetMenuItemsUseCase : IGetMenuItemsUseCase
             CategoryId = m.CategoryId,
             Price = m.Price,
             IsAvailable = m.IsAvailable,
-            Tags = m.MenuItemTags.Select(mt => mt.Tag.Name).ToList(),
+            TagIds = m.MenuItemTags.Select(mt => mt.TagId).ToList(), // Alterado para TagIds
             AvailableAdditionalIds = m.AvailableAdditionalIds,
             ImageUrl = m.ImageUrl
         }).ToList();

@@ -9,11 +9,16 @@ namespace Hephaestus.Application.UseCases.Menu;
 public class CreateMenuItemUseCase : ICreateMenuItemUseCase
 {
     private readonly IMenuItemRepository _menuItemRepository;
+    private readonly ITagRepository _tagRepository;
     private readonly IValidator<CreateMenuItemRequest> _validator;
 
-    public CreateMenuItemUseCase(IMenuItemRepository menuItemRepository, IValidator<CreateMenuItemRequest> validator)
+    public CreateMenuItemUseCase(
+        IMenuItemRepository menuItemRepository,
+        ITagRepository tagRepository,
+        IValidator<CreateMenuItemRequest> validator)
     {
         _menuItemRepository = menuItemRepository;
+        _tagRepository = tagRepository;
         _validator = validator;
     }
 
@@ -23,8 +28,12 @@ public class CreateMenuItemUseCase : ICreateMenuItemUseCase
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
+        if (request.TagIds.Any() && !await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, tenantId))
+            throw new InvalidOperationException("Um ou mais TagIds são inválidos para este tenant.");
+
         var menuItem = new MenuItem
         {
+            Id = Guid.NewGuid().ToString(),
             TenantId = tenantId,
             Name = request.Name,
             Description = request.Description,
@@ -36,9 +45,9 @@ public class CreateMenuItemUseCase : ICreateMenuItemUseCase
         };
 
         await _menuItemRepository.AddAsync(menuItem);
-        if (request.Tags.Any())
+        if (request.TagIds.Any())
         {
-            await _menuItemRepository.AddTagsAsync(menuItem.Id, request.Tags, tenantId);
+            await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, tenantId);
         }
 
         return menuItem.Id;

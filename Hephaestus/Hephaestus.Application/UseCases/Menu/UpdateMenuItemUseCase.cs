@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.Menu;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 
 namespace Hephaestus.Application.UseCases.Menu;
@@ -8,11 +9,16 @@ namespace Hephaestus.Application.UseCases.Menu;
 public class UpdateMenuItemUseCase : IUpdateMenuItemUseCase
 {
     private readonly IMenuItemRepository _menuItemRepository;
+    private readonly ITagRepository _tagRepository;
     private readonly IValidator<UpdateMenuItemRequest> _validator;
 
-    public UpdateMenuItemUseCase(IMenuItemRepository menuItemRepository, IValidator<UpdateMenuItemRequest> validator)
+    public UpdateMenuItemUseCase(
+        IMenuItemRepository menuItemRepository,
+        ITagRepository tagRepository,
+        IValidator<UpdateMenuItemRequest> validator)
     {
         _menuItemRepository = menuItemRepository;
+        _tagRepository = tagRepository;
         _validator = validator;
     }
 
@@ -24,6 +30,9 @@ public class UpdateMenuItemUseCase : IUpdateMenuItemUseCase
 
         if (request.Id != id)
             throw new ArgumentException("ID no corpo da requisição deve corresponder ao ID na URL.");
+
+        if (request.TagIds != null && request.TagIds.Any() && !await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, tenantId))
+            throw new InvalidOperationException("Um ou mais TagIds são inválidos para este tenant.");
 
         var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
         if (menuItem == null)
@@ -37,10 +46,9 @@ public class UpdateMenuItemUseCase : IUpdateMenuItemUseCase
         menuItem.AvailableAdditionalIds = request.AvailableAdditionalIds ?? menuItem.AvailableAdditionalIds;
         menuItem.ImageUrl = request.ImageUrl ?? menuItem.ImageUrl;
 
-        if (request.Tags != null)
+        if (request.TagIds != null)
         {
-            menuItem.MenuItemTags.Clear();
-            await _menuItemRepository.AddTagsAsync(id, request.Tags, tenantId);
+            await _menuItemRepository.AddTagsAsync(id, request.TagIds, tenantId);
         }
 
         await _menuItemRepository.UpdateAsync(menuItem);

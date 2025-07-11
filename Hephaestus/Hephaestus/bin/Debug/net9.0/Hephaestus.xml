@@ -37,6 +37,7 @@
                 "feeType": "Percentage",
                 "feeValue": 5.0,
                 "city": "São Paulo",
+                "neighborhood": "Vila Mariana",
                 "street": "Rua Exemplo",
                 "number": "123",
                 "latitude": -23.550520,
@@ -74,6 +75,7 @@
               "feeValue": 5.0,
               "isEnabled": true,
               "city": "Rio de Janeiro",
+              "neighborhood": "Copacabana",
               "street": "Avenida Nova",
               "number": "456",
               "latitude": -22.906847,
@@ -161,7 +163,7 @@
             <returns>Lista de logs de auditoria.</returns>
             <exception cref="T:System.InvalidOperationException">Parâmetros inválidos.</exception>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Hephaestus.Controllers.AdministrationController.GetCompaniesByRadius(System.Double,System.Double,System.Double)" -->
+        <!-- Badly formed XML comment ignored for member "M:Hephaestus.Controllers.AdministrationController.GetCompaniesByRadius(System.Double,System.Double,System.Double,System.String,System.String)" -->
         <member name="T:Hephaestus.Controllers.AuthController">
             <summary>
             Controller para autenticação e gerenciamento de usuários.

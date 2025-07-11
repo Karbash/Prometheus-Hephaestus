@@ -200,6 +200,16 @@
         "Name": "radiusKm",
         "Type": "System.Double",
         "IsRequired": false
+      },
+      {
+        "Name": "city",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "neighborhood",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [

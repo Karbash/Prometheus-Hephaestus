@@ -42,6 +42,7 @@ public class GetCompanyProfileUseCase : IGetCompanyProfileUseCase
             PhoneNumber = company.PhoneNumber,
             State = company.State,
             City = company.City,
+            Neighborhood = company.Neighborhood,
             Street = company.Street,
             Number = company.Number,
             Latitude = company.Latitude,

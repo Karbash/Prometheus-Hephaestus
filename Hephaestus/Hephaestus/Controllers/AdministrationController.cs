@@ -63,6 +63,7 @@ public class AdministrationController : ControllerBase
     ///     "feeType": "Percentage",
     ///     "feeValue": 5.0,
     ///     "city": "São Paulo",
+    ///     "neighborhood": "Vila Mariana",
     ///     "street": "Rua Exemplo",
     ///     "number": "123",
     ///     "latitude": -23.550520,
@@ -118,6 +119,7 @@ public class AdministrationController : ControllerBase
     ///   "feeValue": 5.0,
     ///   "isEnabled": true,
     ///   "city": "Rio de Janeiro",
+    ///   "neighborhood": "Copacabana",
     ///   "street": "Avenida Nova",
     ///   "number": "456",
     ///   "latitude": -22.906847,
@@ -140,7 +142,7 @@ public class AdministrationController : ControllerBase
     /// <exception cref="KeyNotFoundException">Se a empresa não for encontrada.</exception>
     /// <exception cref="InvalidOperationException">Se e-mail ou telefone já estiver registrado ou usuário não for administrador.</exception>
     [HttpPut("company/{id}")]
-    [SwaggerOperation(Summary = "Atualiza uma empresa", Description = "Atualiza configurações de uma empresa (nome, e-mail, telefone, API key, tipo de taxa, valor da taxa, status de habilitação, cidade, rua, número, latitude, longitude, slogan, descrição). Requer autenticação de administrador com MFA validado.")]
+    [SwaggerOperation(Summary = "Atualiza uma empresa", Description = "Atualiza configurações de uma empresa (nome, e-mail, telefone, API key, tipo de taxa, valor da taxa, status de habilitação, cidade, bairro, rua, número, latitude, longitude, slogan, descrição). Requer autenticação de administrador com MFA validado.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
@@ -295,7 +297,7 @@ public class AdministrationController : ControllerBase
     /// <remarks>
     /// Exemplo de requisição:
     /// ```http
-    /// GET /api/administration/company/radius?centerLat=-22.906847&centerLon=-43.172896&radiusKm=10
+    /// GET /api/administration/company/radius?centerLat=-22.906847¢erLon=-43.172896&radiusKm=10&city=Rio%20de%20Janeiro&neighborhood=Copacabana
     /// ```
     /// Exemplo de resposta de sucesso:
     /// ```json
@@ -309,6 +311,7 @@ public class AdministrationController : ControllerBase
     ///     "feeType": "Percentage",
     ///     "feeValue": 5.0,
     ///     "city": "Rio de Janeiro",
+    ///     "neighborhood": "Copacabana",
     ///     "street": "Avenida Nova",
     ///     "number": "456",
     ///     "latitude": -22.906847,
@@ -328,19 +331,21 @@ public class AdministrationController : ControllerBase
     /// <param name="centerLat">Latitude do ponto central (-90 a 90).</param>
     /// <param name="centerLon">Longitude do ponto central (-180 a 180).</param>
     /// <param name="radiusKm">Raio em quilômetros (maior que 0).</param>
+    /// <param name="city">Cidade para pré-filtragem (opcional).</param>
+    /// <param name="neighborhood">Bairro para pré-filtragem (opcional).</param>
     /// <returns>Lista de empresas dentro do raio.</returns>
-    /// <exception cref="ArgumentException">Se latitude, longitude ou raio forem inválidos.</exception>
+    /// <exception cref="ArgumentException">Se latitude, longitude, raio, cidade ou bairro forem inválidos.</exception>
     [HttpGet("company/radius")]
-    [SwaggerOperation(Summary = "Lista empresas por raio", Description = "Retorna empresas dentro de um raio (em km) a partir de uma coordenada (latitude, longitude). Requer autenticação de administrador com MFA validado.")]
+    [SwaggerOperation(Summary = "Lista empresas por raio", Description = "Retorna empresas dentro de um raio (em km) a partir de uma coordenada (latitude, longitude), com pré-filtro opcional por cidade e bairro. Requer autenticação de administrador com MFA validado.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CompanyResponse>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
-    public async Task<IActionResult> GetCompaniesByRadius([FromQuery] double centerLat, [FromQuery] double centerLon, [FromQuery] double radiusKm)
+    public async Task<IActionResult> GetCompaniesByRadius([FromQuery] double centerLat, [FromQuery] double centerLon, [FromQuery] double radiusKm, [FromQuery] string? city = null, [FromQuery] string? neighborhood = null)
     {
         try
         {
-            var companies = await _getCompaniesWithinRadiusUseCase.ExecuteAsync(centerLat, centerLon, radiusKm);
+            var companies = await _getCompaniesWithinRadiusUseCase.ExecuteAsync(centerLat, centerLon, radiusKm, city, neighborhood);
             return Ok(companies);
         }
         catch (ArgumentException ex)

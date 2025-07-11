@@ -10,5 +10,5 @@ public interface ICompanyRepository
     Task<Company?> GetByPhoneNumberAsync(string phoneNumber);
     Task AddAsync(Company company);
     Task UpdateAsync(Company company);
-    Task<IEnumerable<Company>> GetCompaniesWithinRadiusAsync(double centerLat, double centerLon, double radiusKm);
+    Task<IEnumerable<Company>> GetCompaniesWithinRadiusAsync(double centerLat, double centerLon, double radiusKm, string? city = null, string? neighborhood = null);
 }

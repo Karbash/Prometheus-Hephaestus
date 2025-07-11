@@ -28,6 +28,7 @@ public class GetCompaniesUseCase : IGetCompaniesUseCase
             FeeValue = (double)c.FeeValue,
             State = c.State, // Novo campo
             City = c.City,
+            Neighborhood = c.Neighborhood,
             Street = c.Street,
             Number = c.Number,
             Latitude = c.Latitude,

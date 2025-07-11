@@ -3,6 +3,7 @@ using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using System.Security.Claims;
+using Hephaestus.Domain.Enum;
 
 namespace Hephaestus.Application.UseCases.Administration;
 
@@ -41,11 +42,14 @@ public class UpdateCompanyUseCase : IUpdateCompanyUseCase
         company.Email = request.Email ?? company.Email;
         company.PhoneNumber = request.PhoneNumber ?? company.PhoneNumber;
         company.ApiKey = request.ApiKey ?? company.ApiKey;
-        company.IsEnabled = request.IsEnabled ?? company.IsEnabled;
-        company.FeeType = request.FeeType ?? company.FeeType;
-        company.FeeValue = request.FeeValue ?? company.FeeValue;
-        company.State = request.State ?? company.State; // Novo campo
+        company.IsEnabled = request.IsEnabled; // Corrigido: remover ??, pois IsEnabled é bool
+        company.FeeType = !string.IsNullOrWhiteSpace(request.FeeType) && Enum.TryParse<FeeType>(request.FeeType, true, out var feeType)
+            ? feeType
+            : company.FeeType; // Corrigido: converter string para FeeType
+        company.FeeValue = request.FeeValue != 0 ? (decimal)request.FeeValue : company.FeeValue; // Corrigido: converter double para decimal
+        company.State = request.State ?? company.State;
         company.City = request.City ?? company.City;
+        company.Neighborhood = request.Neighborhood ?? company.Neighborhood; // Incluindo Neighborhood
         company.Street = request.Street ?? company.Street;
         company.Number = request.Number ?? company.Number;
         company.Latitude = request.Latitude ?? company.Latitude;

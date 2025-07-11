@@ -11,8 +11,9 @@ public class CompanyRequest
     public string FeeType { get; set; } = "Percentage";
     public double FeeValue { get; set; }
     public bool IsEnabled { get; set; }
-    public string State { get; set; } = string.Empty; // Novo campo obrigatório
+    public string State { get; set; } = string.Empty;
     public string? City { get; set; }
+    public string? Neighborhood { get; set; } // Novo campo
     public string? Street { get; set; }
     public string? Number { get; set; }
     public double? Latitude { get; set; }

@@ -94,14 +94,24 @@ public class CompanyRepository : ICompanyRepository
         }
     }
 
-    public async Task<IEnumerable<Company>> GetCompaniesWithinRadiusAsync(double centerLat, double centerLon, double radiusKm)
+    public async Task<IEnumerable<Company>> GetCompaniesWithinRadiusAsync(double centerLat, double centerLon, double radiusKm, string? city = null, string? neighborhood = null)
     {
-        Console.WriteLine($"Buscando empresas dentro de {radiusKm} km de ({centerLat}, {centerLon})");
+        Console.WriteLine($"Buscando empresas dentro de {radiusKm} km de ({centerLat}, {centerLon})" +
+                         (city != null ? $" na cidade {city}" : "") +
+                         (neighborhood != null ? $" no bairro {neighborhood}" : ""));
         try
         {
             const double earthRadius = 6371; // Raio da Terra em km
-            var companies = await _context.Companies
-                .Where(c => c.Latitude != null && c.Longitude != null)
+            var query = _context.Companies
+                .Where(c => c.Latitude != null && c.Longitude != null);
+
+            if (!string.IsNullOrWhiteSpace(city))
+                query = query.Where(c => c.City != null && c.City.ToLower() == city.ToLower());
+
+            if (!string.IsNullOrWhiteSpace(neighborhood))
+                query = query.Where(c => c.Neighborhood != null && c.Neighborhood.ToLower() == neighborhood.ToLower());
+
+            var companies = await query
                 .Where(c => earthRadius * 2 * Math.Asin(Math.Sqrt(
                     Math.Pow(Math.Sin((c.Latitude.Value - centerLat) * Math.PI / 180 / 2), 2) +
                     Math.Cos(centerLat * Math.PI / 180) * Math.Cos(c.Latitude.Value * Math.PI / 180) *

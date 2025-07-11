@@ -55,6 +55,7 @@ public class RegisterCompanyUseCase : IRegisterCompanyUseCase
             FeeValue = request.FeeValue,
             State = request.State, // Novo campo
             City = request.City,
+            Neighborhood = request.Neighborhood,
             Street = request.Street,
             Number = request.Number,
             Latitude = request.Latitude,

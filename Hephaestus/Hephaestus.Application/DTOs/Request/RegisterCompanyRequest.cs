@@ -12,8 +12,9 @@ public class RegisterCompanyRequest
     public FeeType FeeType { get; set; } = FeeType.Fixed;
     public decimal FeeValue { get; set; } = 0;
     public bool IsEnabled { get; set; } = false;
-    public string State { get; set; } = string.Empty; // Novo campo obrigatório
+    public string State { get; set; } = string.Empty;
     public string? City { get; set; }
+    public string? Neighborhood { get; set; } // Novo campo
     public string? Street { get; set; }
     public string? Number { get; set; }
     public double? Latitude { get; set; }

@@ -12,6 +12,8 @@ using Hephaestus.Application.DTOs.Request;
 using Microsoft.Extensions.DependencyInjection;
 using Hephaestus.Application.Interfaces.Tag;
 using Hephaestus.Application.UseCases.Tag;
+using Hephaestus.Application.Interfaces.Company;
+using Hephaestus.Application.UseCases.Company;
 
 namespace Hephaestus.Application;
 
@@ -55,6 +57,9 @@ public static class ApplicationServicesRegistration
         services.AddScoped<ICreateTagUseCase, CreateTagUseCase>();
         services.AddScoped<IGetAllTagsByTenantUseCase, GetAllTagsByTenantUseCase>();
         services.AddScoped<IDeleteTagUseCase, DeleteTagUseCase>();
+
+        // Company UseCases
+        services.AddScoped<IGetCompanyProfileUseCase, GetCompanyProfileUseCase>();
     }
 
     private static void AddValidators(IServiceCollection services)

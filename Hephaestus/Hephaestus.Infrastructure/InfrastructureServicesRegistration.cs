@@ -34,6 +34,9 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IMenuItemRepository, MenuItemRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<ICompanyImageRepository, CompanyImageRepository>();
+        services.AddScoped<ICompanyOperatingHourRepository, CompanyOperatingHourRepository>();
+        services.AddScoped<ICompanySocialMediaRepository, CompanySocialMediaRepository>();
     }
 
     private static void AddServices(IServiceCollection services)

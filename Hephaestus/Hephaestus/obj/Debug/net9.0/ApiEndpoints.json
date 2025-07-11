@@ -638,6 +638,50 @@
     ]
   },
   {
+    "ContainingType": "Hephaestus.Controllers.CompanyController",
+    "Method": "GetCompanyProfile",
+    "RelativePath": "api/Company/{id}/profile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Hephaestus.Application.DTOs.Response.CompanyProfileResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
     "ContainingType": "Hephaestus.Controllers.CustomerController",
     "Method": "UpdateCustomer",
     "RelativePath": "api/Customer",

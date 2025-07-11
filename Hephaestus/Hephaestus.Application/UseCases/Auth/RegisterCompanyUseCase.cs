@@ -41,7 +41,7 @@ public class RegisterCompanyUseCase : IRegisterCompanyUseCase
         if (claimsPrincipal == null || userRole != "Admin")
             throw new InvalidOperationException("Apenas administradores podem registrar empresas.");
 
-        var company = new Company
+        var company = new Domain.Entities.Company
         {
             Id = Guid.NewGuid().ToString(),
             Name = request.Name,

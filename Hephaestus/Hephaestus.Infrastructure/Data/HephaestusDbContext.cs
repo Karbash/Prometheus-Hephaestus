@@ -22,6 +22,10 @@ public class HephaestusDbContext : DbContext
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<MenuItemTag> MenuItemTags { get; set; }
+    public DbSet<CompanyImage> CompanyImages { get; set; }
+    public DbSet<CompanyOperatingHour> CompanyOperatingHours { get; set; }
+    public DbSet<CompanySocialMedia> CompanySocialMedia { get; set; }
+    public DbSet<MenuItemImage> MenuItemImages { get; set; }
 
     public HephaestusDbContext(DbContextOptions<HephaestusDbContext> options) : base(options) { }
 
@@ -42,5 +46,9 @@ public class HephaestusDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PasswordResetTokenConfiguration());
         modelBuilder.ApplyConfiguration(new TagConfiguration());
         modelBuilder.ApplyConfiguration(new MenuItemTagConfiguration());
+        modelBuilder.ApplyConfiguration(new CompanyImageConfiguration());
+        modelBuilder.ApplyConfiguration(new CompanyOperatingHourConfiguration());
+        modelBuilder.ApplyConfiguration(new CompanySocialMediaConfiguration());
+        modelBuilder.ApplyConfiguration(new MenuItemImageConfiguration());
     }
 }

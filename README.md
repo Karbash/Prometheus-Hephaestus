@@ -52,7 +52,7 @@ Usuário ⇄ Prometheus (Angular PWA)
 ✅ **Offline-First**: Operações CRUD offline com sincronização em fila  
 ✅ **Multi-Tenant**: Dados isolados por empresa, usando TenantId e JWT  
 ✅ **PWA**: Aplicativo Progressivo com suporte offline (Service Workers)  
-✅ **Gestão de Pedidos**: Pedidos via API WhatsApp, rastreamento em tempo real  
+✅ **Gestão de Pedidos**: Pedidos via API WhatsApp, rastreamento em tempo real *(em desenvolvimento)*  
 ✅ **Cardápio & Promoções**: Gerenciamento dinâmico de cardápio, promoções avançadas e cupons  
 ✅ **Análises**: Dashboards detalhados para empresas e admins  
 ✅ **Segurança**: Autenticação JWT, MFA para admins, rate limiting  
@@ -123,38 +123,77 @@ ng build --prod
    ```bash
    cd hephaestus
    dotnet restore
-   dotnet ef migrations add InitPostgres
    dotnet ef database update
    dotnet run
    ```
 
 ---
 
-## 📜 Endpoints Principais
+## 📜 Endpoints REST Implementados
 
-A API Hephaestus é RESTful e utiliza JWT. Endpoints de WhatsApp e avaliações podem usar chaves de API e rate limiting.
+### Autenticação e Usuário (`/api/auth`)
+- **POST `/api/auth/login`** — Autentica usuário (admin ou tenant) e retorna JWT. Suporta MFA para admins.
+- **POST `/api/auth/register`** — Registra nova empresa (apenas admin com MFA validado).
+- **POST `/api/auth/reset-password-request`** — Solicita token de redefinição de senha (envio por e-mail/WhatsApp).
+- **POST `/api/auth/reset-password`** — Confirma redefinição de senha com token.
+- **POST `/api/auth/mfa/setup`** — Gera segredo TOTP para MFA (admin).
+- **POST `/api/auth/mfa`** — Valida código MFA e retorna novo JWT com claim MFA.
+- **GET `/api/auth/me`** — Retorna dados do usuário autenticado.
 
-Exemplos:
+### Administração (`/api/administration`)
+- **GET `/api/administration/company`** — Lista todas as empresas, com filtro opcional por status (habilitada/desabilitada).
+- **PUT `/api/administration/company/{id}`** — Atualiza dados de uma empresa.
+- **GET `/api/administration/sales/admin`** — Relatório consolidado de vendas (filtros: data, tenant).
+- **GET `/api/administration/audit-log`** — Lista logs de auditoria (filtros: adminId, data).
+- **GET `/api/administration/company/radius`** — Lista empresas dentro de um raio geográfico.
 
-- `POST /api/auth/login` — Autentica e retorna JWT
-- `POST /api/auth/register` — Registra nova empresa (Admin)
-- `GET /api/company` — Lista empresas (Admin)
-- `GET /api/menu` — Lista itens do cardápio (Tenant)
-- `POST /api/whatsapp/order` — Cria pedido via WhatsApp (API Key)
+### Empresa (`/api/company`)
+- **GET `/api/company/{id}/profile`** — Retorna perfil completo da empresa (imagens, horários, redes sociais).
 
-Para lista completa, consulte a **Documentação do Projeto**.
+### Cardápio (`/api/menu`) *(Role: Tenant)*
+- **POST `/api/menu`** — Cria item do cardápio.
+- **GET `/api/menu`** — Lista itens do cardápio do tenant autenticado.
+- **GET `/api/menu/{id}`** — Detalha item do cardápio.
+- **PUT `/api/menu/{id}`** — Atualiza item do cardápio.
+- **DELETE `/api/menu/{id}`** — Remove item do cardápio.
+
+### Cliente (`/api/customer`) *(Role: Tenant)*
+- **PUT `/api/customer`** — Atualiza/cadastra cliente (por telefone).
+- **GET `/api/customer`** — Lista clientes do tenant (filtro opcional por telefone).
+- **GET `/api/customer/{id}`** — Detalha cliente por ID.
+
+### Tags (`/api/tag`) *(Role: Admin ou Tenant)*
+- **POST `/api/tag`** — Cria nova tag.
+- **GET `/api/tag`** — Lista todas as tags de um tenant.
+- **DELETE `/api/tag/{id}`** — Remove tag (se não associada a itens do cardápio).
+
+### ⚠️ Endpoints em desenvolvimento
+- **Pedidos via WhatsApp** e **avaliações**: ainda não implementados nos controllers atuais.
 
 ---
 
-## 🗄️ Esquema do Banco
+## 🗄️ Modelo de Dados (Principais Entidades)
 
-O banco PostgreSQL usa tabelas específicas por tenant (`Orders`, `MenuItems`) com `TenantId` e tabelas globais (`Companies`, `Customers`, `AuditLogs`).  
-Principais entidades:
-- **Company**
-- **Order & OrderItem**
-- **Customization**
-- **Promotion & Coupon**
-- **AuditLog**
+- **Company**: Empresa (multi-tenant)
+- **Customer**: Cliente
+- **MenuItem**: Item do cardápio
+- **Tag**: Tag de cardápio
+- **Order & OrderItem**: Pedido e itens do pedido
+- **Promotion & Coupon**: Promoções e cupons
+- **AuditLog**: Log de auditoria
+- **PasswordResetToken**: Token de redefinição de senha
+- **SalesLog**: Log de vendas
+- **CompanyImage, CompanyOperatingHour, CompanySocialMedia**: Dados complementares da empresa
+
+---
+
+## 🔒 Segurança e Políticas
+
+- **JWT obrigatório** em todas as rotas protegidas.
+- **Roles**: Admin, Tenant.
+- **MFA obrigatório** para admins em operações sensíveis.
+- **Validação e logging** em todos os endpoints.
+- **Swagger/OpenAPI** já configurado para documentação automática.
 
 ---
 

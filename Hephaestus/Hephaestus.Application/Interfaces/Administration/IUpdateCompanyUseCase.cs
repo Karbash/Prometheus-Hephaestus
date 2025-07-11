@@ -5,5 +5,5 @@ namespace Hephaestus.Application.Interfaces.Administration;
 
 public interface IUpdateCompanyUseCase
 {
-    Task ExecuteAsync(string id, CompanyRequest request, ClaimsPrincipal user);
+    Task ExecuteAsync(string id, UpdateCompanyRequest request, ClaimsPrincipal user);
 }

@@ -4,25 +4,18 @@ using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Enum;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
+using System;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Hephaestus.Application.UseCases.Auth;
 
-/// <summary>
-/// Caso de uso para registro de novas empresas.
-/// </summary>
 public class RegisterCompanyUseCase : IRegisterCompanyUseCase
 {
     private readonly ICompanyRepository _companyRepository;
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly ILoggedUserService _loggedUserService;
 
-    /// <summary>
-    /// Inicializa uma nova instância do <see cref="RegisterCompanyUseCase"/>.
-    /// </summary>
-    /// <param name="companyRepository">Repositório de empresas.</param>
-    /// <param name="auditLogRepository">Repositório de logs de auditoria.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     public RegisterCompanyUseCase(
         ICompanyRepository companyRepository,
         IAuditLogRepository auditLogRepository,
@@ -33,14 +26,6 @@ public class RegisterCompanyUseCase : IRegisterCompanyUseCase
         _loggedUserService = loggedUserService;
     }
 
-    /// <summary>
-    /// Registra uma nova empresa e adiciona um log de auditoria.
-    /// </summary>
-    /// <param name="request">Dados da empresa a ser registrada.</param>
-    /// <param name="claimsPrincipal">Claims do usuário autenticado, ou null se não autenticado.</param>
-    /// <returns>ID da empresa registrada.</returns>
-    /// <exception cref="ArgumentNullException">Se request for nulo.</exception>
-    /// <exception cref="InvalidOperationException">E-mail ou telefone já registrado, ou usuário não autorizado.</exception>
     public async Task<string> ExecuteAsync(RegisterCompanyRequest request, ClaimsPrincipal? claimsPrincipal)
     {
         // Validate input
@@ -73,7 +58,14 @@ public class RegisterCompanyUseCase : IRegisterCompanyUseCase
             Role = Role.Tenant,
             IsEnabled = request.IsEnabled,
             FeeType = request.FeeType,
-            FeeValue = request.FeeValue
+            FeeValue = request.FeeValue,
+            City = request.City,
+            Street = request.Street,
+            Number = request.Number,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
+            Slogan = request.Slogan,
+            Description = request.Description
         };
 
         // Save to database

@@ -15,7 +15,11 @@ public class Company
     public FeeType FeeType { get; set; }
     public decimal FeeValue { get; set; }
     public string? MfaSecret { get; set; } // Chave secreta para TOTP
+    public string? City { get; set; }
+    public string? Street { get; set; }
+    public string? Number { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+    public string? Slogan { get; set; }
+    public string? Description { get; set; }
 }
-
-
-

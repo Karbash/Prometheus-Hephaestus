@@ -93,4 +93,30 @@ public class CompanyRepository : ICompanyRepository
             throw;
         }
     }
+
+    public async Task<IEnumerable<Company>> GetCompaniesWithinRadiusAsync(double centerLat, double centerLon, double radiusKm)
+    {
+        Console.WriteLine($"Buscando empresas dentro de {radiusKm} km de ({centerLat}, {centerLon})");
+        try
+        {
+            const double earthRadius = 6371; // Raio da Terra em km
+            var companies = await _context.Companies
+                .Where(c => c.Latitude != null && c.Longitude != null)
+                .Where(c => earthRadius * 2 * Math.Asin(Math.Sqrt(
+                    Math.Pow(Math.Sin((c.Latitude.Value - centerLat) * Math.PI / 180 / 2), 2) +
+                    Math.Cos(centerLat * Math.PI / 180) * Math.Cos(c.Latitude.Value * Math.PI / 180) *
+                    Math.Pow(Math.Sin((c.Longitude.Value - centerLon) * Math.PI / 180 / 2), 2)
+                )) <= radiusKm)
+                .ToListAsync();
+
+            Console.WriteLine($"Empresas encontradas no raio: {JsonSerializer.Serialize(companies)}");
+            return companies;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao buscar empresas no raio: {ex.Message}");
+            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+            throw;
+        }
+    }
 }

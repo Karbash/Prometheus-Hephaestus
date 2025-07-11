@@ -1,5 +1,5 @@
-﻿using Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+﻿using FluentValidation;
+using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.OpenAI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,15 +34,26 @@ public class OpenAIController : ControllerBase
             var response = await _chatWithOpenAIUseCase.ExecuteAsync(request);
             return Ok(response);
         }
-        catch (ArgumentException ex)
-        {
-            _logger.LogWarning(ex, "Erro de validação: {Message}", ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
         catch (HttpRequestException ex)
         {
             _logger.LogError(ex, "Erro ao consultar OpenAI: {Message}", ex.Message);
             return BadRequest(new { error = ex.Message });
+        }
+        catch (ValidationException ex)
+        {
+            _logger.LogWarning(ex, "Erro de validação ao consultar OpenAI.");
+
+            var details = ex.Errors.Select(e => new {
+                Field = e.PropertyName,
+                Message = e.ErrorMessage
+            });
+
+            return BadRequest(new
+            {
+                status = 400,
+                error = "Erro de validação",
+                details = details
+            });
         }
         catch (Exception ex)
         {

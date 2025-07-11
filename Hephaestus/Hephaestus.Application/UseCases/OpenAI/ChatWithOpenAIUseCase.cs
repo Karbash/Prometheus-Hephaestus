@@ -1,14 +1,10 @@
-﻿using Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+﻿using FluentValidation;
+using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.OpenAI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Hephaestus.Application.UseCases.OpenAI;
 
@@ -17,9 +13,11 @@ public class ChatWithOpenAIUseCase : IChatWithOpenAIUseCase
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
     private readonly ILogger<ChatWithOpenAIUseCase> _logger;
+    private readonly IValidator<OpenAIChatRequest> _validator;
 
-    public ChatWithOpenAIUseCase(HttpClient httpClient, IConfiguration configuration, ILogger<ChatWithOpenAIUseCase> logger)
+    public ChatWithOpenAIUseCase(HttpClient httpClient, IValidator<OpenAIChatRequest> validator, IConfiguration configuration, ILogger<ChatWithOpenAIUseCase> logger)
     {
+        _validator = validator;
         _httpClient = httpClient;
         _apiKey = configuration["OpenAI:ApiKey"] ?? throw new ArgumentNullException("Chave da API OpenAI não configurada.");
         _logger = logger;
@@ -27,6 +25,8 @@ public class ChatWithOpenAIUseCase : IChatWithOpenAIUseCase
 
     public async Task<OpenAIChatResponse> ExecuteAsync(OpenAIChatRequest request)
     {
+        _validator.ValidateAndThrow(request);
+
         if (string.IsNullOrWhiteSpace(request.Prompt))
             throw new ArgumentException("Prompt é obrigatório.", nameof(request.Prompt));
 

@@ -32,6 +32,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         services.AddScoped<ISalesRepository, SalesRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IMenuItemRepository, MenuItemRepository>();
     }
 
     private static void AddServices(IServiceCollection services)

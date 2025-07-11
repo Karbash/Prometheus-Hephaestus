@@ -4,9 +4,6 @@ using Hephaestus.Application.Interfaces.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Hephaestus.Controllers;
 

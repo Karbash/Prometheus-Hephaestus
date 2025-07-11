@@ -14,6 +14,8 @@ using Hephaestus.Application.Interfaces.Tag;
 using Hephaestus.Application.UseCases.Tag;
 using Hephaestus.Application.Interfaces.Company;
 using Hephaestus.Application.UseCases.Company;
+using Hephaestus.Application.Interfaces.OpenAI;
+using Hephaestus.Application.UseCases.OpenAI;
 
 namespace Hephaestus.Application;
 
@@ -60,6 +62,10 @@ public static class ApplicationServicesRegistration
 
         // Company UseCases
         services.AddScoped<IGetCompanyProfileUseCase, GetCompanyProfileUseCase>();
+
+        // OpenAI
+        services.AddHttpClient<IChatWithOpenAIUseCase, ChatWithOpenAIUseCase>();
+        services.AddScoped<IChatWithOpenAIUseCase, ChatWithOpenAIUseCase>();
     }
 
     private static void AddValidators(IServiceCollection services)
@@ -73,5 +79,6 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IValidator<ResetPasswordRequest>, ResetPasswordRequestValidator>();
         services.AddScoped<IValidator<UpdateCompanyRequest>, UpdateCompanyRequestValidator>();
         services.AddScoped<IValidator<CustomerRequest>, CustomerRequestValidator>();
+        services.AddScoped<IValidator<OpenAIChatRequest>, OpenAIChatRequestValidator>();
     }
 }

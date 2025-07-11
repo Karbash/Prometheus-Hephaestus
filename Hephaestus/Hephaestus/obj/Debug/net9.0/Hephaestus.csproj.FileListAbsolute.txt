@@ -154,3 +154,10 @@ C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hepha
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\Hephaestus.pdb
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\Hephaestus.genruntimeconfig.cache
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\ref\Hephaestus.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Configuration.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Diagnostics.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Http.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

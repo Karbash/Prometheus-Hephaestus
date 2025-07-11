@@ -37,6 +37,9 @@ public class RegisterCompanyRequestValidator : AbstractValidator<RegisterCompany
         RuleFor(x => x.City)
             .MaximumLength(100).When(x => x.City != null).WithMessage("Cidade deve ter no máximo 100 caracteres.");
 
+        RuleFor(x => x.Neighborhood)
+            .MaximumLength(100).When(x => x.Neighborhood != null).WithMessage("Bairro deve ter no máximo 100 caracteres.");
+
         RuleFor(x => x.Street)
             .MaximumLength(200).When(x => x.Street != null).WithMessage("Rua deve ter no máximo 200 caracteres.");
 

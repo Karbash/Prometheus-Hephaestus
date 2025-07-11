@@ -10,6 +10,8 @@ using Hephaestus.Application.Validators;
 using FluentValidation;
 using Hephaestus.Application.DTOs.Request;
 using Microsoft.Extensions.DependencyInjection;
+using Hephaestus.Application.Interfaces.Tag;
+using Hephaestus.Application.UseCases.Tag;
 
 namespace Hephaestus.Application;
 
@@ -48,6 +50,11 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IGetMenuItemByIdUseCase, GetMenuItemByIdUseCase>();
         services.AddScoped<IUpdateMenuItemUseCase, UpdateMenuItemUseCase>();
         services.AddScoped<IDeleteMenuItemUseCase, DeleteMenuItemUseCase>();
+
+        // Tag UseCases
+        services.AddScoped<ICreateTagUseCase, CreateTagUseCase>();
+        services.AddScoped<IGetAllTagsByTenantUseCase, GetAllTagsByTenantUseCase>();
+        services.AddScoped<IDeleteTagUseCase, DeleteTagUseCase>();
     }
 
     private static void AddValidators(IServiceCollection services)

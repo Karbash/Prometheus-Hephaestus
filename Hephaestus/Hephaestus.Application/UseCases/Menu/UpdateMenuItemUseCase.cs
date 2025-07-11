@@ -2,8 +2,6 @@
 using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Domain.Repositories;
-using System;
-using System.Threading.Tasks;
 
 namespace Hephaestus.Application.UseCases.Menu;
 
@@ -36,9 +34,14 @@ public class UpdateMenuItemUseCase : IUpdateMenuItemUseCase
         menuItem.CategoryId = request.CategoryId ?? menuItem.CategoryId;
         menuItem.Price = request.Price ?? menuItem.Price;
         menuItem.IsAvailable = request.IsAvailable ?? menuItem.IsAvailable;
-        menuItem.Tags = request.Tags ?? menuItem.Tags;
         menuItem.AvailableAdditionalIds = request.AvailableAdditionalIds ?? menuItem.AvailableAdditionalIds;
         menuItem.ImageUrl = request.ImageUrl ?? menuItem.ImageUrl;
+
+        if (request.Tags != null)
+        {
+            menuItem.MenuItemTags.Clear();
+            await _menuItemRepository.AddTagsAsync(id, request.Tags, tenantId);
+        }
 
         await _menuItemRepository.UpdateAsync(menuItem);
     }

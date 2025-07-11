@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
+﻿namespace Hephaestus.Domain.Entities;
 
-namespace Hephaestus.Domain.Entities;
-
-/// <summary>
-/// Representa um item do cardápio de uma empresa.
-/// </summary>
 public class MenuItem
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
@@ -14,7 +9,7 @@ public class MenuItem
     public string CategoryId { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public bool IsAvailable { get; set; }
-    public List<string> Tags { get; set; } = new List<string>();
     public List<string> AvailableAdditionalIds { get; set; } = new List<string>();
     public string? ImageUrl { get; set; }
+    public List<MenuItemTag> MenuItemTags { get; set; } = new List<MenuItemTag>();
 }

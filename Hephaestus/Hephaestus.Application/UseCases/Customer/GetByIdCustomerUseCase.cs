@@ -31,7 +31,10 @@ public class GetByIdCustomerUseCase : IGetByIdCustomerUseCase
             TenantId = customer.TenantId,
             PhoneNumber = customer.PhoneNumber,
             Name = customer.Name,
-            Address = customer.Address,
+            State = customer.State, // Novo campo
+            City = customer.City,
+            Street = customer.Street,
+            Number = customer.Number,
             Latitude = customer.Latitude,
             Longitude = customer.Longitude,
             CreatedAt = customer.CreatedAt

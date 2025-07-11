@@ -20,6 +20,8 @@ public class HephaestusDbContext : DbContext
     public DbSet<Coupon> Coupons { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+    public DbSet<MenuItemTag> MenuItemTags { get; set; }
 
     public HephaestusDbContext(DbContextOptions<HephaestusDbContext> options) : base(options) { }
 
@@ -38,5 +40,7 @@ public class HephaestusDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CouponConfiguration());
         modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
         modelBuilder.ApplyConfiguration(new PasswordResetTokenConfiguration());
+        modelBuilder.ApplyConfiguration(new TagConfiguration());
+        modelBuilder.ApplyConfiguration(new MenuItemTagConfiguration());
     }
 }

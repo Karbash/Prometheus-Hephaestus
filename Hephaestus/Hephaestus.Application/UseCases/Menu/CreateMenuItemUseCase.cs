@@ -31,12 +31,16 @@ public class CreateMenuItemUseCase : ICreateMenuItemUseCase
             CategoryId = request.CategoryId,
             Price = request.Price,
             IsAvailable = request.IsAvailable,
-            Tags = request.Tags,
             AvailableAdditionalIds = request.AvailableAdditionalIds,
             ImageUrl = request.ImageUrl
         };
 
         await _menuItemRepository.AddAsync(menuItem);
+        if (request.Tags.Any())
+        {
+            await _menuItemRepository.AddTagsAsync(menuItem.Id, request.Tags, tenantId);
+        }
+
         return menuItem.Id;
     }
 }

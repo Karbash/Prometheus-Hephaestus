@@ -3,9 +3,6 @@ using Hephaestus.Application.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 
-/// <summary>
-/// Validador para o DTO <see cref="UpdateCompanyRequest"/> usado na atualização de empresas.
-/// </summary>
 public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequest>
 {
     public UpdateCompanyRequestValidator()
@@ -19,19 +16,19 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
 
         RuleFor(x => x.Email)
             .EmailAddress().When(x => x.Email != null).WithMessage("E-mail inválido.")
-            .MaximumLength(255).When(x => x.Email != null).WithMessage("E-mail deve ter no máximo 255 caracteres.");
+            .MaximumLength(100).When(x => x.Email != null).WithMessage("E-mail deve ter no máximo 100 caracteres.");
 
         RuleFor(x => x.PhoneNumber)
-            .MaximumLength(15).When(x => x.PhoneNumber != null).WithMessage("Telefone deve ter no máximo 15 caracteres.");
+            .MaximumLength(20).When(x => x.PhoneNumber != null).WithMessage("Telefone deve ter no máximo 20 caracteres.");
 
         RuleFor(x => x.ApiKey)
-            .MaximumLength(100).When(x => x.ApiKey != null).WithMessage("API Key deve ter no máximo 100 caracteres.");
-
-        RuleFor(x => x.FeeType)
-            .IsInEnum().When(x => x.FeeType != null).WithMessage("Tipo de taxa inválido. Deve ser 'Percentage' ou 'Fixed'.");
+            .MaximumLength(100).When(x => x.ApiKey != null).WithMessage("Chave API deve ter no máximo 100 caracteres.");
 
         RuleFor(x => x.FeeValue)
-            .GreaterThan(0).When(x => x.FeeValue != null).WithMessage("Valor da taxa deve ser maior que zero.");
+            .GreaterThanOrEqualTo(0).When(x => x.FeeValue != null).WithMessage("Valor da taxa deve ser maior ou igual a zero.");
+
+        RuleFor(x => x.State)
+            .MaximumLength(50).When(x => x.State != null).WithMessage("Estado deve ter no máximo 50 caracteres.");
 
         RuleFor(x => x.City)
             .MaximumLength(100).When(x => x.City != null).WithMessage("Cidade deve ter no máximo 100 caracteres.");
@@ -51,7 +48,7 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
         RuleFor(x => x.Slogan)
             .MaximumLength(200).When(x => x.Slogan != null).WithMessage("Slogan deve ter no máximo 200 caracteres.");
 
-        RuleFor(x => x.Description)
+        IRuleBuilderOptions<UpdateCompanyRequest, string> ruleBuilderOptions = RuleFor(x => x.Description)
             .MaximumLength(500).When(x => x.Description != null).WithMessage("Descrição deve ter no máximo 500 caracteres.");
     }
 

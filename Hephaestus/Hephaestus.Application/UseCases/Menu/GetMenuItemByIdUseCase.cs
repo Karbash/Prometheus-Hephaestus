@@ -1,8 +1,6 @@
 ﻿using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Domain.Repositories;
-using System;
-using System.Threading.Tasks;
 
 namespace Hephaestus.Application.UseCases.Menu;
 
@@ -30,7 +28,7 @@ public class GetMenuItemByIdUseCase : IGetMenuItemByIdUseCase
             CategoryId = menuItem.CategoryId,
             Price = menuItem.Price,
             IsAvailable = menuItem.IsAvailable,
-            Tags = menuItem.Tags,
+            Tags = menuItem.MenuItemTags.Select(mt => mt.Tag.Name).ToList(),
             AvailableAdditionalIds = menuItem.AvailableAdditionalIds,
             ImageUrl = menuItem.ImageUrl
         };

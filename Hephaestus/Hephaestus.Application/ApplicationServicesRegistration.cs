@@ -60,5 +60,6 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IValidator<ResetPasswordConfirmRequest>, ResetPasswordConfirmRequestValidator>();
         services.AddScoped<IValidator<ResetPasswordRequest>, ResetPasswordRequestValidator>();
         services.AddScoped<IValidator<UpdateCompanyRequest>, UpdateCompanyRequestValidator>();
+        services.AddScoped<IValidator<CustomerRequest>, CustomerRequestValidator>();
     }
 }

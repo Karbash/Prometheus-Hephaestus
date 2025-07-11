@@ -13,13 +13,30 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
 
         builder.HasKey(m => m.Id);
 
-        builder.Property(m => m.TenantId).IsRequired();
-        builder.Property(m => m.Name).IsRequired().HasMaxLength(100);
-        builder.Property(m => m.Description).HasMaxLength(500);
-        builder.Property(m => m.Price).IsRequired().HasPrecision(18, 2);
-        builder.Property(m => m.CategoryId).IsRequired();
-        builder.Property(m => m.IsAvailable).IsRequired();
-        builder.Property(m => m.ImageUrl).HasMaxLength(500);
+        builder.Property(m => m.TenantId)
+            .IsRequired()
+            .HasMaxLength(36); // GUID como string
+
+        builder.Property(m => m.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(m => m.Description)
+            .HasMaxLength(500);
+
+        builder.Property(m => m.Price)
+            .IsRequired()
+            .HasPrecision(18, 2);
+
+        builder.Property(m => m.CategoryId)
+            .IsRequired()
+            .HasMaxLength(36); // GUID como string
+
+        builder.Property(m => m.IsAvailable)
+            .IsRequired();
+
+        builder.Property(m => m.ImageUrl)
+            .HasMaxLength(500);
 
         var listComparer = new ValueComparer<List<string>>(
             (c1, c2) => c1.SequenceEqual(c2),
@@ -27,10 +44,6 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             c => c.ToList());
 
         builder.Property(m => m.AvailableAdditionalIds)
-            .HasConversion(v => string.Join(',', v), v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList())
-            .Metadata.SetValueComparer(listComparer);
-
-        builder.Property(m => m.Tags)
             .HasConversion(v => string.Join(',', v), v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList())
             .Metadata.SetValueComparer(listComparer);
 

@@ -12,12 +12,15 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 
         builder.HasKey(c => c.Id);
 
-        builder.Property(c => c.TenantId).IsRequired();
+        builder.Property(c => c.TenantId).IsRequired().HasMaxLength(36);
         builder.Property(c => c.PhoneNumber).IsRequired().HasMaxLength(15);
         builder.Property(c => c.Name).HasMaxLength(100);
-        builder.Property(c => c.Address).HasMaxLength(500);
-        builder.Property(c => c.Latitude);
-        builder.Property(c => c.Longitude);
+        builder.Property(c => c.State).IsRequired().HasMaxLength(50); // Novo campo obrigatório
+        builder.Property(c => c.City).IsRequired(false).HasMaxLength(100);
+        builder.Property(c => c.Street).IsRequired(false).HasMaxLength(200);
+        builder.Property(c => c.Number).IsRequired(false).HasMaxLength(20);
+        builder.Property(c => c.Latitude).IsRequired(false);
+        builder.Property(c => c.Longitude).IsRequired(false);
         builder.Property(c => c.CreatedAt).IsRequired();
 
         builder.HasIndex(c => new { c.TenantId, c.PhoneNumber }).IsUnique();

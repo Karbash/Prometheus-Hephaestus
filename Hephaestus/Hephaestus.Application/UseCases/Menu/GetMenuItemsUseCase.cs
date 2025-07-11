@@ -16,7 +16,7 @@ public class GetMenuItemsUseCase : IGetMenuItemsUseCase
     public async Task<IEnumerable<MenuItemResponse>> ExecuteAsync(string tenantId)
     {
         var menuItems = await _menuItemRepository.GetByTenantIdAsync(tenantId);
-        var response = menuItems.Select(m => new MenuItemResponse
+        return menuItems.Select(m => new MenuItemResponse
         {
             Id = m.Id,
             TenantId = m.TenantId,
@@ -25,11 +25,9 @@ public class GetMenuItemsUseCase : IGetMenuItemsUseCase
             CategoryId = m.CategoryId,
             Price = m.Price,
             IsAvailable = m.IsAvailable,
-            Tags = m.Tags,
+            Tags = m.MenuItemTags.Select(mt => mt.Tag.Name).ToList(),
             AvailableAdditionalIds = m.AvailableAdditionalIds,
             ImageUrl = m.ImageUrl
         }).ToList();
-
-        return response;
     }
 }

@@ -33,6 +33,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<ISalesRepository, SalesRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
     }
 
     private static void AddServices(IServiceCollection services)

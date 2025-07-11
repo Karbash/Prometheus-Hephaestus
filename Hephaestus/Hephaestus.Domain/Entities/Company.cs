@@ -14,7 +14,8 @@ public class Company
     public bool IsEnabled { get; set; } = true;
     public FeeType FeeType { get; set; }
     public decimal FeeValue { get; set; }
-    public string? MfaSecret { get; set; } // Chave secreta para TOTP
+    public string? MfaSecret { get; set; }
+    public string State { get; set; } = string.Empty; // Novo campo obrigatório
     public string? City { get; set; }
     public string? Street { get; set; }
     public string? Number { get; set; }

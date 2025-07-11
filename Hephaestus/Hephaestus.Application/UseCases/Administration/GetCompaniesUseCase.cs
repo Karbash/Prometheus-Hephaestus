@@ -22,10 +22,18 @@ public class GetCompaniesUseCase : IGetCompaniesUseCase
             Id = c.Id,
             Name = c.Name,
             Email = c.Email,
-            PhoneNumber = c.PhoneNumber!,
+            PhoneNumber = c.PhoneNumber,
             IsEnabled = c.IsEnabled,
             FeeType = c.FeeType.ToString(),
-            FeeValue = (double)c.FeeValue
+            FeeValue = (double)c.FeeValue,
+            State = c.State, // Novo campo
+            City = c.City,
+            Street = c.Street,
+            Number = c.Number,
+            Latitude = c.Latitude,
+            Longitude = c.Longitude,
+            Slogan = c.Slogan,
+            Description = c.Description
         });
     }
 }

@@ -4,30 +4,15 @@ using Hephaestus.Domain.Repositories;
 
 namespace Hephaestus.Application.UseCases.Administration;
 
-/// <summary>
-/// Caso de uso para buscar empresas dentro de um raio a partir de uma coordenada.
-/// </summary>
 public class GetCompaniesWithinRadiusUseCase : IGetCompaniesWithinRadiusUseCase
 {
     private readonly ICompanyRepository _companyRepository;
 
-    /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetCompaniesWithinRadiusUseCase"/>.
-    /// </summary>
-    /// <param name="companyRepository">Repositório de empresas.</param>
     public GetCompaniesWithinRadiusUseCase(ICompanyRepository companyRepository)
     {
         _companyRepository = companyRepository;
     }
 
-    /// <summary>
-    /// Busca empresas dentro de um raio a partir de uma coordenada.
-    /// </summary>
-    /// <param name="centerLat">Latitude do ponto central.</param>
-    /// <param name="centerLon">Longitude do ponto central.</param>
-    /// <param name="radiusKm">Raio em quilômetros.</param>
-    /// <returns>Lista de empresas dentro do raio.</returns>
-    /// <exception cref="ArgumentException">Se os parâmetros de latitude, longitude ou raio forem inválidos.</exception>
     public async Task<IEnumerable<CompanyResponse>> ExecuteAsync(double centerLat, double centerLon, double radiusKm)
     {
         if (centerLat < -90 || centerLat > 90)
@@ -47,6 +32,7 @@ public class GetCompaniesWithinRadiusUseCase : IGetCompaniesWithinRadiusUseCase
             IsEnabled = c.IsEnabled,
             FeeType = c.FeeType.ToString(),
             FeeValue = (double)c.FeeValue,
+            State = c.State, // Novo campo
             City = c.City,
             Street = c.Street,
             Number = c.Number,

@@ -87,24 +87,29 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.Property<string>("ApiKey")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("City")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("FeeType")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("FeeValue")
-                        .HasColumnType("numeric");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
@@ -116,31 +121,43 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<string>("MfaSecret")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Number")
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Slogan")
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Street")
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.HasKey("Id");
 
@@ -201,9 +218,9 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("Address")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                    b.Property<string>("City")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -218,14 +235,28 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("Number")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("character varying(15)");
 
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Street")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("TenantId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.HasKey("Id");
 
@@ -246,7 +277,8 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.Property<string>("CategoryId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -269,19 +301,31 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("TenantId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TenantId", "CategoryId");
 
                     b.ToTable("MenuItems", (string)null);
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItemTag", b =>
+                {
+                    b.Property<string>("MenuItemId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TagId")
+                        .HasColumnType("text");
+
+                    b.HasKey("MenuItemId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("MenuItemTags", (string)null);
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.Order", b =>
@@ -574,6 +618,48 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.ToTable("SalesLogs", (string)null);
                 });
 
+            modelBuilder.Entity("Hephaestus.Domain.Entities.Tag", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("Tags", (string)null);
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItemTag", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.MenuItem", "MenuItem")
+                        .WithMany("MenuItemTags")
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hephaestus.Domain.Entities.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MenuItem");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("Hephaestus.Domain.Entities.OrderItem", b =>
                 {
                     b.OwnsMany("Hephaestus.Domain.Entities.Customization", "Customizations", b1 =>
@@ -609,6 +695,11 @@ namespace Hephaestus.Infrastructure.Migrations
                         });
 
                     b.Navigation("Customizations");
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItem", b =>
+                {
+                    b.Navigation("MenuItemTags");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,8 +1,5 @@
 ﻿namespace Hephaestus.Application.DTOs.Response;
 
-/// <summary>
-/// DTO para resposta de itens do cardápio.
-/// </summary>
 public class MenuItemResponse
 {
     public string Id { get; set; } = string.Empty;
@@ -12,7 +9,7 @@ public class MenuItemResponse
     public string CategoryId { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public bool IsAvailable { get; set; }
-    public List<string> Tags { get; set; } = new List<string>();
+    public List<string> Tags { get; set; } = new List<string>(); // Nomes das tags
     public List<string> AvailableAdditionalIds { get; set; } = new List<string>();
     public string? ImageUrl { get; set; }
 }

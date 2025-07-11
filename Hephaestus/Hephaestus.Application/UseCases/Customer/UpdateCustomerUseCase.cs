@@ -1,8 +1,7 @@
 ﻿using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.Customer;
-using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Entities;
-
+using Hephaestus.Domain.Repositories;
 
 namespace Hephaestus.Application.UseCases.Customer;
 
@@ -21,6 +20,8 @@ public class UpdateCustomerUseCase : IUpdateCustomerUseCase
     {
         if (string.IsNullOrEmpty(request.PhoneNumber))
             throw new InvalidOperationException("O número de telefone é obrigatório.");
+        if (string.IsNullOrEmpty(request.State))
+            throw new InvalidOperationException("O estado é obrigatório.");
 
         var company = await _companyRepository.GetByIdAsync(tenantId);
         if (company == null || company.Role.ToString() != "Tenant")
@@ -34,7 +35,10 @@ public class UpdateCustomerUseCase : IUpdateCustomerUseCase
             TenantId = tenantId,
             PhoneNumber = request.PhoneNumber,
             Name = request.Name,
-            Address = request.Address,
+            State = request.State, // Novo campo
+            City = request.City,
+            Street = request.Street,
+            Number = request.Number,
             Latitude = request.Latitude,
             Longitude = request.Longitude,
             CreatedAt = existingCustomer?.CreatedAt ?? DateTime.UtcNow

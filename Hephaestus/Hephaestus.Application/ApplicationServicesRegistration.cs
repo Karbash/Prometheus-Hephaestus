@@ -1,21 +1,23 @@
-﻿using Hephaestus.Application.Interfaces.Administration;
+﻿using FluentValidation;
+using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Interfaces.Auth;
+using Hephaestus.Application.Interfaces.Company;
 using Hephaestus.Application.Interfaces.Customer;
+using Hephaestus.Application.Interfaces.Database;
 using Hephaestus.Application.Interfaces.Menu;
+using Hephaestus.Application.Interfaces.OpenAI;
+using Hephaestus.Application.Interfaces.Tag;
 using Hephaestus.Application.UseCases.Administration;
 using Hephaestus.Application.UseCases.Auth;
-using Hephaestus.Application.UseCases.Customer;
-using Hephaestus.Application.UseCases.Menu;
-using Hephaestus.Application.Validators;
-using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
-using Microsoft.Extensions.DependencyInjection;
-using Hephaestus.Application.Interfaces.Tag;
-using Hephaestus.Application.UseCases.Tag;
-using Hephaestus.Application.Interfaces.Company;
 using Hephaestus.Application.UseCases.Company;
-using Hephaestus.Application.Interfaces.OpenAI;
+using Hephaestus.Application.UseCases.Customer;
+using Hephaestus.Application.UseCases.Database;
+using Hephaestus.Application.UseCases.Menu;
 using Hephaestus.Application.UseCases.OpenAI;
+using Hephaestus.Application.UseCases.Tag;
+using Hephaestus.Application.Validators;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Hephaestus.Application;
 
@@ -66,6 +68,10 @@ public static class ApplicationServicesRegistration
         // OpenAI
         services.AddHttpClient<IChatWithOpenAIUseCase, ChatWithOpenAIUseCase>();
         services.AddScoped<IChatWithOpenAIUseCase, ChatWithOpenAIUseCase>();
+
+        // Database
+        services.AddScoped<IExecuteQueryUseCase, ExecuteQueryUseCase>();
+        
     }
 
     private static void AddValidators(IServiceCollection services)
@@ -80,5 +86,6 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IValidator<UpdateCompanyRequest>, UpdateCompanyRequestValidator>();
         services.AddScoped<IValidator<CustomerRequest>, CustomerRequestValidator>();
         services.AddScoped<IValidator<OpenAIChatRequest>, OpenAIChatRequestValidator>();
+        services.AddScoped<IValidator<ExecuteQueryRequest>, ExecuteQueryRequestValidator>();
     }
 }

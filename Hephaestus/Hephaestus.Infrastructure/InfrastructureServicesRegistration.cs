@@ -37,6 +37,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<ICompanyImageRepository, CompanyImageRepository>();
         services.AddScoped<ICompanyOperatingHourRepository, CompanyOperatingHourRepository>();
         services.AddScoped<ICompanySocialMediaRepository, CompanySocialMediaRepository>();
+        services.AddScoped<IDatabaseRepository, DatabaseRepository>();
     }
 
     private static void AddServices(IServiceCollection services)

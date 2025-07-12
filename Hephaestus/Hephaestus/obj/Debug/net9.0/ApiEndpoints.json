@@ -856,6 +856,59 @@
     ]
   },
   {
+    "ContainingType": "Hephaestus.Controllers.DatabaseController",
+    "Method": "ExecuteQuery",
+    "RelativePath": "api/Database/execute-query",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Hephaestus.Application.DTOs.Request.ExecuteQueryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Hephaestus.Application.DTOs.Response.ExecuteQueryResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
     "ContainingType": "Hephaestus.Controllers.MenuController",
     "Method": "CreateMenuItem",
     "RelativePath": "api/Menu",

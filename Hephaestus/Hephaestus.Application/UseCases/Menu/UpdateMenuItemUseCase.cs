@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.Menu;
-using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 
 namespace Hephaestus.Application.UseCases.Menu;

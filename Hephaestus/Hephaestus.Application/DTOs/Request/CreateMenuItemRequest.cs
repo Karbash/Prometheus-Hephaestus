@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Hephaestus.Application.DTOs.Request;
+﻿namespace Hephaestus.Application.DTOs.Request;
 
 public class CreateMenuItemRequest
 {

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Hephaestus")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b9d2dad34eca5670f41f2fccea540d00ec475a2a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bd32465666e00fd4691f1365784a7b3c2a8d527b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Hephaestus")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Hephaestus")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

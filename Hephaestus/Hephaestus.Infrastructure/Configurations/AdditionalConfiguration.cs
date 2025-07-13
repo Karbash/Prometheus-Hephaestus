@@ -12,8 +12,19 @@ public class AdditionalConfiguration : IEntityTypeConfiguration<Additional>
 
         builder.HasKey(a => a.Id);
 
-        builder.Property(a => a.TenantId).IsRequired();
-        builder.Property(a => a.Name).IsRequired().HasMaxLength(100);
-        builder.Property(a => a.Price).IsRequired().HasPrecision(18, 2);
+        builder.Property(a => a.TenantId)
+            .IsRequired()
+            .HasMaxLength(36); // GUID como string
+
+        builder.Property(a => a.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(a => a.Price)
+            .IsRequired()
+            .HasColumnType("decimal(18,2)");
+
+        builder.HasIndex(a => new { a.TenantId, a.Name })
+            .IsUnique(); // Garante que nomes de adicionais sejam únicos por tenant
     }
 }

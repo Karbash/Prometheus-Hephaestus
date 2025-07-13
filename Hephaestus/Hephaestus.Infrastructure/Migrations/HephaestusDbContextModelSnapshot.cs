@@ -33,14 +33,17 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TenantId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "Name")
+                        .IsUnique();
 
                     b.ToTable("Additionals", (string)null);
                 });
@@ -604,7 +607,8 @@ namespace Hephaestus.Infrastructure.Migrations
             modelBuilder.Entity("Hephaestus.Domain.Entities.Promotion", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("ApplicableTags")
                         .IsRequired()
@@ -620,8 +624,7 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<decimal>("DiscountValue")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
@@ -634,17 +637,17 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int?>("MaxTotalUses")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int?>("MaxUsesPerCustomer")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("MenuItemId")
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<decimal?>("MinOrderValue")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -656,11 +659,15 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.Property<string>("TenantId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId", "IsActive");
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId", "Name")
+                        .IsUnique();
 
                     b.ToTable("Promotions", (string)null);
                 });

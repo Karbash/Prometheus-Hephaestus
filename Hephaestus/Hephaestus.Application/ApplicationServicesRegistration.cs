@@ -8,6 +8,8 @@ using Hephaestus.Application.Interfaces.Database;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Application.Interfaces.OpenAI;
 using Hephaestus.Application.Interfaces.Tag;
+using Hephaestus.Application.Interfaces.Additional;
+using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Application.UseCases.Administration;
 using Hephaestus.Application.UseCases.Auth;
 using Hephaestus.Application.UseCases.Company;
@@ -16,6 +18,8 @@ using Hephaestus.Application.UseCases.Database;
 using Hephaestus.Application.UseCases.Menu;
 using Hephaestus.Application.UseCases.OpenAI;
 using Hephaestus.Application.UseCases.Tag;
+using Hephaestus.Application.UseCases.Additional;
+using Hephaestus.Application.UseCases.Promotion;
 using Hephaestus.Application.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -62,6 +66,21 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IGetAllTagsByTenantUseCase, GetAllTagsByTenantUseCase>();
         services.AddScoped<IDeleteTagUseCase, DeleteTagUseCase>();
 
+        // Promotion UseCases
+        services.AddScoped<ICreatePromotionUseCase, CreatePromotionUseCase>();
+        services.AddScoped<IGetPromotionsUseCase, GetPromotionsUseCase>();
+        services.AddScoped<IGetPromotionByIdUseCase, GetPromotionByIdUseCase>();
+        services.AddScoped<IUpdatePromotionUseCase, UpdatePromotionUseCase>();
+        services.AddScoped<IDeletePromotionUseCase, DeletePromotionUseCase>();
+        services.AddScoped<INotifyPromotionUseCase, NotifyPromotionUseCase>();
+
+        // Additional UseCases
+        services.AddScoped<ICreateAdditionalUseCase, CreateAdditionalUseCase>();
+        services.AddScoped<IGetAdditionalsUseCase, GetAdditionalsUseCase>();
+        services.AddScoped<IGetAdditionalByIdUseCase, GetAdditionalByIdUseCase>();
+        services.AddScoped<IUpdateAdditionalUseCase, UpdateAdditionalUseCase>();
+        services.AddScoped<IDeleteAdditionalUseCase, DeleteAdditionalUseCase>();
+
         // Company UseCases
         services.AddScoped<IGetCompanyProfileUseCase, GetCompanyProfileUseCase>();
 
@@ -71,21 +90,40 @@ public static class ApplicationServicesRegistration
 
         // Database
         services.AddScoped<IExecuteQueryUseCase, ExecuteQueryUseCase>();
-        
     }
 
     private static void AddValidators(IServiceCollection services)
     {
+        // Menu Validators
         services.AddScoped<IValidator<CreateMenuItemRequest>, CreateMenuItemRequestValidator>();
         services.AddScoped<IValidator<UpdateMenuItemRequest>, UpdateMenuItemRequestValidator>();
+
+        // Auth Validators
         services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
         services.AddScoped<IValidator<MfaRequest>, MfaRequestValidator>();
         services.AddScoped<IValidator<RegisterCompanyRequest>, RegisterCompanyRequestValidator>();
         services.AddScoped<IValidator<ResetPasswordConfirmRequest>, ResetPasswordConfirmRequestValidator>();
         services.AddScoped<IValidator<ResetPasswordRequest>, ResetPasswordRequestValidator>();
+
+        // Company Validators
         services.AddScoped<IValidator<UpdateCompanyRequest>, UpdateCompanyRequestValidator>();
+
+        // Customer Validators
         services.AddScoped<IValidator<CustomerRequest>, CustomerRequestValidator>();
+
+        // OpenAI Validators
         services.AddScoped<IValidator<OpenAIChatRequest>, OpenAIChatRequestValidator>();
+
+        // Database Validators
         services.AddScoped<IValidator<ExecuteQueryRequest>, ExecuteQueryRequestValidator>();
+
+        // Additional Validators
+        services.AddScoped<IValidator<CreateAdditionalRequest>, CreateAdditionalRequestValidator>();
+        services.AddScoped<IValidator<UpdateAdditionalRequest>, UpdateAdditionalRequestValidator>();
+
+        // Promotion Validators
+        services.AddScoped<IValidator<CreatePromotionRequest>, CreatePromotionRequestValidator>();
+        services.AddScoped<IValidator<UpdatePromotionRequest>, UpdatePromotionRequestValidator>();
+        services.AddScoped<IValidator<NotifyPromotionRequest>, NotifyPromotionRequestValidator>();
     }
 }

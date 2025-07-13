@@ -357,6 +357,239 @@
             <param name="id">ID do cliente (GUID).</param>
             <returns>Detalhes do cliente.</returns>
         </member>
+        <member name="T:Hephaestus.Controllers.PromotionController">
+            <summary>
+            Controller para gerenciamento de promoções de um tenant.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.#ctor(Hephaestus.Application.Interfaces.Promotion.ICreatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionsUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionByIdUseCase,Hephaestus.Application.Interfaces.Promotion.IUpdatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IDeletePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.INotifyPromotionUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.PromotionController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.PromotionController"/>.
+            </summary>
+            <param name="createPromotionUseCase">Caso de uso para criar promoções.</param>
+            <param name="getPromotionsUseCase">Caso de uso para listar promoções.</param>
+            <param name="getPromotionByIdUseCase">Caso de uso para obter promoção por ID.</param>
+            <param name="updatePromotionUseCase">Caso de uso para atualizar promoções.</param>
+            <param name="deletePromotionUseCase">Caso de uso para remover promoções.</param>
+            <param name="notifyPromotionUseCase">Caso de uso para notificar promoções.</param>
+            <param name="logger">Logger para registro de erros.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.CreatePromotion(Hephaestus.Application.DTOs.Request.CreatePromotionRequest)">
+            <summary>
+            Cria uma nova promoção para o tenant.
+            </summary>
+            <remarks>
+            Exemplo de corpo da requisição:
+            ```json
+            {
+              "name": "Desconto de 10%",
+              "description": "10% de desconto em pedidos",
+              "discountType": "Percentage",
+              "discountValue": 10.00,
+              "menuItemId": null,
+              "minOrderValue": 50.00,
+              "maxUsagePerCustomer": 1,
+              "maxTotalUses": 100,
+              "applicableToTags": ["pizza", "lanche"],
+              "startDate": "2025-07-12T00:00:00",
+              "endDate": "2025-12-31T23:59:59",
+              "isActive": true,
+              "imageUrl": "https://exemplo.com/imagem.jpg"
+            }
+            ```
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "errors": [
+                {
+                  "propertyName": "Name",
+                  "errorMessage": "Nome é obrigatório."
+                }
+              ]
+            }
+            ```
+            </remarks>
+            <param name="request">Dados da promoção a ser criada.</param>
+            <returns>ID da promoção criada.</returns>
+            <exception cref="T:FluentValidation.ValidationException">Se os dados da requisição forem inválidos.</exception>
+            <exception cref="T:System.InvalidOperationException">Se o item do cardápio não for encontrado para FreeItem.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.GetPromotions(System.Nullable{System.Boolean})">
+            <summary>
+            Lista promoções do tenant.
+            </summary>
+            <remarks>
+            Exemplo de requisição:
+            ```http
+            GET /api/promotion?isActive=true
+            ```
+            Exemplo de resposta de sucesso:
+            ```json
+            [
+              {
+                "id": "123e4567-e89b-12d3-a456-426614174001",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "name": "Desconto de 10%",
+                "description": "10% de desconto em pedidos",
+                "discountType": "Percentage",
+                "discountValue": 10.00,
+                "menuItemId": null,
+                "minOrderValue": 50.00,
+                "maxUsagePerCustomer": 1,
+                "maxTotalUses": 100,
+                "applicableToTags": ["pizza", "lanche"],
+                "startDate": "2025-07-12T00:00:00",
+                "endDate": "2025-12-31T23:59:59",
+                "isActive": true,
+                "imageUrl": "https://exemplo.com/imagem.jpg"
+              }
+            ]
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "TenantId não encontrado no token."
+            }
+            ```
+            </remarks>
+            <param name="isActive">Filtro opcional para promoções ativas (true) ou inativas (false).</param>
+            <returns>Lista de promoções do tenant.</returns>
+            <exception cref="T:System.Exception">Erro inesperado ao listar promoções.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.GetPromotionById(System.String)">
+            <summary>
+            Obtém detalhes de uma promoção por ID.
+            </summary>
+            <remarks>
+            Exemplo de requisição:
+            ```http
+            GET /api/promotion/123e4567-e89b-12d3-a456-426614174001
+            ```
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+              "name": "Desconto de 10%",
+              "description": "10% de desconto em pedidos",
+              "discountType": "Percentage",
+              "discountValue": 10.00,
+              "menuItemId": null,
+              "minOrderValue": 50.00,
+              "maxUsagePerCustomer": 1,
+              "maxTotalUses": 100,
+              "applicableToTags": ["pizza", "lanche"],
+              "startDate": "2025-07-12T00:00:00",
+              "endDate": "2025-12-31T23:59:59",
+              "isActive": true,
+              "imageUrl": "https://exemplo.com/imagem.jpg"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Promoção não encontrada."
+            }
+            ```
+            </remarks>
+            <param name="id">ID da promoção (GUID).</param>
+            <returns>Detalhes da promoção.</returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a promoção não for encontrada.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotion(System.String,Hephaestus.Application.DTOs.Request.UpdatePromotionRequest)">
+            <summary>
+            Atualiza uma promoção do tenant.
+            </summary>
+            <remarks>
+            Exemplo de corpo da requisição:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "name": "Desconto de 15%",
+              "description": "15% de desconto em pedidos",
+              "discountType": "Percentage",
+              "discountValue": 15.00,
+              "menuItemId": null,
+              "minOrderValue": 60.00,
+              "maxUsagePerCustomer": 2,
+              "maxTotalUses": 200,
+              "applicableToTags": ["pizza", "lanche"],
+              "startDate": "2025-07-12T00:00:00",
+              "endDate": "2025-12-31T23:59:59",
+              "isActive": true,
+              "imageUrl": "https://exemplo.com/imagem-atualizada.jpg"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Promoção não encontrada."
+            }
+            ```
+            </remarks>
+            <param name="id">ID da promoção a ser atualizada (GUID).</param>
+            <param name="request">Dados atualizados da promoção.</param>
+            <returns>Status de sucesso (204 No Content).</returns>
+            <exception cref="T:FluentValidation.ValidationException">Se os dados da requisição forem inválidos.</exception>
+            <exception cref="T:System.ArgumentException">Se o ID no corpo não corresponder ao ID na URL.</exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a promoção não for encontrada.</exception>
+            <exception cref="T:System.InvalidOperationException">Se o item do cardápio não for encontrado para FreeItem.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.DeletePromotion(System.String)">
+            <summary>
+            Remove uma promoção do tenant.
+            </summary>
+            <remarks>
+            Exemplo de requisição:
+            ```http
+            DELETE /api/promotion/123e4567-e89b-12d3-a456-426614174001
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Promoção não encontrada."
+            }
+            ```
+            </remarks>
+            <param name="id">ID da promoção a ser removida (GUID).</param>
+            <returns>Status de sucesso (204 No Content).</returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a promoção não for encontrada.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.NotifyPromotion(Hephaestus.Application.DTOs.Request.NotifyPromotionRequest)">
+            <summary>
+            Notifica uma promoção via WhatsApp.
+            </summary>
+            <remarks>
+            Exemplo de corpo da requisição:
+            ```json
+            {
+              "promotionId": "123e4567-e89b-12d3-a456-426614174001",
+              "messageTemplate": "Confira nossa nova promoção: {name}!"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "errors": [
+                {
+                  "propertyName": "PromotionId",
+                  "errorMessage": "ID da promoção é obrigatório."
+                }
+              ]
+            }
+            ```
+            </remarks>
+            <param name="request">Dados da notificação (ID da promoção e modelo de mensagem).</param>
+            <returns>Status de sucesso (204 No Content).</returns>
+            <exception cref="T:FluentValidation.ValidationException">Se os dados da requisição forem inválidos.</exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a promoção não for encontrada.</exception>
+        </member>
         <member name="T:Hephaestus.Program">
             <summary>
             Configurações da aplicação principal.

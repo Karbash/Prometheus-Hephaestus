@@ -153,7 +153,6 @@ C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hepha
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Http.dll
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\bin\Debug\net9.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
-C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\rpswa.dswa.cache.json
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\rjsmrazor.dswa.cache.json

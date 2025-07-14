@@ -848,42 +848,6 @@
             </summary>
             <returns>TenantId do token.</returns>
         </member>
-        <member name="T:Hephaestus.Controllers.MenuControllerSimplified">
-            <summary>
-            Controller simplificado para gerenciamento de cardápio com tratamento de exceções centralizado.
-            </summary>
-        </member>
-        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.CreateMenuItem(Hephaestus.Application.DTOs.Request.CreateMenuItemRequest)">
-            <summary>
-            Cria um novo item do cardápio.
-            </summary>
-        </member>
-        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.GetMenuItems">
-            <summary>
-            Lista itens do cardápio.
-            </summary>
-        </member>
-        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.GetMenuItemById(System.String)">
-            <summary>
-            Obtém item do cardápio por ID.
-            </summary>
-        </member>
-        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.UpdateMenuItem(System.String,Hephaestus.Application.DTOs.Request.UpdateMenuItemRequest)">
-            <summary>
-            Atualiza item do cardápio.
-            </summary>
-        </member>
-        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.DeleteMenuItem(System.String)">
-            <summary>
-            Remove item do cardápio.
-            </summary>
-        </member>
-        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.GetTenantId">
-            <summary>
-            Obtém o TenantId do token de autenticação.
-            </summary>
-            <returns>TenantId do token.</returns>
-        </member>
         <member name="T:Hephaestus.Controllers.OpenAIController">
             <summary>
             Controller para integração com a API da OpenAI.

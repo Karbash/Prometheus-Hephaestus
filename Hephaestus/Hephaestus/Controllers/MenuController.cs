@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Menu;
 using Microsoft.AspNetCore.Authorization;

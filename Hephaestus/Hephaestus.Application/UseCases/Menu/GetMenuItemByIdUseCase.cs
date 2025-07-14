@@ -60,7 +60,7 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
                 CategoryId = menuItem.CategoryId,
                 Price = menuItem.Price,
                 IsAvailable = menuItem.IsAvailable,
-                TagIds = menuItem.MenuItemTags.Select(mt => mt.TagId).ToList(),
+                TagIds = menuItem.MenuItemTags?.Select(mt => mt.TagId).ToList() ?? new List<string>(),
                 AvailableAdditionalIds = menuItem.AvailableAdditionalIds,
                 ImageUrl = menuItem.ImageUrl
             };

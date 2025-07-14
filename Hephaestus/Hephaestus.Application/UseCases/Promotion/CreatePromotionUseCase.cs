@@ -109,14 +109,14 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     /// <param name="request">Dados da promoção.</param>
     /// <param name="tenantId">ID do tenant.</param>
     /// <returns>Entidade de promoção criada.</returns>
-    private async Task<Domain.Entities.Promotion> CreatePromotionEntityAsync(CreatePromotionRequest request, string tenantId)
+    private Task<Domain.Entities.Promotion> CreatePromotionEntityAsync(CreatePromotionRequest request, string tenantId)
     {
         if (!Enum.TryParse<DiscountType>(request.DiscountType, true, out var discountType))
         {
             throw new BusinessRuleException("Tipo de desconto inválido.", "DISCOUNT_TYPE_VALIDATION");
         }
 
-        return new Domain.Entities.Promotion
+        return Task.FromResult(new Domain.Entities.Promotion
         {
             Id = Guid.NewGuid().ToString(),
             TenantId = tenantId,
@@ -133,6 +133,6 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
             EndDate = request.EndDate,
             IsActive = request.IsActive,
             ImageUrl = request.ImageUrl
-        };
+        });
     }
 }

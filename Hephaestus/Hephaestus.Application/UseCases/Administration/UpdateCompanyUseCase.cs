@@ -111,9 +111,12 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
         if (existingByEmail != null && existingByEmail.Id != id)
             throw new ConflictException("E-mail já registrado.", "Empresa", "Email", request.Email);
 
-        var existingByPhone = await _companyRepository.GetByPhoneNumberAsync(request.PhoneNumber);
-        if (existingByPhone != null && existingByPhone.Id != id)
-            throw new ConflictException("Telefone já registrado.", "Empresa", "PhoneNumber", request.PhoneNumber);
+        if (!string.IsNullOrEmpty(request.PhoneNumber))
+        {
+            var existingByPhone = await _companyRepository.GetByPhoneNumberAsync(request.PhoneNumber);
+            if (existingByPhone != null && existingByPhone.Id != id)
+                throw new ConflictException("Telefone já registrado.", "Empresa", "PhoneNumber", request.PhoneNumber);
+        }
     }
 
     /// <summary>

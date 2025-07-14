@@ -177,10 +177,10 @@ public class MfaUseCase : BaseUseCase, IMfaUseCase
     /// </summary>
     /// <param name="company">Empresa.</param>
     /// <returns>Token JWT.</returns>
-    private async Task<string> GenerateMfaTokenAsync(Domain.Entities.Company company)
+    private Task<string> GenerateMfaTokenAsync(Domain.Entities.Company company)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
+        var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key not configured"));
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
@@ -198,6 +198,6 @@ public class MfaUseCase : BaseUseCase, IMfaUseCase
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        return Task.FromResult(tokenHandler.WriteToken(token));
     }
 }

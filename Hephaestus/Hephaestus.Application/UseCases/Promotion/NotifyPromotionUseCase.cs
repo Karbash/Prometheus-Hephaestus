@@ -88,12 +88,13 @@ public class NotifyPromotionUseCase : BaseUseCase, INotifyPromotionUseCase
     /// </summary>
     /// <param name="promotion">Promoção a ser notificada.</param>
     /// <param name="request">Dados da notificação.</param>
-    private async Task SendNotificationAsync(Domain.Entities.Promotion promotion, NotifyPromotionRequest request)
+    private Task SendNotificationAsync(Domain.Entities.Promotion promotion, NotifyPromotionRequest request)
     {
         // Placeholder: futura integração com API WhatsApp
         // Exemplo: await _whatsappService.SendMessageAsync(promotion, request.MessageTemplate);
         
         // Por enquanto, apenas valida que a promoção existe e está ativa
         ValidateBusinessRule(promotion.IsActive, "Promoção deve estar ativa para ser notificada.", "PROMOTION_ACTIVE_RULE");
+        return Task.CompletedTask; // Adicionado para retornar uma Task
     }
 }

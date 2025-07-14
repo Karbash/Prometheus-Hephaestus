@@ -99,7 +99,7 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
     /// </summary>
     /// <param name="request">Dados da requisição.</param>
     /// <returns>Requisição HTTP preparada.</returns>
-    private async Task<HttpRequestMessage> PrepareHttpRequestAsync(OpenAIRequest request)
+    private Task<HttpRequestMessage> PrepareHttpRequestAsync(OpenAIRequest request)
     {
         var apiKey = _configuration["OpenAI:ApiKey"];
         var baseUrl = _configuration["OpenAI:BaseUrl"];
@@ -121,7 +121,7 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
         var jsonContent = JsonSerializer.Serialize(requestBody);
         httpRequest.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        return httpRequest;
+        return Task.FromResult(httpRequest);
     }
 
     /// <summary>
@@ -167,8 +167,8 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
             if (choices != null && choices.GetArrayLength() > 0)
             {
                 var firstChoice = choices[0];
-                var message = firstChoice.GetProperty("message");
-                var content = message.GetProperty("content").GetString();
+                var message = firstChoice?.GetProperty("message");
+                var content = message?.GetProperty("content")?.GetString();
                 
                 if (!string.IsNullOrEmpty(content))
                 {

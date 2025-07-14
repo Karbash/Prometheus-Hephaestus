@@ -120,9 +120,12 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
             throw new ConflictException("E-mail já registrado.", "Company", "Email", request.Email);
 
         // Verifica se o telefone já está registrado
-        var existingByPhone = await _companyRepository.GetByPhoneNumberAsync(request.PhoneNumber);
-        if (existingByPhone != null)
-            throw new ConflictException("Telefone já registrado.", "Company", "PhoneNumber", request.PhoneNumber);
+        if (!string.IsNullOrEmpty(request.PhoneNumber))
+        {
+            var existingByPhone = await _companyRepository.GetByPhoneNumberAsync(request.PhoneNumber);
+            if (existingByPhone != null)
+                throw new ConflictException("Telefone já registrado.", "Company", "PhoneNumber", request.PhoneNumber);
+        }
     }
 
     /// <summary>

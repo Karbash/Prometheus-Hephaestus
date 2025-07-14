@@ -24,8 +24,8 @@ public static class InfrastructureServicesRegistration
         services.AddDbContext<HephaestusDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), 
                 npgsqlOptions => npgsqlOptions
-                    .CommandTimeout(30) // Timeout de 30 segundos
-                    .EnableRetryOnFailure(3) // 3 tentativas em caso de falha
+                    .CommandTimeout(30) // Timeout de comando de 30 segundos
+                    .EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null) // 3 tentativas com delay de 5s
             ));
     }
 

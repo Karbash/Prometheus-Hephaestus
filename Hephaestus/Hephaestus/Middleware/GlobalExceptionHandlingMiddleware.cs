@@ -31,7 +31,7 @@ public class GlobalExceptionHandlingMiddleware
         try
         {
             // Adiciona timeout para evitar travamentos
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
             
             // Combina o token de timeout com o token de cancelamento da requisição
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, context.RequestAborted);

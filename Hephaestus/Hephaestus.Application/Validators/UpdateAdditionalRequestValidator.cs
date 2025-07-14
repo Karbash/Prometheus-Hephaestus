@@ -19,7 +19,7 @@ public class UpdateAdditionalRequestValidator : AbstractValidator<UpdateAddition
             .GreaterThan(0).When(x => x.Price.HasValue).WithMessage("Preço deve ser maior que zero.");
     }
 
-    private bool BeValidGuid(string id)
+    private bool BeValidGuid(string? id)
     {
         return id == null || Guid.TryParse(id, out _);
     }

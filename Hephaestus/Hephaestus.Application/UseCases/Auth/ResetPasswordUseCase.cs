@@ -146,7 +146,7 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
     {
         var company = await _companyRepository.GetByEmailAsync(email);
         EnsureEntityExists(company, "Empresa", email);
-        return company;
+        return company!; // Garantido que não é null após EnsureEntityExists
     }
 
     /// <summary>

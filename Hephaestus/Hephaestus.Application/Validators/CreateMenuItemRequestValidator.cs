@@ -28,8 +28,8 @@ public class CreateMenuItemRequestValidator : AbstractValidator<CreateMenuItemRe
             .Must(BeValidGuid).WithMessage("Cada AdditionalId deve ser um GUID válido.");
     }
 
-    private bool BeValidGuid(string id)
+    private bool BeValidGuid(string? id)
     {
-        return Guid.TryParse(id, out _);
+        return id != null && Guid.TryParse(id, out _);
     }
 }

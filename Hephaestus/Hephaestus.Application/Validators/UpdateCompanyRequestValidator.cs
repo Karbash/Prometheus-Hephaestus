@@ -55,8 +55,8 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
             .MaximumLength(500).When(x => x.Description != null).WithMessage("Descrição deve ter no máximo 500 caracteres.");
     }
 
-    private bool BeValidGuid(string id)
+    private bool BeValidGuid(string? id)
     {
-        return Guid.TryParse(id, out _);
+        return id != null && Guid.TryParse(id, out _);
     }
 }

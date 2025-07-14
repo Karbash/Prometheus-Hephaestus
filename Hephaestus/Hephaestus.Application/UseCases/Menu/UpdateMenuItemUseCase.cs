@@ -110,7 +110,7 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     {
         var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(menuItem, "MenuItem", id);
-        return menuItem;
+        return menuItem!; // Garantido que não é null após EnsureEntityExists
     }
 
     /// <summary>

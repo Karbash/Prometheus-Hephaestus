@@ -76,7 +76,7 @@ public class GetAdditionalByIdUseCase : BaseUseCase, IGetAdditionalByIdUseCase
     {
         var additional = await _additionalRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(additional, "Adicional", id);
-        return additional;
+        return additional!; // Garantido que não é null após EnsureEntityExists
     }
 
     /// <summary>

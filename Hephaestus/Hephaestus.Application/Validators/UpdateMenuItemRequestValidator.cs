@@ -31,7 +31,7 @@ public class UpdateMenuItemRequestValidator : AbstractValidator<UpdateMenuItemRe
             .Must(BeValidGuid).When(x => x.AvailableAdditionalIds != null).WithMessage("Cada AdditionalId deve ser um GUID válido.");
     }
 
-    private bool BeValidGuid(string id)
+    private bool BeValidGuid(string? id)
     {
         return id == null || Guid.TryParse(id, out _);
     }

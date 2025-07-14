@@ -97,7 +97,7 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     {
         var company = await _companyRepository.GetByIdAsync(id);
         EnsureEntityExists(company, "Empresa", id);
-        return company;
+        return company!; // Garantido que não é null após EnsureEntityExists
     }
 
     /// <summary>

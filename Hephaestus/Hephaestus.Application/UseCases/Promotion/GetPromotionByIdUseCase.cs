@@ -76,7 +76,7 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
     {
         var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(promotion, "Promotion", id);
-        return promotion;
+        return promotion!; // Garantido que não é null após EnsureEntityExists
     }
 
     /// <summary>

@@ -39,9 +39,9 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             .HasMaxLength(500);
 
         var listComparer = new ValueComparer<List<string>>(
-            (c1, c2) => c1.SequenceEqual(c2),
-            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-            c => c.ToList());
+            (c1, c2) => c1?.SequenceEqual(c2 ?? Enumerable.Empty<string>()) ?? c2 == null,
+            c => c?.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) ?? 0,
+            c => c?.ToList() ?? new List<string>());
 
         builder.Property(m => m.AvailableAdditionalIds)
             .HasConversion(v => string.Join(',', v), v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList())

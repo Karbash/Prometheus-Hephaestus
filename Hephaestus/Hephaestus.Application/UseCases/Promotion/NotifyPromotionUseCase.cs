@@ -80,7 +80,7 @@ public class NotifyPromotionUseCase : BaseUseCase, INotifyPromotionUseCase
     {
         var promotion = await _promotionRepository.GetByIdAsync(promotionId, tenantId);
         EnsureEntityExists(promotion, "Promoção", promotionId);
-        return promotion;
+        return promotion!; // Garantido que não é null após EnsureEntityExists
     }
 
     /// <summary>

@@ -37,6 +37,7 @@ public abstract class ApplicationException : Exception
     /// </summary>
     /// <param name="info">Informações de serialização.</param>
     /// <param name="context">Contexto de streaming.</param>
+    [Obsolete("Este construtor é obsoleto. Use o construtor principal.", DiagnosticId = "SYSLIB0051")]
     protected ApplicationException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
@@ -49,6 +50,7 @@ public abstract class ApplicationException : Exception
     /// </summary>
     /// <param name="info">Informações de serialização.</param>
     /// <param name="context">Contexto de streaming.</param>
+    [Obsolete("Este método é obsoleto. Use serialização JSON em vez de serialização binária.", DiagnosticId = "SYSLIB0051")]
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         base.GetObjectData(info, context);

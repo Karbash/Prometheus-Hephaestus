@@ -46,7 +46,10 @@ public class PromotionRepository : IPromotionRepository
     public async Task DeleteAsync(string id, string tenantId)
     {
         var promotion = await GetByIdAsync(id, tenantId);
-        _dbContext.Promotions.Remove(promotion);
-        await _dbContext.SaveChangesAsync();
+        if (promotion != null)
+        {
+            _dbContext.Promotions.Remove(promotion);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

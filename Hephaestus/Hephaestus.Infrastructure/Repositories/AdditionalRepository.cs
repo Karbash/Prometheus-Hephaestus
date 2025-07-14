@@ -42,7 +42,10 @@ public class AdditionalRepository : IAdditionalRepository
     public async Task DeleteAsync(string id, string tenantId)
     {
         var additional = await GetByIdAsync(id, tenantId);
-        _dbContext.Additionals.Remove(additional);
-        await _dbContext.SaveChangesAsync();
+        if (additional != null)
+        {
+            _dbContext.Additionals.Remove(additional);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

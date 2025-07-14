@@ -564,6 +564,36 @@
             <param name="id">ID da empresa.</param>
             <returns>Perfil completo da empresa.</returns>
         </member>
+        <member name="T:Hephaestus.Controllers.CouponController">
+            <summary>
+            Controller para gerenciamento de cupons.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CouponController.CreateCoupon(Hephaestus.Application.DTOs.Request.CreateCouponRequest)">
+            <summary>
+            Cria um novo cupom.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CouponController.GetCoupons(System.Nullable{System.Boolean},System.String)">
+            <summary>
+            Lista cupons do tenant.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CouponController.GetCouponById(System.String)">
+            <summary>
+            Obtém detalhes de um cupom por ID.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CouponController.UpdateCoupon(System.String,Hephaestus.Application.DTOs.Request.UpdateCouponRequest)">
+            <summary>
+            Atualiza um cupom.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CouponController.DeleteCoupon(System.String)">
+            <summary>
+            Remove um cupom.
+            </summary>
+        </member>
         <member name="T:Hephaestus.Controllers.CustomerController">
             <summary>
             Controller para gerenciamento de clientes.

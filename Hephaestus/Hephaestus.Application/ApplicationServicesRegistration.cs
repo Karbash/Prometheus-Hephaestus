@@ -1,27 +1,31 @@
 ﻿using FluentValidation;
 using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Application.Interfaces.Additional;
 using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Interfaces.Auth;
 using Hephaestus.Application.Interfaces.Company;
+using Hephaestus.Application.Interfaces.Coupon;
 using Hephaestus.Application.Interfaces.Customer;
 using Hephaestus.Application.Interfaces.Database;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Application.Interfaces.OpenAI;
-using Hephaestus.Application.Interfaces.Tag;
-using Hephaestus.Application.Interfaces.Additional;
+using Hephaestus.Application.Interfaces.Order;
 using Hephaestus.Application.Interfaces.Promotion;
+using Hephaestus.Application.Interfaces.Tag;
+using Hephaestus.Application.Services;
+using Hephaestus.Application.UseCases.Additional;
 using Hephaestus.Application.UseCases.Administration;
 using Hephaestus.Application.UseCases.Auth;
 using Hephaestus.Application.UseCases.Company;
+using Hephaestus.Application.UseCases.Coupon;
 using Hephaestus.Application.UseCases.Customer;
 using Hephaestus.Application.UseCases.Database;
 using Hephaestus.Application.UseCases.Menu;
 using Hephaestus.Application.UseCases.OpenAI;
-using Hephaestus.Application.UseCases.Tag;
-using Hephaestus.Application.UseCases.Additional;
+using Hephaestus.Application.UseCases.Order;
 using Hephaestus.Application.UseCases.Promotion;
+using Hephaestus.Application.UseCases.Tag;
 using Hephaestus.Application.Validators;
-using Hephaestus.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hephaestus.Application;
@@ -96,6 +100,21 @@ public static class ApplicationServicesRegistration
 
         // Database
         services.AddScoped<IExecuteQueryUseCase, ExecuteQueryUseCase>();
+
+        //Coupon
+        services.AddScoped<ICreateCouponUseCase, CreateCouponUseCase>();
+        services.AddScoped<IGetCouponsUseCase, GetCouponsUseCase>();
+        services.AddScoped<IGetCouponByIdUseCase, GetCouponByIdUseCase>();
+        services.AddScoped<IUpdateCouponUseCase, UpdateCouponUseCase>();
+        services.AddScoped<IDeleteCouponUseCase, DeleteCouponUseCase>();
+
+        //Order
+
+        services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
+        services.AddScoped<IGetOrdersUseCase, GetOrdersUseCase>();
+        services.AddScoped<IGetOrderByIdUseCase, GetOrderByIdUseCase>();
+        services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
+        services.AddScoped<IGetCustomerOrderStatusUseCase, GetCustomerOrderStatusUseCase>();
     }
 
     private static void AddServices(IServiceCollection services)
@@ -137,5 +156,12 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IValidator<CreatePromotionRequest>, CreatePromotionRequestValidator>();
         services.AddScoped<IValidator<UpdatePromotionRequest>, UpdatePromotionRequestValidator>();
         services.AddScoped<IValidator<NotifyPromotionRequest>, NotifyPromotionRequestValidator>();
+
+        //Coupon Validators
+        services.AddValidatorsFromAssemblyContaining<CreateCouponRequestValidator>();
+
+        //Order Validators
+        services.AddValidatorsFromAssemblyContaining<CreateOrderRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateOrderRequestValidator>();
     }
 }

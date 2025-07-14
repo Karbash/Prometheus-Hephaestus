@@ -80,22 +80,26 @@ public class PromotionController : ControllerBase
     ///   "id": "123e4567-e89b-12d3-a456-426614174001"
     /// }
     /// ```
-    /// Exemplo de erro:
+    /// Exemplo de erro de validação:
     /// ```json
     /// {
-    ///   "errors": [
-    ///     {
-    ///       "propertyName": "Name",
-    ///       "errorMessage": "Nome é obrigatório."
+    ///   "error": {
+    ///     "code": "VALIDATION_ERROR",
+    ///     "message": "Erro de validação",
+    ///     "details": {
+    ///       "errors": [
+    ///         {
+    ///           "field": "Name",
+    ///           "message": "Nome é obrigatório."
+    ///         }
+    ///       ]
     ///     }
-    ///   ]
+    ///   }
     /// }
     /// ```
     /// </remarks>
     /// <param name="request">Dados da promoção a ser criada.</param>
     /// <returns>ID da promoção criada.</returns>
-    /// <exception cref="ValidationException">Se os dados da requisição forem inválidos.</exception>
-    /// <exception cref="InvalidOperationException">Se o item do cardápio não for encontrado para FreeItem.</exception>
     [HttpPost]
     [SwaggerOperation(Summary = "Cria promoção", Description = "Cria uma nova promoção para o tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))]
@@ -104,30 +108,9 @@ public class PromotionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> CreatePromotion([FromBody] CreatePromotionRequest request)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var id = await _createPromotionUseCase.ExecuteAsync(request, tenantId);
-            return CreatedAtAction(nameof(GetPromotionById), new { id }, new { id });
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning(ex, "Erro de validação ao criar promoção.");
-            return BadRequest(new { errors = ex.Errors });
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao criar promoção: {Message}.", ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao criar promoção.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var id = await _createPromotionUseCase.ExecuteAsync(request, tenantId);
+        return CreatedAtAction(nameof(GetPromotionById), new { id }, new { id });
     }
 
     /// <summary>
@@ -160,16 +143,9 @@ public class PromotionController : ControllerBase
     ///   }
     /// ]
     /// ```
-    /// Exemplo de erro:
-    /// ```json
-    /// {
-    ///   "error": "TenantId não encontrado no token."
-    /// }
-    /// ```
     /// </remarks>
     /// <param name="isActive">Filtro opcional para promoções ativas (true) ou inativas (false).</param>
     /// <returns>Lista de promoções do tenant.</returns>
-    /// <exception cref="Exception">Erro inesperado ao listar promoções.</exception>
     [HttpGet]
     [SwaggerOperation(Summary = "Lista promoções do tenant", Description = "Retorna a lista de promoções do tenant, com filtro opcional por status de ativação. Suporta cache Redis. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PromotionResponse>))]
@@ -177,20 +153,9 @@ public class PromotionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetPromotions([FromQuery] bool? isActive = null)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var promotions = await _getPromotionsUseCase.ExecuteAsync(tenantId, isActive);
-            return Ok(promotions);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao listar promoções.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var promotions = await _getPromotionsUseCase.ExecuteAsync(tenantId, isActive);
+        return Ok(promotions);
     }
 
     /// <summary>
@@ -230,7 +195,6 @@ public class PromotionController : ControllerBase
     /// </remarks>
     /// <param name="id">ID da promoção (GUID).</param>
     /// <returns>Detalhes da promoção.</returns>
-    /// <exception cref="KeyNotFoundException">Se a promoção não for encontrada.</exception>
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Obtém promoção por ID", Description = "Retorna detalhes de uma promoção do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PromotionResponse))]
@@ -239,25 +203,9 @@ public class PromotionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetPromotionById(string id)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var promotion = await _getPromotionByIdUseCase.ExecuteAsync(id, tenantId);
-            return Ok(promotion);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Promoção {Id} não encontrada.", id);
-            return NotFound(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao obter promoção {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var promotion = await _getPromotionByIdUseCase.ExecuteAsync(id, tenantId);
+        return Ok(promotion);
     }
 
     /// <summary>
@@ -267,7 +215,6 @@ public class PromotionController : ControllerBase
     /// Exemplo de corpo da requisição:
     /// ```json
     /// {
-    ///   "id": "123e4567-e89b-12d3-a456-426614174001",
     ///   "name": "Desconto de 15%",
     ///   "description": "15% de desconto em pedidos",
     ///   "discountType": "Percentage",
@@ -280,8 +227,12 @@ public class PromotionController : ControllerBase
     ///   "startDate": "2025-07-12T00:00:00",
     ///   "endDate": "2025-12-31T23:59:59",
     ///   "isActive": true,
-    ///   "imageUrl": "https://exemplo.com/imagem-atualizada.jpg"
+    ///   "imageUrl": "https://exemplo.com/imagem.jpg"
     /// }
+    /// ```
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
     /// ```
     /// Exemplo de erro:
     /// ```json
@@ -290,13 +241,9 @@ public class PromotionController : ControllerBase
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID da promoção a ser atualizada (GUID).</param>
+    /// <param name="id">ID da promoção a ser atualizada.</param>
     /// <param name="request">Dados atualizados da promoção.</param>
-    /// <returns>Status de sucesso (204 No Content).</returns>
-    /// <exception cref="ValidationException">Se os dados da requisição forem inválidos.</exception>
-    /// <exception cref="ArgumentException">Se o ID no corpo não corresponder ao ID na URL.</exception>
-    /// <exception cref="KeyNotFoundException">Se a promoção não for encontrada.</exception>
-    /// <exception cref="InvalidOperationException">Se o item do cardápio não for encontrado para FreeItem.</exception>
+    /// <returns>Status da atualização.</returns>
     [HttpPut("{id}")]
     [SwaggerOperation(Summary = "Atualiza promoção", Description = "Atualiza uma promoção do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -306,49 +253,18 @@ public class PromotionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> UpdatePromotion(string id, [FromBody] UpdatePromotionRequest request)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            await _updatePromotionUseCase.ExecuteAsync(id, request, tenantId);
-            return NoContent();
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning(ex, "Erro de validação ao atualizar promoção {Id}.", id);
-            return BadRequest(new { errors = ex.Errors });
-        }
-        catch (ArgumentException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar promoção {Id}: {Message}.", id, ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Promoção {Id} não encontrada.", id);
-            return NotFound(new { error = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar promoção {Id}: {Message}.", id, ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao atualizar promoção {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        await _updatePromotionUseCase.ExecuteAsync(id, request, tenantId);
+        return NoContent();
     }
 
     /// <summary>
     /// Remove uma promoção do tenant.
     /// </summary>
     /// <remarks>
-    /// Exemplo de requisição:
-    /// ```http
-    /// DELETE /api/promotion/123e4567-e89b-12d3-a456-426614174001
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
     /// ```
     /// Exemplo de erro:
     /// ```json
@@ -357,9 +273,8 @@ public class PromotionController : ControllerBase
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID da promoção a ser removida (GUID).</param>
-    /// <returns>Status de sucesso (204 No Content).</returns>
-    /// <exception cref="KeyNotFoundException">Se a promoção não for encontrada.</exception>
+    /// <param name="id">ID da promoção a ser removida.</param>
+    /// <returns>Status da remoção.</returns>
     [HttpDelete("{id}")]
     [SwaggerOperation(Summary = "Remove promoção", Description = "Remove uma promoção do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -368,25 +283,9 @@ public class PromotionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> DeletePromotion(string id)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            await _deletePromotionUseCase.ExecuteAsync(id, tenantId);
-            return NoContent();
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Promoção {Id} não encontrada.", id);
-            return NotFound(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao remover promoção {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        await _deletePromotionUseCase.ExecuteAsync(id, tenantId);
+        return NoContent();
     }
 
     /// <summary>
@@ -397,25 +296,23 @@ public class PromotionController : ControllerBase
     /// ```json
     /// {
     ///   "promotionId": "123e4567-e89b-12d3-a456-426614174001",
-    ///   "messageTemplate": "Confira nossa nova promoção: {name}!"
+    ///   "phoneNumbers": ["11987654321", "11987654322"],
+    ///   "message": "Promoção especial para você!"
     /// }
+    /// ```
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
     /// ```
     /// Exemplo de erro:
     /// ```json
     /// {
-    ///   "errors": [
-    ///     {
-    ///       "propertyName": "PromotionId",
-    ///       "errorMessage": "ID da promoção é obrigatório."
-    ///     }
-    ///   ]
+    ///   "error": "Promoção não encontrada."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="request">Dados da notificação (ID da promoção e modelo de mensagem).</param>
-    /// <returns>Status de sucesso (204 No Content).</returns>
-    /// <exception cref="ValidationException">Se os dados da requisição forem inválidos.</exception>
-    /// <exception cref="KeyNotFoundException">Se a promoção não for encontrada.</exception>
+    /// <param name="request">Dados da notificação.</param>
+    /// <returns>Status da notificação.</returns>
     [HttpPost("notify")]
     [SwaggerOperation(Summary = "Notifica promoção via WhatsApp", Description = "Envia notificação de promoção via WhatsApp. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -425,29 +322,24 @@ public class PromotionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> NotifyPromotion([FromBody] NotifyPromotionRequest request)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
+        var tenantId = GetTenantId();
+        await _notifyPromotionUseCase.ExecuteAsync(request, tenantId);
+        return NoContent();
+    }
 
-            await _notifyPromotionUseCase.ExecuteAsync(request, tenantId);
-            return NoContent();
-        }
-        catch (ValidationException ex)
+    /// <summary>
+    /// Obtém o TenantId do token de autenticação.
+    /// </summary>
+    /// <returns>TenantId do token.</returns>
+    private string GetTenantId()
+    {
+        var tenantId = User.FindFirst("TenantId")?.Value;
+        if (string.IsNullOrEmpty(tenantId))
         {
-            _logger.LogWarning(ex, "Erro de validação ao notificar promoção.");
-            return BadRequest(new { errors = ex.Errors });
+            _logger.LogWarning("TenantId não encontrado no token para o usuário {UserId}", 
+                User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            throw new UnauthorizedAccessException("TenantId não encontrado no token.");
         }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Promoção {PromotionId} não encontrada.", request.PromotionId);
-            return NotFound(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao notificar promoção {PromotionId}.", request.PromotionId);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        return tenantId;
     }
 }

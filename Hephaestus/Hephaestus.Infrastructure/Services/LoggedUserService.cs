@@ -46,4 +46,22 @@ public class LoggedUserService : ILoggedUserService
             Role: company.Role.ToString()
         );
     }
+
+    /// <summary>
+    /// Obtém o ID do usuário logado.
+    /// </summary>
+    /// <param name="claimsPrincipal">Claims do usuário autenticado.</param>
+    /// <returns>ID do usuário.</returns>
+    /// <exception cref="InvalidOperationException">ID não encontrado no token.</exception>
+    public string GetUserId(ClaimsPrincipal claimsPrincipal)
+    {
+        var userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            ?? claimsPrincipal.FindFirst("sub")?.Value
+            ?? claimsPrincipal.FindFirst("UserId")?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+            throw new InvalidOperationException("ID do usuário não encontrado no token.");
+
+        return userId;
+    }
 }

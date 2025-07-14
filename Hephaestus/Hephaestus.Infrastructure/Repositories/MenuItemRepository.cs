@@ -33,7 +33,7 @@ public class MenuItemRepository : IMenuItemRepository
             .FirstOrDefaultAsync(m => m.Id == menuItem.Id && m.TenantId == menuItem.TenantId);
 
         if (existingMenuItem == null)
-            throw new KeyNotFoundException("Item do cardápio não encontrado.");
+            return; // Não lança exceção, deixa o UseCase tratar
 
         _context.Entry(existingMenuItem).CurrentValues.SetValues(menuItem);
         existingMenuItem.MenuItemTags = menuItem.MenuItemTags;
@@ -49,7 +49,7 @@ public class MenuItemRepository : IMenuItemRepository
             .FirstOrDefaultAsync(m => m.Id == id && m.TenantId == tenantId);
 
         if (menuItem == null)
-            throw new KeyNotFoundException("Item do cardápio não encontrado.");
+            return; // Não lança exceção, deixa o UseCase tratar
 
         _context.MenuItems.Remove(menuItem);
         await _context.SaveChangesAsync();
@@ -90,7 +90,7 @@ public class MenuItemRepository : IMenuItemRepository
             .FirstOrDefaultAsync(m => m.Id == menuItemId && m.TenantId == tenantId);
 
         if (menuItem == null)
-            throw new KeyNotFoundException("Item do cardápio não encontrado.");
+            return; // Não lança exceção, deixa o UseCase tratar
 
         var validTagIds = await _context.Tags
             .Where(t => t.TenantId == tenantId && tagIds.Contains(t.Id))

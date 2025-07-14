@@ -73,16 +73,9 @@ public class AdministrationController : ControllerBase
     ///   }
     /// ]
     /// ```
-    /// Exemplo de erro:
-    /// ```json
-    /// {
-    ///   "error": "Erro interno do servidor"
-    /// }
-    /// ```
     /// </remarks>
     /// <param name="isEnabled">Filtro opcional para empresas habilitadas (true) ou desabilitadas (false).</param>
     /// <returns>Lista de empresas.</returns>
-    /// <exception cref="Exception">Erro inesperado ao listar empresas.</exception>
     [HttpGet("company")]
     [SwaggerOperation(Summary = "Lista todas as empresas", Description = "Retorna uma lista de empresas com filtro opcional por status de habilitação (true para habilitadas, false para desabilitadas). Requer autenticação de administrador.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CompanyResponse>))]
@@ -91,16 +84,8 @@ public class AdministrationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetCompanies([FromQuery] bool? isEnabled = null)
     {
-        try
-        {
-            var companies = await _getCompaniesUseCase.ExecuteAsync(isEnabled);
-            return Ok(companies);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao listar empresas.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var companies = await _getCompaniesUseCase.ExecuteAsync(isEnabled);
+        return Ok(companies);
     }
 
     /// <summary>
@@ -128,6 +113,10 @@ public class AdministrationController : ControllerBase
     ///   "description": "Nova descrição."
     /// }
     /// ```
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
+    /// ```
     /// Exemplo de erro:
     /// ```json
     /// {
@@ -137,10 +126,7 @@ public class AdministrationController : ControllerBase
     /// </remarks>
     /// <param name="id">ID da empresa a ser atualizada.</param>
     /// <param name="request">Dados atualizados da empresa.</param>
-    /// <returns>Status de sucesso (204 No Content).</returns>
-    /// <exception cref="ArgumentNullException">Se request for nulo.</exception>
-    /// <exception cref="KeyNotFoundException">Se a empresa não for encontrada.</exception>
-    /// <exception cref="InvalidOperationException">Se e-mail ou telefone já estiver registrado ou usuário não for administrador.</exception>
+    /// <returns>Status da atualização.</returns>
     [HttpPut("company/{id}")]
     [SwaggerOperation(Summary = "Atualiza uma empresa", Description = "Atualiza configurações de uma empresa (nome, e-mail, telefone, API key, tipo de taxa, valor da taxa, status de habilitação, cidade, bairro, rua, número, latitude, longitude, slogan, descrição). Requer autenticação de administrador com MFA validado.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -150,34 +136,11 @@ public class AdministrationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> UpdateCompany(string id, [FromBody] UpdateCompanyRequest request)
     {
-        try
-        {
-            if (request.Id != id)
-                return BadRequest(new { error = "ID no corpo da requisição deve corresponder ao ID na URL." });
+        if (request.Id != id)
+            return BadRequest(new { error = "ID no corpo da requisição deve corresponder ao ID na URL." });
 
-            await _updateCompanyUseCase.ExecuteAsync(id, request, User);
-            return NoContent();
-        }
-        catch (ArgumentNullException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar empresa {Id}: Requisição nula.", id);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Empresa {Id} não encontrada.", id);
-            return NotFound(new { error = "Empresa não encontrada." });
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar empresa {Id}.", id);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao atualizar empresa {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        await _updateCompanyUseCase.ExecuteAsync(id, request, User);
+        return NoContent();
     }
 
     /// <summary>
@@ -211,7 +174,6 @@ public class AdministrationController : ControllerBase
     /// <param name="endDate">Data final do relatório no formato ISO 8601 (ex.: 2024-12-31). Opcional.</param>
     /// <param name="tenantId">ID da empresa (tenant) para filtrar vendas. Opcional.</param>
     /// <returns>Relatório de vendas consolidado.</returns>
-    /// <exception cref="InvalidOperationException">Datas inválidas ou tenantId inválido.</exception>
     [HttpGet("sales/admin")]
     [SwaggerOperation(Summary = "Relatório de vendas", Description = "Retorna relatório consolidado de vendas de todas as empresas, com filtros opcionais por data (ISO 8601) e tenantId (GUID válido). Requer autenticação de administrador.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SalesReportResponse))]
@@ -220,21 +182,8 @@ public class AdministrationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetSalesReport([FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null, [FromQuery] string? tenantId = null)
     {
-        try
-        {
-            var report = await _salesReportUseCase.ExecuteAsync(startDate, endDate, tenantId, User);
-            return Ok(report);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao gerar relatório de vendas.");
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao gerar relatório de vendas.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var report = await _salesReportUseCase.ExecuteAsync(startDate, endDate, tenantId, User);
+        return Ok(report);
     }
 
     /// <summary>
@@ -248,24 +197,17 @@ public class AdministrationController : ControllerBase
     ///     "id": "123e4567-e89b-12d3-a456-426614174001",
     ///     "userId": "456e7890-e89b-12d3-a456-426614174002",
     ///     "action": "UpdateCompany",
-    ///     "entityId": "123e4567-e89b-12d3-a456-426614174001",
-    ///     "details": "Empresa 123e4567-e89b-12d3-a456-426614174001 atualizada por admin.",
-    ///     "createdAt": "2024-01-01T12:00:00Z"
+    ///     "entityId": "789e0123-e89b-12d3-a456-426614174003",
+    ///     "description": "Empresa atualizada com sucesso",
+    ///     "timestamp": "2024-01-01T12:00:00Z"
     ///   }
     /// ]
     /// ```
-    /// Exemplo de erro:
-    /// ```json
-    /// {
-    ///   "error": "Erro interno do servidor"
-    /// }
-    /// ```
     /// </remarks>
-    /// <param name="adminId">ID do administrador (GUID) para filtrar logs. Opcional.</param>
-    /// <param name="startDate">Data inicial do log no formato ISO 8601 (ex.: 2024-01-01). Opcional.</param>
-    /// <param name="endDate">Data final do log no formato ISO 8601 (ex.: 2024-12-31). Opcional.</param>
+    /// <param name="adminId">ID do administrador para filtrar logs. Opcional.</param>
+    /// <param name="startDate">Data inicial para filtrar logs. Opcional.</param>
+    /// <param name="endDate">Data final para filtrar logs. Opcional.</param>
     /// <returns>Lista de logs de auditoria.</returns>
-    /// <exception cref="InvalidOperationException">Parâmetros inválidos.</exception>
     [HttpGet("audit-log")]
     [SwaggerOperation(Summary = "Lista logs de auditoria", Description = "Retorna logs de auditoria de ações administrativas, com filtros opcionais por adminId (GUID válido) e data (ISO 8601). Requer autenticação de administrador.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AuditLogResponse>))]
@@ -274,67 +216,49 @@ public class AdministrationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetAuditLogs([FromQuery] string? adminId = null, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
     {
-        try
-        {
-            var logs = await _auditLogUseCase.ExecuteAsync(adminId, startDate, endDate, User);
-            return Ok(logs);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao listar logs de auditoria.");
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao listar logs de auditoria.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var logs = await _auditLogUseCase.ExecuteAsync(adminId, startDate, endDate, User);
+        return Ok(logs);
     }
 
     /// <summary>
-    /// Lista empresas dentro de um raio a partir de uma coordenada.
+    /// Lista empresas dentro de um raio específico.
     /// </summary>
     /// <remarks>
-    /// Exemplo de requisição:
-    /// ```http
-    /// GET /api/administration/company/radius?centerLat=-22.906847¢erLon=-43.172896&radiusKm=10&city=Rio%20de%20Janeiro&neighborhood=Copacabana
-    /// ```
     /// Exemplo de resposta de sucesso:
     /// ```json
     /// [
     ///   {
     ///     "id": "123e4567-e89b-12d3-a456-426614174001",
-    ///     "name": "Empresa Exemplo",
-    ///     "email": "exemplo@empresa.com",
+    ///     "name": "Empresa Próxima",
+    ///     "email": "proxima@empresa.com",
     ///     "phoneNumber": "123456789",
     ///     "isEnabled": true,
     ///     "feeType": "Percentage",
     ///     "feeValue": 5.0,
-    ///     "city": "Rio de Janeiro",
-    ///     "neighborhood": "Copacabana",
-    ///     "street": "Avenida Nova",
-    ///     "number": "456",
-    ///     "latitude": -22.906847,
-    ///     "longitude": -43.172896,
-    ///     "slogan": "Novo slogan!",
-    ///     "description": "Nova descrição."
+    ///     "city": "São Paulo",
+    ///     "neighborhood": "Vila Mariana",
+    ///     "street": "Rua Exemplo",
+    ///     "number": "123",
+    ///     "latitude": -23.550520,
+    ///     "longitude": -46.633308,
+    ///     "slogan": "O melhor da cidade!",
+    ///     "description": "Descrição da empresa."
     ///   }
     /// ]
     /// ```
     /// Exemplo de erro:
     /// ```json
     /// {
-    ///   "error": "Raio deve ser maior que zero."
+    ///   "error": "Coordenadas inválidas."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="centerLat">Latitude do ponto central (-90 a 90).</param>
-    /// <param name="centerLon">Longitude do ponto central (-180 a 180).</param>
-    /// <param name="radiusKm">Raio em quilômetros (maior que 0).</param>
-    /// <param name="city">Cidade para pré-filtragem (opcional).</param>
-    /// <param name="neighborhood">Bairro para pré-filtragem (opcional).</param>
+    /// <param name="centerLat">Latitude do centro do raio.</param>
+    /// <param name="centerLon">Longitude do centro do raio.</param>
+    /// <param name="radiusKm">Raio em quilômetros.</param>
+    /// <param name="city">Filtro opcional por cidade.</param>
+    /// <param name="neighborhood">Filtro opcional por bairro.</param>
     /// <returns>Lista de empresas dentro do raio.</returns>
-    /// <exception cref="ArgumentException">Se latitude, longitude, raio, cidade ou bairro forem inválidos.</exception>
     [HttpGet("company/radius")]
     [SwaggerOperation(Summary = "Lista empresas por raio", Description = "Retorna empresas dentro de um raio (em km) a partir de uma coordenada (latitude, longitude), com pré-filtro opcional por cidade e bairro. Requer autenticação de administrador com MFA validado.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CompanyResponse>))]
@@ -343,20 +267,7 @@ public class AdministrationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetCompaniesByRadius([FromQuery] double centerLat, [FromQuery] double centerLon, [FromQuery] double radiusKm, [FromQuery] string? city = null, [FromQuery] string? neighborhood = null)
     {
-        try
-        {
-            var companies = await _getCompaniesWithinRadiusUseCase.ExecuteAsync(centerLat, centerLon, radiusKm, city, neighborhood);
-            return Ok(companies);
-        }
-        catch (ArgumentException ex)
-        {
-            _logger.LogWarning(ex, "Erro de validação ao listar empresas por raio: {Message}", ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao listar empresas por raio.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var companies = await _getCompaniesWithinRadiusUseCase.ExecuteAsync(centerLat, centerLon, radiusKm, city, neighborhood);
+        return Ok(companies);
     }
 }

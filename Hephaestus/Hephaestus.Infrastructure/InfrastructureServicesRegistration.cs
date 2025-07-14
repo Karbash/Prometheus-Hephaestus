@@ -22,7 +22,11 @@ public static class InfrastructureServicesRegistration
     private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<HephaestusDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("PostgresConnection")));
+            options.UseNpgsql(configuration.GetConnectionString("PostgresConnection"), 
+                npgsqlOptions => npgsqlOptions
+                    .CommandTimeout(30) // Timeout de 30 segundos
+                    .EnableRetryOnFailure(3) // 3 tentativas em caso de falha
+            ));
     }
 
     private static void AddRepositories(IServiceCollection services)
@@ -45,7 +49,11 @@ public static class InfrastructureServicesRegistration
     private static void AddServices(IServiceCollection services)
     {
         services.AddScoped<IMessageService, MessageService>();
-        services.AddHttpClient<IMessageService, MessageService>();
+        services.AddHttpClient<IMessageService, MessageService>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.Add("User-Agent", "Hephaestus-API/1.0");
+        });
         services.AddScoped<IMfaService, MfaService>();
         services.AddScoped<ILoggedUserService, LoggedUserService>();
     }

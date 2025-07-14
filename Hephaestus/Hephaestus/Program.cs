@@ -1,19 +1,23 @@
 using Hephaestus.Application;
 using Hephaestus.Infrastructure;
+using Hephaestus.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace Hephaestus;
 
 /// <summary>
-/// Configurações da aplicação principal.
+/// Configuraï¿½ï¿½es da aplicaï¿½ï¿½o principal.
 /// </summary>
 public static class Program
 {
     /// <summary>
-    /// Ponto de entrada da aplicação.
+    /// Ponto de entrada da aplicaï¿½ï¿½o.
     /// </summary>
     /// <param name="args">Argumentos da linha de comando.</param>
     public static void Main(string[] args)
@@ -30,25 +34,24 @@ public static class Program
     }
 
     /// <summary>
-    /// Configura os serviços no contêiner de injeção de dependência.
+    /// Configura os serviï¿½os no contï¿½iner de injeï¿½ï¿½o de dependï¿½ncia.
     /// </summary>
-    /// <param name="services">Coleção de serviços.</param>
-    /// <param name="configuration">Configuração da aplicação.</param>
+    /// <param name="services">Coleï¿½ï¿½o de serviï¿½os.</param>
+    /// <param name="configuration">Configuraï¿½ï¿½o da aplicaï¿½ï¿½o.</param>
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         // Adiciona logging
         services.AddLogging(logging => logging.AddConsole());
 
-
-        // Adiciona serviços
+        // Adiciona serviÃ§os
         services.AddControllers();
         services.AddApplicationServices();
         services.AddInfrastructureServices(configuration);
 
-        // Configura autenticação JWT
+        // Configura autenticaÃ§Ã£o JWT
         ConfigureJwtAuthentication(services, configuration);
 
-        // Configura políticas de autorização
+        // Configura polÃ­ticas de autorizaÃ§Ã£o
         ConfigureAuthorizationPolicies(services);
 
         // Configura Swagger
@@ -56,10 +59,10 @@ public static class Program
     }
 
     /// <summary>
-    /// Configura a autenticação JWT no contêiner de serviços.
+    /// Configura a autenticaï¿½ï¿½o JWT no contï¿½iner de serviï¿½os.
     /// </summary>
-    /// <param name="services">Coleção de serviços.</param>
-    /// <param name="configuration">Configuração da aplicação.</param>
+    /// <param name="services">Coleï¿½ï¿½o de serviï¿½os.</param>
+    /// <param name="configuration">Configuraï¿½ï¿½o da aplicaï¿½ï¿½o.</param>
     private static void ConfigureJwtAuthentication(IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthentication(options =>
@@ -82,9 +85,9 @@ public static class Program
     }
 
     /// <summary>
-    /// Configura as políticas de autorização no contêiner de serviços.
+    /// Configura as polï¿½ticas de autorizaï¿½ï¿½o no contï¿½iner de serviï¿½os.
     /// </summary>
-    /// <param name="services">Coleção de serviços.</param>
+    /// <param name="services">Coleï¿½ï¿½o de serviï¿½os.</param>
     private static void ConfigureAuthorizationPolicies(IServiceCollection services)
     {
         services.AddAuthorization(options =>
@@ -95,9 +98,9 @@ public static class Program
     }
 
     /// <summary>
-    /// Configura o Swagger com suporte para autenticação Bearer e documentação XML opcional.
+    /// Configura o Swagger com suporte para autenticaï¿½ï¿½o Bearer e documentaï¿½ï¿½o XML opcional.
     /// </summary>
-    /// <param name="services">Coleção de serviços.</param>
+    /// <param name="services">Coleï¿½ï¿½o de serviï¿½os.</param>
     private static void ConfigureSwagger(IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
@@ -110,7 +113,7 @@ public static class Program
                 Description = "API para gerenciamento de pedidos."
             });
 
-            // Inclui documentação XML se o arquivo existir
+            // Inclui documentaï¿½ï¿½o XML se o arquivo existir
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             if (File.Exists(xmlPath))
@@ -118,7 +121,7 @@ public static class Program
                 options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
             }
 
-            // Configura autenticação Bearer
+            // Configura autenticaï¿½ï¿½o Bearer
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
@@ -147,21 +150,20 @@ public static class Program
     }
 
     /// <summary>
-    /// Configura o pipeline de middleware da aplicação.
+    /// Configura o pipeline de middleware da aplicaï¿½ï¿½o.
     /// </summary>
-    /// <param name="app">Aplicação web configurada.</param>
+    /// <param name="app">Aplicaï¿½ï¿½o web configurada.</param>
     private static void ConfigureMiddleware(WebApplication app)
     {
-        //if (app.Environment.IsDevelopment())
-        //{
-            app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Hephaestus API v1");
-                options.RoutePrefix = string.Empty; // Swagger UI na raiz
-            });
-        //}//
+        // Middleware de tratamento global de exceÃ§Ãµes
+        app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Hephaestus API v1");
+            options.RoutePrefix = string.Empty; // Swagger UI na raiz
+        });
 
         app.UseHttpsRedirection();
         app.UseAuthentication();

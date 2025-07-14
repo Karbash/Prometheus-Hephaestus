@@ -8,4 +8,5 @@ public class CompanyOperatingHour
     public string OpenTime { get; set; } = string.Empty; // Ex.: "09:00"
     public string CloseTime { get; set; } = string.Empty; // Ex.: "17:00"
     public bool IsClosed { get; set; } = false;
+    public bool IsOpen { get; set; } = true;
 }

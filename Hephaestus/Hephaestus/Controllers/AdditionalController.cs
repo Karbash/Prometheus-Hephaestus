@@ -8,6 +8,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Hephaestus.Controllers;
 
+/// <summary>
+/// Controller para gerenciamento de adicionais.
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = "Tenant")]
@@ -20,6 +23,15 @@ public class AdditionalController : ControllerBase
     private readonly IDeleteAdditionalUseCase _deleteAdditionalUseCase;
     private readonly ILogger<AdditionalController> _logger;
 
+    /// <summary>
+    /// Inicializa uma nova instância do <see cref="AdditionalController"/>.
+    /// </summary>
+    /// <param name="createAdditionalUseCase">Caso de uso para criação de adicionais.</param>
+    /// <param name="getAdditionalsUseCase">Caso de uso para listagem de adicionais.</param>
+    /// <param name="getAdditionalByIdUseCase">Caso de uso para obtenção de adicional por ID.</param>
+    /// <param name="updateAdditionalUseCase">Caso de uso para atualização de adicionais.</param>
+    /// <param name="deleteAdditionalUseCase">Caso de uso para remoção de adicionais.</param>
+    /// <param name="logger">Logger para registro de eventos.</param>
     public AdditionalController(
         ICreateAdditionalUseCase createAdditionalUseCase,
         IGetAdditionalsUseCase getAdditionalsUseCase,
@@ -36,6 +48,36 @@ public class AdditionalController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Cria um novo adicional.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```json
+    /// {
+    ///   "id": "123e4567-e89b-12d3-a456-426614174001"
+    /// }
+    /// ```
+    /// Exemplo de erro de validação:
+    /// ```json
+    /// {
+    ///   "error": {
+    ///     "code": "VALIDATION_ERROR",
+    ///     "message": "Erro de validação",
+    ///     "details": {
+    ///       "errors": [
+    ///         {
+    ///           "field": "Name",
+    ///           "message": "Nome é obrigatório."
+    ///         }
+    ///       ]
+    ///     }
+    ///   }
+    /// }
+    /// ```
+    /// </remarks>
+    /// <param name="request">Dados do adicional a ser criado.</param>
+    /// <returns>ID do adicional criado.</returns>
     [HttpPost]
     [SwaggerOperation(Summary = "Cria adicional", Description = "Cria um novo adicional para o tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(string))]
@@ -44,32 +86,30 @@ public class AdditionalController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> CreateAdditional([FromBody] CreateAdditionalRequest request)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var id = await _createAdditionalUseCase.ExecuteAsync(request, tenantId);
-            return CreatedAtAction(nameof(GetAdditionalById), new { id }, new { id });
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning(ex, "Erro de validação ao criar adicional.");
-            return BadRequest(new { errors = ex.Errors });
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao criar adicional.");
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao criar adicional.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var id = await _createAdditionalUseCase.ExecuteAsync(request, tenantId);
+        return CreatedAtAction(nameof(GetAdditionalById), new { id }, new { id });
     }
 
+    /// <summary>
+    /// Lista adicionais do tenant.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```json
+    /// [
+    ///   {
+    ///     "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///     "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///     "name": "Queijo Extra",
+    ///     "description": "Adicional de queijo",
+    ///     "price": 3.50,
+    ///     "isAvailable": true
+    ///   }
+    /// ]
+    /// ```
+    /// </remarks>
+    /// <returns>Lista de adicionais do tenant.</returns>
     [HttpGet]
     [SwaggerOperation(Summary = "Lista adicionais do tenant", Description = "Retorna a lista de adicionais do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AdditionalResponse>))]
@@ -77,22 +117,35 @@ public class AdditionalController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetAdditionals()
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var additionals = await _getAdditionalsUseCase.ExecuteAsync(tenantId);
-            return Ok(additionals);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao listar adicionais.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var additionals = await _getAdditionalsUseCase.ExecuteAsync(tenantId);
+        return Ok(additionals);
     }
 
+    /// <summary>
+    /// Obtém adicional por ID.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```json
+    /// {
+    ///   "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///   "name": "Queijo Extra",
+    ///   "description": "Adicional de queijo",
+    ///   "price": 3.50,
+    ///   "isAvailable": true
+    /// }
+    /// ```
+    /// Exemplo de erro:
+    /// ```json
+    /// {
+    ///   "error": "Adicional não encontrado."
+    /// }
+    /// ```
+    /// </remarks>
+    /// <param name="id">ID do adicional.</param>
+    /// <returns>Detalhes do adicional.</returns>
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Obtém adicional por ID", Description = "Retorna detalhes de um adicional. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AdditionalResponse))]
@@ -101,27 +154,29 @@ public class AdditionalController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetAdditionalById(string id)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var additional = await _getAdditionalByIdUseCase.ExecuteAsync(id, tenantId);
-            return Ok(additional);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Adicional {Id} não encontrado.", id);
-            return NotFound(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao obter adicional {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var additional = await _getAdditionalByIdUseCase.ExecuteAsync(id, tenantId);
+        return Ok(additional);
     }
 
+    /// <summary>
+    /// Atualiza adicional.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
+    /// ```
+    /// Exemplo de erro:
+    /// ```json
+    /// {
+    ///   "error": "Adicional não encontrado."
+    /// }
+    /// ```
+    /// </remarks>
+    /// <param name="id">ID do adicional.</param>
+    /// <param name="request">Dados atualizados do adicional.</param>
+    /// <returns>Status da atualização.</returns>
     [HttpPut("{id}")]
     [SwaggerOperation(Summary = "Atualiza adicional", Description = "Atualiza um adicional do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -131,42 +186,28 @@ public class AdditionalController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> UpdateAdditional(string id, [FromBody] UpdateAdditionalRequest request)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            await _updateAdditionalUseCase.ExecuteAsync(id, request, tenantId);
-            return NoContent();
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning(ex, "Erro de validação ao atualizar adicional {Id}.", id);
-            return BadRequest(new { errors = ex.Errors });
-        }
-        catch (ArgumentException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar adicional {Id}: {Message}.", id, ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Adicional {Id} não encontrado.", id);
-            return NotFound(new { error = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar adicional {Id}: {Message}.", id, ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao atualizar adicional {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        await _updateAdditionalUseCase.ExecuteAsync(id, request, tenantId);
+        return NoContent();
     }
 
+    /// <summary>
+    /// Remove adicional.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
+    /// ```
+    /// Exemplo de erro:
+    /// ```json
+    /// {
+    ///   "error": "Adicional não encontrado."
+    /// }
+    /// ```
+    /// </remarks>
+    /// <param name="id">ID do adicional.</param>
+    /// <returns>Status da remoção.</returns>
     [HttpDelete("{id}")]
     [SwaggerOperation(Summary = "Remove adicional", Description = "Remove um adicional do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -175,24 +216,24 @@ public class AdditionalController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> DeleteAdditional(string id)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
+        var tenantId = GetTenantId();
+        await _deleteAdditionalUseCase.ExecuteAsync(id, tenantId);
+        return NoContent();
+    }
 
-            await _deleteAdditionalUseCase.ExecuteAsync(id, tenantId);
-            return NoContent();
-        }
-        catch (KeyNotFoundException ex)
+    /// <summary>
+    /// Obtém o TenantId do token de autenticação.
+    /// </summary>
+    /// <returns>TenantId do token.</returns>
+    private string GetTenantId()
+    {
+        var tenantId = User.FindFirst("TenantId")?.Value;
+        if (string.IsNullOrEmpty(tenantId))
         {
-            _logger.LogWarning(ex, "Adicional {Id} não encontrado.", id);
-            return NotFound(new { error = ex.Message });
+            _logger.LogWarning("TenantId não encontrado no token para o usuário {UserId}", 
+                User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            throw new UnauthorizedAccessException("TenantId não encontrado no token.");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao remover adicional {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        return tenantId;
     }
 }

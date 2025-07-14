@@ -4,6 +4,146 @@
         <name>Hephaestus</name>
     </assembly>
     <members>
+        <member name="T:Hephaestus.Controllers.AdditionalController">
+            <summary>
+            Controller para gerenciamento de adicionais.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdditionalController.#ctor(Hephaestus.Application.Interfaces.Additional.ICreateAdditionalUseCase,Hephaestus.Application.Interfaces.Additional.IGetAdditionalsUseCase,Hephaestus.Application.Interfaces.Additional.IGetAdditionalByIdUseCase,Hephaestus.Application.Interfaces.Additional.IUpdateAdditionalUseCase,Hephaestus.Application.Interfaces.Additional.IDeleteAdditionalUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AdditionalController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.AdditionalController"/>.
+            </summary>
+            <param name="createAdditionalUseCase">Caso de uso para criação de adicionais.</param>
+            <param name="getAdditionalsUseCase">Caso de uso para listagem de adicionais.</param>
+            <param name="getAdditionalByIdUseCase">Caso de uso para obtenção de adicional por ID.</param>
+            <param name="updateAdditionalUseCase">Caso de uso para atualização de adicionais.</param>
+            <param name="deleteAdditionalUseCase">Caso de uso para remoção de adicionais.</param>
+            <param name="logger">Logger para registro de eventos.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdditionalController.CreateAdditional(Hephaestus.Application.DTOs.Request.CreateAdditionalRequest)">
+            <summary>
+            Cria um novo adicional.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001"
+            }
+            ```
+            Exemplo de erro de validação:
+            ```json
+            {
+              "error": {
+                "code": "VALIDATION_ERROR",
+                "message": "Erro de validação",
+                "details": {
+                  "errors": [
+                    {
+                      "field": "Name",
+                      "message": "Nome é obrigatório."
+                    }
+                  ]
+                }
+              }
+            }
+            ```
+            </remarks>
+            <param name="request">Dados do adicional a ser criado.</param>
+            <returns>ID do adicional criado.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdditionalController.GetAdditionals">
+            <summary>
+            Lista adicionais do tenant.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            [
+              {
+                "id": "123e4567-e89b-12d3-a456-426614174001",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "name": "Queijo Extra",
+                "description": "Adicional de queijo",
+                "price": 3.50,
+                "isAvailable": true
+              }
+            ]
+            ```
+            </remarks>
+            <returns>Lista de adicionais do tenant.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdditionalController.GetAdditionalById(System.String)">
+            <summary>
+            Obtém adicional por ID.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+              "name": "Queijo Extra",
+              "description": "Adicional de queijo",
+              "price": 3.50,
+              "isAvailable": true
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Adicional não encontrado."
+            }
+            ```
+            </remarks>
+            <param name="id">ID do adicional.</param>
+            <returns>Detalhes do adicional.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdditionalController.UpdateAdditional(System.String,Hephaestus.Application.DTOs.Request.UpdateAdditionalRequest)">
+            <summary>
+            Atualiza adicional.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Adicional não encontrado."
+            }
+            ```
+            </remarks>
+            <param name="id">ID do adicional.</param>
+            <param name="request">Dados atualizados do adicional.</param>
+            <returns>Status da atualização.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdditionalController.DeleteAdditional(System.String)">
+            <summary>
+            Remove adicional.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Adicional não encontrado."
+            }
+            ```
+            </remarks>
+            <param name="id">ID do adicional.</param>
+            <returns>Status da remoção.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdditionalController.GetTenantId">
+            <summary>
+            Obtém o TenantId do token de autenticação.
+            </summary>
+            <returns>TenantId do token.</returns>
+        </member>
         <member name="T:Hephaestus.Controllers.AdministrationController">
             <summary>
             Controller para gerenciamento administrativo de empresas, vendas e logs.
@@ -47,16 +187,9 @@
               }
             ]
             ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Erro interno do servidor"
-            }
-            ```
             </remarks>
             <param name="isEnabled">Filtro opcional para empresas habilitadas (true) ou desabilitadas (false).</param>
             <returns>Lista de empresas.</returns>
-            <exception cref="T:System.Exception">Erro inesperado ao listar empresas.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.UpdateCompany(System.String,Hephaestus.Application.DTOs.Request.UpdateCompanyRequest)">
             <summary>
@@ -84,6 +217,10 @@
               "description": "Nova descrição."
             }
             ```
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
+            ```
             Exemplo de erro:
             ```json
             {
@@ -93,10 +230,7 @@
             </remarks>
             <param name="id">ID da empresa a ser atualizada.</param>
             <param name="request">Dados atualizados da empresa.</param>
-            <returns>Status de sucesso (204 No Content).</returns>
-            <exception cref="T:System.ArgumentNullException">Se request for nulo.</exception>
-            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a empresa não for encontrada.</exception>
-            <exception cref="T:System.InvalidOperationException">Se e-mail ou telefone já estiver registrado ou usuário não for administrador.</exception>
+            <returns>Status da atualização.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.GetSalesReport(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
@@ -130,7 +264,6 @@
             <param name="endDate">Data final do relatório no formato ISO 8601 (ex.: 2024-12-31). Opcional.</param>
             <param name="tenantId">ID da empresa (tenant) para filtrar vendas. Opcional.</param>
             <returns>Relatório de vendas consolidado.</returns>
-            <exception cref="T:System.InvalidOperationException">Datas inválidas ou tenantId inválido.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.GetAuditLogs(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
@@ -144,26 +277,59 @@
                 "id": "123e4567-e89b-12d3-a456-426614174001",
                 "userId": "456e7890-e89b-12d3-a456-426614174002",
                 "action": "UpdateCompany",
-                "entityId": "123e4567-e89b-12d3-a456-426614174001",
-                "details": "Empresa 123e4567-e89b-12d3-a456-426614174001 atualizada por admin.",
-                "createdAt": "2024-01-01T12:00:00Z"
+                "entityId": "789e0123-e89b-12d3-a456-426614174003",
+                "description": "Empresa atualizada com sucesso",
+                "timestamp": "2024-01-01T12:00:00Z"
+              }
+            ]
+            ```
+            </remarks>
+            <param name="adminId">ID do administrador para filtrar logs. Opcional.</param>
+            <param name="startDate">Data inicial para filtrar logs. Opcional.</param>
+            <param name="endDate">Data final para filtrar logs. Opcional.</param>
+            <returns>Lista de logs de auditoria.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetCompaniesByRadius(System.Double,System.Double,System.Double,System.String,System.String)">
+            <summary>
+            Lista empresas dentro de um raio específico.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            [
+              {
+                "id": "123e4567-e89b-12d3-a456-426614174001",
+                "name": "Empresa Próxima",
+                "email": "proxima@empresa.com",
+                "phoneNumber": "123456789",
+                "isEnabled": true,
+                "feeType": "Percentage",
+                "feeValue": 5.0,
+                "city": "São Paulo",
+                "neighborhood": "Vila Mariana",
+                "street": "Rua Exemplo",
+                "number": "123",
+                "latitude": -23.550520,
+                "longitude": -46.633308,
+                "slogan": "O melhor da cidade!",
+                "description": "Descrição da empresa."
               }
             ]
             ```
             Exemplo de erro:
             ```json
             {
-              "error": "Erro interno do servidor"
+              "error": "Coordenadas inválidas."
             }
             ```
             </remarks>
-            <param name="adminId">ID do administrador (GUID) para filtrar logs. Opcional.</param>
-            <param name="startDate">Data inicial do log no formato ISO 8601 (ex.: 2024-01-01). Opcional.</param>
-            <param name="endDate">Data final do log no formato ISO 8601 (ex.: 2024-12-31). Opcional.</param>
-            <returns>Lista de logs de auditoria.</returns>
-            <exception cref="T:System.InvalidOperationException">Parâmetros inválidos.</exception>
+            <param name="centerLat">Latitude do centro do raio.</param>
+            <param name="centerLon">Longitude do centro do raio.</param>
+            <param name="radiusKm">Raio em quilômetros.</param>
+            <param name="city">Filtro opcional por cidade.</param>
+            <param name="neighborhood">Filtro opcional por bairro.</param>
+            <returns>Lista de empresas dentro do raio.</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Hephaestus.Controllers.AdministrationController.GetCompaniesByRadius(System.Double,System.Double,System.Double,System.String,System.String)" -->
         <member name="T:Hephaestus.Controllers.AuthController">
             <summary>
             Controller para autenticação e gerenciamento de usuários.
@@ -201,7 +367,6 @@
             <param name="request">Dados de login (e-mail e senha).</param>
             <param name="mfaCode">Código MFA opcional para administradores.</param>
             <returns>Token JWT.</returns>
-            <exception cref="T:System.InvalidOperationException">Credenciais inválidas ou código MFA inválido.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.Register(Hephaestus.Application.DTOs.Request.RegisterCompanyRequest)">
             <summary>
@@ -223,7 +388,6 @@
             </remarks>
             <param name="request">Dados da empresa a ser registrada.</param>
             <returns>ID da empresa registrada.</returns>
-            <exception cref="T:System.InvalidOperationException">E-mail ou telefone já registrado.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.ResetPasswordRequest(Hephaestus.Application.DTOs.Request.ResetPasswordRequest)">
             <summary>
@@ -245,7 +409,6 @@
             </remarks>
             <param name="request">E-mail do usuário.</param>
             <returns>Token de redefinição de senha.</returns>
-            <exception cref="T:System.InvalidOperationException">E-mail não encontrado.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.ResetPassword(Hephaestus.Application.DTOs.Request.ResetPasswordConfirmRequest)">
             <summary>
@@ -261,8 +424,6 @@
             </remarks>
             <param name="request">E-mail, token e nova senha.</param>
             <returns>Status de sucesso.</returns>
-            <exception cref="T:System.InvalidOperationException">Token inválido ou expirado.</exception>
-            <exception cref="T:System.Collections.Generic.KeyNotFoundException">E-mail não encontrado.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.SetupMfa">
             <summary>
@@ -283,7 +444,6 @@
             ```
             </remarks>
             <returns>Segredo TOTP para configuração no aplicativo autenticador.</returns>
-            <exception cref="T:System.InvalidOperationException">Apenas administradores podem configurar MFA.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.ValidateMfa(Hephaestus.Application.DTOs.Request.MfaRequest)">
             <summary>
@@ -305,7 +465,6 @@
             </remarks>
             <param name="request">E-mail e código MFA.</param>
             <returns>Novo token JWT com claim MfaValidated.</returns>
-            <exception cref="T:System.InvalidOperationException">Código MFA inválido ou usuário não é administrador.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.GetLoggedUser">
             <summary>
@@ -329,17 +488,113 @@
             ```
             </remarks>
             <returns>Dados do usuário logado (ID, nome, e-mail, função).</returns>
-            <exception cref="T:System.InvalidOperationException">Usuário não autenticado ou dados inválidos.</exception>
+        </member>
+        <member name="M:Hephaestus.Controllers.AuthController.GetUserEmail">
+            <summary>
+            Obtém o e-mail do usuário do token de autenticação.
+            </summary>
+            <returns>E-mail do usuário.</returns>
+        </member>
+        <member name="T:Hephaestus.Controllers.CompanyController">
+            <summary>
+            Controller para gerenciamento de perfis de empresas.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CompanyController.#ctor(Hephaestus.Application.Interfaces.Company.IGetCompanyProfileUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.CompanyController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.CompanyController"/>.
+            </summary>
+            <param name="getCompanyProfileUseCase">Caso de uso para obtenção de perfil da empresa.</param>
+            <param name="logger">Logger para registro de eventos.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.CompanyController.GetCompanyProfile(System.String)">
+            <summary>
+            Obtém o perfil completo de uma empresa.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "name": "Restaurante Exemplo",
+              "email": "contato@restaurante.com",
+              "phoneNumber": "11987654321",
+              "isEnabled": true,
+              "feeType": "Percentage",
+              "feeValue": 5.0,
+              "state": "SP",
+              "city": "São Paulo",
+              "neighborhood": "Centro",
+              "street": "Rua das Flores",
+              "number": "123",
+              "latitude": -23.5505,
+              "longitude": -46.6333,
+              "slogan": "A melhor comida da cidade!",
+              "description": "Restaurante especializado em pratos tradicionais.",
+              "images": [
+                {
+                  "id": "img1",
+                  "url": "https://example.com/image1.jpg",
+                  "description": "Fachada do restaurante"
+                }
+              ],
+              "operatingHours": [
+                {
+                  "dayOfWeek": 1,
+                  "openTime": "08:00",
+                  "closeTime": "22:00",
+                  "isOpen": true
+                }
+              ],
+              "socialMedia": [
+                {
+                  "platform": "Instagram",
+                  "url": "https://instagram.com/restaurante"
+                }
+              ]
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Empresa não encontrada."
+            }
+            ```
+            </remarks>
+            <param name="id">ID da empresa.</param>
+            <returns>Perfil completo da empresa.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.CustomerController">
             <summary>
             Controller para gerenciamento de clientes.
             </summary>
         </member>
+        <member name="M:Hephaestus.Controllers.CustomerController.#ctor(Hephaestus.Application.Interfaces.Customer.IUpdateCustomerUseCase,Hephaestus.Application.Interfaces.Customer.IGetCustomerUseCase,Hephaestus.Application.Interfaces.Customer.IGetByIdCustomerUseCase,Hephaestus.Application.Interfaces.Administration.IAuditLogUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.CustomerController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.CustomerController"/>.
+            </summary>
+            <param name="updateCustomerUseCase">Caso de uso para atualização de clientes.</param>
+            <param name="getCustomerUseCase">Caso de uso para listagem de clientes.</param>
+            <param name="getByIdCustomerUseCase">Caso de uso para obtenção de cliente por ID.</param>
+            <param name="auditLogUseCase">Caso de uso para logs de auditoria.</param>
+            <param name="logger">Logger para registro de eventos.</param>
+        </member>
         <member name="M:Hephaestus.Controllers.CustomerController.UpdateCustomer(Hephaestus.Application.DTOs.Request.CustomerRequest)">
             <summary>
             Atualiza ou cadastra dados de um cliente.
             </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "TenantId não encontrado no token."
+            }
+            ```
+            </remarks>
             <param name="request">Dados do cliente (nome, endereço, latitude, longitude).</param>
             <returns>Status da atualização ou criação.</returns>
         </member>
@@ -347,6 +602,26 @@
             <summary>
             Lista clientes do tenant.
             </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            [
+              {
+                "id": "123e4567-e89b-12d3-a456-426614174001",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "phoneNumber": "11987654321",
+                "name": "João Silva",
+                "state": "SP",
+                "city": "São Paulo",
+                "street": "Rua das Flores",
+                "number": "123",
+                "latitude": -23.5505,
+                "longitude": -46.6333,
+                "createdAt": "2024-01-01T12:00:00Z"
+              }
+            ]
+            ```
+            </remarks>
             <param name="phoneNumber">Número de telefone para filtrar clientes (opcional).</param>
             <returns>Lista de clientes.</returns>
         </member>
@@ -354,8 +629,309 @@
             <summary>
             Obtém detalhes de um cliente específico.
             </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+              "phoneNumber": "11987654321",
+              "name": "João Silva",
+              "state": "SP",
+              "city": "São Paulo",
+              "street": "Rua das Flores",
+              "number": "123",
+              "latitude": -23.5505,
+              "longitude": -46.6333,
+              "createdAt": "2024-01-01T12:00:00Z"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Cliente não encontrado."
+            }
+            ```
+            </remarks>
             <param name="id">ID do cliente (GUID).</param>
             <returns>Detalhes do cliente.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.CustomerController.GetTenantId">
+            <summary>
+            Obtém o TenantId do token de autenticação.
+            </summary>
+            <returns>TenantId do token.</returns>
+        </member>
+        <member name="T:Hephaestus.Controllers.DatabaseController">
+            <summary>
+            Controller para operações de banco de dados.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.DatabaseController.#ctor(Hephaestus.Application.Interfaces.Database.IExecuteQueryUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.DatabaseController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.DatabaseController"/>.
+            </summary>
+            <param name="executeQueryUseCase">Caso de uso para execução de queries.</param>
+            <param name="logger">Logger para registro de eventos.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.DatabaseController.ExecuteQuery(Hephaestus.Application.DTOs.Request.ExecuteQueryRequest)">
+            <summary>
+            Executa uma query SQL de consulta.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "columns": ["id", "name", "email"],
+              "rows": [
+                ["1", "João Silva", "joao@email.com"],
+                ["2", "Maria Santos", "maria@email.com"]
+              ],
+              "rowCount": 2
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Query inválida. Apenas comandos SELECT são permitidos."
+            }
+            ```
+            </remarks>
+            <param name="request">Query SQL a ser executada.</param>
+            <returns>Resultados da query.</returns>
+        </member>
+        <member name="T:Hephaestus.Controllers.MenuController">
+            <summary>
+            Controller para gerenciamento de itens do cardápio.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuController.#ctor(Hephaestus.Application.Interfaces.Menu.ICreateMenuItemUseCase,Hephaestus.Application.Interfaces.Menu.IGetMenuItemsUseCase,Hephaestus.Application.Interfaces.Menu.IGetMenuItemByIdUseCase,Hephaestus.Application.Interfaces.Menu.IUpdateMenuItemUseCase,Hephaestus.Application.Interfaces.Menu.IDeleteMenuItemUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.MenuController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.MenuController"/>.
+            </summary>
+            <param name="createMenuItemUseCase">Caso de uso para criação de itens do cardápio.</param>
+            <param name="getMenuItemsUseCase">Caso de uso para listagem de itens do cardápio.</param>
+            <param name="getMenuItemByIdUseCase">Caso de uso para obtenção de item do cardápio por ID.</param>
+            <param name="updateMenuItemUseCase">Caso de uso para atualização de itens do cardápio.</param>
+            <param name="deleteMenuItemUseCase">Caso de uso para remoção de itens do cardápio.</param>
+            <param name="logger">Logger para registro de eventos.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuController.CreateMenuItem(Hephaestus.Application.DTOs.Request.CreateMenuItemRequest)">
+            <summary>
+            Cria um novo item do cardápio.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001"
+            }
+            ```
+            Exemplo de erro de validação:
+            ```json
+            {
+              "error": {
+                "code": "VALIDATION_ERROR",
+                "message": "Erro de validação",
+                "details": {
+                  "errors": [
+                    {
+                      "field": "Name",
+                      "message": "Nome é obrigatório."
+                    }
+                  ]
+                }
+              }
+            }
+            ```
+            </remarks>
+            <param name="request">Dados do item do cardápio a ser criado.</param>
+            <returns>ID do item criado.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuController.GetMenuItems">
+            <summary>
+            Lista itens do cardápio.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            [
+              {
+                "id": "123e4567-e89b-12d3-a456-426614174001",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "name": "X-Burger",
+                "description": "Hambúrguer com queijo e salada",
+                "categoryId": "789e0123-e89b-12d3-a456-426614174003",
+                "price": 25.90,
+                "isAvailable": true,
+                "tagIds": ["tag1", "tag2"],
+                "availableAdditionalIds": ["add1", "add2"],
+                "imageUrl": "https://example.com/burger.jpg"
+              }
+            ]
+            ```
+            </remarks>
+            <returns>Lista de itens do cardápio.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuController.GetMenuItemById(System.String)">
+            <summary>
+            Obtém item do cardápio por ID.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+              "name": "X-Burger",
+              "description": "Hambúrguer com queijo e salada",
+              "categoryId": "789e0123-e89b-12d3-a456-426614174003",
+              "price": 25.90,
+              "isAvailable": true,
+              "tagIds": ["tag1", "tag2"],
+              "availableAdditionalIds": ["add1", "add2"],
+              "imageUrl": "https://example.com/burger.jpg"
+            }
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Item do cardápio não encontrado."
+            }
+            ```
+            </remarks>
+            <param name="id">ID do item do cardápio.</param>
+            <returns>Detalhes do item do cardápio.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuController.UpdateMenuItem(System.String,Hephaestus.Application.DTOs.Request.UpdateMenuItemRequest)">
+            <summary>
+            Atualiza item do cardápio.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Item do cardápio não encontrado."
+            }
+            ```
+            </remarks>
+            <param name="id">ID do item do cardápio.</param>
+            <param name="request">Dados atualizados do item do cardápio.</param>
+            <returns>Status da atualização.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuController.DeleteMenuItem(System.String)">
+            <summary>
+            Remove item do cardápio.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Item do cardápio não encontrado."
+            }
+            ```
+            </remarks>
+            <param name="id">ID do item do cardápio.</param>
+            <returns>Status da remoção.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuController.GetTenantId">
+            <summary>
+            Obtém o TenantId do token de autenticação.
+            </summary>
+            <returns>TenantId do token.</returns>
+        </member>
+        <member name="T:Hephaestus.Controllers.MenuControllerSimplified">
+            <summary>
+            Controller simplificado para gerenciamento de cardápio com tratamento de exceções centralizado.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.CreateMenuItem(Hephaestus.Application.DTOs.Request.CreateMenuItemRequest)">
+            <summary>
+            Cria um novo item do cardápio.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.GetMenuItems">
+            <summary>
+            Lista itens do cardápio.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.GetMenuItemById(System.String)">
+            <summary>
+            Obtém item do cardápio por ID.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.UpdateMenuItem(System.String,Hephaestus.Application.DTOs.Request.UpdateMenuItemRequest)">
+            <summary>
+            Atualiza item do cardápio.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.DeleteMenuItem(System.String)">
+            <summary>
+            Remove item do cardápio.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.MenuControllerSimplified.GetTenantId">
+            <summary>
+            Obtém o TenantId do token de autenticação.
+            </summary>
+            <returns>TenantId do token.</returns>
+        </member>
+        <member name="T:Hephaestus.Controllers.OpenAIController">
+            <summary>
+            Controller para integração com a API da OpenAI.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.OpenAIController.#ctor(Hephaestus.Application.Interfaces.OpenAI.IChatWithOpenAIUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.OpenAIController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.OpenAIController"/>.
+            </summary>
+            <param name="chatWithOpenAIUseCase">Caso de uso para comunicação com a OpenAI.</param>
+            <param name="logger">Logger para registro de eventos.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.OpenAIController.Chat(Hephaestus.Application.DTOs.Request.OpenAIRequest)">
+            <summary>
+            Consulta o chat da OpenAI.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "response": "Olá! Como posso ajudá-lo hoje?",
+              "usage": {
+                "promptTokens": 10,
+                "completionTokens": 15,
+                "totalTokens": 25
+              }
+            }
+            ```
+            Exemplo de erro de validação:
+            ```json
+            {
+              "error": {
+                "code": "VALIDATION_ERROR",
+                "message": "Erro de validação",
+                "details": {
+                  "errors": [
+                    {
+                      "field": "Prompt",
+                      "message": "Prompt é obrigatório."
+                    }
+                  ]
+                }
+              }
+            }
+            ```
+            </remarks>
+            <param name="request">Dados da consulta à OpenAI.</param>
+            <returns>Resposta da OpenAI.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.PromotionController">
             <summary>
@@ -403,22 +979,26 @@
               "id": "123e4567-e89b-12d3-a456-426614174001"
             }
             ```
-            Exemplo de erro:
+            Exemplo de erro de validação:
             ```json
             {
-              "errors": [
-                {
-                  "propertyName": "Name",
-                  "errorMessage": "Nome é obrigatório."
+              "error": {
+                "code": "VALIDATION_ERROR",
+                "message": "Erro de validação",
+                "details": {
+                  "errors": [
+                    {
+                      "field": "Name",
+                      "message": "Nome é obrigatório."
+                    }
+                  ]
                 }
-              ]
+              }
             }
             ```
             </remarks>
             <param name="request">Dados da promoção a ser criada.</param>
             <returns>ID da promoção criada.</returns>
-            <exception cref="T:FluentValidation.ValidationException">Se os dados da requisição forem inválidos.</exception>
-            <exception cref="T:System.InvalidOperationException">Se o item do cardápio não for encontrado para FreeItem.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.GetPromotions(System.Nullable{System.Boolean})">
             <summary>
@@ -451,16 +1031,9 @@
               }
             ]
             ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "TenantId não encontrado no token."
-            }
-            ```
             </remarks>
             <param name="isActive">Filtro opcional para promoções ativas (true) ou inativas (false).</param>
             <returns>Lista de promoções do tenant.</returns>
-            <exception cref="T:System.Exception">Erro inesperado ao listar promoções.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.GetPromotionById(System.String)">
             <summary>
@@ -500,7 +1073,6 @@
             </remarks>
             <param name="id">ID da promoção (GUID).</param>
             <returns>Detalhes da promoção.</returns>
-            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a promoção não for encontrada.</exception>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotion(System.String,Hephaestus.Application.DTOs.Request.UpdatePromotionRequest)">
             <summary>
@@ -510,7 +1082,6 @@
             Exemplo de corpo da requisição:
             ```json
             {
-              "id": "123e4567-e89b-12d3-a456-426614174001",
               "name": "Desconto de 15%",
               "description": "15% de desconto em pedidos",
               "discountType": "Percentage",
@@ -523,8 +1094,12 @@
               "startDate": "2025-07-12T00:00:00",
               "endDate": "2025-12-31T23:59:59",
               "isActive": true,
-              "imageUrl": "https://exemplo.com/imagem-atualizada.jpg"
+              "imageUrl": "https://exemplo.com/imagem.jpg"
             }
+            ```
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
             ```
             Exemplo de erro:
             ```json
@@ -533,22 +1108,18 @@
             }
             ```
             </remarks>
-            <param name="id">ID da promoção a ser atualizada (GUID).</param>
+            <param name="id">ID da promoção a ser atualizada.</param>
             <param name="request">Dados atualizados da promoção.</param>
-            <returns>Status de sucesso (204 No Content).</returns>
-            <exception cref="T:FluentValidation.ValidationException">Se os dados da requisição forem inválidos.</exception>
-            <exception cref="T:System.ArgumentException">Se o ID no corpo não corresponder ao ID na URL.</exception>
-            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a promoção não for encontrada.</exception>
-            <exception cref="T:System.InvalidOperationException">Se o item do cardápio não for encontrado para FreeItem.</exception>
+            <returns>Status da atualização.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.DeletePromotion(System.String)">
             <summary>
             Remove uma promoção do tenant.
             </summary>
             <remarks>
-            Exemplo de requisição:
-            ```http
-            DELETE /api/promotion/123e4567-e89b-12d3-a456-426614174001
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
             ```
             Exemplo de erro:
             ```json
@@ -557,9 +1128,8 @@
             }
             ```
             </remarks>
-            <param name="id">ID da promoção a ser removida (GUID).</param>
-            <returns>Status de sucesso (204 No Content).</returns>
-            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a promoção não for encontrada.</exception>
+            <param name="id">ID da promoção a ser removida.</param>
+            <returns>Status da remoção.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.NotifyPromotion(Hephaestus.Application.DTOs.Request.NotifyPromotionRequest)">
             <summary>
@@ -570,68 +1140,176 @@
             ```json
             {
               "promotionId": "123e4567-e89b-12d3-a456-426614174001",
-              "messageTemplate": "Confira nossa nova promoção: {name}!"
+              "phoneNumbers": ["11987654321", "11987654322"],
+              "message": "Promoção especial para você!"
+            }
+            ```
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Promoção não encontrada."
+            }
+            ```
+            </remarks>
+            <param name="request">Dados da notificação.</param>
+            <returns>Status da notificação.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.GetTenantId">
+            <summary>
+            Obtém o TenantId do token de autenticação.
+            </summary>
+            <returns>TenantId do token.</returns>
+        </member>
+        <member name="T:Hephaestus.Controllers.TagController">
+            <summary>
+            Controller para gerenciamento de tags.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.TagController.#ctor(Hephaestus.Application.Interfaces.Tag.ICreateTagUseCase,Hephaestus.Application.Interfaces.Tag.IGetAllTagsByTenantUseCase,Hephaestus.Application.Interfaces.Tag.IDeleteTagUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.TagController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.TagController"/>.
+            </summary>
+            <param name="createTagUseCase">Caso de uso para criação de tags.</param>
+            <param name="getAllTagsByTenantUseCase">Caso de uso para listagem de tags por tenant.</param>
+            <param name="deleteTagUseCase">Caso de uso para remoção de tags.</param>
+            <param name="logger">Logger para registro de eventos.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.TagController.CreateTag(Hephaestus.Application.DTOs.Request.TagRequest)">
+            <summary>
+            Cria uma nova tag.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+              "name": "Vegetariano"
             }
             ```
             Exemplo de erro:
             ```json
             {
-              "errors": [
-                {
-                  "propertyName": "PromotionId",
-                  "errorMessage": "ID da promoção é obrigatório."
-                }
-              ]
+              "error": "Tag já registrada para este tenant."
             }
             ```
             </remarks>
-            <param name="request">Dados da notificação (ID da promoção e modelo de mensagem).</param>
-            <returns>Status de sucesso (204 No Content).</returns>
-            <exception cref="T:FluentValidation.ValidationException">Se os dados da requisição forem inválidos.</exception>
-            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Se a promoção não for encontrada.</exception>
+            <param name="request">Dados da tag a ser criada.</param>
+            <returns>Tag criada.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.TagController.GetAllTagsByTenant(System.String)">
+            <summary>
+            Lista todas as tags de um tenant.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```json
+            [
+              {
+                "id": "123e4567-e89b-12d3-a456-426614174001",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "name": "Vegetariano"
+              },
+              {
+                "id": "789e0123-e89b-12d3-a456-426614174003",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "name": "Sem Glúten"
+              }
+            ]
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Tenants só podem listar suas próprias tags."
+            }
+            ```
+            </remarks>
+            <param name="tenantId">ID do tenant para listar as tags.</param>
+            <returns>Lista de tags do tenant.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.TagController.DeleteTag(System.String)">
+            <summary>
+            Exclui uma tag.
+            </summary>
+            <remarks>
+            Exemplo de resposta de sucesso:
+            ```
+            Status: 204 No Content
+            ```
+            Exemplo de erro:
+            ```json
+            {
+              "error": "Tag não encontrada."
+            }
+            ```
+            </remarks>
+            <param name="id">ID da tag a ser excluída.</param>
+            <returns>Status da exclusão.</returns>
+        </member>
+        <member name="T:Hephaestus.Middleware.GlobalExceptionHandlingMiddleware">
+            <summary>
+            Middleware para tratamento global de exceções.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Middleware.GlobalExceptionHandlingMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Processa a requisição e trata exceções globalmente.
+            </summary>
+            <param name="context">Contexto da requisição HTTP.</param>
+        </member>
+        <member name="M:Hephaestus.Middleware.GlobalExceptionHandlingMiddleware.HandleExceptionAsync(Microsoft.AspNetCore.Http.HttpContext,System.Exception)">
+            <summary>
+            Trata uma exceção e retorna uma resposta HTTP apropriada.
+            </summary>
+            <param name="context">Contexto da requisição HTTP.</param>
+            <param name="exception">Exceção a ser tratada.</param>
         </member>
         <member name="T:Hephaestus.Program">
             <summary>
-            Configurações da aplicação principal.
+            Configura��es da aplica��o principal.
             </summary>
         </member>
         <member name="M:Hephaestus.Program.Main(System.String[])">
             <summary>
-            Ponto de entrada da aplicação.
+            Ponto de entrada da aplica��o.
             </summary>
             <param name="args">Argumentos da linha de comando.</param>
         </member>
         <member name="M:Hephaestus.Program.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
-            Configura os serviços no contêiner de injeção de dependência.
+            Configura os servi�os no cont�iner de inje��o de depend�ncia.
             </summary>
-            <param name="services">Coleção de serviços.</param>
-            <param name="configuration">Configuração da aplicação.</param>
+            <param name="services">Cole��o de servi�os.</param>
+            <param name="configuration">Configura��o da aplica��o.</param>
         </member>
         <member name="M:Hephaestus.Program.ConfigureJwtAuthentication(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
-            Configura a autenticação JWT no contêiner de serviços.
+            Configura a autentica��o JWT no cont�iner de servi�os.
             </summary>
-            <param name="services">Coleção de serviços.</param>
-            <param name="configuration">Configuração da aplicação.</param>
+            <param name="services">Cole��o de servi�os.</param>
+            <param name="configuration">Configura��o da aplica��o.</param>
         </member>
         <member name="M:Hephaestus.Program.ConfigureAuthorizationPolicies(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            Configura as políticas de autorização no contêiner de serviços.
+            Configura as pol�ticas de autoriza��o no cont�iner de servi�os.
             </summary>
-            <param name="services">Coleção de serviços.</param>
+            <param name="services">Cole��o de servi�os.</param>
         </member>
         <member name="M:Hephaestus.Program.ConfigureSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            Configura o Swagger com suporte para autenticação Bearer e documentação XML opcional.
+            Configura o Swagger com suporte para autentica��o Bearer e documenta��o XML opcional.
             </summary>
-            <param name="services">Coleção de serviços.</param>
+            <param name="services">Cole��o de servi�os.</param>
         </member>
         <member name="M:Hephaestus.Program.ConfigureMiddleware(Microsoft.AspNetCore.Builder.WebApplication)">
             <summary>
-            Configura o pipeline de middleware da aplicação.
+            Configura o pipeline de middleware da aplica��o.
             </summary>
-            <param name="app">Aplicação web configurada.</param>
+            <param name="app">Aplica��o web configurada.</param>
         </member>
     </members>
 </doc>

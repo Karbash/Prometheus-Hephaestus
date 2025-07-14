@@ -63,7 +63,7 @@ public class TagRepository : ITagRepository
             .FirstOrDefaultAsync(t => t.Id == id && t.TenantId == tenantId);
 
         if (tag == null)
-            throw new InvalidOperationException("Tag não encontrada.");
+            return; // Não lança exceção, deixa o UseCase tratar
 
         var hasMenuItemTags = await _context.MenuItemTags
             .AnyAsync(mt => mt.TagId == id); // Corrigido: Removido TenantId

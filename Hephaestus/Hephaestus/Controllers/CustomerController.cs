@@ -22,6 +22,14 @@ public class CustomerController : ControllerBase
     private readonly IAuditLogUseCase _auditLogUseCase;
     private readonly ILogger<CustomerController> _logger;
 
+    /// <summary>
+    /// Inicializa uma nova instância do <see cref="CustomerController"/>.
+    /// </summary>
+    /// <param name="updateCustomerUseCase">Caso de uso para atualização de clientes.</param>
+    /// <param name="getCustomerUseCase">Caso de uso para listagem de clientes.</param>
+    /// <param name="getByIdCustomerUseCase">Caso de uso para obtenção de cliente por ID.</param>
+    /// <param name="auditLogUseCase">Caso de uso para logs de auditoria.</param>
+    /// <param name="logger">Logger para registro de eventos.</param>
     public CustomerController(
         IUpdateCustomerUseCase updateCustomerUseCase,
         IGetCustomerUseCase getCustomerUseCase,
@@ -39,6 +47,18 @@ public class CustomerController : ControllerBase
     /// <summary>
     /// Atualiza ou cadastra dados de um cliente.
     /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
+    /// ```
+    /// Exemplo de erro:
+    /// ```json
+    /// {
+    ///   "error": "TenantId não encontrado no token."
+    /// }
+    /// ```
+    /// </remarks>
     /// <param name="request">Dados do cliente (nome, endereço, latitude, longitude).</param>
     /// <returns>Status da atualização ou criação.</returns>
     [HttpPut]
@@ -49,31 +69,35 @@ public class CustomerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> UpdateCustomer([FromBody] CustomerRequest request)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return BadRequest(new { error = "TenantId não encontrado no token." });
-
-            await _updateCustomerUseCase.UpdateAsync(request, tenantId);
-            await _auditLogUseCase.ExecuteAsync("UpdateCustomer", request.PhoneNumber, $"Cliente {request.PhoneNumber} atualizado/cadastrado.", User);
-            return NoContent();
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar/cadastrar cliente com telefone {PhoneNumber}.", request.PhoneNumber);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao atualizar/cadastrar cliente com telefone {PhoneNumber}.", request.PhoneNumber);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        await _updateCustomerUseCase.UpdateAsync(request, tenantId);
+        await _auditLogUseCase.ExecuteAsync("UpdateCustomer", request.PhoneNumber, $"Cliente {request.PhoneNumber} atualizado/cadastrado.", User);
+        return NoContent();
     }
 
     /// <summary>
     /// Lista clientes do tenant.
     /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```json
+    /// [
+    ///   {
+    ///     "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///     "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///     "phoneNumber": "11987654321",
+    ///     "name": "João Silva",
+    ///     "state": "SP",
+    ///     "city": "São Paulo",
+    ///     "street": "Rua das Flores",
+    ///     "number": "123",
+    ///     "latitude": -23.5505,
+    ///     "longitude": -46.6333,
+    ///     "createdAt": "2024-01-01T12:00:00Z"
+    ///   }
+    /// ]
+    /// ```
+    /// </remarks>
     /// <param name="phoneNumber">Número de telefone para filtrar clientes (opcional).</param>
     /// <returns>Lista de clientes.</returns>
     [HttpGet]
@@ -84,30 +108,38 @@ public class CustomerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetCustomers([FromQuery] string? phoneNumber = null)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return BadRequest(new { error = "TenantId não encontrado no token." });
-
-            var customers = await _getCustomerUseCase.GetAsync(phoneNumber, tenantId);
-            return Ok(customers);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao listar clientes.");
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao listar clientes.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var customers = await _getCustomerUseCase.GetAsync(phoneNumber, tenantId);
+        return Ok(customers);
     }
 
     /// <summary>
     /// Obtém detalhes de um cliente específico.
     /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```json
+    /// {
+    ///   "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///   "phoneNumber": "11987654321",
+    ///   "name": "João Silva",
+    ///   "state": "SP",
+    ///   "city": "São Paulo",
+    ///   "street": "Rua das Flores",
+    ///   "number": "123",
+    ///   "latitude": -23.5505,
+    ///   "longitude": -46.6333,
+    ///   "createdAt": "2024-01-01T12:00:00Z"
+    /// }
+    /// ```
+    /// Exemplo de erro:
+    /// ```json
+    /// {
+    ///   "error": "Cliente não encontrado."
+    /// }
+    /// ```
+    /// </remarks>
     /// <param name="id">ID do cliente (GUID).</param>
     /// <returns>Detalhes do cliente.</returns>
     [HttpGet("{id}")]
@@ -119,27 +151,28 @@ public class CustomerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetCustomerById(string id)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return BadRequest(new { error = "TenantId não encontrado no token." });
+        var tenantId = GetTenantId();
+        var customer = await _getByIdCustomerUseCase.GetByIdAsync(id, tenantId);
+        
+        if (customer == null)
+            return NotFound(new { error = "Cliente não encontrado." });
 
-            var customer = await _getByIdCustomerUseCase.GetByIdAsync(id, tenantId);
-            if (customer == null)
-                return NotFound(new { error = "Cliente não encontrado." });
+        return Ok(customer);
+    }
 
-            return Ok(customer);
-        }
-        catch (InvalidOperationException ex)
+    /// <summary>
+    /// Obtém o TenantId do token de autenticação.
+    /// </summary>
+    /// <returns>TenantId do token.</returns>
+    private string GetTenantId()
+    {
+        var tenantId = User.FindFirst("TenantId")?.Value;
+        if (string.IsNullOrEmpty(tenantId))
         {
-            _logger.LogWarning(ex, "Erro ao obter cliente com ID {Id}.", id);
-            return BadRequest(new { error = ex.Message });
+            _logger.LogWarning("TenantId não encontrado no token para o usuário {UserId}", 
+                User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            throw new UnauthorizedAccessException("TenantId não encontrado no token.");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao obter cliente com ID {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        return tenantId;
     }
 }

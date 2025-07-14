@@ -3,55 +3,140 @@ using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Domain.Enum;
 using Hephaestus.Domain.Repositories;
+using Hephaestus.Application.Exceptions;
+using Hephaestus.Application.Base;
+using Microsoft.Extensions.Logging;
+using Hephaestus.Application.Services;
+using FluentValidation.Results;
 
 namespace Hephaestus.Application.UseCases.Promotion;
 
-public class UpdatePromotionUseCase : IUpdatePromotionUseCase
+/// <summary>
+/// Caso de uso para atualização de promoções.
+/// </summary>
+public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
 {
     private readonly IPromotionRepository _promotionRepository;
     private readonly IValidator<UpdatePromotionRequest> _validator;
     private readonly IMenuItemRepository _menuItemRepository;
 
+    /// <summary>
+    /// Inicializa uma nova instância do <see cref="UpdatePromotionUseCase"/>.
+    /// </summary>
+    /// <param name="promotionRepository">Repositório de promoções.</param>
+    /// <param name="validator">Validador para a requisição.</param>
+    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
+    /// <param name="logger">Logger.</param>
+    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public UpdatePromotionUseCase(
         IPromotionRepository promotionRepository,
         IValidator<UpdatePromotionRequest> validator,
-        IMenuItemRepository menuItemRepository)
+        IMenuItemRepository menuItemRepository,
+        ILogger<UpdatePromotionUseCase> logger,
+        IExceptionHandlerService exceptionHandler)
+        : base(logger, exceptionHandler)
     {
         _promotionRepository = promotionRepository;
         _validator = validator;
         _menuItemRepository = menuItemRepository;
     }
 
+    /// <summary>
+    /// Executa a atualização de uma promoção.
+    /// </summary>
+    /// <param name="id">ID da promoção.</param>
+    /// <param name="request">Dados atualizados da promoção.</param>
+    /// <param name="tenantId">ID do tenant.</param>
     public async Task ExecuteAsync(string id, UpdatePromotionRequest request, string tenantId)
+    {
+        await ExecuteWithExceptionHandlingAsync(async () =>
+        {
+            // Validação dos dados de entrada
+            await ValidateRequestAsync(request, id);
+
+            // Busca e validação da promoção
+            var promotion = await GetAndValidatePromotionAsync(id, tenantId);
+
+            // Validação das regras de negócio
+            await ValidateBusinessRulesAsync(request, tenantId);
+
+            // Atualização da promoção
+            await UpdatePromotionAsync(promotion, request);
+        });
+    }
+
+    /// <summary>
+    /// Valida os dados da requisição.
+    /// </summary>
+    /// <param name="request">Requisição a ser validada.</param>
+    /// <param name="id">ID da promoção.</param>
+    private async Task ValidateRequestAsync(UpdatePromotionRequest request, string id)
     {
         var validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
+        {
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da promoção inválidos", validationResult);
+        }
 
         if (request.Id != id)
-            throw new ArgumentException("ID no corpo da requisição deve corresponder ao ID na URL.");
+        {
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID no corpo da requisição deve corresponder ao ID na URL.", new ValidationResult());
+        }
+    }
 
+    /// <summary>
+    /// Busca e valida a promoção.
+    /// </summary>
+    /// <param name="id">ID da promoção.</param>
+    /// <param name="tenantId">ID do tenant.</param>
+    /// <returns>Promoção encontrada.</returns>
+    private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string id, string tenantId)
+    {
         var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
+        EnsureEntityExists(promotion, "Promotion", id);
+        return promotion;
+    }
 
+    /// <summary>
+    /// Valida as regras de negócio.
+    /// </summary>
+    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="tenantId">ID do tenant.</param>
+    private async Task ValidateBusinessRulesAsync(UpdatePromotionRequest request, string tenantId)
+    {
         if (request.DiscountType == "FreeItem" && !string.IsNullOrEmpty(request.MenuItemId))
         {
             var menuItem = await _menuItemRepository.GetByIdAsync(request.MenuItemId, tenantId);
-            if (menuItem == null)
-                throw new InvalidOperationException("Item do cardápio não encontrado para FreeItem.");
+            EnsureEntityExists(menuItem, "MenuItem", request.MenuItemId);
         }
 
+        if (!Enum.TryParse<DiscountType>(request.DiscountType, true, out _))
+        {
+            throw new Hephaestus.Application.Exceptions.ValidationException("Tipo de desconto inválido.", new ValidationResult());
+        }
+    }
+
+    /// <summary>
+    /// Atualiza a promoção com os novos dados.
+    /// </summary>
+    /// <param name="promotion">Promoção a ser atualizada.</param>
+    /// <param name="request">Dados atualizados.</param>
+    private async Task UpdatePromotionAsync(Domain.Entities.Promotion promotion, UpdatePromotionRequest request)
+    {
         if (!Enum.TryParse<DiscountType>(request.DiscountType, true, out var discountType))
-            throw new InvalidOperationException("Tipo de desconto inválido.");
+        {
+            throw new Hephaestus.Application.Exceptions.ValidationException("Tipo de desconto inválido.", new ValidationResult());
+        }
 
         promotion.Name = request.Name;
         promotion.Description = request.Description;
-        promotion.DiscountType = discountType; // Convertido de string para enum
+        promotion.DiscountType = discountType;
         promotion.DiscountValue = request.DiscountValue;
         promotion.MenuItemId = request.MenuItemId;
         promotion.MinOrderValue = request.MinOrderValue;
-        promotion.MaxUsesPerCustomer = request.MaxUsagePerCustomer; // Ajustado para MaxUsesPerCustomer
+        promotion.MaxUsesPerCustomer = request.MaxUsagePerCustomer;
         promotion.MaxTotalUses = request.MaxTotalUses;
-        promotion.ApplicableTags = request.ApplicableToTags ?? new List<string>(); // Ajustado para ApplicableTags
+        promotion.ApplicableTags = request.ApplicableToTags ?? new List<string>();
         promotion.StartDate = request.StartDate;
         promotion.EndDate = request.EndDate;
         promotion.IsActive = request.IsActive;

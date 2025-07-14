@@ -68,6 +68,10 @@ namespace Hephaestus.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("TenantId")
                         .HasColumnType("text");
 
@@ -204,6 +208,9 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId", "ImageType");
@@ -231,6 +238,9 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("character varying(10)");
 
                     b.Property<bool>("IsClosed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsOpen")
                         .HasColumnType("boolean");
 
                     b.Property<string>("OpenTime")

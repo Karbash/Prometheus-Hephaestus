@@ -27,11 +27,10 @@ public class AdditionalRepository : IAdditionalRepository
             .ToListAsync();
     }
 
-    public async Task<Additional> GetByIdAsync(string id, string tenantId)
+    public async Task<Additional?> GetByIdAsync(string id, string tenantId)
     {
         return await _dbContext.Additionals
-            .FirstOrDefaultAsync(a => a.Id == id && a.TenantId == tenantId)
-            ?? throw new KeyNotFoundException("Adicional não encontrado.");
+            .FirstOrDefaultAsync(a => a.Id == id && a.TenantId == tenantId);
     }
 
     public async Task UpdateAsync(Additional additional)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Hephaestus.Application.Validators;
 
-public class OpenAIChatRequestValidator : AbstractValidator<OpenAIChatRequest>
+public class OpenAIChatRequestValidator : AbstractValidator<OpenAIRequest>
 {
     public OpenAIChatRequestValidator()
     {

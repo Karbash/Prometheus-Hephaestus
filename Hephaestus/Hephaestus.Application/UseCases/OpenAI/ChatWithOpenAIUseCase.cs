@@ -1,130 +1,189 @@
-﻿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.OpenAI;
-using Microsoft.Extensions.Configuration;
+using Hephaestus.Application.Exceptions;
+using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
+using Hephaestus.Application.Services;
+using FluentValidation.Results;
+using Microsoft.Extensions.Configuration;
 using System.Text;
 using System.Text.Json;
 
 namespace Hephaestus.Application.UseCases.OpenAI;
 
-public class ChatWithOpenAIUseCase : IChatWithOpenAIUseCase
+/// <summary>
+/// Caso de uso para comunicação com a API do OpenAI.
+/// </summary>
+public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
 {
+    private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
-    private readonly string _apiKey;
-    private readonly ILogger<ChatWithOpenAIUseCase> _logger;
-    private readonly IValidator<OpenAIChatRequest> _validator;
 
-    public ChatWithOpenAIUseCase(HttpClient httpClient, IValidator<OpenAIChatRequest> validator, IConfiguration configuration, ILogger<ChatWithOpenAIUseCase> logger)
+    /// <summary>
+    /// Inicializa uma nova instância do <see cref="ChatWithOpenAIUseCase"/>.
+    /// </summary>
+    /// <param name="configuration">Configuração da aplicação.</param>
+    /// <param name="httpClient">Cliente HTTP.</param>
+    /// <param name="logger">Logger.</param>
+    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    public ChatWithOpenAIUseCase(
+        IConfiguration configuration, 
+        HttpClient httpClient,
+        ILogger<ChatWithOpenAIUseCase> logger,
+        IExceptionHandlerService exceptionHandler)
+        : base(logger, exceptionHandler)
     {
-        _validator = validator;
+        _configuration = configuration;
         _httpClient = httpClient;
-        _apiKey = configuration["OpenAI:ApiKey"] ?? throw new ArgumentNullException("Chave da API OpenAI não configurada.");
-        _logger = logger;
     }
 
-    public async Task<OpenAIChatResponse> ExecuteAsync(OpenAIChatRequest request)
+    /// <summary>
+    /// Executa a comunicação com a API do OpenAI.
+    /// </summary>
+    /// <param name="request">Dados da requisição para o OpenAI.</param>
+    /// <returns>Resposta do OpenAI.</returns>
+    public async Task<OpenAIResponse> ExecuteAsync(OpenAIRequest request)
     {
-        _validator.ValidateAndThrow(request);
-
-        if (string.IsNullOrWhiteSpace(request.Prompt))
-            throw new ArgumentException("Prompt é obrigatório.", nameof(request.Prompt));
-
-        var responseFormatInstruction = request.ResponseFormat != null
-            ? $"Retorne a resposta no formato JSON conforme o esquema: {JsonSerializer.Serialize(request.ResponseFormat)}"
-            : "Retorne a resposta em formato JSON.";
-
-        var fullPrompt = $"{request.Prompt}\nDados: {request.Data}\n{responseFormatInstruction}";
-
-        var responseFormat = request.ResponseFormat != null &&
-                             request.ResponseFormat.ContainsKey("type") &&
-                             request.ResponseFormat["type"] == "json_object"
-            ? new { type = "json_object" }
-            : new { type = "text" };
-
-        var payload = new
+        return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            model = "gpt-4o-mini",
+            // Validação dos dados de entrada
+            ValidateRequest(request);
+
+            // Validação da configuração
+            ValidateConfiguration();
+
+            // Preparação da requisição
+            var httpRequest = await PrepareHttpRequestAsync(request);
+
+            // Execução da requisição
+            var response = await ExecuteHttpRequestAsync(httpRequest);
+
+            // Processamento da resposta
+            return await ProcessResponseAsync(response);
+        }, "Comunicação com OpenAI");
+    }
+
+    /// <summary>
+    /// Valida os dados da requisição.
+    /// </summary>
+    /// <param name="request">Requisição a ser validada.</param>
+    private void ValidateRequest(OpenAIRequest request)
+    {
+        if (request == null)
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da requisição são obrigatórios.", new ValidationResult());
+
+        if (string.IsNullOrEmpty(request.Prompt))
+            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt é obrigatório.", new ValidationResult());
+
+        if (request.Prompt.Length > 4000)
+            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt muito longo. Máximo de 4.000 caracteres permitido.", new ValidationResult());
+    }
+
+    /// <summary>
+    /// Valida a configuração necessária.
+    /// </summary>
+    private void ValidateConfiguration()
+    {
+        var apiKey = _configuration["OpenAI:ApiKey"];
+        if (string.IsNullOrEmpty(apiKey))
+            throw new BusinessRuleException("Chave da API do OpenAI não configurada.", "OPENAI_CONFIG");
+
+        var baseUrl = _configuration["OpenAI:BaseUrl"];
+        if (string.IsNullOrEmpty(baseUrl))
+            throw new BusinessRuleException("URL base do OpenAI não configurada.", "OPENAI_CONFIG");
+    }
+
+    /// <summary>
+    /// Prepara a requisição HTTP.
+    /// </summary>
+    /// <param name="request">Dados da requisição.</param>
+    /// <returns>Requisição HTTP preparada.</returns>
+    private async Task<HttpRequestMessage> PrepareHttpRequestAsync(OpenAIRequest request)
+    {
+        var apiKey = _configuration["OpenAI:ApiKey"];
+        var baseUrl = _configuration["OpenAI:BaseUrl"];
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/v1/chat/completions");
+        httpRequest.Headers.Add("Authorization", $"Bearer {apiKey}");
+
+        var requestBody = new
+        {
+            model = "gpt-3.5-turbo",
             messages = new[]
             {
-                new { role = "user", content = fullPrompt }
+                new { role = "user", content = request.Prompt }
             },
-            response_format = responseFormat
+            max_tokens = 1000,
+            temperature = 0.7
         };
 
-        _logger.LogInformation("Enviando payload para OpenAI: {Payload}", JsonSerializer.Serialize(payload));
+        var jsonContent = JsonSerializer.Serialize(requestBody);
+        httpRequest.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
-        _httpClient.DefaultRequestHeaders.Authorization = new("Bearer", _apiKey);
+        return httpRequest;
+    }
 
-        var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
+    /// <summary>
+    /// Executa a requisição HTTP.
+    /// </summary>
+    /// <param name="httpRequest">Requisição HTTP.</param>
+    /// <returns>Resposta HTTP.</returns>
+    private async Task<HttpResponseMessage> ExecuteHttpRequestAsync(HttpRequestMessage httpRequest)
+    {
+        try
+        {
+            return await _httpClient.SendAsync(httpRequest);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new BusinessRuleException($"Erro na comunicação com a API do OpenAI: {ex.Message}", "OPENAI_COMMUNICATION");
+        }
+    }
 
+    /// <summary>
+    /// Processa a resposta da API.
+    /// </summary>
+    /// <param name="response">Resposta HTTP.</param>
+    /// <returns>Resposta processada.</returns>
+    private async Task<OpenAIResponse> ProcessResponseAsync(HttpResponseMessage response)
+    {
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
-            _logger.LogError("Erro na API da OpenAI: {StatusCode}. Detalhes: {ErrorContent}", response.StatusCode, errorContent);
-            throw new HttpRequestException($"Erro na API da OpenAI: {response.StatusCode}. Detalhes: {errorContent}");
+            throw new BusinessRuleException($"Erro na API do OpenAI: {response.StatusCode} - {errorContent}", "OPENAI_API_ERROR");
         }
 
-        var responseJson = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation("Resposta bruta da OpenAI: {ResponseJson}", responseJson);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var openAIResponse = JsonSerializer.Deserialize<dynamic>(responseContent);
 
-        var openAIResponse = JsonSerializer.Deserialize<OpenAIResponse>(
-            responseJson,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-        );
-
-        if (openAIResponse?.Choices == null || openAIResponse.Choices.Length == 0)
-        {
-            _logger.LogWarning("Nenhuma escolha retornada pela OpenAI.");
-            return new OpenAIChatResponse { ResponseJson = null };
-        }
-
-        var rawContent = openAIResponse.Choices.FirstOrDefault()?.Message?.Content ?? string.Empty;
-
-        // Remove blocos ```json, ``` e qualquer texto antes ou depois do JSON
-        var jsonStart = rawContent.IndexOf('{');
-        var jsonEnd = rawContent.LastIndexOf('}');
-
-        if (jsonStart < 0 || jsonEnd < 0 || jsonEnd <= jsonStart)
-        {
-            _logger.LogError("Resposta da OpenAI com formato inválido.");
-            throw new HttpRequestException("Resposta da OpenAI com formato inválido.");
-        }
-
-        var cleanContent = rawContent.Substring(jsonStart, jsonEnd - jsonStart + 1).Trim();
-
-        _logger.LogInformation("Resposta JSON extraída da OpenAI: {CleanContent}", cleanContent);
-
-        Dictionary<string, string>? parsedJson = null;
+        // Processa a resposta e converte para o formato esperado
+        var responseData = new Dictionary<string, string>();
+        
         try
         {
-            parsedJson = JsonSerializer.Deserialize<Dictionary<string, string>>(cleanContent);
+            // Extrai a resposta do modelo
+            var choices = openAIResponse?.GetProperty("choices");
+            if (choices != null && choices.GetArrayLength() > 0)
+            {
+                var firstChoice = choices[0];
+                var message = firstChoice.GetProperty("message");
+                var content = message.GetProperty("content").GetString();
+                
+                if (!string.IsNullOrEmpty(content))
+                {
+                    responseData["response"] = content;
+                }
+            }
         }
-        catch (JsonException ex)
+        catch
         {
-            _logger.LogError(ex, "Erro ao desserializar a resposta da OpenAI");
-            throw new HttpRequestException("Resposta da OpenAI com formato inválido.");
+            throw new BusinessRuleException("Resposta inválida da API do OpenAI.", "OPENAI_RESPONSE_INVALID");
         }
 
-        return new OpenAIChatResponse
+        return new OpenAIResponse
         {
-            ResponseJson = parsedJson
+            ResponseJson = responseData
         };
-    }
-
-    private class OpenAIResponse
-    {
-        public OpenAIChoice[]? Choices { get; set; }
-    }
-
-    private class OpenAIChoice
-    {
-        public OpenAIMessage? Message { get; set; }
-    }
-
-    private class OpenAIMessage
-    {
-        public string Content { get; set; } = string.Empty;
     }
 }

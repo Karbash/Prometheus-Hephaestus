@@ -21,6 +21,7 @@ using Hephaestus.Application.UseCases.Tag;
 using Hephaestus.Application.UseCases.Additional;
 using Hephaestus.Application.UseCases.Promotion;
 using Hephaestus.Application.Validators;
+using Hephaestus.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hephaestus.Application;
@@ -31,6 +32,7 @@ public static class ApplicationServicesRegistration
     {
         AddUseCases(services);
         AddValidators(services);
+        AddServices(services);
         return services;
     }
 
@@ -63,7 +65,7 @@ public static class ApplicationServicesRegistration
 
         // Tag UseCases
         services.AddScoped<ICreateTagUseCase, CreateTagUseCase>();
-        services.AddScoped<IGetAllTagsByTenantUseCase, GetAllTagsByTenantUseCase>();
+        services.AddScoped<IGetAllTagsByTenantUseCase, Hephaestus.Application.UseCases.Tags.GetAllTagsByTenantUseCase>();
         services.AddScoped<IDeleteTagUseCase, DeleteTagUseCase>();
 
         // Promotion UseCases
@@ -85,11 +87,21 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IGetCompanyProfileUseCase, GetCompanyProfileUseCase>();
 
         // OpenAI
-        services.AddHttpClient<IChatWithOpenAIUseCase, ChatWithOpenAIUseCase>();
+        services.AddHttpClient<IChatWithOpenAIUseCase, ChatWithOpenAIUseCase>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(60);
+            client.DefaultRequestHeaders.Add("User-Agent", "Hephaestus-API/1.0");
+        });
         services.AddScoped<IChatWithOpenAIUseCase, ChatWithOpenAIUseCase>();
 
         // Database
         services.AddScoped<IExecuteQueryUseCase, ExecuteQueryUseCase>();
+    }
+
+    private static void AddServices(IServiceCollection services)
+    {
+        // Exception Handling
+        services.AddSingleton<IExceptionHandlerService, ExceptionHandlerService>();
     }
 
     private static void AddValidators(IServiceCollection services)
@@ -112,7 +124,7 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IValidator<CustomerRequest>, CustomerRequestValidator>();
 
         // OpenAI Validators
-        services.AddScoped<IValidator<OpenAIChatRequest>, OpenAIChatRequestValidator>();
+        services.AddScoped<IValidator<OpenAIRequest>, OpenAIChatRequestValidator>();
 
         // Database Validators
         services.AddScoped<IValidator<ExecuteQueryRequest>, ExecuteQueryRequestValidator>();

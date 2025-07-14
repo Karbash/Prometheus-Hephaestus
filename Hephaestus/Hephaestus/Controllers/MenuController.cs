@@ -8,6 +8,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Hephaestus.Controllers;
 
+/// <summary>
+/// Controller para gerenciamento de itens do cardápio.
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = "Tenant")]
@@ -20,6 +23,15 @@ public class MenuController : ControllerBase
     private readonly IDeleteMenuItemUseCase _deleteMenuItemUseCase;
     private readonly ILogger<MenuController> _logger;
 
+    /// <summary>
+    /// Inicializa uma nova instância do <see cref="MenuController"/>.
+    /// </summary>
+    /// <param name="createMenuItemUseCase">Caso de uso para criação de itens do cardápio.</param>
+    /// <param name="getMenuItemsUseCase">Caso de uso para listagem de itens do cardápio.</param>
+    /// <param name="getMenuItemByIdUseCase">Caso de uso para obtenção de item do cardápio por ID.</param>
+    /// <param name="updateMenuItemUseCase">Caso de uso para atualização de itens do cardápio.</param>
+    /// <param name="deleteMenuItemUseCase">Caso de uso para remoção de itens do cardápio.</param>
+    /// <param name="logger">Logger para registro de eventos.</param>
     public MenuController(
         ICreateMenuItemUseCase createMenuItemUseCase,
         IGetMenuItemsUseCase getMenuItemsUseCase,
@@ -36,6 +48,36 @@ public class MenuController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Cria um novo item do cardápio.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```json
+    /// {
+    ///   "id": "123e4567-e89b-12d3-a456-426614174001"
+    /// }
+    /// ```
+    /// Exemplo de erro de validação:
+    /// ```json
+    /// {
+    ///   "error": {
+    ///     "code": "VALIDATION_ERROR",
+    ///     "message": "Erro de validação",
+    ///     "details": {
+    ///       "errors": [
+    ///         {
+    ///           "field": "Name",
+    ///           "message": "Nome é obrigatório."
+    ///         }
+    ///       ]
+    ///     }
+    ///   }
+    /// }
+    /// ```
+    /// </remarks>
+    /// <param name="request">Dados do item do cardápio a ser criado.</param>
+    /// <returns>ID do item criado.</returns>
     [HttpPost]
     [SwaggerOperation(Summary = "Cria item do cardápio", Description = "Cria um novo item do cardápio para o tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(string))]
@@ -44,32 +86,34 @@ public class MenuController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> CreateMenuItem([FromBody] CreateMenuItemRequest request)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var id = await _createMenuItemUseCase.ExecuteAsync(request, tenantId);
-            return CreatedAtAction(nameof(GetMenuItemById), new { id }, new { id });
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning(ex, "Erro de validação ao criar item do cardápio.");
-            return BadRequest(new { errors = ex.Errors });
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao criar item do cardápio.");
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao criar item do cardápio.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var id = await _createMenuItemUseCase.ExecuteAsync(request, tenantId);
+        return CreatedAtAction(nameof(GetMenuItemById), new { id }, new { id });
     }
 
+    /// <summary>
+    /// Lista itens do cardápio.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```json
+    /// [
+    ///   {
+    ///     "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///     "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///     "name": "X-Burger",
+    ///     "description": "Hambúrguer com queijo e salada",
+    ///     "categoryId": "789e0123-e89b-12d3-a456-426614174003",
+    ///     "price": 25.90,
+    ///     "isAvailable": true,
+    ///     "tagIds": ["tag1", "tag2"],
+    ///     "availableAdditionalIds": ["add1", "add2"],
+    ///     "imageUrl": "https://example.com/burger.jpg"
+    ///   }
+    /// ]
+    /// ```
+    /// </remarks>
+    /// <returns>Lista de itens do cardápio.</returns>
     [HttpGet]
     [SwaggerOperation(Summary = "Lista itens do cardápio", Description = "Retorna a lista de itens do cardápio do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<MenuItemResponse>))]
@@ -77,22 +121,39 @@ public class MenuController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetMenuItems()
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var menuItems = await _getMenuItemsUseCase.ExecuteAsync(tenantId);
-            return Ok(menuItems);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao listar itens do cardápio.");
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var menuItems = await _getMenuItemsUseCase.ExecuteAsync(tenantId);
+        return Ok(menuItems);
     }
 
+    /// <summary>
+    /// Obtém item do cardápio por ID.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```json
+    /// {
+    ///   "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///   "name": "X-Burger",
+    ///   "description": "Hambúrguer com queijo e salada",
+    ///   "categoryId": "789e0123-e89b-12d3-a456-426614174003",
+    ///   "price": 25.90,
+    ///   "isAvailable": true,
+    ///   "tagIds": ["tag1", "tag2"],
+    ///   "availableAdditionalIds": ["add1", "add2"],
+    ///   "imageUrl": "https://example.com/burger.jpg"
+    /// }
+    /// ```
+    /// Exemplo de erro:
+    /// ```json
+    /// {
+    ///   "error": "Item do cardápio não encontrado."
+    /// }
+    /// ```
+    /// </remarks>
+    /// <param name="id">ID do item do cardápio.</param>
+    /// <returns>Detalhes do item do cardápio.</returns>
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Obtém item do cardápio por ID", Description = "Retorna detalhes de um item do cardápio. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MenuItemResponse))]
@@ -101,27 +162,29 @@ public class MenuController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> GetMenuItemById(string id)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            var menuItem = await _getMenuItemByIdUseCase.ExecuteAsync(id, tenantId);
-            return Ok(menuItem);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Item do cardápio {Id} não encontrado.", id);
-            return NotFound(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao obter item do cardápio {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        var menuItem = await _getMenuItemByIdUseCase.ExecuteAsync(id, tenantId);
+        return Ok(menuItem);
     }
 
+    /// <summary>
+    /// Atualiza item do cardápio.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
+    /// ```
+    /// Exemplo de erro:
+    /// ```json
+    /// {
+    ///   "error": "Item do cardápio não encontrado."
+    /// }
+    /// ```
+    /// </remarks>
+    /// <param name="id">ID do item do cardápio.</param>
+    /// <param name="request">Dados atualizados do item do cardápio.</param>
+    /// <returns>Status da atualização.</returns>
     [HttpPut("{id}")]
     [SwaggerOperation(Summary = "Atualiza item do cardápio", Description = "Atualiza um item do cardápio do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -131,42 +194,28 @@ public class MenuController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> UpdateMenuItem(string id, [FromBody] UpdateMenuItemRequest request)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
-
-            await _updateMenuItemUseCase.ExecuteAsync(id, request, tenantId);
-            return NoContent();
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning(ex, "Erro de validação ao atualizar item do cardápio {Id}.", id);
-            return BadRequest(new { errors = ex.Errors });
-        }
-        catch (ArgumentException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar item do cardápio {Id}: {Message}.", id, ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogWarning(ex, "Item do cardápio {Id} não encontrado.", id);
-            return NotFound(new { error = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "Erro ao atualizar item do cardápio {Id}: {Message}.", id, ex.Message);
-            return BadRequest(new { error = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao atualizar item do cardápio {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        var tenantId = GetTenantId();
+        await _updateMenuItemUseCase.ExecuteAsync(id, request, tenantId);
+        return NoContent();
     }
 
+    /// <summary>
+    /// Remove item do cardápio.
+    /// </summary>
+    /// <remarks>
+    /// Exemplo de resposta de sucesso:
+    /// ```
+    /// Status: 204 No Content
+    /// ```
+    /// Exemplo de erro:
+    /// ```json
+    /// {
+    ///   "error": "Item do cardápio não encontrado."
+    /// }
+    /// ```
+    /// </remarks>
+    /// <param name="id">ID do item do cardápio.</param>
+    /// <returns>Status da remoção.</returns>
     [HttpDelete("{id}")]
     [SwaggerOperation(Summary = "Remove item do cardápio", Description = "Remove um item do cardápio do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -175,24 +224,24 @@ public class MenuController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
     public async Task<IActionResult> DeleteMenuItem(string id)
     {
-        try
-        {
-            var tenantId = User.FindFirst("TenantId")?.Value;
-            if (string.IsNullOrEmpty(tenantId))
-                return Unauthorized(new { error = "TenantId não encontrado no token." });
+        var tenantId = GetTenantId();
+        await _deleteMenuItemUseCase.ExecuteAsync(id, tenantId);
+        return NoContent();
+    }
 
-            await _deleteMenuItemUseCase.ExecuteAsync(id, tenantId);
-            return NoContent();
-        }
-        catch (KeyNotFoundException ex)
+    /// <summary>
+    /// Obtém o TenantId do token de autenticação.
+    /// </summary>
+    /// <returns>TenantId do token.</returns>
+    private string GetTenantId()
+    {
+        var tenantId = User.FindFirst("TenantId")?.Value;
+        if (string.IsNullOrEmpty(tenantId))
         {
-            _logger.LogWarning(ex, "Item do cardápio {Id} não encontrado.", id);
-            return NotFound(new { error = ex.Message });
+            _logger.LogWarning("TenantId não encontrado no token para o usuário {UserId}", 
+                User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            throw new UnauthorizedAccessException("TenantId não encontrado no token.");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao remover item do cardápio {Id}.", id);
-            return StatusCode(500, new { error = "Erro interno do servidor" });
-        }
+        return tenantId;
     }
 }

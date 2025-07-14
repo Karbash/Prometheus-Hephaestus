@@ -2,6 +2,7 @@
 
 public class CustomerRequest
 {
+    public string? Id { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;
     public string? Name { get; set; }
     public string State { get; set; } = string.Empty; // Novo campo obrigatório

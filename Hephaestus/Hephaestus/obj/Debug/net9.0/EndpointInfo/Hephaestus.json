@@ -1,25 +1,968 @@
 {
   "openapi": "3.0.4",
   "info": {
-    "title": "Hephaestus",
-    "version": "1.0"
+    "title": "Hephaestus API",
+    "description": "API para gerenciamento de pedidos.",
+    "version": "v1"
   },
   "paths": {
-    "/api/Auth/login": {
+    "/api/Additional": {
       "post": {
         "tags": [
-          "Auth"
+          "Additional"
         ],
+        "summary": "Cria um novo adicional.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\nExemplo de erro de validação:\r\n```json\r\n{\r\n  \"error\": {\r\n    \"code\": \"VALIDATION_ERROR\",\r\n    \"message\": \"Erro de validação\",\r\n    \"details\": {\r\n      \"errors\": [\r\n        {\r\n          \"field\": \"Name\",\r\n          \"message\": \"Nome é obrigatório.\"\r\n        }\r\n      ]\r\n    }\r\n  }\r\n}\r\n```",
+        "requestBody": {
+          "description": "Dados do adicional a ser criado.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdditionalRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdditionalRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdditionalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Additional"
+        ],
+        "summary": "Lista adicionais do tenant.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Queijo Extra\",\r\n    \"description\": \"Adicional de queijo\",\r\n    \"price\": 3.50,\r\n    \"isAvailable\": true\r\n  }\r\n]\r\n```",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdditionalResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdditionalResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdditionalResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Additional/{id}": {
+      "get": {
+        "tags": [
+          "Additional"
+        ],
+        "summary": "Obtém adicional por ID.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Queijo Extra\",\r\n  \"description\": \"Adicional de queijo\",\r\n  \"price\": 3.50,\r\n  \"isAvailable\": true\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Adicional não encontrado.\"\r\n}\r\n```",
         "parameters": [
           {
-            "name": "mfaCode",
-            "in": "query",
+            "name": "id",
+            "in": "path",
+            "description": "ID do adicional.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdditionalResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdditionalResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdditionalResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Additional"
+        ],
+        "summary": "Atualiza adicional.",
+        "description": "Exemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Adicional não encontrado.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do adicional.",
+            "required": true,
             "schema": {
               "type": "string"
             }
           }
         ],
         "requestBody": {
+          "description": "Dados atualizados do adicional.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdditionalRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdditionalRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdditionalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Additional"
+        ],
+        "summary": "Remove adicional.",
+        "description": "Exemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Adicional não encontrado.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do adicional.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Administration/company": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todas as empresas.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"name\": \"Empresa Exemplo\",\r\n    \"email\": \"exemplo@empresa.com\",\r\n    \"phoneNumber\": \"123456789\",\r\n    \"isEnabled\": true,\r\n    \"feeType\": \"Percentage\",\r\n    \"feeValue\": 5.0,\r\n    \"city\": \"São Paulo\",\r\n    \"neighborhood\": \"Vila Mariana\",\r\n    \"street\": \"Rua Exemplo\",\r\n    \"number\": \"123\",\r\n    \"latitude\": -23.550520,\r\n    \"longitude\": -46.633308,\r\n    \"slogan\": \"O melhor da cidade!\",\r\n    \"description\": \"Descrição da empresa.\"\r\n  }\r\n]\r\n```",
+        "parameters": [
+          {
+            "name": "isEnabled",
+            "in": "query",
+            "description": "Filtro opcional para empresas habilitadas (true) ou desabilitadas (false).",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Administration/company/{id}": {
+      "put": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Atualiza configurações de uma empresa.",
+        "description": "Exemplo de corpo da requisição:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Empresa Atualizada\",\r\n  \"email\": \"atualizada@empresa.com\",\r\n  \"phoneNumber\": \"987654321\",\r\n  \"apiKey\": \"xyz789\",\r\n  \"feeType\": \"Percentage\",\r\n  \"feeValue\": 5.0,\r\n  \"isEnabled\": true,\r\n  \"city\": \"Rio de Janeiro\",\r\n  \"neighborhood\": \"Copacabana\",\r\n  \"street\": \"Avenida Nova\",\r\n  \"number\": \"456\",\r\n  \"latitude\": -22.906847,\r\n  \"longitude\": -43.172896,\r\n  \"slogan\": \"Novo slogan!\",\r\n  \"description\": \"Nova descrição.\"\r\n}\r\n```\r\nExemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Empresa não encontrada.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da empresa a ser atualizada.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados da empresa.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompanyRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompanyRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompanyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Administration/sales/admin": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Relatório consolidado de vendas de todas as empresas.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"totalSales\": 1000.00,\r\n  \"totalTransactions\": 50,\r\n  \"averageTicket\": 20.00,\r\n  \"byCompany\": [\r\n    {\r\n      \"companyId\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n      \"companyName\": \"Empresa Exemplo\",\r\n      \"totalSales\": 500.00,\r\n      \"totalTransactions\": 25\r\n    }\r\n  ]\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Datas inválidas.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Data inicial do relatório no formato ISO 8601 (ex.: 2024-01-01). Opcional.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Data final do relatório no formato ISO 8601 (ex.: 2024-12-31). Opcional.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "description": "ID da empresa (tenant) para filtrar vendas. Opcional.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesReportResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesReportResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesReportResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Administration/audit-log": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista logs de auditoria de ações administrativas.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"userId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"action\": \"UpdateCompany\",\r\n    \"entityId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n    \"description\": \"Empresa atualizada com sucesso\",\r\n    \"timestamp\": \"2024-01-01T12:00:00Z\"\r\n  }\r\n]\r\n```",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "query",
+            "description": "ID do administrador para filtrar logs. Opcional.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Data inicial para filtrar logs. Opcional.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Data final para filtrar logs. Opcional.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditLogResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditLogResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditLogResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Administration/company/radius": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista empresas dentro de um raio específico.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"name\": \"Empresa Próxima\",\r\n    \"email\": \"proxima@empresa.com\",\r\n    \"phoneNumber\": \"123456789\",\r\n    \"isEnabled\": true,\r\n    \"feeType\": \"Percentage\",\r\n    \"feeValue\": 5.0,\r\n    \"city\": \"São Paulo\",\r\n    \"neighborhood\": \"Vila Mariana\",\r\n    \"street\": \"Rua Exemplo\",\r\n    \"number\": \"123\",\r\n    \"latitude\": -23.550520,\r\n    \"longitude\": -46.633308,\r\n    \"slogan\": \"O melhor da cidade!\",\r\n    \"description\": \"Descrição da empresa.\"\r\n  }\r\n]\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Coordenadas inválidas.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "centerLat",
+            "in": "query",
+            "description": "Latitude do centro do raio.",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "centerLon",
+            "in": "query",
+            "description": "Longitude do centro do raio.",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "radiusKm",
+            "in": "query",
+            "description": "Raio em quilômetros.",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "description": "Filtro opcional por cidade.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "neighborhood",
+            "in": "query",
+            "description": "Filtro opcional por bairro.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Autentica um usuário e retorna um token JWT.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Credenciais inválidas.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "mfaCode",
+            "in": "query",
+            "description": "Código MFA opcional para administradores.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados de login (e-mail e senha).",
           "content": {
             "application/json": {
               "schema": {
@@ -40,7 +983,46 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
           }
         }
       }
@@ -50,7 +1032,10 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Registra uma nova empresa (apenas administradores com MFA validado).",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"companyId\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"E-mail já registrado.\"\r\n}\r\n```",
         "requestBody": {
+          "description": "Dados da empresa a ser registrada.",
           "content": {
             "application/json": {
               "schema": {
@@ -71,7 +1056,60 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
           }
         }
       }
@@ -81,7 +1119,10 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Solicita um token para redefinição de senha.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"token\": \"ABC123\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"E-mail não encontrado.\"\r\n}\r\n```",
         "requestBody": {
+          "description": "E-mail do usuário.",
           "content": {
             "application/json": {
               "schema": {
@@ -102,7 +1143,46 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
           }
         }
       }
@@ -112,7 +1192,10 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Confirma a redefinição de senha com um token.",
+        "description": "Exemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Token inválido ou expirado.\"\r\n}\r\n```",
         "requestBody": {
+          "description": "E-mail, token e nova senha.",
           "content": {
             "application/json": {
               "schema": {
@@ -134,6 +1217,34 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
           }
         }
       }
@@ -143,9 +1254,64 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Configura a autenticação multifator (MFA) para um administrador.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"secret\": \"JBSWY3DPEHPK3PXP\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Apenas administradores podem configurar MFA.\"\r\n}\r\n```",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
           }
         }
       }
@@ -155,7 +1321,10 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Valida um código MFA e retorna um novo token JWT com MFA validado.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Código MFA inválido.\"\r\n}\r\n```",
         "requestBody": {
+          "description": "E-mail e código MFA.",
           "content": {
             "application/json": {
               "schema": {
@@ -176,7 +1345,60 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
           }
         }
       }
@@ -186,9 +1408,2145 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Retorna os dados do usuário logado.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Admin\",\r\n  \"email\": \"admin@example.com\",\r\n  \"role\": \"Admin\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Usuário não encontrado.\"\r\n}\r\n```",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedUser"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedUser"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Company/{id}/profile": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Obtém o perfil completo de uma empresa.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Restaurante Exemplo\",\r\n  \"email\": \"contato@restaurante.com\",\r\n  \"phoneNumber\": \"11987654321\",\r\n  \"isEnabled\": true,\r\n  \"feeType\": \"Percentage\",\r\n  \"feeValue\": 5.0,\r\n  \"state\": \"SP\",\r\n  \"city\": \"São Paulo\",\r\n  \"neighborhood\": \"Centro\",\r\n  \"street\": \"Rua das Flores\",\r\n  \"number\": \"123\",\r\n  \"latitude\": -23.5505,\r\n  \"longitude\": -46.6333,\r\n  \"slogan\": \"A melhor comida da cidade!\",\r\n  \"description\": \"Restaurante especializado em pratos tradicionais.\",\r\n  \"images\": [\r\n    {\r\n      \"id\": \"img1\",\r\n      \"url\": \"https://example.com/image1.jpg\",\r\n      \"description\": \"Fachada do restaurante\"\r\n    }\r\n  ],\r\n  \"operatingHours\": [\r\n    {\r\n      \"dayOfWeek\": 1,\r\n      \"openTime\": \"08:00\",\r\n      \"closeTime\": \"22:00\",\r\n      \"isOpen\": true\r\n    }\r\n  ],\r\n  \"socialMedia\": [\r\n    {\r\n      \"platform\": \"Instagram\",\r\n      \"url\": \"https://instagram.com/restaurante\"\r\n    }\r\n  ]\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Empresa não encontrada.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da empresa.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyProfileResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyProfileResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer": {
+      "put": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Atualiza ou cadastra dados de um cliente.",
+        "description": "Exemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
+        "requestBody": {
+          "description": "Dados do cliente (nome, endereço, latitude, longitude).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Lista clientes do tenant.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"phoneNumber\": \"11987654321\",\r\n    \"name\": \"João Silva\",\r\n    \"state\": \"SP\",\r\n    \"city\": \"São Paulo\",\r\n    \"street\": \"Rua das Flores\",\r\n    \"number\": \"123\",\r\n    \"latitude\": -23.5505,\r\n    \"longitude\": -46.6333,\r\n    \"createdAt\": \"2024-01-01T12:00:00Z\"\r\n  }\r\n]\r\n```",
+        "parameters": [
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "description": "Número de telefone para filtrar clientes (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer/{id}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Obtém detalhes de um cliente específico.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"phoneNumber\": \"11987654321\",\r\n  \"name\": \"João Silva\",\r\n  \"state\": \"SP\",\r\n  \"city\": \"São Paulo\",\r\n  \"street\": \"Rua das Flores\",\r\n  \"number\": \"123\",\r\n  \"latitude\": -23.5505,\r\n  \"longitude\": -46.6333,\r\n  \"createdAt\": \"2024-01-01T12:00:00Z\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Cliente não encontrado.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do cliente (GUID).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Database/execute-query": {
+      "post": {
+        "tags": [
+          "Database"
+        ],
+        "summary": "Executa uma query SQL de consulta.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"columns\": [\"id\", \"name\", \"email\"],\r\n  \"rows\": [\r\n    [\"1\", \"João Silva\", \"joao@email.com\"],\r\n    [\"2\", \"Maria Santos\", \"maria@email.com\"]\r\n  ],\r\n  \"rowCount\": 2\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Query inválida. Apenas comandos SELECT são permitidos.\"\r\n}\r\n```",
+        "requestBody": {
+          "description": "Query SQL a ser executada.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecuteQueryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecuteQueryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecuteQueryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecuteQueryResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecuteQueryResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecuteQueryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Menu": {
+      "post": {
+        "tags": [
+          "Menu"
+        ],
+        "summary": "Cria um novo item do cardápio.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\nExemplo de erro de validação:\r\n```json\r\n{\r\n  \"error\": {\r\n    \"code\": \"VALIDATION_ERROR\",\r\n    \"message\": \"Erro de validação\",\r\n    \"details\": {\r\n      \"errors\": [\r\n        {\r\n          \"field\": \"Name\",\r\n          \"message\": \"Nome é obrigatório.\"\r\n        }\r\n      ]\r\n    }\r\n  }\r\n}\r\n```",
+        "requestBody": {
+          "description": "Dados do item do cardápio a ser criado.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuItemRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuItemRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Menu"
+        ],
+        "summary": "Lista itens do cardápio.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"X-Burger\",\r\n    \"description\": \"Hambúrguer com queijo e salada\",\r\n    \"categoryId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n    \"price\": 25.90,\r\n    \"isAvailable\": true,\r\n    \"tagIds\": [\"tag1\", \"tag2\"],\r\n    \"availableAdditionalIds\": [\"add1\", \"add2\"],\r\n    \"imageUrl\": \"https://example.com/burger.jpg\"\r\n  }\r\n]\r\n```",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItemResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItemResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItemResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Menu/{id}": {
+      "get": {
+        "tags": [
+          "Menu"
+        ],
+        "summary": "Obtém item do cardápio por ID.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"X-Burger\",\r\n  \"description\": \"Hambúrguer com queijo e salada\",\r\n  \"categoryId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n  \"price\": 25.90,\r\n  \"isAvailable\": true,\r\n  \"tagIds\": [\"tag1\", \"tag2\"],\r\n  \"availableAdditionalIds\": [\"add1\", \"add2\"],\r\n  \"imageUrl\": \"https://example.com/burger.jpg\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Item do cardápio não encontrado.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do item do cardápio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Menu"
+        ],
+        "summary": "Atualiza item do cardápio.",
+        "description": "Exemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Item do cardápio não encontrado.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do item do cardápio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados do item do cardápio.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuItemRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuItemRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Menu"
+        ],
+        "summary": "Remove item do cardápio.",
+        "description": "Exemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Item do cardápio não encontrado.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do item do cardápio.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MenuControllerSimplified": {
+      "post": {
+        "tags": [
+          "MenuControllerSimplified"
+        ],
+        "summary": "Cria um novo item do cardápio.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuItemRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuItemRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "MenuControllerSimplified"
+        ],
+        "summary": "Lista itens do cardápio.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItemResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItemResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItemResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MenuControllerSimplified/{id}": {
+      "get": {
+        "tags": [
+          "MenuControllerSimplified"
+        ],
+        "summary": "Obtém item do cardápio por ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "MenuControllerSimplified"
+        ],
+        "summary": "Atualiza item do cardápio.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuItemRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuItemRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "MenuControllerSimplified"
+        ],
+        "summary": "Remove item do cardápio.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OpenAI/chat": {
+      "post": {
+        "tags": [
+          "OpenAI"
+        ],
+        "summary": "Consulta o chat da OpenAI.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"response\": \"Olá! Como posso ajudá-lo hoje?\",\r\n  \"usage\": {\r\n    \"promptTokens\": 10,\r\n    \"completionTokens\": 15,\r\n    \"totalTokens\": 25\r\n  }\r\n}\r\n```\r\nExemplo de erro de validação:\r\n```json\r\n{\r\n  \"error\": {\r\n    \"code\": \"VALIDATION_ERROR\",\r\n    \"message\": \"Erro de validação\",\r\n    \"details\": {\r\n      \"errors\": [\r\n        {\r\n          \"field\": \"Prompt\",\r\n          \"message\": \"Prompt é obrigatório.\"\r\n        }\r\n      ]\r\n    }\r\n  }\r\n}\r\n```",
+        "requestBody": {
+          "description": "Dados da consulta à OpenAI.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenAIRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenAIRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenAIRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenAIResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Promotion": {
+      "post": {
+        "tags": [
+          "Promotion"
+        ],
+        "summary": "Cria uma nova promoção para o tenant.",
+        "description": "Exemplo de corpo da requisição:\r\n```json\r\n{\r\n  \"name\": \"Desconto de 10%\",\r\n  \"description\": \"10% de desconto em pedidos\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsagePerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00\",\r\n  \"endDate\": \"2025-12-31T23:59:59\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"https://exemplo.com/imagem.jpg\"\r\n}\r\n```\r\nExemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\nExemplo de erro de validação:\r\n```json\r\n{\r\n  \"error\": {\r\n    \"code\": \"VALIDATION_ERROR\",\r\n    \"message\": \"Erro de validação\",\r\n    \"details\": {\r\n      \"errors\": [\r\n        {\r\n          \"field\": \"Name\",\r\n          \"message\": \"Nome é obrigatório.\"\r\n        }\r\n      ]\r\n    }\r\n  }\r\n}\r\n```",
+        "requestBody": {
+          "description": "Dados da promoção a ser criada.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePromotionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePromotionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePromotionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Promotion"
+        ],
+        "summary": "Lista promoções do tenant.",
+        "description": "Exemplo de requisição:\r\n```http\r\nGET /api/promotion?isActive=true\r\n```\r\nExemplo de resposta de sucesso:\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Desconto de 10%\",\r\n    \"description\": \"10% de desconto em pedidos\",\r\n    \"discountType\": \"Percentage\",\r\n    \"discountValue\": 10.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 50.00,\r\n    \"maxUsagePerCustomer\": 1,\r\n    \"maxTotalUses\": 100,\r\n    \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n    \"startDate\": \"2025-07-12T00:00:00\",\r\n    \"endDate\": \"2025-12-31T23:59:59\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": \"https://exemplo.com/imagem.jpg\"\r\n  }\r\n]\r\n```",
+        "parameters": [
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "Filtro opcional para promoções ativas (true) ou inativas (false).",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromotionResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromotionResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromotionResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Promotion/{id}": {
+      "get": {
+        "tags": [
+          "Promotion"
+        ],
+        "summary": "Obtém detalhes de uma promoção por ID.",
+        "description": "Exemplo de requisição:\r\n```http\r\nGET /api/promotion/123e4567-e89b-12d3-a456-426614174001\r\n```\r\nExemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Desconto de 10%\",\r\n  \"description\": \"10% de desconto em pedidos\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsagePerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00\",\r\n  \"endDate\": \"2025-12-31T23:59:59\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"https://exemplo.com/imagem.jpg\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Promoção não encontrada.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da promoção (GUID).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Promotion"
+        ],
+        "summary": "Atualiza uma promoção do tenant.",
+        "description": "Exemplo de corpo da requisição:\r\n```json\r\n{\r\n  \"name\": \"Desconto de 15%\",\r\n  \"description\": \"15% de desconto em pedidos\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 15.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 60.00,\r\n  \"maxUsagePerCustomer\": 2,\r\n  \"maxTotalUses\": 200,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00\",\r\n  \"endDate\": \"2025-12-31T23:59:59\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"https://exemplo.com/imagem.jpg\"\r\n}\r\n```\r\nExemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Promoção não encontrada.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da promoção a ser atualizada.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados da promoção.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePromotionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePromotionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePromotionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Promotion"
+        ],
+        "summary": "Remove uma promoção do tenant.",
+        "description": "Exemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Promoção não encontrada.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da promoção a ser removida.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Promotion/notify": {
+      "post": {
+        "tags": [
+          "Promotion"
+        ],
+        "summary": "Notifica uma promoção via WhatsApp.",
+        "description": "Exemplo de corpo da requisição:\r\n```json\r\n{\r\n  \"promotionId\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"phoneNumbers\": [\"11987654321\", \"11987654322\"],\r\n  \"message\": \"Promoção especial para você!\"\r\n}\r\n```\r\nExemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Promoção não encontrada.\"\r\n}\r\n```",
+        "requestBody": {
+          "description": "Dados da notificação.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotifyPromotionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotifyPromotionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotifyPromotionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Tag": {
+      "post": {
+        "tags": [
+          "Tag"
+        ],
+        "summary": "Cria uma nova tag.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Vegetariano\"\r\n}\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Tag já registrada para este tenant.\"\r\n}\r\n```",
+        "requestBody": {
+          "description": "Dados da tag a ser criada.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tag"
+        ],
+        "summary": "Lista todas as tags de um tenant.",
+        "description": "Exemplo de resposta de sucesso:\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Vegetariano\"\r\n  },\r\n  {\r\n    \"id\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Sem Glúten\"\r\n  }\r\n]\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Tenants só podem listar suas próprias tags.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "description": "ID do tenant para listar as tags.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Tag/{id}": {
+      "delete": {
+        "tags": [
+          "Tag"
+        ],
+        "summary": "Exclui uma tag.",
+        "description": "Exemplo de resposta de sucesso:\r\n```\r\nStatus: 204 No Content\r\n```\r\nExemplo de erro:\r\n```json\r\n{\r\n  \"error\": \"Tag não encontrada.\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da tag a ser excluída.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
           }
         }
       }
@@ -196,6 +3554,503 @@
   },
   "components": {
     "schemas": {
+      "AdditionalResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuditLogResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "entityId": {
+            "type": "string",
+            "nullable": true
+          },
+          "details": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompanyImageResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageType": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompanyOperatingHourResponse": {
+        "type": "object",
+        "properties": {
+          "dayOfWeek": {
+            "type": "string",
+            "nullable": true
+          },
+          "openTime": {
+            "type": "string",
+            "nullable": true
+          },
+          "closeTime": {
+            "type": "string",
+            "nullable": true
+          },
+          "isClosed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompanyProfileResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "neighborhood": {
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "slogan": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanyImageResponse"
+            },
+            "nullable": true
+          },
+          "operatingHours": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanyOperatingHourResponse"
+            },
+            "nullable": true
+          },
+          "socialMedia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanySocialMediaResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompanyResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean"
+          },
+          "feeType": {
+            "type": "string",
+            "nullable": true
+          },
+          "feeValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "neighborhood": {
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "slogan": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompanySocialMediaResponse": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateAdditionalRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateMenuItemRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "availableAdditionalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreatePromotionRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "discountType": {
+            "type": "string",
+            "nullable": true
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "menuItemId": {
+            "type": "string",
+            "nullable": true
+          },
+          "minOrderValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "maxUsagePerCustomer": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "maxTotalUses": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "applicableToTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExecuteQueryRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExecuteQueryResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": { }
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "FeeType": {
         "enum": [
           0,
@@ -203,6 +4058,28 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "LoggedUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "LoginRequest": {
         "type": "object",
@@ -218,6 +4095,57 @@
         },
         "additionalProperties": false
       },
+      "MenuItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "availableAdditionalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "MfaRequest": {
         "type": "object",
         "properties": {
@@ -226,6 +4154,125 @@
             "nullable": true
           },
           "mfaCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NotifyPromotionRequest": {
+        "type": "object",
+        "properties": {
+          "promotionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "messageTemplate": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpenAIRequest": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseFormat": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpenAIResponse": {
+        "type": "object",
+        "properties": {
+          "responseJson": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PromotionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "discountType": {
+            "type": "string",
+            "nullable": true
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "menuItemId": {
+            "type": "string",
+            "nullable": true
+          },
+          "minOrderValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "maxUsagePerCustomer": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "maxTotalUses": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "applicableToTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "imageUrl": {
             "type": "string",
             "nullable": true
           }
@@ -264,6 +4311,44 @@
           },
           "isEnabled": {
             "type": "boolean"
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "neighborhood": {
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "slogan": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -295,7 +4380,347 @@
           }
         },
         "additionalProperties": false
+      },
+      "SalesByTenantResponse": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "platformFee": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SalesReportResponse": {
+        "type": "object",
+        "properties": {
+          "totalSales": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalPlatformFees": {
+            "type": "number",
+            "format": "double"
+          },
+          "salesByTenant": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesByTenantResponse"
+            },
+            "nullable": true
+          },
+          "totalPromotionsApplied": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TagRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TagResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateAdditionalRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateCompanyRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "apiKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "feeType": {
+            "type": "string",
+            "nullable": true
+          },
+          "feeValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "isEnabled": {
+            "type": "boolean"
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "neighborhood": {
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "slogan": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMenuItemRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "availableAdditionalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePromotionRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "discountType": {
+            "type": "string",
+            "nullable": true
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "menuItemId": {
+            "type": "string",
+            "nullable": true
+          },
+          "minOrderValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "maxUsagePerCustomer": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "maxTotalUses": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "applicableToTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "JWT Authorization header usando o esquema Bearer. Exemplo: \"Bearer {token}\"",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "Additional",
+      "description": "Controller para gerenciamento de adicionais."
+    },
+    {
+      "name": "Administration",
+      "description": "Controller para gerenciamento administrativo de empresas, vendas e logs."
+    },
+    {
+      "name": "Auth",
+      "description": "Controller para autenticação e gerenciamento de usuários."
+    },
+    {
+      "name": "Company",
+      "description": "Controller para gerenciamento de perfis de empresas."
+    },
+    {
+      "name": "Customer",
+      "description": "Controller para gerenciamento de clientes."
+    },
+    {
+      "name": "Database",
+      "description": "Controller para operações de banco de dados."
+    },
+    {
+      "name": "Menu",
+      "description": "Controller para gerenciamento de itens do cardápio."
+    },
+    {
+      "name": "MenuControllerSimplified",
+      "description": "Controller simplificado para gerenciamento de cardápio com tratamento de exceções centralizado."
+    },
+    {
+      "name": "OpenAI",
+      "description": "Controller para integração com a API da OpenAI."
+    },
+    {
+      "name": "Promotion",
+      "description": "Controller para gerenciamento de promoções de um tenant."
+    },
+    {
+      "name": "Tag",
+      "description": "Controller para gerenciamento de tags."
+    }
+  ]
 }

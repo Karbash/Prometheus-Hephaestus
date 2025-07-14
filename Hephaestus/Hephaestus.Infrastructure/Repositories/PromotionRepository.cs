@@ -31,15 +31,10 @@ public class PromotionRepository : IPromotionRepository
         return await query.ToListAsync();
     }
 
-    public async Task<Promotion> GetByIdAsync(string id, string tenantId)
+    public async Task<Promotion?> GetByIdAsync(string id, string tenantId)
     {
-        var promotion = await _dbContext.Promotions
+        return await _dbContext.Promotions
             .FirstOrDefaultAsync(p => p.Id == id && p.TenantId == tenantId);
-
-        if (promotion == null)
-            throw new KeyNotFoundException("Promoção não encontrada.");
-
-        return promotion;
     }
 
     public async Task UpdateAsync(Promotion promotion)

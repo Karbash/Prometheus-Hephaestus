@@ -67,7 +67,7 @@ public class CustomerRepository : ICustomerRepository
             .FirstOrDefaultAsync(c => c.Id == customer.Id && c.TenantId == customer.TenantId);
 
         if (existingCustomer == null)
-            throw new InvalidOperationException("Cliente não encontrado.");
+            return; // Não lança exceção, deixa o UseCase tratar
 
         _context.Entry(existingCustomer).CurrentValues.SetValues(customer);
         await _context.SaveChangesAsync();

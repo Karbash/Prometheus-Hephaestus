@@ -3,7 +3,6 @@ using Hephaestus.Application.Exceptions;
 using Microsoft.Extensions.Logging;
 using SystemApplicationException = System.ApplicationException;
 using FluentValidationException = FluentValidation.ValidationException;
-using Npgsql;
 
 namespace Hephaestus.Application.Services;
 
@@ -40,7 +39,6 @@ public class ExceptionHandlerService : IExceptionHandlerService
             ArgumentException argEx => HandleArgumentException(argEx),
             InvalidOperationException invalidOpEx => HandleInvalidOperationException(invalidOpEx),
             KeyNotFoundException keyNotFoundEx => HandleKeyNotFoundException(keyNotFoundEx),
-            NpgsqlException npgsqlEx => HandleNpgsqlException(npgsqlEx),
             _ => HandleUnexpectedException(exception)
         };
     }
@@ -61,8 +59,7 @@ public class ExceptionHandlerService : IExceptionHandlerService
             || exception is SystemApplicationException
             || exception is ArgumentException
             || exception is InvalidOperationException
-            || exception is KeyNotFoundException
-            || exception is NpgsqlException;
+            || exception is KeyNotFoundException;
     }
 
     private ExceptionInfo HandleValidationException(FluentValidationException exception)
@@ -206,44 +203,48 @@ public class ExceptionHandlerService : IExceptionHandlerService
         };
     }
 
-    private ExceptionInfo HandleNpgsqlException(NpgsqlException exception)
-    {
-        _logger.LogError(exception, "Erro de banco de dados PostgreSQL: {Message}", exception.Message);
-
-        // Verifica se é um erro de timeout
-        if (exception.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase) ||
-            exception.Message.Contains("connection", StringComparison.OrdinalIgnoreCase))
-        {
-            return new ExceptionInfo
-            {
-                ErrorCode = "DATABASE_TIMEOUT",
-                Message = "Timeout na conexão com o banco de dados",
-                StatusCode = 503, // Service Unavailable
-                ErrorType = "DatabaseTimeoutError",
-                Details = new Dictionary<string, object>
-                {
-                    ["originalError"] = exception.Message
-                }
-            };
-        }
-
-        // Para outros erros de banco de dados
-        return new ExceptionInfo
-        {
-            ErrorCode = "DATABASE_ERROR",
-            Message = "Erro no banco de dados",
-            StatusCode = 500,
-            ErrorType = "DatabaseError",
-            Details = new Dictionary<string, object>
-            {
-                ["originalError"] = exception.Message
-            }
-        };
-    }
-
     private ExceptionInfo HandleUnexpectedException(Exception exception)
     {
         _logger.LogError(exception, "Exceção inesperada: {Message}", exception.Message);
+
+        // Verifica se é um erro de banco de dados (incluindo Npgsql)
+        if (exception.GetType().Name.Contains("Npgsql") || 
+            exception.Message.Contains("database", StringComparison.OrdinalIgnoreCase) ||
+            exception.Message.Contains("connection", StringComparison.OrdinalIgnoreCase) ||
+            exception.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase))
+        {
+            // Verifica se é um erro de timeout
+            if (exception.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase) ||
+                exception.Message.Contains("connection", StringComparison.OrdinalIgnoreCase))
+            {
+                return new ExceptionInfo
+                {
+                    ErrorCode = "DATABASE_TIMEOUT",
+                    Message = "Timeout na conexão com o banco de dados",
+                    StatusCode = 503, // Service Unavailable
+                    ErrorType = "DatabaseTimeoutError",
+                    Details = new Dictionary<string, object>
+                    {
+                        ["originalError"] = exception.Message,
+                        ["exceptionType"] = exception.GetType().Name
+                    }
+                };
+            }
+
+            // Para outros erros de banco de dados
+            return new ExceptionInfo
+            {
+                ErrorCode = "DATABASE_ERROR",
+                Message = "Erro no banco de dados",
+                StatusCode = 500,
+                ErrorType = "DatabaseError",
+                Details = new Dictionary<string, object>
+                {
+                    ["originalError"] = exception.Message,
+                    ["exceptionType"] = exception.GetType().Name
+                }
+            };
+        }
 
         return new ExceptionInfo
         {

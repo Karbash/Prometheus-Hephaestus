@@ -21,9 +21,9 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
         builder.Property(oi => oi.Notes).HasMaxLength(500);
 
         var listComparer = new ValueComparer<List<string>>(
-            (c1, c2) => c1?.SequenceEqual(c2 ?? Enumerable.Empty<string>()) ?? c2 == null,
-            c => c?.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) ?? 0,
-            c => c?.ToList() ?? new List<string>());
+            (c1, c2) => (c1 == null && c2 == null) || (c1 != null && c2 != null && c1.SequenceEqual(c2)),
+            c => c == null ? 0 : c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => c == null ? new List<string>() : c.ToList());
 
         builder.Property(oi => oi.AdditionalIds)
             .HasConversion(v => string.Join(',', v), v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList())

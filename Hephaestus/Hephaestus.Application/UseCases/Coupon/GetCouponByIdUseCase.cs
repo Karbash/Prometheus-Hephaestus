@@ -5,8 +5,10 @@ using Hephaestus.Application.Interfaces.Coupon;
 using Hephaestus.Application.Base;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using Hephaestus.Domain.Enum;
 
 namespace Hephaestus.Application.UseCases.Coupon;
 
@@ -16,20 +18,34 @@ namespace Hephaestus.Application.UseCases.Coupon;
 public class GetCouponByIdUseCase : BaseUseCase, IGetCouponByIdUseCase
 {
     private readonly ICouponRepository _couponRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     public GetCouponByIdUseCase(
         ICouponRepository couponRepository,
+        ILoggedUserService loggedUserService,
         ILogger<GetCouponByIdUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _couponRepository = couponRepository;
+        _loggedUserService = loggedUserService;
     }
 
-    public async Task<CouponResponse> ExecuteAsync(string id, string tenantId)
+    private DiscountType ParseDiscountType(string discountTypeStr)
+    {
+        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
+        {
+            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
+        }
+        return discountType;
+    }
+
+    public async Task<CouponResponse> ExecuteAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             var coupon = await _couponRepository.GetByIdAsync(id, tenantId);
             EnsureResourceExists(coupon, "Coupon", id);
 

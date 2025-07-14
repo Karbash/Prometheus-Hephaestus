@@ -7,6 +7,8 @@ using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
+using System.Security.Claims;
 using ValidationException = Hephaestus.Application.Exceptions.ValidationException;
 
 namespace Hephaestus.Application.UseCases.Additional;
@@ -18,6 +20,7 @@ public class CreateAdditionalUseCase : BaseUseCase, ICreateAdditionalUseCase
 {
     private readonly IAdditionalRepository _additionalRepository;
     private readonly IValidator<CreateAdditionalRequest> _validator;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="CreateAdditionalUseCase"/>.
@@ -26,29 +29,35 @@ public class CreateAdditionalUseCase : BaseUseCase, ICreateAdditionalUseCase
     /// <param name="validator">Validador para a requisição.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="loggedUserService">Serviço do usuário logado.</param>
     public CreateAdditionalUseCase(
         IAdditionalRepository additionalRepository,
         IValidator<CreateAdditionalRequest> validator,
         ILogger<CreateAdditionalUseCase> logger,
-        IExceptionHandlerService exceptionHandler)
+        IExceptionHandlerService exceptionHandler,
+        ILoggedUserService loggedUserService)
         : base(logger, exceptionHandler)
     {
         _additionalRepository = additionalRepository;
         _validator = validator;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a criação de um adicional.
     /// </summary>
     /// <param name="request">Dados do adicional.</param>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <returns>ID do adicional criado.</returns>
-    public async Task<string> ExecuteAsync(CreateAdditionalRequest request, string tenantId)
+    public async Task<string> ExecuteAsync(CreateAdditionalRequest request, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             // Validação dos dados de entrada
             await ValidateRequestAsync(request);
+
+            // Obter tenantId do usuário logado
+            var tenantId = _loggedUserService.GetTenantId(user);
 
             // Criação do adicional
             var additional = await CreateAdditionalEntityAsync(request, tenantId);

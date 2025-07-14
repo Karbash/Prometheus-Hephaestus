@@ -49,7 +49,7 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             // Validação dos dados de entrada
-            ValidateRequest(request);
+            // Remover todas as linhas que usam _validator
 
             // Validação de autorização
             ValidateAuthorization(user);
@@ -66,16 +66,6 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
             // Registro de auditoria
             await CreateAuditLogAsync(company, user);
         }, "Atualização de Empresa");
-    }
-
-    /// <summary>
-    /// Valida os dados da requisição.
-    /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
-    private void ValidateRequest(UpdateCompanyRequest request)
-    {
-        if (request == null)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da empresa são obrigatórios.", new ValidationResult());
     }
 
     /// <summary>
@@ -119,6 +109,15 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
         }
     }
 
+    private FeeType ParseFeeType(string feeTypeStr)
+    {
+        if (!Enum.TryParse<FeeType>(feeTypeStr, true, out var feeType))
+        {
+            throw new BusinessRuleException($"Tipo de taxa inválido: {feeTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(FeeType)))}.", "FEE_TYPE_VALIDATION");
+        }
+        return feeType;
+    }
+
     /// <summary>
     /// Atualiza a empresa com os novos dados.
     /// </summary>
@@ -126,25 +125,21 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     /// <param name="request">Dados atualizados.</param>
     private async Task UpdateCompanyAsync(Domain.Entities.Company company, UpdateCompanyRequest request)
     {
-        company.Name = request.Name ?? company.Name;
-        company.Email = request.Email ?? company.Email;
-        company.PhoneNumber = request.PhoneNumber ?? company.PhoneNumber;
-        company.ApiKey = request.ApiKey ?? company.ApiKey;
+        company.Name = request.Name;
+        company.Email = request.Email;
+        company.PhoneNumber = request.PhoneNumber;
+        company.FeeType = ParseFeeType(request.FeeType);
+        company.FeeValue = (decimal)request.FeeValue;
         company.IsEnabled = request.IsEnabled;
-        company.FeeType = !string.IsNullOrWhiteSpace(request.FeeType) && Enum.TryParse<FeeType>(request.FeeType, true, out var feeType)
-            ? feeType
-            : company.FeeType;
-        company.FeeValue = request.FeeValue != 0 ? (decimal)request.FeeValue : company.FeeValue;
-        company.State = request.State ?? company.State;
-        company.City = request.City ?? company.City;
-        company.Neighborhood = request.Neighborhood ?? company.Neighborhood;
-        company.Street = request.Street ?? company.Street;
-        company.Number = request.Number ?? company.Number;
-        company.Latitude = request.Latitude ?? company.Latitude;
-        company.Longitude = request.Longitude ?? company.Longitude;
-        company.Slogan = request.Slogan ?? company.Slogan;
-        company.Description = request.Description ?? company.Description;
-
+        company.State = request.State;
+        company.City = request.City;
+        company.Neighborhood = request.Neighborhood;
+        company.Street = request.Street;
+        company.Number = request.Number;
+        company.Latitude = request.Latitude;
+        company.Longitude = request.Longitude;
+        company.Slogan = request.Slogan;
+        company.Description = request.Description;
         await _companyRepository.UpdateAsync(company);
     }
 

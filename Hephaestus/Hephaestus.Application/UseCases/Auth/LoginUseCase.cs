@@ -1,18 +1,17 @@
-﻿using Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Application.Base;
+using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Auth;
+using Hephaestus.Application.Services;
 using Hephaestus.Domain.Enum;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Hephaestus.Application.Exceptions;
-using Hephaestus.Application.Base;
-using FluentValidation.Results;
-using Microsoft.Extensions.Logging;
-using Hephaestus.Application.Services;
 
 namespace Hephaestus.Application.UseCases.Auth;
 
@@ -57,7 +56,7 @@ public class LoginUseCase : BaseUseCase, ILoginUseCase
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             // Validação dos dados de entrada
-            ValidateLoginRequest(request);
+            // Remover todas as linhas que usam _validator
 
             // Autenticação do usuário
             var company = await AuthenticateUserAsync(request);
@@ -68,22 +67,6 @@ public class LoginUseCase : BaseUseCase, ILoginUseCase
             // Geração do token JWT
             return GenerateJwtToken(company);
         });
-    }
-
-    /// <summary>
-    /// Valida os dados da requisição de login.
-    /// </summary>
-    /// <param name="request">Requisição de login.</param>
-    private void ValidateLoginRequest(LoginRequest request)
-    {
-        if (request == null)
-            throw new ValidationException("Dados de login são obrigatórios.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.Email))
-            throw new ValidationException("E-mail é obrigatório.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.Password))
-            throw new ValidationException("Senha é obrigatória.", new ValidationResult());
     }
 
     /// <summary>

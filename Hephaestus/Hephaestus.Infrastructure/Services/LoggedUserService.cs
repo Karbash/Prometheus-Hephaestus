@@ -64,4 +64,20 @@ public class LoggedUserService : ILoggedUserService
 
         return userId;
     }
+
+    /// <summary>
+    /// Obtém o ID do tenant do usuário logado.
+    /// </summary>
+    /// <param name="claimsPrincipal">Claims do usuário autenticado.</param>
+    /// <returns>ID do tenant.</returns>
+    /// <exception cref="InvalidOperationException">TenantId não encontrado no token.</exception>
+    public string GetTenantId(ClaimsPrincipal claimsPrincipal)
+    {
+        var tenantId = claimsPrincipal.FindFirst("TenantId")?.Value;
+
+        if (string.IsNullOrEmpty(tenantId))
+            throw new InvalidOperationException("TenantId não encontrado no token.");
+
+        return tenantId;
+    }
 }

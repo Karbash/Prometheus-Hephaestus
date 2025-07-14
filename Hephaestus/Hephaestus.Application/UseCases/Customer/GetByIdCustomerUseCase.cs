@@ -5,7 +5,9 @@ using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
 using FluentValidation.Results;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Customer;
 
@@ -16,35 +18,41 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly ICompanyRepository _companyRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="GetByIdCustomerUseCase"/>.
     /// </summary>
     /// <param name="customerRepository">Repositório de clientes.</param>
     /// <param name="companyRepository">Repositório de empresas.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public GetByIdCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
+        ILoggedUserService loggedUserService,
         ILogger<GetByIdCustomerUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _customerRepository = customerRepository;
         _companyRepository = companyRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a busca de um cliente específico por ID.
     /// </summary>
     /// <param name="id">ID do cliente.</param>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <returns>Cliente encontrado ou null se não existir.</returns>
-    public async Task<CustomerResponse?> GetByIdAsync(string id, string tenantId)
+    public async Task<CustomerResponse?> GetByIdAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             // Validação dos parâmetros de entrada
             ValidateInputParameters(id, tenantId);
 

@@ -54,7 +54,7 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             // Validação dos dados de entrada
-            ValidateRequest(request);
+            // Remover todas as linhas que usam _validator
 
             // Validação de autorização
             ValidateAuthorization(claimsPrincipal);
@@ -70,28 +70,6 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
 
             return company.Id;
         });
-    }
-
-    /// <summary>
-    /// Valida os dados da requisição.
-    /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
-    private void ValidateRequest(RegisterCompanyRequest request)
-    {
-        if (request == null)
-            throw new ValidationException("Dados da empresa são obrigatórios.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.Email))
-            throw new ValidationException("E-mail é obrigatório.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.Password))
-            throw new ValidationException("Senha é obrigatória.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.Name))
-            throw new ValidationException("Nome da empresa é obrigatório.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.PhoneNumber))
-            throw new ValidationException("Telefone é obrigatório.", new ValidationResult());
     }
 
     /// <summary>
@@ -128,6 +106,15 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
         }
     }
 
+    private FeeType ParseFeeType(string feeTypeStr)
+    {
+        if (!Enum.TryParse<FeeType>(feeTypeStr, true, out var feeType))
+        {
+            throw new BusinessRuleException($"Tipo de taxa inválido: {feeTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(FeeType)))}.", "FEE_TYPE_VALIDATION");
+        }
+        return feeType;
+    }
+
     /// <summary>
     /// Cria a entidade de empresa.
     /// </summary>
@@ -137,7 +124,6 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     {
         var company = new Domain.Entities.Company
         {
-            Id = Guid.NewGuid().ToString(),
             Name = request.Name,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
@@ -145,8 +131,8 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             Role = Role.Tenant,
             IsEnabled = request.IsEnabled,
-            FeeType = request.FeeType,
-            FeeValue = request.FeeValue,
+            FeeType = ParseFeeType(request.FeeType.ToString()),
+            FeeValue = (decimal)request.FeeValue,
             State = request.State,
             City = request.City,
             Neighborhood = request.Neighborhood,

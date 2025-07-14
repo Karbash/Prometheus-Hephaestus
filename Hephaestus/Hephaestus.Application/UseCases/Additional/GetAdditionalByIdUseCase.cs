@@ -5,6 +5,8 @@ using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
+using System.Security.Claims;
 using FluentValidation.Results;
 
 namespace Hephaestus.Application.UseCases.Additional;
@@ -15,6 +17,7 @@ namespace Hephaestus.Application.UseCases.Additional;
 public class GetAdditionalByIdUseCase : BaseUseCase, IGetAdditionalByIdUseCase
 {
     private readonly IAdditionalRepository _additionalRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="GetAdditionalByIdUseCase"/>.
@@ -22,25 +25,31 @@ public class GetAdditionalByIdUseCase : BaseUseCase, IGetAdditionalByIdUseCase
     /// <param name="additionalRepository">Repositório de adicionais.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="loggedUserService">Serviço do usuário logado.</param>
     public GetAdditionalByIdUseCase(
         IAdditionalRepository additionalRepository,
         ILogger<GetAdditionalByIdUseCase> logger,
-        IExceptionHandlerService exceptionHandler)
+        IExceptionHandlerService exceptionHandler,
+        ILoggedUserService loggedUserService)
         : base(logger, exceptionHandler)
     {
         _additionalRepository = additionalRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a busca de um adicional específico.
     /// </summary>
     /// <param name="id">ID do adicional.</param>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <returns>Adicional encontrado.</returns>
-    public async Task<AdditionalResponse> ExecuteAsync(string id, string tenantId)
+    public async Task<AdditionalResponse> ExecuteAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            // Obter tenantId do usuário logado
+            var tenantId = _loggedUserService.GetTenantId(user);
+
             // Validação dos parâmetros de entrada
             ValidateInputParameters(id, tenantId);
 

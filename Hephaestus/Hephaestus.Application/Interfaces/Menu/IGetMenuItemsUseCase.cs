@@ -1,4 +1,5 @@
 ﻿using Hephaestus.Application.DTOs.Response;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Menu;
 
@@ -10,7 +11,9 @@ public interface IGetMenuItemsUseCase
     /// <summary>
     /// Lista itens do cardápio do tenant.
     /// </summary>
-    /// <param name="tenantId">ID do tenant extraído do token JWT.</param>
+    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="pageNumber">Número da página.</param>
+    /// <param name="pageSize">Tamanho da página.</param>
     /// <returns>Lista de itens do cardápio.</returns>
-    Task<IEnumerable<MenuItemResponse>> ExecuteAsync(string tenantId);
+    Task<PagedResult<MenuItemResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20);
 }

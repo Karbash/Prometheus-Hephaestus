@@ -6,7 +6,8 @@
     <members>
         <member name="T:Hephaestus.Controllers.AdditionalController">
             <summary>
-            Controller para gerenciamento de adicionais.
+            Controller para gerenciamento de adicionais (itens extras) para um tenant.
+            Todas as operações requerem autenticação com a role "Tenant".
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.#ctor(Hephaestus.Application.Interfaces.Additional.ICreateAdditionalUseCase,Hephaestus.Application.Interfaces.Additional.IGetAdditionalsUseCase,Hephaestus.Application.Interfaces.Additional.IGetAdditionalByIdUseCase,Hephaestus.Application.Interfaces.Additional.IUpdateAdditionalUseCase,Hephaestus.Application.Interfaces.Additional.IDeleteAdditionalUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AdditionalController})">
@@ -22,42 +23,53 @@
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.CreateAdditional(Hephaestus.Application.DTOs.Request.CreateAdditionalRequest)">
             <summary>
-            Cria um novo adicional.
+            Cria um novo adicional para o tenant autenticado.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Tenant**.
+            
+            Exemplo de requisição:
+            ```json
+            {
+              "name": "Bacon Crocante",
+              "description": "Fatias crocantes de bacon",
+              "price": 4.99,
+              "isAvailable": true
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 201 Created):
             ```json
             {
               "id": "123e4567-e89b-12d3-a456-426614174001"
             }
             ```
-            Exemplo de erro de validação:
+            
+            Exemplo de erro de validação (Status 400 Bad Request):
             ```json
             {
-              "error": {
-                "code": "VALIDATION_ERROR",
-                "message": "Erro de validação",
-                "details": {
-                  "errors": [
-                    {
-                      "field": "Name",
-                      "message": "Nome é obrigatório."
-                    }
-                  ]
-                }
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "One or more validation errors occurred.",
+              "status": 400,
+              "errors": {
+                "Name": [
+                  "O campo 'Name' é obrigatório."
+                ]
               }
             }
             ```
             </remarks>
             <param name="request">Dados do adicional a ser criado.</param>
-            <returns>ID do adicional criado.</returns>
+            <returns>Um `CreatedAtActionResult` contendo o ID do novo adicional.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.GetAdditionals">
             <summary>
-            Lista adicionais do tenant.
+            Lista todos os adicionais pertencentes ao tenant autenticado.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Tenant**.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             [
               {
@@ -67,18 +79,28 @@
                 "description": "Adicional de queijo",
                 "price": 3.50,
                 "isAvailable": true
+              },
+              {
+                "id": "a7b8c9d0-e1f2-3g4h-5i6j-7k8l9m0n1o2p",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "name": "Borda Recheada",
+                "description": "Borda com cheddar e catupiry",
+                "price": 8.00,
+                "isAvailable": false
               }
             ]
             ```
             </remarks>
-            <returns>Lista de adicionais do tenant.</returns>
+            <returns>Uma lista de objetos `AdditionalResponse`.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.GetAdditionalById(System.String)">
             <summary>
-            Obtém adicional por ID.
+            Obtém os detalhes de um adicional específico pelo seu ID.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
               "id": "123e4567-e89b-12d3-a456-426614174001",
@@ -89,64 +111,76 @@
               "isAvailable": true
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 404 Not Found):
             ```json
             {
-              "error": "Adicional não encontrado."
+              "message": "Adicional com ID 'xyz' não encontrado para o tenant."
             }
             ```
             </remarks>
-            <param name="id">ID do adicional.</param>
-            <returns>Detalhes do adicional.</returns>
+            <param name="id">ID do adicional (GUID).</param>
+            <returns>Um objeto `AdditionalResponse` contendo os detalhes do adicional.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.UpdateAdditional(System.String,Hephaestus.Application.DTOs.Request.UpdateAdditionalRequest)">
             <summary>
-            Atualiza adicional.
+            Atualiza as informações de um adicional existente.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
-            ```
-            Status: 204 No Content
-            ```
-            Exemplo de erro:
+            Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
+            
+            Exemplo de requisição:
             ```json
             {
-              "error": "Adicional não encontrado."
+              "name": "Bacon Premium",
+              "description": "Fatias de bacon artesanal",
+              "price": 6.50,
+              "isAvailable": true
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 204 No Content):
+            ```
+            (Nenhum corpo de resposta)
+            ```
+            
+            Exemplo de erro (Status 404 Not Found):
+            ```json
+            {
+              "message": "Adicional com ID 'xyz' não encontrado para o tenant."
             }
             ```
             </remarks>
-            <param name="id">ID do adicional.</param>
+            <param name="id">ID do adicional a ser atualizado (GUID).</param>
             <param name="request">Dados atualizados do adicional.</param>
-            <returns>Status da atualização.</returns>
+            <returns>Um `NoContentResult` em caso de sucesso.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.DeleteAdditional(System.String)">
             <summary>
-            Remove adicional.
+            Remove um adicional existente.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
+            
+            Exemplo de resposta de sucesso (Status 204 No Content):
             ```
-            Status: 204 No Content
+            (Nenhum corpo de resposta)
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 404 Not Found):
             ```json
             {
-              "error": "Adicional não encontrado."
+              "message": "Adicional com ID 'xyz' não encontrado para o tenant."
             }
             ```
             </remarks>
-            <param name="id">ID do adicional.</param>
-            <returns>Status da remoção.</returns>
-        </member>
-        <member name="M:Hephaestus.Controllers.AdditionalController.GetTenantId">
-            <summary>
-            Obtém o TenantId do token de autenticação.
-            </summary>
-            <returns>TenantId do token.</returns>
+            <param name="id">ID do adicional a ser removido (GUID).</param>
+            <returns>Um `NoContentResult` em caso de sucesso.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.AdministrationController">
             <summary>
             Controller para gerenciamento administrativo de empresas, vendas e logs.
+            Todas as operações requerem autenticação com a role "Admin" e a policy "RequireMfa".
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.#ctor(Hephaestus.Application.Interfaces.Administration.IGetCompaniesUseCase,Hephaestus.Application.Interfaces.Administration.IUpdateCompanyUseCase,Hephaestus.Application.Interfaces.Administration.ISalesReportUseCase,Hephaestus.Application.Interfaces.Administration.IAuditLogUseCase,Hephaestus.Application.Interfaces.Administration.IGetCompaniesWithinRadiusUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AdministrationController})">
@@ -160,84 +194,101 @@
             <param name="getCompaniesWithinRadiusUseCase">Caso de uso para buscar empresas dentro de um raio.</param>
             <param name="logger">Logger para registro de erros.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.AdministrationController.GetCompanies(System.Nullable{System.Boolean})">
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetCompanies(System.Nullable{System.Boolean},System.Int32,System.Int32)">
             <summary>
-            Lista todas as empresas.
+            Lista todas as empresas registradas no sistema, com opções de filtro e paginação.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Admin** e **MFA validado**.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
-            [
-              {
-                "id": "123e4567-e89b-12d3-a456-426614174001",
-                "name": "Empresa Exemplo",
-                "email": "exemplo@empresa.com",
-                "phoneNumber": "123456789",
-                "isEnabled": true,
-                "feeType": "Percentage",
-                "feeValue": 5.0,
-                "city": "São Paulo",
-                "neighborhood": "Vila Mariana",
-                "street": "Rua Exemplo",
-                "number": "123",
-                "latitude": -23.550520,
-                "longitude": -46.633308,
-                "slogan": "O melhor da cidade!",
-                "description": "Descrição da empresa."
-              }
-            ]
+            {
+              "items": [
+                {
+                  "id": "123e4567-e89b-12d3-a456-426614174001",
+                  "name": "Empresa Exemplo",
+                  "email": "exemplo@empresa.com",
+                  "phoneNumber": "123456789",
+                  "isEnabled": true,
+                  "feeType": "Percentage",
+                  "feeValue": 5.0,
+                  "city": "São Paulo",
+                  "neighborhood": "Vila Mariana",
+                  "street": "Rua Exemplo",
+                  "number": "123",
+                  "latitude": -23.550520,
+                  "longitude": -46.633308,
+                  "slogan": "O melhor da cidade!",
+                  "description": "Descrição da empresa."
+                }
+              ],
+              "totalCount": 1,
+              "pageNumber": 1,
+              "pageSize": 20
+            }
             ```
             </remarks>
             <param name="isEnabled">Filtro opcional para empresas habilitadas (true) ou desabilitadas (false).</param>
-            <returns>Lista de empresas.</returns>
+            <param name="pageNumber">Número da página a ser retornada (padrão: 1).</param>
+            <param name="pageSize">Número de itens por página (padrão: 20).</param>
+            <returns>Uma lista paginada de objetos `CompanyResponse`.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.UpdateCompany(System.String,Hephaestus.Application.DTOs.Request.UpdateCompanyRequest)">
             <summary>
-            Atualiza configurações de uma empresa.
+            Atualiza as informações de uma empresa específica.
             </summary>
             <remarks>
-            Exemplo de corpo da requisição:
+            Requer **Role: Admin** e **MFA validado**.
+            O `id` na URL deve corresponder ao `Id` no corpo da requisição.
+            
+            Exemplo de requisição:
             ```json
             {
               "id": "123e4567-e89b-12d3-a456-426614174001",
-              "name": "Empresa Atualizada",
-              "email": "atualizada@empresa.com",
-              "phoneNumber": "987654321",
-              "apiKey": "xyz789",
-              "feeType": "Percentage",
-              "feeValue": 5.0,
+              "name": "Empresa Atualizada Ltda.",
+              "email": "contato_novo@empresa.com",
+              "phoneNumber": "998877665",
+              "apiKey": "nova_api_key_xyz",
+              "feeType": "Fixed",
+              "feeValue": 2.50,
               "isEnabled": true,
               "city": "Rio de Janeiro",
-              "neighborhood": "Copacabana",
-              "street": "Avenida Nova",
+              "neighborhood": "Botafogo",
+              "street": "Rua Exemplo Nova",
               "number": "456",
-              "latitude": -22.906847,
-              "longitude": -43.172896,
-              "slogan": "Novo slogan!",
-              "description": "Nova descrição."
+              "latitude": -22.951916,
+              "longitude": -43.210487,
+              "slogan": "Inovação a cada passo!",
+              "description": "Empresa líder em tecnologia."
             }
             ```
-            Exemplo de resposta de sucesso:
+            
+            Exemplo de resposta de sucesso (Status 204 No Content):
             ```
-            Status: 204 No Content
+            (Nenhum corpo de resposta)
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 404 Not Found):
             ```json
             {
-              "error": "Empresa não encontrada."
+              "message": "Empresa com ID 'xyz' não encontrada."
             }
             ```
             </remarks>
-            <param name="id">ID da empresa a ser atualizada.</param>
-            <param name="request">Dados atualizados da empresa.</param>
-            <returns>Status da atualização.</returns>
+            <param name="id">ID da empresa a ser atualizada (GUID).</param>
+            <param name="request">Objeto com os dados atualizados da empresa.</param>
+            <returns>Um `NoContentResult` em caso de sucesso.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AdministrationController.GetSalesReport(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetSalesReport(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Relatório consolidado de vendas de todas as empresas.
+            Gera um relatório consolidado de vendas de todas as empresas, com filtros opcionais por data.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Admin** e **MFA validado**.
+            As datas devem estar no formato ISO 8601 (ex: `2024-01-01`).
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
               "totalSales": 1000.00,
@@ -249,28 +300,37 @@
                   "companyName": "Empresa Exemplo",
                   "totalSales": 500.00,
                   "totalTransactions": 25
+                },
+                {
+                  "companyId": "a7b8c9d0-e1f2-3g4h-5i6j-7k8l9m0n1o2p",
+                  "companyName": "Outra Empresa",
+                  "totalSales": 500.00,
+                  "totalTransactions": 25
                 }
               ]
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 400 Bad Request):
             ```json
             {
-              "error": "Datas inválidas."
+              "message": "Data inicial não pode ser maior que a data final."
             }
             ```
             </remarks>
-            <param name="startDate">Data inicial do relatório no formato ISO 8601 (ex.: 2024-01-01). Opcional.</param>
-            <param name="endDate">Data final do relatório no formato ISO 8601 (ex.: 2024-12-31). Opcional.</param>
-            <param name="tenantId">ID da empresa (tenant) para filtrar vendas. Opcional.</param>
-            <returns>Relatório de vendas consolidado.</returns>
+            <param name="startDate">Data inicial para filtrar as vendas (opcional, formato ISO 8601).</param>
+            <param name="endDate">Data final para filtrar as vendas (opcional, formato ISO 8601).</param>
+            <returns>Um objeto `SalesReportResponse` contendo o relatório de vendas.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AdministrationController.GetAuditLogs(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAuditLogs(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
             Lista logs de auditoria de ações administrativas.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Admin** e **MFA validado**.
+            As datas devem estar no formato ISO 8601 (ex: `2024-01-01`).
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             [
               {
@@ -278,23 +338,24 @@
                 "userId": "456e7890-e89b-12d3-a456-426614174002",
                 "action": "UpdateCompany",
                 "entityId": "789e0123-e89b-12d3-a456-426614174003",
-                "description": "Empresa atualizada com sucesso",
-                "timestamp": "2024-01-01T12:00:00Z"
+                "description": "Empresa 'XYZ Corp' atualizada com sucesso",
+                "timestamp": "2024-07-14T15:30:00Z"
               }
             ]
             ```
             </remarks>
-            <param name="adminId">ID do administrador para filtrar logs. Opcional.</param>
-            <param name="startDate">Data inicial para filtrar logs. Opcional.</param>
-            <param name="endDate">Data final para filtrar logs. Opcional.</param>
-            <returns>Lista de logs de auditoria.</returns>
+            <param name="startDate">Data inicial para filtrar logs (opcional, formato ISO 8601).</param>
+            <param name="endDate">Data final para filtrar logs (opcional, formato ISO 8601).</param>
+            <returns>Uma lista de objetos `AuditLogResponse`.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.GetCompaniesByRadius(System.Double,System.Double,System.Double,System.String,System.String)">
             <summary>
-            Lista empresas dentro de um raio específico.
+            Lista empresas localizadas dentro de um raio geográfico específico.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Admin** e **MFA validado**.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             [
               {
@@ -316,203 +377,316 @@
               }
             ]
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 400 Bad Request):
             ```json
             {
-              "error": "Coordenadas inválidas."
+              "message": "Parâmetros de localização inválidos. Latitude e Longitude devem ser fornecidos."
             }
             ```
             </remarks>
             <param name="centerLat">Latitude do centro do raio.</param>
             <param name="centerLon">Longitude do centro do raio.</param>
-            <param name="radiusKm">Raio em quilômetros.</param>
+            <param name="radiusKm">Raio em quilômetros para a busca.</param>
             <param name="city">Filtro opcional por cidade.</param>
             <param name="neighborhood">Filtro opcional por bairro.</param>
-            <returns>Lista de empresas dentro do raio.</returns>
+            <returns>Uma lista de objetos `CompanyResponse` que estão dentro do raio especificado.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.AuthController">
             <summary>
-            Controller para autenticação e gerenciamento de usuários.
+            Controller para autenticação de usuários e gerenciamento de contas, incluindo login, registro de empresas, redefinição de senha e MFA.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.#ctor(Hephaestus.Application.Interfaces.Auth.ILoginUseCase,Hephaestus.Application.Interfaces.Auth.IRegisterCompanyUseCase,Hephaestus.Application.Interfaces.Auth.IResetPasswordUseCase,Hephaestus.Application.Interfaces.Auth.IMfaUseCase,Hephaestus.Domain.Services.ILoggedUserService,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AuthController})">
             <summary>
             Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.AuthController"/>.
             </summary>
-            <param name="loginUseCase">Caso de uso para login.</param>
-            <param name="registerCompanyUseCase">Caso de uso para registro de empresas.</param>
+            <param name="loginUseCase">Caso de uso para login de usuários.</param>
+            <param name="registerCompanyUseCase">Caso de uso para registro de novas empresas.</param>
             <param name="resetPasswordUseCase">Caso de uso para redefinição de senha.</param>
             <param name="mfaUseCase">Caso de uso para autenticação multifator (MFA).</param>
             <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
-            <param name="logger">Logger para registro de erros.</param>
+            <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.Login(Hephaestus.Application.DTOs.Request.LoginRequest,System.String)">
             <summary>
             Autentica um usuário e retorna um token JWT.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Para administradores, um **código MFA** pode ser necessário se estiver configurado.
+            
+            Exemplo de requisição:
+            ```json
+            {
+              "email": "usuario@exemplo.com",
+              "password": "SenhaSegura123!"
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
               "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro de credenciais inválidas (Status 400 Bad Request):
             ```json
             {
-              "error": "Credenciais inválidas."
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "Credenciais inválidas."
+            }
+            ```
+            Exemplo de erro MFA necessário (Status 401 Unauthorized):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+              "title": "Unauthorized",
+              "status": 401,
+              "detail": "Código MFA é necessário para este usuário."
             }
             ```
             </remarks>
-            <param name="request">Dados de login (e-mail e senha).</param>
-            <param name="mfaCode">Código MFA opcional para administradores.</param>
-            <returns>Token JWT.</returns>
+            <param name="request">Dados de login: e-mail e senha.</param>
+            <param name="mfaCode">Código MFA opcional, requerido para administradores com MFA ativo.</param>
+            <returns>Um `OkResult` contendo o token JWT.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.Register(Hephaestus.Application.DTOs.Request.RegisterCompanyRequest)">
             <summary>
-            Registra uma nova empresa (apenas administradores com MFA validado).
+            Registra uma nova empresa no sistema.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Admin** e **MFA validado**.
+            
+            Exemplo de requisição:
+            ```json
+            {
+              "companyName": "Nova Empresa SA",
+              "email": "contato@novaempresa.com",
+              "password": "SenhaForteEmpresa!",
+              "phoneNumber": "11987654321",
+              "city": "São Paulo",
+              "neighborhood": "Centro",
+              "street": "Rua das Flores",
+              "number": "100"
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
               "companyId": "123e4567-e89b-12d3-a456-426614174001"
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro de validação (Status 400 Bad Request):
             ```json
             {
-              "error": "E-mail já registrado."
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "One or more validation errors occurred.",
+              "status": 400,
+              "errors": {
+                "Email": [
+                  "O formato do e-mail é inválido."
+                ]
+              }
+            }
+            ```
+            Exemplo de erro de conflito (Status 409 Conflict):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
+              "title": "Conflict",
+              "status": 409,
+              "detail": "E-mail 'contato@novaempresa.com' já registrado."
             }
             ```
             </remarks>
             <param name="request">Dados da empresa a ser registrada.</param>
-            <returns>ID da empresa registrada.</returns>
+            <returns>Um `OkResult` contendo o ID da empresa registrada.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.ResetPasswordRequest(Hephaestus.Application.DTOs.Request.ResetPasswordRequest)">
             <summary>
-            Solicita um token para redefinição de senha.
+            Solicita um token para iniciar o processo de redefinição de senha.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Um token será enviado para o **e-mail** ou **WhatsApp** do usuário.
+            
+            Exemplo de requisição:
             ```json
             {
-              "token": "ABC123"
+              "email": "usuario@exemplo.com"
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
-              "error": "E-mail não encontrado."
+              "message": "Um token de redefinição de senha foi enviado para seu e-mail/WhatsApp."
+            }
+            ```
+            
+            Exemplo de erro (Status 404 Not Found):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+              "title": "Not Found",
+              "status": 404,
+              "detail": "E-mail 'naoexistente@exemplo.com' não encontrado."
             }
             ```
             </remarks>
-            <param name="request">E-mail do usuário.</param>
-            <returns>Token de redefinição de senha.</returns>
+            <param name="request">E-mail do usuário que deseja redefinir a senha.</param>
+            <returns>Um `OkResult` indicando que o token foi enviado.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.ResetPassword(Hephaestus.Application.DTOs.Request.ResetPasswordConfirmRequest)">
             <summary>
-            Confirma a redefinição de senha com um token.
+            Confirma a redefinição de senha utilizando o token recebido.
             </summary>
             <remarks>
-            Exemplo de erro:
+            Exemplo de requisição:
             ```json
             {
-              "error": "Token inválido ou expirado."
+              "email": "usuario@exemplo.com",
+              "token": "ABC123XYZ",
+              "newPassword": "NovaSenhaSegura456!"
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
+            ```
+            (Nenhum corpo de resposta, apenas status 200)
+            ```
+            
+            Exemplo de erro (Status 400 Bad Request):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "Token inválido ou expirado."
             }
             ```
             </remarks>
-            <param name="request">E-mail, token e nova senha.</param>
-            <returns>Status de sucesso.</returns>
+            <param name="request">E-mail do usuário, token de redefinição e a nova senha.</param>
+            <returns>Um `OkResult` em caso de sucesso na redefinição.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.SetupMfa">
             <summary>
-            Configura a autenticação multifator (MFA) para um administrador.
+            Configura a autenticação multifator (MFA) para um usuário administrador.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Admin**. Retorna um segredo **TOTP** que deve ser configurado em um aplicativo autenticador (e.g., Google Authenticator).
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
               "secret": "JBSWY3DPEHPK3PXP"
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 400 Bad Request):
             ```json
             {
-              "error": "Apenas administradores podem configurar MFA."
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "MFA já configurado para este usuário."
             }
             ```
             </remarks>
-            <returns>Segredo TOTP para configuração no aplicativo autenticador.</returns>
+            <returns>Um `OkResult` contendo o segredo TOTP.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.ValidateMfa(Hephaestus.Application.DTOs.Request.MfaRequest)">
             <summary>
-            Valida um código MFA e retorna um novo token JWT com MFA validado.
+            Valida um código MFA fornecido por um administrador e retorna um novo token JWT com a claim `MfaValidated`.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer **Role: Admin**.
+            
+            Exemplo de requisição:
+            ```json
+            {
+              "email": "admin@exemplo.com",
+              "mfaCode": "123456"
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
               "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 400 Bad Request):
             ```json
             {
-              "error": "Código MFA inválido."
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "Código MFA inválido."
             }
             ```
             </remarks>
-            <param name="request">E-mail e código MFA.</param>
-            <returns>Novo token JWT com claim MfaValidated.</returns>
+            <param name="request">E-mail do administrador e o código MFA gerado pelo aplicativo autenticador.</param>
+            <returns>Um `OkResult` contendo o novo token JWT.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.GetLoggedUser">
             <summary>
-            Retorna os dados do usuário logado.
+            Retorna os dados do usuário atualmente logado.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Requer autenticação (qualquer role).
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
-              "id": "123e4567-e89b-12d3-a456-426614174001",
-              "name": "Admin",
-              "email": "admin@example.com",
-              "role": "Admin"
+              "userId": "dbe2b66a-1d5f-4a7b-8c9e-0f1a2b3c4d5e",
+              "email": "usuario@exemplo.com",
+              "roles": ["Tenant"],
+              "isAuthenticated": true,
+              "mfaValidated": false,
+              "tenantId": "e1f2g3h4-i5j6-k7l8-m9n0-o1p2q3r4s5t6"
             }
             ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Usuário não encontrado."
-            }
+            
+            Exemplo de resposta para usuário não autenticado (Status 401 Unauthorized):
+            ```
+            (Nenhum corpo de resposta, apenas status 401)
             ```
             </remarks>
-            <returns>Dados do usuário logado (ID, nome, e-mail, função).</returns>
+            <returns>Um objeto `LoggedUserResponse` com as informações do usuário.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AuthController.GetUserEmail">
             <summary>
             Obtém o e-mail do usuário do token de autenticação.
             </summary>
-            <returns>E-mail do usuário.</returns>
+            <returns>O e-mail do usuário como string.</returns>
+            <exception cref="T:System.UnauthorizedAccessException">Lançada se o e-mail não for encontrado no token.</exception>
         </member>
         <member name="T:Hephaestus.Controllers.CompanyController">
             <summary>
-            Controller para gerenciamento de perfis de empresas.
+            Controller para gerenciamento de perfis de empresas, fornecendo endpoints para consulta de dados da empresa.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.CompanyController.#ctor(Hephaestus.Application.Interfaces.Company.IGetCompanyProfileUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.CompanyController})">
             <summary>
             Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.CompanyController"/>.
             </summary>
-            <param name="getCompanyProfileUseCase">Caso de uso para obtenção de perfil da empresa.</param>
-            <param name="logger">Logger para registro de eventos.</param>
+            <param name="getCompanyProfileUseCase">Caso de uso para obter o perfil da empresa.</param>
+            <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
         <member name="M:Hephaestus.Controllers.CompanyController.GetCompanyProfile(System.String)">
             <summary>
-            Obtém o perfil completo de uma empresa.
+            Obtém o perfil completo de uma empresa específica.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Este endpoint retorna todas as informações detalhadas de uma empresa, incluindo seus dados de contato, endereço, slogan, descrição, imagens, horários de funcionamento e links de mídias sociais.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
               "id": "123e4567-e89b-12d3-a456-426614174001",
@@ -534,7 +708,7 @@
               "images": [
                 {
                   "id": "img1",
-                  "url": "https://example.com/image1.jpg",
+                  "url": "[https://example.com/image1.jpg](https://example.com/image1.jpg)",
                   "description": "Fachada do restaurante"
                 }
               ],
@@ -549,118 +723,422 @@
               "socialMedia": [
                 {
                   "platform": "Instagram",
-                  "url": "https://instagram.com/restaurante"
+                  "url": "[https://instagram.com/restaurante](https://instagram.com/restaurante)"
                 }
               ]
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 404 Not Found):
             ```json
             {
-              "error": "Empresa não encontrada."
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+              "title": "Not Found",
+              "status": 404,
+              "detail": "Empresa com ID '99999999-9999-9999-9999-999999999999' não encontrada."
+            }
+            ```
+            Exemplo de erro (Status 400 Bad Request):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "O ID fornecido 'abc-123' não é um GUID válido."
             }
             ```
             </remarks>
-            <param name="id">ID da empresa.</param>
-            <returns>Perfil completo da empresa.</returns>
+            <param name="id">O **ID (GUID)** da empresa a ser consultada.</param>
+            <returns>Um `OkResult` contendo o `CompanyProfileResponse` ou um `NotFoundResult` se a empresa não for encontrada.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.CouponController">
             <summary>
-            Controller para gerenciamento de cupons.
+            Controller para gerenciamento de cupons, permitindo operações como criação, listagem, obtenção, atualização e exclusão de cupons.
             </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CouponController.#ctor(Hephaestus.Application.Interfaces.Coupon.ICreateCouponUseCase,Hephaestus.Application.Interfaces.Coupon.IGetCouponsUseCase,Hephaestus.Application.Interfaces.Coupon.IGetCouponByIdUseCase,Hephaestus.Application.Interfaces.Coupon.IUpdateCouponUseCase,Hephaestus.Application.Interfaces.Coupon.IDeleteCouponUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.CouponController})">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.CouponController"/>.
+            </summary>
+            <param name="createCouponUseCase">Caso de uso para criar cupons.</param>
+            <param name="getCouponsUseCase">Caso de uso para listar cupons.</param>
+            <param name="getCouponByIdUseCase">Caso de uso para obter um cupom por ID.</param>
+            <param name="updateCouponUseCase">Caso de uso para atualizar um cupom.</param>
+            <param name="deleteCouponUseCase">Caso de uso para deletar um cupom.</param>
+            <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.CreateCoupon(Hephaestus.Application.DTOs.Request.CreateCouponRequest)">
             <summary>
-            Cria um novo cupom.
+            Cria um novo cupom para o tenant autenticado.
             </summary>
+            <remarks>
+            Este endpoint permite que um administrador ou um tenant crie um novo cupom de desconto.
+            Requer autenticação com as roles **Admin** ou **Tenant**.
+            
+            Exemplo de requisição:
+            ```json
+            {
+              "code": "VERAO2025",
+              "description": "Desconto especial de verão",
+              "discountValue": 15.00,
+              "isActive": true,
+              "startDate": "2025-07-15T00:00:00Z",
+              "endDate": "2025-09-30T23:59:59Z"
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 201 Created):
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001"
+            }
+            ```
+            
+            Exemplo de erro de validação (Status 400 Bad Request):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "One or more validation errors occurred.",
+              "status": 400,
+              "errors": {
+                "Code": [
+                  "O código do cupom é obrigatório."
+                ]
+              }
+            }
+            ```
+            Exemplo de erro de conflito (Status 409 Conflict):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
+              "title": "Conflict",
+              "status": 409,
+              "detail": "O código 'VERAO2025' já existe para este tenant."
+            }
+            ```
+            </remarks>
+            <param name="request">Dados do cupom a ser criado.</param>
+            <returns>Um `CreatedAtActionResult` contendo o ID do cupom criado.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.GetCoupons(System.Nullable{System.Boolean},System.String)">
             <summary>
-            Lista cupons do tenant.
+            Lista os cupons disponíveis para o tenant autenticado, com filtros opcionais.
             </summary>
+            <remarks>
+            Este endpoint permite filtrar cupons por status de ativação (`isActive`) e pelo número de telefone de um cliente associado (`customerPhoneNumber`).
+            Requer autenticação com as roles **Admin** ou **Tenant**.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
+            ```json
+            [
+              {
+                "id": "123e4567-e89b-12d3-a456-426614174001",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "code": "DESCONTO10",
+                "description": "10% de desconto",
+                "discountValue": 10.00,
+                "isActive": true,
+                "startDate": "2025-07-14T00:00:00Z",
+                "endDate": "2025-12-31T23:59:59Z"
+              },
+              {
+                "id": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6",
+                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                "code": "FRETEGRATIS",
+                "description": "Frete Grátis na primeira compra",
+                "discountValue": 0.00,
+                "isActive": false,
+                "startDate": "2025-06-01T00:00:00Z",
+                "endDate": "2025-06-30T23:59:59Z"
+              }
+            ]
+            ```
+            Exemplo de erro de autenticação (Status 401 Unauthorized):
+            ```
+            (Nenhum corpo de resposta, apenas status 401)
+            ```
+            </remarks>
+            <param name="isActive">Filtro opcional para listar apenas cupons ativos ou inativos.</param>
+            <param name="customerPhoneNumber">Filtro opcional para listar cupons associados a um número de telefone de cliente específico.</param>
+            <returns>Uma `OkResult` contendo uma lista de `CouponResponse`.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.GetCouponById(System.String)">
             <summary>
-            Obtém detalhes de um cupom por ID.
+            Obtém os detalhes de um cupom específico por seu ID.
             </summary>
+            <remarks>
+            Este endpoint retorna todas as informações de um cupom, desde que pertença ao tenant autenticado.
+            Requer autenticação com as roles **Admin** ou **Tenant**.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
+            ```json
+            {
+              "id": "123e4567-e89b-12d3-a456-426614174001",
+              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+              "code": "DESCONTO10",
+              "description": "10% de desconto",
+              "discountValue": 10.00,
+              "isActive": true,
+              "startDate": "2025-07-14T00:00:00Z",
+              "endDate": "2025-12-31T23:59:59Z"
+            }
+            ```
+            
+            Exemplo de erro (Status 400 Bad Request):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "O ID do cupom 'invalido-id' não é um GUID válido."
+            }
+            ```
+            Exemplo de erro (Status 404 Not Found):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+              "title": "Not Found",
+              "status": 404,
+              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant."
+            }
+            ```
+            </remarks>
+            <param name="id">O **ID (GUID)** do cupom a ser consultado.</param>
+            <returns>Um `OkResult` contendo o `CouponResponse` ou um `NotFoundResult` se o cupom não for encontrado.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.UpdateCoupon(System.String,Hephaestus.Application.DTOs.Request.UpdateCouponRequest)">
             <summary>
-            Atualiza um cupom.
+            Atualiza um cupom existente para o tenant autenticado.
             </summary>
+            <remarks>
+            Permite a modificação das propriedades de um cupom existente.
+            Requer autenticação com as roles **Admin** ou **Tenant**.
+            
+            Exemplo de requisição:
+            ```json
+            {
+              "code": "SUPERDESCONTO20",
+              "description": "20% de desconto em toda a loja",
+              "discountValue": 20.00,
+              "isActive": true,
+              "startDate": "2025-07-14T00:00:00Z",
+              "endDate": "2026-01-31T23:59:59Z"
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 204 No Content):
+            ```
+            (Nenhum corpo de resposta, apenas status 204)
+            ```
+            
+            Exemplo de erro de validação (Status 400 Bad Request):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "One or more validation errors occurred.",
+              "status": 400,
+              "errors": {
+                "DiscountValue": [
+                  "O valor de desconto deve ser maior que zero."
+                ]
+              }
+            }
+            ```
+            Exemplo de erro (Status 404 Not Found):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+              "title": "Not Found",
+              "status": 404,
+              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para atualização."
+            }
+            ```
+            Exemplo de erro de conflito (Status 409 Conflict):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
+              "title": "Conflict",
+              "status": 409,
+              "detail": "O código de cupom 'SUPERDESCONTO20' já está em uso por outro cupom."
+            }
+            ```
+            </remarks>
+            <param name="id">O **ID (GUID)** do cupom a ser atualizado.</param>
+            <param name="request">Dados atualizados do cupom.</param>
+            <returns>Um `NoContentResult` em caso de sucesso na atualização.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.DeleteCoupon(System.String)">
             <summary>
-            Remove um cupom.
+            Remove um cupom do tenant autenticado.
             </summary>
+            <remarks>
+            Este endpoint permite que um administrador ou um tenant remova um cupom existente.
+            Requer autenticação com as roles **Admin** ou **Tenant**.
+            
+            Exemplo de resposta de sucesso (Status 204 No Content):
+            ```
+            (Nenhum corpo de resposta, apenas status 204)
+            ```
+            
+            Exemplo de erro (Status 400 Bad Request):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "O ID do cupom 'invalido-id' não é um GUID válido."
+            }
+            ```
+            
+            Exemplo de erro (Status 404 Not Found):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+              "title": "Not Found",
+              "status": 404,
+              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant."
+            }
+            ```
+            
+            Exemplo de erro de conflito (Status 409 Conflict):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
+              "title": "Conflict",
+              "status": 409,
+              "detail": "Não é possível remover um cupom que está sendo usado em pedidos ativos."
+            }
+            ```
+            </remarks>
+            <param name="id">O **ID (GUID)** do cupom a ser removido.</param>
+            <returns>Um `NoContentResult` em caso de sucesso.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.CustomerController">
             <summary>
-            Controller para gerenciamento de clientes.
+            Controller para gerenciamento de clientes, permitindo operações como atualização, cadastro e consulta de clientes.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.CustomerController.#ctor(Hephaestus.Application.Interfaces.Customer.IUpdateCustomerUseCase,Hephaestus.Application.Interfaces.Customer.IGetCustomerUseCase,Hephaestus.Application.Interfaces.Customer.IGetByIdCustomerUseCase,Hephaestus.Application.Interfaces.Administration.IAuditLogUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.CustomerController})">
             <summary>
             Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.CustomerController"/>.
             </summary>
-            <param name="updateCustomerUseCase">Caso de uso para atualização de clientes.</param>
-            <param name="getCustomerUseCase">Caso de uso para listagem de clientes.</param>
-            <param name="getByIdCustomerUseCase">Caso de uso para obtenção de cliente por ID.</param>
-            <param name="auditLogUseCase">Caso de uso para logs de auditoria.</param>
-            <param name="logger">Logger para registro de eventos.</param>
+            <param name="updateCustomerUseCase">Caso de uso para atualizar ou cadastrar clientes.</param>
+            <param name="getCustomerUseCase">Caso de uso para listar clientes.</param>
+            <param name="getByIdCustomerUseCase">Caso de uso para obter um cliente por ID.</param>
+            <param name="auditLogUseCase">Caso de uso para registrar logs de auditoria.</param>
+            <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
         <member name="M:Hephaestus.Controllers.CustomerController.UpdateCustomer(Hephaestus.Application.DTOs.Request.CustomerRequest)">
             <summary>
-            Atualiza ou cadastra dados de um cliente.
+            Atualiza ou cadastra um cliente com base no número de telefone.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
-            ```
-            Status: 204 No Content
-            ```
-            Exemplo de erro:
+            Este endpoint permite que um administrador ou um tenant atualize as informações de um cliente existente ou cadastre um novo cliente se o número de telefone não for encontrado.
+            Requer autenticação com as roles **Admin** ou **Tenant**.
+            
+            Exemplo de requisição:
             ```json
             {
-              "error": "TenantId não encontrado no token."
+              "phoneNumber": "11998877665",
+              "name": "Maria Oliveira",
+              "state": "MG",
+              "city": "Belo Horizonte",
+              "street": "Avenida Afonso Pena",
+              "number": "500",
+              "latitude": -19.9208,
+              "longitude": -43.9378
             }
             ```
-            </remarks>
-            <param name="request">Dados do cliente (nome, endereço, latitude, longitude).</param>
-            <returns>Status da atualização ou criação.</returns>
-        </member>
-        <member name="M:Hephaestus.Controllers.CustomerController.GetCustomers(System.String)">
-            <summary>
-            Lista clientes do tenant.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
+            
+            Exemplo de resposta de sucesso (Status 204 No Content):
+            ```
+            (Nenhum corpo de resposta, apenas status 204)
+            ```
+            
+            Exemplo de erro de validação (Status 400 Bad Request):
             ```json
-            [
-              {
-                "id": "123e4567-e89b-12d3-a456-426614174001",
-                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                "phoneNumber": "11987654321",
-                "name": "João Silva",
-                "state": "SP",
-                "city": "São Paulo",
-                "street": "Rua das Flores",
-                "number": "123",
-                "latitude": -23.5505,
-                "longitude": -46.6333,
-                "createdAt": "2024-01-01T12:00:00Z"
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "One or more validation errors occurred.",
+              "status": 400,
+              "errors": {
+                "PhoneNumber": [
+                  "O número de telefone é inválido."
+                ]
               }
-            ]
+            }
+            ```
+            Exemplo de erro de autenticação (Status 401 Unauthorized):
+            ```
+            (Nenhum corpo de resposta, apenas status 401)
             ```
             </remarks>
-            <param name="phoneNumber">Número de telefone para filtrar clientes (opcional).</param>
-            <returns>Lista de clientes.</returns>
+            <param name="request">Dados do cliente a serem atualizados ou cadastrados.</param>
+            <returns>Um `NoContentResult` indicando o sucesso da operação.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.CustomerController.GetCustomers(System.String,System.Int32,System.Int32)">
+            <summary>
+            Lista clientes do tenant, com opções de filtro e paginação.
+            </summary>
+            <remarks>
+            Este endpoint retorna uma lista paginada de clientes pertencentes ao tenant autenticado. É possível filtrar a lista por número de telefone.
+            Requer autenticação com as roles **Admin** ou **Tenant**.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
+            ```json
+            {
+              "items": [
+                {
+                  "id": "123e4567-e89b-12d3-a456-426614174001",
+                  "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                  "phoneNumber": "11987654321",
+                  "name": "João Silva",
+                  "state": "SP",
+                  "city": "São Paulo",
+                  "street": "Rua das Flores",
+                  "number": "123",
+                  "latitude": -23.5505,
+                  "longitude": -46.6333,
+                  "createdAt": "2025-07-14T12:00:00Z"
+                },
+                {
+                  "id": "a9b8c7d6-e5f4-3g2h-1i0j-k9l8m7n6o5p4",
+                  "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                  "phoneNumber": "21991122334",
+                  "name": "Ana Souza",
+                  "state": "RJ",
+                  "city": "Rio de Janeiro",
+                  "street": "Rua Copacabana",
+                  "number": "456",
+                  "latitude": -22.9710,
+                  "longitude": -43.1820,
+                  "createdAt": "2025-07-13T10:30:00Z"
+                }
+              ],
+              "totalCount": 2,
+              "pageNumber": 1,
+              "pageSize": 20
+            }
+            ```
+            Exemplo de erro de autenticação (Status 401 Unauthorized):
+            ```
+            (Nenhum corpo de resposta, apenas status 401)
+            ```
+            </remarks>
+            <param name="phoneNumber">Filtro opcional: número de telefone do cliente.</param>
+            <param name="pageNumber">Número da página para paginação (padrão: 1).</param>
+            <param name="pageSize">Tamanho da página para paginação (padrão: 20).</param>
+            <returns>Um `OkResult` contendo uma lista paginada de `CustomerResponse`.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.CustomerController.GetCustomerById(System.String)">
             <summary>
-            Obtém detalhes de um cliente específico.
+            Obtém os detalhes de um cliente específico por seu ID.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Este endpoint retorna todas as informações de um cliente, desde que o cliente pertença ao tenant autenticado.
+            Requer autenticação com as roles **Admin** ou **Tenant**.
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
             ```json
             {
               "id": "123e4567-e89b-12d3-a456-426614174001",
@@ -673,263 +1151,577 @@
               "number": "123",
               "latitude": -23.5505,
               "longitude": -46.6333,
-              "createdAt": "2024-01-01T12:00:00Z"
+              "createdAt": "2025-07-14T12:00:00Z"
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro (Status 400 Bad Request):
             ```json
             {
-              "error": "Cliente não encontrado."
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "O ID do cliente 'abc-123' não é um GUID válido."
+            }
+            ```
+            Exemplo de erro (Status 404 Not Found):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+              "title": "Not Found",
+              "status": 404,
+              "detail": "Cliente com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant."
             }
             ```
             </remarks>
-            <param name="id">ID do cliente (GUID).</param>
-            <returns>Detalhes do cliente.</returns>
-        </member>
-        <member name="M:Hephaestus.Controllers.CustomerController.GetTenantId">
-            <summary>
-            Obtém o TenantId do token de autenticação.
-            </summary>
-            <returns>TenantId do token.</returns>
+            <param name="id">O **ID (GUID)** do cliente a ser consultado.</param>
+            <returns>Um `OkResult` contendo o `CustomerResponse` ou um `NotFoundResult` se o cliente não for encontrado.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.DatabaseController">
             <summary>
-            Controller para operações de banco de dados.
+            Controller para operações seguras de banco de dados, permitindo a execução de queries SQL de consulta.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.DatabaseController.#ctor(Hephaestus.Application.Interfaces.Database.IExecuteQueryUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.DatabaseController})">
             <summary>
             Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.DatabaseController"/>.
             </summary>
-            <param name="executeQueryUseCase">Caso de uso para execução de queries.</param>
-            <param name="logger">Logger para registro de eventos.</param>
+            <param name="executeQueryUseCase">Caso de uso para executar queries no banco de dados.</param>
+            <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
         <member name="M:Hephaestus.Controllers.DatabaseController.ExecuteQuery(Hephaestus.Application.DTOs.Request.ExecuteQueryRequest)">
             <summary>
-            Executa uma query SQL de consulta.
+            Executa uma query SQL de consulta (SELECT) no banco de dados.
             </summary>
             <remarks>
-            Exemplo de resposta de sucesso:
+            Este endpoint permite a execução de queries SQL do tipo **SELECT** para consulta de dados.
+            É uma operação altamente privilegiada e requer que o usuário autenticado possua a role **Admin** e tenha passado pela validação de **MFA (Autenticação Multifator)**.
+            
+            Exemplo de requisição:
             ```json
             {
-              "columns": ["id", "name", "email"],
+              "query": "SELECT Id, Name, Email FROM Companies WHERE IsEnabled = TRUE LIMIT 10"
+            }
+            ```
+            
+            Exemplo de resposta de sucesso (Status 200 OK):
+            ```json
+            {
+              "columns": ["Id", "Name", "Email"],
               "rows": [
-                ["1", "João Silva", "joao@email.com"],
-                ["2", "Maria Santos", "maria@email.com"]
+                ["123e4567-e89b-12d3-a456-426614174001", "Empresa A", "contato@empresaA.com"],
+                ["987f6543-d2c1-b0a9-8765-43210fedcba9", "Empresa B", "info@empresaB.com"]
               ],
               "rowCount": 2
             }
             ```
-            Exemplo de erro:
+            
+            Exemplo de erro de requisição inválida (Status 400 Bad Request):
             ```json
             {
-              "error": "Query inválida. Apenas comandos SELECT são permitidos."
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "Apenas comandos SELECT são permitidos. Query recebida: 'DELETE FROM Users'."
+            }
+            ```
+            Exemplo de erro de autenticação (Status 401 Unauthorized):
+            ```
+            (Nenhum corpo de resposta, apenas status 401)
+            ```
+            Exemplo de erro interno do servidor (Status 500 Internal Server Error):
+            ```json
+            {
+              "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+              "title": "Internal Server Error",
+              "status": 500,
+              "detail": "Ocorreu um erro inesperado ao executar a query: Timeout de banco de dados."
             }
             ```
             </remarks>
-            <param name="request">Query SQL a ser executada.</param>
-            <returns>Resultados da query.</returns>
+            <param name="request">Um objeto <see cref="T:Hephaestus.Application.DTOs.Request.ExecuteQueryRequest"/> contendo a query SQL a ser executada.</param>
+            <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo os resultados da query em um <see cref="T:Hephaestus.Application.DTOs.Response.ExecuteQueryResponse"/>.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.MenuController">
             <summary>
-            Controller para gerenciamento de itens do cardápio.
+            Controller for managing menu items within a tenant's catalog.
+            This includes creating, listing, retrieving, updating, and deleting menu items.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.MenuController.#ctor(Hephaestus.Application.Interfaces.Menu.ICreateMenuItemUseCase,Hephaestus.Application.Interfaces.Menu.IGetMenuItemsUseCase,Hephaestus.Application.Interfaces.Menu.IGetMenuItemByIdUseCase,Hephaestus.Application.Interfaces.Menu.IUpdateMenuItemUseCase,Hephaestus.Application.Interfaces.Menu.IDeleteMenuItemUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.MenuController})">
             <summary>
-            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.MenuController"/>.
+            Initializes a new instance of the <see cref="T:Hephaestus.Controllers.MenuController"/>.
             </summary>
-            <param name="createMenuItemUseCase">Caso de uso para criação de itens do cardápio.</param>
-            <param name="getMenuItemsUseCase">Caso de uso para listagem de itens do cardápio.</param>
-            <param name="getMenuItemByIdUseCase">Caso de uso para obtenção de item do cardápio por ID.</param>
-            <param name="updateMenuItemUseCase">Caso de uso para atualização de itens do cardápio.</param>
-            <param name="deleteMenuItemUseCase">Caso de uso para remoção de itens do cardápio.</param>
-            <param name="logger">Logger para registro de eventos.</param>
+            <param name="createMenuItemUseCase">Use case for creating new menu items.</param>
+            <param name="getMenuItemsUseCase">Use case for listing menu items.</param>
+            <param name="getMenuItemByIdUseCase">Use case for retrieving a menu item by its ID.</param>
+            <param name="updateMenuItemUseCase">Use case for updating existing menu items.</param>
+            <param name="deleteMenuItemUseCase">Use case for deleting menu items.</param>
+            <param name="logger">Logger for recording events and errors.</param>
         </member>
         <member name="M:Hephaestus.Controllers.MenuController.CreateMenuItem(Hephaestus.Application.DTOs.Request.CreateMenuItemRequest)">
-            <summary>
-            Cria um novo item do cardápio.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```json
-            {
-              "id": "123e4567-e89b-12d3-a456-426614174001"
-            }
-            ```
-            Exemplo de erro de validação:
-            ```json
-            {
-              "error": {
-                "code": "VALIDATION_ERROR",
-                "message": "Erro de validação",
-                "details": {
-                  "errors": [
-                    {
-                      "field": "Name",
-                      "message": "Nome é obrigatório."
-                    }
-                  ]
-                }
-              }
-            }
-            ```
-            </remarks>
-            <param name="request">Dados do item do cardápio a ser criado.</param>
-            <returns>ID do item criado.</returns>
+             <summary>
+             Creates a new menu item for the authenticated tenant.
+             </summary>
+             <remarks>
+             This endpoint allows a tenant to add a new item to their menu.
+             Authentication with the **Tenant** role is required.
+            
+             Example Request:
+             ```json
+             {
+               "name": "Pizza Calabresa",
+               "description": "Pizza de calabresa defumada com cebola e queijo mussarela.",
+               "categoryId": "c0d1e2f3-a4b5-c6d7-e8f9-0a1b2c3d4e5f",
+               "price": 45.90,
+               "isAvailable": true,
+               "tagIds": ["massas", "pizzas"],
+               "availableAdditionalIds": ["ad001", "ad002"],
+               "imageUrl": "[https://example.com/images/pizza-calabresa.jpg](https://example.com/images/pizza-calabresa.jpg)"
+             }
+             ```
+            
+             Example Success Response (Status 201 Created):
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001"
+             }
+             ```
+            
+             Example Validation Error Response (Status 400 Bad Request):
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "Name": [
+                   "The Name field is required."
+                 ],
+                 "Price": [
+                   "The Price field must be a positive value."
+                 ]
+               }
+             }
+             ```
+             Example Unauthorized Response (Status 401 Unauthorized):
+             ```
+             (No response body, just 401 status)
+             ```
+             </remarks>
+             <param name="request">The data for the menu item to be created.</param>
+             <returns>A <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> containing the ID of the created menu item.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.MenuController.GetMenuItems">
-            <summary>
-            Lista itens do cardápio.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```json
-            [
-              {
-                "id": "123e4567-e89b-12d3-a456-426614174001",
-                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                "name": "X-Burger",
-                "description": "Hambúrguer com queijo e salada",
-                "categoryId": "789e0123-e89b-12d3-a456-426614174003",
-                "price": 25.90,
-                "isAvailable": true,
-                "tagIds": ["tag1", "tag2"],
-                "availableAdditionalIds": ["add1", "add2"],
-                "imageUrl": "https://example.com/burger.jpg"
-              }
-            ]
-            ```
-            </remarks>
-            <returns>Lista de itens do cardápio.</returns>
+        <member name="M:Hephaestus.Controllers.MenuController.GetMenuItems(System.Int32,System.Int32)">
+             <summary>
+             Lists menu items for the authenticated tenant with pagination.
+             </summary>
+             <remarks>
+             This endpoint retrieves a paginated list of menu items belonging to the authenticated tenant.
+             Authentication with the **Tenant** role is required.
+            
+             Example Success Response (Status 200 OK):
+             ```json
+             {
+               "items": [
+                 {
+                   "id": "123e4567-e89b-12d3-a456-426614174001",
+                   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                   "name": "X-Burger",
+                   "description": "Hambúrguer com queijo e salada",
+                   "categoryId": "789e0123-e89b-12d3-a456-426614174003",
+                   "price": 25.90,
+                   "isAvailable": true,
+                   "tagIds": ["tag1", "tag2"],
+                   "createdAt": "2024-01-01T12:00:00Z"
+                 },
+                 {
+                   "id": "a9b8c7d6-e5f4-3g2h-1i0j-k9l8m7n6o5p4",
+                   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                   "name": "Refrigerante Cola",
+                   "description": "Lata de 350ml",
+                   "categoryId": "c0d1e2f3-a4b5-c6d7-e8f9-0a1b2c3d4e5f",
+                   "price": 7.00,
+                   "isAvailable": true,
+                   "tagIds": ["bebidas"],
+                   "createdAt": "2024-01-02T10:00:00Z"
+                 }
+               ],
+               "totalCount": 2,
+               "pageNumber": 1,
+               "pageSize": 20
+             }
+             ```
+             Example Bad Request Response (Status 400 Bad Request):
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "Bad Request",
+               "status": 400,
+               "detail": "Page number must be greater than 0."
+             }
+             ```
+             Example Unauthorized Response (Status 401 Unauthorized):
+             ```
+             (No response body, just 401 status)
+             ```
+             </remarks>
+             <param name="pageNumber">The page number for pagination (defaults to 1).</param>
+             <param name="pageSize">The number of items per page for pagination (defaults to 20).</param>
+             <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing a paginated list of <see cref="T:Hephaestus.Application.DTOs.Response.MenuItemResponse"/>.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.MenuController.GetMenuItemById(System.String)">
-            <summary>
-            Obtém item do cardápio por ID.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```json
-            {
-              "id": "123e4567-e89b-12d3-a456-426614174001",
-              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-              "name": "X-Burger",
-              "description": "Hambúrguer com queijo e salada",
-              "categoryId": "789e0123-e89b-12d3-a456-426614174003",
-              "price": 25.90,
-              "isAvailable": true,
-              "tagIds": ["tag1", "tag2"],
-              "availableAdditionalIds": ["add1", "add2"],
-              "imageUrl": "https://example.com/burger.jpg"
-            }
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Item do cardápio não encontrado."
-            }
-            ```
-            </remarks>
-            <param name="id">ID do item do cardápio.</param>
-            <returns>Detalhes do item do cardápio.</returns>
+             <summary>
+             Retrieves a specific menu item by its ID.
+             </summary>
+             <remarks>
+             This endpoint returns the detailed information of a single menu item, provided it belongs to the authenticated tenant.
+             Authentication with the **Tenant** role is required.
+            
+             Example Success Response (Status 200 OK):
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001",
+               "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+               "name": "X-Burger",
+               "description": "Hambúrguer com queijo e salada",
+               "categoryId": "789e0123-e89b-12d3-a456-426614174003",
+               "price": 25.90,
+               "isAvailable": true,
+               "tagIds": ["tag1", "tag2"],
+               "availableAdditionalIds": ["add1", "add2"],
+               "imageUrl": "[https://example.com/images/x-burger.jpg](https://example.com/images/x-burger.jpg)"
+             }
+             ```
+            
+             Example Bad Request Response (Status 400 Bad Request):
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "Bad Request",
+               "status": 400,
+               "detail": "The provided ID 'invalid-guid' is not a valid GUID."
+             }
+             ```
+             Example Not Found Response (Status 404 Not Found):
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "MenuItem with ID '99999999-9999-9999-9999-999999999999' not found for the tenant."
+             }
+             ```
+             Example Unauthorized Response (Status 401 Unauthorized):
+             ```
+             (No response body, just 401 status)
+             ```
+             </remarks>
+             <param name="id">The **ID (GUID)** of the menu item to retrieve.</param>
+             <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing the <see cref="T:Hephaestus.Application.DTOs.Response.MenuItemResponse"/> or a <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if the item is not found.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.MenuController.UpdateMenuItem(System.String,Hephaestus.Application.DTOs.Request.UpdateMenuItemRequest)">
-            <summary>
-            Atualiza item do cardápio.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```
-            Status: 204 No Content
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Item do cardápio não encontrado."
-            }
-            ```
-            </remarks>
-            <param name="id">ID do item do cardápio.</param>
-            <param name="request">Dados atualizados do item do cardápio.</param>
-            <returns>Status da atualização.</returns>
+             <summary>
+             Updates an existing menu item.
+             </summary>
+             <remarks>
+             This endpoint allows a tenant to update an existing menu item. Only the fields provided in the request will be updated.
+             Authentication with the **Tenant** role is required.
+            
+             Example Request:
+             ```json
+             {
+               "name": "X-Burger Deluxe",
+               "description": "Hambúrguer premium com queijo, salada e bacon",
+               "categoryId": "789e0123-e89b-12d3-a456-426614174003",
+               "price": 32.90,
+               "isAvailable": true,
+               "tagIds": ["tag1", "tag2", "premium"],
+               "availableAdditionalIds": ["add1", "add2", "add3"],
+               "imageUrl": "[https://example.com/images/x-burger-deluxe.jpg](https://example.com/images/x-burger-deluxe.jpg)"
+             }
+             ```
+            
+             Example Success Response (Status 204 No Content):
+             ```
+             (No response body, just 204 status)
+             ```
+            
+             Example Validation Error Response (Status 400 Bad Request):
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "Price": [
+                   "The Price field must be a positive value."
+                 ]
+               }
+             }
+             ```
+            
+             Example Not Found Response (Status 404 Not Found):
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "MenuItem with ID '99999999-9999-9999-9999-999999999999' not found for the tenant."
+             }
+             ```
+            
+             Example Unauthorized Response (Status 401 Unauthorized):
+             ```
+             (No response body, just 401 status)
+             ```
+             </remarks>
+             <param name="id">The **ID (GUID)** of the menu item to be updated.</param>
+             <param name="request">The updated data for the menu item.</param>
+             <returns>A <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicating successful update.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.MenuController.DeleteMenuItem(System.String)">
-            <summary>
-            Remove item do cardápio.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```
-            Status: 204 No Content
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Item do cardápio não encontrado."
-            }
-            ```
-            </remarks>
-            <param name="id">ID do item do cardápio.</param>
-            <returns>Status da remoção.</returns>
-        </member>
-        <member name="M:Hephaestus.Controllers.MenuController.GetTenantId">
-            <summary>
-            Obtém o TenantId do token de autenticação.
-            </summary>
-            <returns>TenantId do token.</returns>
+             <summary>
+             Deletes a menu item.
+             </summary>
+             <remarks>
+             This endpoint allows a tenant to delete a menu item from their catalog.
+             Authentication with the **Tenant** role is required.
+            
+             Example Success Response (Status 204 No Content):
+             ```
+             (No response body, just 204 status)
+             ```
+            
+             Example Not Found Response (Status 404 Not Found):
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "MenuItem with ID '99999999-9999-9999-9999-999999999999' not found for the tenant."
+             }
+             ```
+            
+             Example Unauthorized Response (Status 401 Unauthorized):
+             ```
+             (No response body, just 401 status)
+             ```
+             </remarks>
+             <param name="id">The **ID (GUID)** of the menu item to be deleted.</param>
+             <returns>A <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicating successful deletion.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.OpenAIController">
             <summary>
-            Controller para integração com a API da OpenAI.
+            Controller para integração segura com a API da OpenAI, permitindo a comunicação com modelos de chat.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.OpenAIController.#ctor(Hephaestus.Application.Interfaces.OpenAI.IChatWithOpenAIUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.OpenAIController})">
             <summary>
             Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.OpenAIController"/>.
             </summary>
-            <param name="chatWithOpenAIUseCase">Caso de uso para comunicação com a OpenAI.</param>
-            <param name="logger">Logger para registro de eventos.</param>
+            <param name="chatWithOpenAIUseCase">Caso de uso para comunicação com a API de chat da OpenAI.</param>
+            <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
         <member name="M:Hephaestus.Controllers.OpenAIController.Chat(Hephaestus.Application.DTOs.Request.OpenAIRequest)">
+             <summary>
+             Envia uma consulta (prompt) para o modelo de chat da OpenAI e retorna a resposta.
+             </summary>
+             <remarks>
+             Este endpoint permite interagir com a API de chat da OpenAI, enviando um prompt e, opcionalmente,
+             especificando o formato de resposta desejado (texto ou JSON).
+             <br/><br/>
+             **Requisitos de Autorização:**
+             Para acessar este endpoint, o usuário autenticado deve possuir a role **Admin**
+             e ter passado pela validação de **MFA (Autenticação Multifator)**.
+             <br/><br/>
+             **Exemplo de Requisição:**
+             ```json
+             {
+               "prompt": "Qual a capital da França?",
+               "responseFormat": "text"
+             }
+             ```
+             ou
+             ```json
+             {
+               "prompt": "Me forneça informações sobre a Torre Eiffel em formato JSON com campos 'nome', 'cidade' e 'altura'.",
+               "responseFormat": "json_object"
+             }
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 200 OK - 'text' format):**
+             ```json
+             {
+               "response": "A capital da França é Paris.",
+               "usage": {
+                 "promptTokens": 8,
+                 "completionTokens": 5,
+                 "totalTokens": 13
+               }
+             }
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 200 OK - 'json_object' format):**
+             ```json
+             {
+               "response": "{\"nome\": \"Torre Eiffel\", \"cidade\": \"Paris\", \"altura\": \"330 metros\"}",
+               "usage": {
+                 "promptTokens": 25,
+                 "completionTokens": 20,
+                 "totalTokens": 45
+               }
+             }
+             ```
+            
+             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "Prompt": [
+                   "O campo 'Prompt' é obrigatório e não pode ser vazio."
+                 ]
+               }
+             }
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```
+             (Nenhum corpo de resposta, apenas status 401)
+             ```
+            
+             **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro inesperado ao se comunicar com a API da OpenAI. Detalhes: Serviço indisponível."
+             }
+             ```
+             </remarks>
+             <param name="request">Um objeto <see cref="T:Hephaestus.Application.DTOs.Request.OpenAIRequest"/> contendo o prompt e configurações adicionais para a consulta.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo a resposta da OpenAI em um <see cref="T:OpenAIResponse"/>.</returns>
+        </member>
+        <member name="T:Hephaestus.Controllers.PaymentController">
             <summary>
-            Consulta o chat da OpenAI.
+            Controller for processing payments for a specific tenant.
             </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```json
-            {
-              "response": "Olá! Como posso ajudá-lo hoje?",
-              "usage": {
-                "promptTokens": 10,
-                "completionTokens": 15,
-                "totalTokens": 25
-              }
-            }
-            ```
-            Exemplo de erro de validação:
-            ```json
-            {
-              "error": {
-                "code": "VALIDATION_ERROR",
-                "message": "Erro de validação",
-                "details": {
-                  "errors": [
-                    {
-                      "field": "Prompt",
-                      "message": "Prompt é obrigatório."
-                    }
-                  ]
-                }
-              }
-            }
-            ```
-            </remarks>
-            <param name="request">Dados da consulta à OpenAI.</param>
-            <returns>Resposta da OpenAI.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.PaymentController.#ctor(Hephaestus.Application.Interfaces.Payment.IProcessPaymentUseCase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Hephaestus.Controllers.PaymentController"/>.
+            </summary>
+            <param name="processPaymentUseCase">The use case for processing payments.</param>
+        </member>
+        <member name="M:Hephaestus.Controllers.PaymentController.ProcessPayment(Hephaestus.Domain.DTOs.Request.PaymentRequest)">
+            ProcessPayment
+             <summary>
+             Processes a new payment for the authenticated tenant.
+             </summary>
+             <remarks>
+             This endpoint allows a tenant to initiate and process a payment transaction.
+             It requires authentication with the **Tenant** role.
+            
+             **Example Request:**
+             ```json
+             {
+               "orderId": "e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t",
+               "amount": 120.50,
+               "currency": "BRL",
+               "paymentMethod": "CreditCard",
+               "cardDetails": {
+                 "cardNumber": "4111222233334444",
+                 "expirationMonth": "12",
+                 "expirationYear": "2027",
+                 "cvv": "123",
+                 "cardHolderName": "JOAO DA SILVA"
+               },
+               "customerName": "João da Silva",
+               "customerEmail": "joao.silva@example.com"
+             }
+             ```
+            
+             **Example Success Response (Status 201 Created):**
+             ```json
+             {
+               "transactionId": "txn_abcdef1234567890",
+               "status": "Approved",
+               "amount": 120.50,
+               "currency": "BRL",
+               "orderId": "e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t",
+               "timestamp": "2024-07-14T13:00:00Z",
+               "message": "Pagamento aprovado com sucesso."
+             }
+             ```
+            
+             **Example Validation Error (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "Amount": [
+                   "O valor do pagamento deve ser maior que zero."
+                 ],
+                 "CardDetails.CardNumber": [
+                   "Número do cartão inválido."
+                 ]
+               }
+             }
+             ```
+            
+             **Example Unauthorized (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token."
+             }
+             ```
+            
+             **Example Not Found (Status 404 Not Found):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "Pedido com ID '99999999-9999-9999-9999-999999999999' não encontrado."
+             }
+             ```
+            
+             **Example Conflict (Status 409 Conflict):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
+               "title": "Conflict",
+               "status": 409,
+               "detail": "Este pedido já possui um pagamento registrado ou está em um status que impede novo pagamento."
+             }
+             ```
+            
+             **Example Internal Server Error (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro inesperado ao processar o pagamento."
+             }
+             ```
+             </remarks>
+             <param name="request">The payment request details (<see cref="T:Hephaestus.Domain.DTOs.Request.PaymentRequest"/>).</param>
+             <returns>A <see cref="T:Microsoft.AspNetCore.Mvc.StatusCodeResult"/> with status 201 Created and the <see cref="T:Hephaestus.Domain.DTOs.Response.PaymentResponse"/>.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.PromotionController">
             <summary>
-            Controller para gerenciamento de promoções de um tenant.
+            Controller para gerenciamento completo de promoções de um tenant, incluindo criação, listagem,
+            obtenção por ID, atualização, exclusão e notificação de promoções.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.#ctor(Hephaestus.Application.Interfaces.Promotion.ICreatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionsUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionByIdUseCase,Hephaestus.Application.Interfaces.Promotion.IUpdatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IDeletePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.INotifyPromotionUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.PromotionController})">
@@ -942,225 +1734,423 @@
             <param name="updatePromotionUseCase">Caso de uso para atualizar promoções.</param>
             <param name="deletePromotionUseCase">Caso de uso para remover promoções.</param>
             <param name="notifyPromotionUseCase">Caso de uso para notificar promoções.</param>
-            <param name="logger">Logger para registro de erros.</param>
+            <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.CreatePromotion(Hephaestus.Application.DTOs.Request.CreatePromotionRequest)">
-            <summary>
-            Cria uma nova promoção para o tenant.
-            </summary>
-            <remarks>
-            Exemplo de corpo da requisição:
-            ```json
-            {
-              "name": "Desconto de 10%",
-              "description": "10% de desconto em pedidos",
-              "discountType": "Percentage",
-              "discountValue": 10.00,
-              "menuItemId": null,
-              "minOrderValue": 50.00,
-              "maxUsagePerCustomer": 1,
-              "maxTotalUses": 100,
-              "applicableToTags": ["pizza", "lanche"],
-              "startDate": "2025-07-12T00:00:00",
-              "endDate": "2025-12-31T23:59:59",
-              "isActive": true,
-              "imageUrl": "https://exemplo.com/imagem.jpg"
-            }
-            ```
-            Exemplo de resposta de sucesso:
-            ```json
-            {
-              "id": "123e4567-e89b-12d3-a456-426614174001"
-            }
-            ```
-            Exemplo de erro de validação:
-            ```json
-            {
-              "error": {
-                "code": "VALIDATION_ERROR",
-                "message": "Erro de validação",
-                "details": {
-                  "errors": [
-                    {
-                      "field": "Name",
-                      "message": "Nome é obrigatório."
-                    }
-                  ]
-                }
-              }
-            }
-            ```
-            </remarks>
-            <param name="request">Dados da promoção a ser criada.</param>
-            <returns>ID da promoção criada.</returns>
+            CreatePromotion
+             <summary>
+             Cria uma nova promoção para o tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint permite que um tenant registre uma nova promoção em seu catálogo.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Corpo da Requisição:**
+             ```json
+             {
+               "name": "Desconto de 10% no Verão",
+               "description": "10% de desconto em todos os pedidos acima de R$50 durante o verão.",
+               "discountType": "Percentage",
+               "discountValue": 10.00,
+               "menuItemId": null,
+               "minOrderValue": 50.00,
+               "maxUsagePerCustomer": 1,
+               "maxTotalUses": 100,
+               "applicableToTags": ["pizza", "lanche"],
+               "startDate": "2025-07-12T00:00:00Z",
+               "endDate": "2025-12-31T23:59:59Z",
+               "isActive": true,
+               "imageUrl": "[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)"
+             }
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 201 Created):**
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001"
+             }
+             ```
+            
+             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "Name": [
+                   "O campo 'Name' é obrigatório."
+                 ],
+                 "DiscountValue": [
+                   "O valor do desconto deve ser positivo."
+                 ]
+               }
+             }
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token."
+             }
+             ```
+            
+             **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro inesperado ao criar a promoção."
+             }
+             ```
+             </remarks>
+             <param name="request">Dados da promoção a ser criada (<see cref="T:Hephaestus.Application.DTOs.Request.CreatePromotionRequest"/>).</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> contendo o ID da promoção criada.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.GetPromotions(System.Nullable{System.Boolean})">
-            <summary>
-            Lista promoções do tenant.
-            </summary>
-            <remarks>
-            Exemplo de requisição:
-            ```http
-            GET /api/promotion?isActive=true
-            ```
-            Exemplo de resposta de sucesso:
-            ```json
-            [
-              {
-                "id": "123e4567-e89b-12d3-a456-426614174001",
-                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                "name": "Desconto de 10%",
-                "description": "10% de desconto em pedidos",
-                "discountType": "Percentage",
-                "discountValue": 10.00,
-                "menuItemId": null,
-                "minOrderValue": 50.00,
-                "maxUsagePerCustomer": 1,
-                "maxTotalUses": 100,
-                "applicableToTags": ["pizza", "lanche"],
-                "startDate": "2025-07-12T00:00:00",
-                "endDate": "2025-12-31T23:59:59",
-                "isActive": true,
-                "imageUrl": "https://exemplo.com/imagem.jpg"
-              }
-            ]
-            ```
-            </remarks>
-            <param name="isActive">Filtro opcional para promoções ativas (true) ou inativas (false).</param>
-            <returns>Lista de promoções do tenant.</returns>
+            GetPromotions
+             <summary>
+             Lista as promoções do tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint retorna uma lista de promoções registradas para o tenant.
+             É possível filtrar as promoções por status de ativação (`isActive`).
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Requisição:**
+             ```http
+             GET /api/Promotion?isActive=true
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 200 OK):**
+             ```json
+             [
+               {
+                 "id": "123e4567-e89b-12d3-a456-426614174001",
+                 "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                 "name": "Desconto de 10% no Verão",
+                 "description": "10% de desconto em todos os pedidos.",
+                 "discountType": "Percentage",
+                 "discountValue": 10.00,
+                 "menuItemId": null,
+                 "minOrderValue": 50.00,
+                 "maxUsagePerCustomer": 1,
+                 "maxTotalUses": 100,
+                 "applicableToTags": ["pizza", "lanche"],
+                 "startDate": "2025-07-12T00:00:00Z",
+                 "endDate": "2025-12-31T23:59:59Z",
+                 "isActive": true,
+                 "imageUrl": "[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)"
+               },
+               {
+                 "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                 "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                 "name": "Frete Grátis para Novos Clientes",
+                 "description": "Frete grátis na primeira compra.",
+                 "discountType": "FreeShipping",
+                 "discountValue": 0.00,
+                 "menuItemId": null,
+                 "minOrderValue": 30.00,
+                 "maxUsagePerCustomer": 1,
+                 "maxTotalUses": 50,
+                 "applicableToTags": [],
+                 "startDate": "2025-07-01T00:00:00Z",
+                 "endDate": "2025-08-31T23:59:59Z",
+                 "isActive": true,
+                 "imageUrl": null
+               }
+             ]
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token."
+             }
+             ```
+            
+             **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro inesperado ao listar as promoções."
+             }
+             ```
+             </remarks>
+             <param name="isActive">Filtro opcional: `true` para promoções ativas, `false` para inativas. Se omitido, retorna todas as promoções.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo uma lista de objetos <see cref="T:Hephaestus.Application.DTOs.Response.PromotionResponse"/>.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.GetPromotionById(System.String)">
-            <summary>
-            Obtém detalhes de uma promoção por ID.
-            </summary>
-            <remarks>
-            Exemplo de requisição:
-            ```http
-            GET /api/promotion/123e4567-e89b-12d3-a456-426614174001
-            ```
-            Exemplo de resposta de sucesso:
-            ```json
-            {
-              "id": "123e4567-e89b-12d3-a456-426614174001",
-              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-              "name": "Desconto de 10%",
-              "description": "10% de desconto em pedidos",
-              "discountType": "Percentage",
-              "discountValue": 10.00,
-              "menuItemId": null,
-              "minOrderValue": 50.00,
-              "maxUsagePerCustomer": 1,
-              "maxTotalUses": 100,
-              "applicableToTags": ["pizza", "lanche"],
-              "startDate": "2025-07-12T00:00:00",
-              "endDate": "2025-12-31T23:59:59",
-              "isActive": true,
-              "imageUrl": "https://exemplo.com/imagem.jpg"
-            }
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Promoção não encontrada."
-            }
-            ```
-            </remarks>
-            <param name="id">ID da promoção (GUID).</param>
-            <returns>Detalhes da promoção.</returns>
+            GetPromotionById
+             <summary>
+             Obtém os detalhes de uma promoção específica por ID.
+             </summary>
+             <remarks>
+             Este endpoint retorna todas as informações de uma promoção, desde que a promoção pertença ao tenant autenticado.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Requisição:**
+             ```http
+             GET /api/Promotion/123e4567-e89b-12d3-a456-426614174001
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 200 OK):**
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001",
+               "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+               "name": "Desconto de 10% no Verão",
+               "description": "10% de desconto em todos os pedidos acima de R$50 durante o verão.",
+               "discountType": "Percentage",
+               "discountValue": 10.00,
+               "menuItemId": null,
+               "minOrderValue": 50.00,
+               "maxUsagePerCustomer": 1,
+               "maxTotalUses": 100,
+               "applicableToTags": ["pizza", "lanche"],
+               "startDate": "2025-07-12T00:00:00Z",
+               "endDate": "2025-12-31T23:59:59Z",
+               "isActive": true,
+               "imageUrl": "[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)"
+             }
+             ```
+            
+             **Exemplo de Erro (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "Bad Request",
+               "status": 400,
+               "detail": "O ID da promoção 'invalido-id' não é um GUID válido."
+             }
+             ```
+            
+             **Exemplo de Erro (Status 404 Not Found):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+             }
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token."
+             }
+             ```
+             </remarks>
+             <param name="id">O **ID (GUID)** da promoção a ser consultada.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o <see cref="T:Hephaestus.Application.DTOs.Response.PromotionResponse"/> ou um <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> se a promoção não for encontrada.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotion(System.String,Hephaestus.Application.DTOs.Request.UpdatePromotionRequest)">
-            <summary>
-            Atualiza uma promoção do tenant.
-            </summary>
-            <remarks>
-            Exemplo de corpo da requisição:
-            ```json
-            {
-              "name": "Desconto de 15%",
-              "description": "15% de desconto em pedidos",
-              "discountType": "Percentage",
-              "discountValue": 15.00,
-              "menuItemId": null,
-              "minOrderValue": 60.00,
-              "maxUsagePerCustomer": 2,
-              "maxTotalUses": 200,
-              "applicableToTags": ["pizza", "lanche"],
-              "startDate": "2025-07-12T00:00:00",
-              "endDate": "2025-12-31T23:59:59",
-              "isActive": true,
-              "imageUrl": "https://exemplo.com/imagem.jpg"
-            }
-            ```
-            Exemplo de resposta de sucesso:
-            ```
-            Status: 204 No Content
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Promoção não encontrada."
-            }
-            ```
-            </remarks>
-            <param name="id">ID da promoção a ser atualizada.</param>
-            <param name="request">Dados atualizados da promoção.</param>
-            <returns>Status da atualização.</returns>
+            UpdatePromotion
+             <summary>
+             Atualiza uma promoção existente para o tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint permite que um tenant atualize os dados de uma promoção existente.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Corpo da Requisição:**
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001",
+               "name": "Desconto de 15% no Verão",
+               "description": "15% de desconto em todos os pedidos acima de R$60 durante o verão.",
+               "discountType": "Percentage",
+               "discountValue": 15.00,
+               "menuItemId": null,
+               "minOrderValue": 60.00,
+               "maxUsagePerCustomer": 2,
+               "maxTotalUses": 150,
+               "applicableToTags": ["pizza", "lanche", "bebidas"],
+               "startDate": "2025-07-12T00:00:00Z",
+               "endDate": "2025-12-31T23:59:59Z",
+               "isActive": true,
+               "imageUrl": "[https://exemplo.com/promocao-verao-atualizada.jpg](https://exemplo.com/promocao-verao-atualizada.jpg)"
+             }
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 204 No Content):**
+             ```
+             (Nenhum corpo de resposta, apenas status 204)
+             ```
+            
+             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "Name": [
+                   "O campo 'Name' é obrigatório."
+                 ],
+                 "DiscountValue": [
+                   "O valor do desconto deve ser positivo."
+                 ]
+               }
+             }
+             ```
+            
+             **Exemplo de Erro (Status 404 Not Found):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+             }
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token."
+             }
+             ```
+             </remarks>
+             <param name="id">O **ID (GUID)** da promoção a ser atualizada.</param>
+             <param name="request">Dados atualizados da promoção (<see cref="T:Hephaestus.Application.DTOs.Request.UpdatePromotionRequest"/>).</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.DeletePromotion(System.String)">
-            <summary>
-            Remove uma promoção do tenant.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```
-            Status: 204 No Content
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Promoção não encontrada."
-            }
-            ```
-            </remarks>
-            <param name="id">ID da promoção a ser removida.</param>
-            <returns>Status da remoção.</returns>
+            DeletePromotion
+             <summary>
+             Remove uma promoção do tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint permite que um tenant remova uma promoção existente.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Requisição:**
+             ```http
+             DELETE /api/Promotion/123e4567-e89b-12d3-a456-426614174001
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 204 No Content):**
+             ```
+             (Nenhum corpo de resposta, apenas status 204)
+             ```
+            
+             **Exemplo de Erro (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "Bad Request",
+               "status": 400,
+               "detail": "O ID da promoção 'invalido-id' não é um GUID válido."
+             }
+             ```
+            
+             **Exemplo de Erro (Status 404 Not Found):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+             }
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token."
+             }
+             ```
+             </remarks>
+             <param name="id">O **ID (GUID)** da promoção a ser removida.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.NotifyPromotion(Hephaestus.Application.DTOs.Request.NotifyPromotionRequest)">
-            <summary>
-            Notifica uma promoção via WhatsApp.
-            </summary>
-            <remarks>
-            Exemplo de corpo da requisição:
-            ```json
-            {
-              "promotionId": "123e4567-e89b-12d3-a456-426614174001",
-              "phoneNumbers": ["11987654321", "11987654322"],
-              "message": "Promoção especial para você!"
-            }
-            ```
-            Exemplo de resposta de sucesso:
-            ```
-            Status: 204 No Content
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Promoção não encontrada."
-            }
-            ```
-            </remarks>
-            <param name="request">Dados da notificação.</param>
-            <returns>Status da notificação.</returns>
-        </member>
-        <member name="M:Hephaestus.Controllers.PromotionController.GetTenantId">
-            <summary>
-            Obtém o TenantId do token de autenticação.
-            </summary>
-            <returns>TenantId do token.</returns>
+            NotifyPromotion
+             <summary>
+             Envia notificação de uma promoção via WhatsApp.
+             </summary>
+             <remarks>
+             Este endpoint permite que um tenant envie notificações de promoções para seus clientes via WhatsApp.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Corpo da Requisição:**
+             ```json
+             {
+               "promotionId": "123e4567-e89b-12d3-a456-426614174001",
+               "messageTemplate": "🎉 Promoção especial! {promotionName} - {promotionDescription} Válida até {endDate}. Aproveite!",
+               "customerPhoneNumbers": ["11987654321", "21987654321"]
+             }
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 204 No Content):**
+             ```
+             (Nenhum corpo de resposta, apenas status 204)
+             ```
+            
+             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "PromotionId": [
+                   "O ID da promoção é obrigatório."
+                 ],
+                 "MessageTemplate": [
+                   "O template da mensagem é obrigatório."
+                 ]
+               }
+             }
+             ```
+            
+             **Exemplo de Erro (Status 404 Not Found):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+             }
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token."
+             }
+             ```
+             </remarks>
+             <param name="request">Dados da notificação (<see cref="T:Hephaestus.Application.DTOs.Request.NotifyPromotionRequest"/>).</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.TagController">
             <summary>
-            Controller para gerenciamento de tags.
+            Controller para gerenciamento de tags, permitindo a criação, listagem e exclusão de tags
+            associadas aos itens de cardápio de um tenant.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.TagController.#ctor(Hephaestus.Application.Interfaces.Tag.ICreateTagUseCase,Hephaestus.Application.Interfaces.Tag.IGetAllTagsByTenantUseCase,Hephaestus.Application.Interfaces.Tag.IDeleteTagUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.TagController})">
@@ -1173,76 +2163,446 @@
             <param name="logger">Logger para registro de eventos.</param>
         </member>
         <member name="M:Hephaestus.Controllers.TagController.CreateTag(Hephaestus.Application.DTOs.Request.TagRequest)">
-            <summary>
-            Cria uma nova tag.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```json
-            {
-              "id": "123e4567-e89b-12d3-a456-426614174001",
-              "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-              "name": "Vegetariano"
-            }
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Tag já registrada para este tenant."
-            }
-            ```
-            </remarks>
-            <param name="request">Dados da tag a ser criada.</param>
-            <returns>Tag criada.</returns>
+            CreateTag
+             <summary>
+             Cria uma nova tag para o tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint permite que um **Administrador** ou um **Tenant** crie uma nova tag,
+             que pode ser associada a itens do cardápio para categorização.
+            
+             **Exemplo de Corpo da Requisição:**
+             ```json
+             {
+               "name": "Vegetariano"
+             }
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 200 OK):**
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001",
+               "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+               "name": "Vegetariano"
+             }
+             ```
+            
+             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "Name": [
+                   "O campo 'Name' é obrigatório e deve ter entre 3 e 50 caracteres."
+                 ]
+               }
+             }
+             ```
+            
+             **Exemplo de Erro de Conflito (Status 409 Conflict):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
+               "title": "Conflict",
+               "status": 409,
+               "detail": "A tag com o nome 'Vegetariano' já está registrada para este tenant."
+             }
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token de autenticação ou token inválido."
+             }
+             ```
+            
+             **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro inesperado ao criar a tag."
+             }
+             ```
+             </remarks>
+             <param name="request">Dados da tag a ser criada (<see cref="T:Hephaestus.Application.DTOs.Request.TagRequest"/>).</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o objeto <see cref="T:Hephaestus.Application.DTOs.Response.TagResponse"/> da tag criada.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.TagController.GetAllTagsByTenant(System.String)">
-            <summary>
-            Lista todas as tags de um tenant.
-            </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```json
-            [
-              {
-                "id": "123e4567-e89b-12d3-a456-426614174001",
-                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                "name": "Vegetariano"
-              },
-              {
-                "id": "789e0123-e89b-12d3-a456-426614174003",
-                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                "name": "Sem Glúten"
-              }
-            ]
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Tenants só podem listar suas próprias tags."
-            }
-            ```
-            </remarks>
-            <param name="tenantId">ID do tenant para listar as tags.</param>
-            <returns>Lista de tags do tenant.</returns>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:Hephaestus.Controllers.TagController.GetTags(System.Int32,System.Int32)" -->
         <member name="M:Hephaestus.Controllers.TagController.DeleteTag(System.String)">
+            DeleteTag
+             <summary>
+             Exclui uma tag existente.
+             </summary>
+             <remarks>
+             Este endpoint permite que um **Administrador** ou um **Tenant** remova uma tag
+             do sistema. A tag só pode ser excluída se não estiver associada a nenhum item de cardápio.
+            
+             **Exemplo de Requisição:**
+             ```http
+             DELETE /api/Tag/123e4567-e89b-12d3-a456-426614174001
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 204 No Content):**
+             ```
+             (Nenhum corpo de resposta)
+             ```
+            
+             **Exemplo de Erro de Requisição Inválida (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "Bad Request",
+               "status": 400,
+               "detail": "O ID da tag 'abc-123' não é um GUID válido."
+             }
+             ```
+            
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+               "title": "Unauthorized",
+               "status": 401,
+               "detail": "TenantId não encontrado no token de autenticação ou token inválido."
+             }
+             ```
+            
+             **Exemplo de Erro Não Encontrado (Status 404 Not Found):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' não encontrada ou não pertence a este tenant."
+             }
+             ```
+            
+             **Exemplo de Erro de Conflito (Status 409 Conflict):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
+               "title": "Conflict",
+               "status": 409,
+               "detail": "A tag 'Vegetariano' não pode ser excluída pois está associada a um ou mais itens de cardápio."
+             }
+             ```
+            
+             **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro inesperado ao excluir a tag."
+             }
+             ```
+             </remarks>
+             <param name="id">O **ID (GUID)** da tag a ser excluída.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicando o sucesso da exclusão.</returns>
+        </member>
+        <member name="T:Hephaestus.Api.Controllers.OrderController">
             <summary>
-            Exclui uma tag.
+            Controller para gerenciamento de pedidos, permitindo a criação, consulta, atualização e rastreamento de status de pedidos.
             </summary>
-            <remarks>
-            Exemplo de resposta de sucesso:
-            ```
-            Status: 204 No Content
-            ```
-            Exemplo de erro:
-            ```json
-            {
-              "error": "Tag não encontrada."
-            }
-            ```
-            </remarks>
-            <param name="id">ID da tag a ser excluída.</param>
-            <returns>Status da exclusão.</returns>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.#ctor(Hephaestus.Application.Interfaces.Order.ICreateOrderUseCase,Hephaestus.Application.Interfaces.Order.IGetOrdersUseCase,Hephaestus.Application.Interfaces.Order.IGetOrderByIdUseCase,Hephaestus.Application.Interfaces.Order.IUpdateOrderUseCase,Hephaestus.Application.Interfaces.Order.IGetCustomerOrderStatusUseCase)">
+            <summary>
+            Inicializa uma nova instância do <see cref="T:Hephaestus.Api.Controllers.OrderController"/>.
+            </summary>
+            <param name="createOrderUseCase">Caso de uso para criação de pedidos.</param>
+            <param name="getOrdersUseCase">Caso de uso para listagem de pedidos.</param>
+            <param name="getOrderByIdUseCase">Caso de uso para obtenção de pedido por ID.</param>
+            <param name="updateOrderUseCase">Caso de uso para atualização de pedidos.</param>
+            <param name="getCustomerOrderStatusUseCase">Caso de uso para obtenção do status de pedidos de um cliente.</param>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.CreateOrder(Hephaestus.Application.DTOs.Request.CreateOrderRequest)">
+            CreateOrder
+             <summary>
+             Cria um novo pedido para o tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint permite que um tenant registre um novo pedido. A autenticação com a role **Tenant** é obrigatória.
+            
+             **Exemplo de Requisição:**
+             ```json
+             {
+               "customerPhoneNumber": "11987654321",
+               "items": [
+                 {
+                   "menuItemId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                   "quantity": 2
+                 }
+               ],
+               "notes": "Entrega sem contato"
+             }
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 201 Created):**
+             ```json
+             {
+               "id": "e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t"
+             }
+             ```
+            
+             **Exemplo de Erro (Status 401 Unauthorized):**
+             ```
+             (Sem corpo de resposta, apenas status 401)
+             ```
+            
+             **Exemplo de Erro (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "CustomerPhoneNumber": [
+                   "O número de telefone do cliente é obrigatório."
+                 ]
+               }
+             }
+             ```
+            
+             **Exemplo de Erro (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro inesperado ao criar o pedido."
+             }
+             ```
+             </remarks>
+             <param name="request">Dados para a criação do pedido (<see cref="T:Hephaestus.Application.DTOs.Request.CreateOrderRequest"/>).</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> contendo o ID do pedido criado.</returns>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.GetOrders(System.String,System.String)">
+            ### GetOrders
+             <summary>
+             Lista pedidos para o tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint permite consultar uma lista de pedidos associados ao tenant autenticado.
+             É possível filtrar os resultados por número de telefone do cliente e/ou pelo status do pedido.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Resposta de Sucesso (Status 200 OK):**
+             ```json
+             [
+               {
+                 "id": "e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t",
+                 "customerPhoneNumber": "11987654321",
+                 "status": "Pending",
+                 "totalAmount": 51.80,
+                 "createdAt": "2024-07-14T10:00:00Z"
+               },
+               {
+                 "id": "a1b2c3d4-e5f6-7890-1234-567890fedcba",
+                 "customerPhoneNumber": "11998877665",
+                 "status": "Completed",
+                 "totalAmount": 7.00,
+                 "createdAt": "2024-07-13T15:30:00Z"
+               }
+             ]
+             ```
+            
+             **Exemplo de Erro (Status 401 Unauthorized):**
+             ```
+             (Sem corpo de resposta, apenas status 401)
+             ```
+            
+             **Exemplo de Erro (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro ao buscar os pedidos."
+             }
+             ```
+             </remarks>
+             <param name="customerPhoneNumber">Filtro opcional: número de telefone do cliente.</param>
+             <param name="status">Filtro opcional: status do pedido (e.g., 'Pending', 'Processing', 'Completed', 'Cancelled').</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo uma lista de pedidos.</returns>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.GetOrderById(System.String)">
+            GetOrderById
+             <summary>
+             Obtém os detalhes de um pedido específico por ID.
+             </summary>
+             <remarks>
+             Este endpoint retorna todas as informações de um pedido, desde que o pedido pertença ao tenant autenticado.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Resposta de Sucesso (Status 200 OK):**
+             ```json
+             {
+               "id": "e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t",
+               "customerPhoneNumber": "11987654321",
+               "deliveryAddress": {
+                 "street": "Rua das Flores",
+                 "number": "123"
+               },
+               "status": "Processing",
+               "totalAmount": 65.10
+             }
+             ```
+            
+             **Exemplo de Erro (Status 401 Unauthorized):**
+             ```
+             (Sem corpo de resposta, apenas status 401)
+             ```
+            
+             **Exemplo de Erro (Status 404 Not Found):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "Pedido com ID '99999999-9999-9999-9999-999999999999' não encontrado para este tenant."
+             }
+             ```
+            
+             **Exemplo de Erro (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro ao buscar o pedido."
+             }
+             ```
+             </remarks>
+             <param name="id">O **ID (GUID)** do pedido a ser consultado.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo os detalhes do pedido, ou um <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> se não encontrado.</returns>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.UpdateOrder(System.String,Hephaestus.Application.DTOs.Request.UpdateOrderRequest)">
+            UpdateOrder
+             <summary>
+             Atualiza um pedido existente para o tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint permite atualizar um pedido existente do tenant. A autenticação com a role **Tenant** é obrigatória.
+            
+             **Exemplo de Requisição:**
+             ```json
+             {
+               "status": "Completed",
+               "deliveryNotes": "Pedido entregue ao cliente."
+             }
+             ```
+            
+             **Exemplo de Resposta de Sucesso (Status 204 No Content):**
+             ```
+             (Sem corpo de resposta, apenas status 204)
+             ```
+            
+             **Exemplo de Erro (Status 401 Unauthorized):**
+             ```
+             (Sem corpo de resposta, apenas status 401)
+             ```
+            
+             **Exemplo de Erro (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "Status": [
+                   "O status fornecido é inválido."
+                 ]
+               }
+             }
+             ```
+            
+             **Exemplo de Erro (Status 404 Not Found):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+               "title": "Not Found",
+               "status": 404,
+               "detail": "Pedido com ID '99999999-9999-9999-9999-999999999999' não encontrado para atualização."
+             }
+             ```
+            
+             **Exemplo de Erro (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro inesperado ao atualizar o pedido."
+             }
+             ```
+             </remarks>
+             <param name="id">O **ID (GUID)** do pedido a ser atualizado.</param>
+             <param name="request">Dados para a atualização do pedido (<see cref="T:Hephaestus.Application.DTOs.Request.UpdateOrderRequest"/>).</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicando o sucesso da atualização.</returns>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.GetCustomerOrderStatus(System.String)">
+            ### GetCustomerOrderStatus
+             <summary>
+             Obtém o status dos pedidos de um cliente específico.
+             </summary>
+             <remarks>
+             Este endpoint permite que um tenant consulte o status atual de todos os pedidos associados a um determinado número de telefone de cliente.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Resposta de Sucesso (Status 200 OK):**
+             ```json
+             [
+               {
+                 "orderId": "e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t",
+                 "status": "Processing",
+                 "lastUpdate": "2024-07-14T10:30:00Z"
+               },
+               {
+                 "orderId": "f1e2d3c4-b5a6-9876-5432-10fedcba9876",
+                 "status": "Pending",
+                 "lastUpdate": "2024-07-14T11:00:00Z"
+               }
+             ]
+             ```
+            
+             **Exemplo de Erro (Status 401 Unauthorized):**
+             ```
+             (Sem corpo de resposta, apenas status 401)
+             ```
+            
+             **Exemplo de Erro (Status 400 Bad Request):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+               "title": "One or more validation errors occurred.",
+               "status": 400,
+               "errors": {
+                 "CustomerPhoneNumber": [
+                   "O número de telefone do cliente é inválido."
+                 ]
+               }
+             }
+             ```
+            
+             **Exemplo de Erro (Status 500 Internal Server Error):**
+             ```json
+             {
+               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+               "title": "Internal Server Error",
+               "status": 500,
+               "detail": "Ocorreu um erro ao obter o status dos pedidos do cliente."
+             }
+             ```
+             </remarks>
+             <param name="customerPhoneNumber">O número de telefone do cliente para o qual consultar o status dos pedidos.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo uma lista com o status dos pedidos do cliente.</returns>
         </member>
         <member name="T:Hephaestus.Middleware.GlobalExceptionHandlingMiddleware">
             <summary>

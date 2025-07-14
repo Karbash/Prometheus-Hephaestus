@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Promotion;
 
 public interface IDeletePromotionUseCase
 {
-    Task ExecuteAsync(string id, string tenantId);
+    Task ExecuteAsync(string id, ClaimsPrincipal user);
 }

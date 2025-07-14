@@ -1,15 +1,16 @@
-﻿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Promotion;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims; // Necessary for ClaimTypes
 
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controller para gerenciamento de promoções de um tenant.
+/// Controller para gerenciamento completo de promoções de um tenant, incluindo criação, listagem,
+/// obtenção por ID, atualização, exclusão e notificação de promoções.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -33,7 +34,7 @@ public class PromotionController : ControllerBase
     /// <param name="updatePromotionUseCase">Caso de uso para atualizar promoções.</param>
     /// <param name="deletePromotionUseCase">Caso de uso para remover promoções.</param>
     /// <param name="notifyPromotionUseCase">Caso de uso para notificar promoções.</param>
-    /// <param name="logger">Logger para registro de erros.</param>
+    /// <param name="logger">Logger para registro de eventos e erros.</param>
     public PromotionController(
         ICreatePromotionUseCase createPromotionUseCase,
         IGetPromotionsUseCase getPromotionsUseCase,
@@ -52,15 +53,20 @@ public class PromotionController : ControllerBase
         _logger = logger;
     }
 
+    /// CreatePromotion
+
     /// <summary>
-    /// Cria uma nova promoção para o tenant.
+    /// Cria uma nova promoção para o tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Exemplo de corpo da requisição:
+    /// Este endpoint permite que um tenant registre uma nova promoção em seu catálogo.
+    /// Requer autenticação com a role **Tenant**.
+    ///
+    /// **Exemplo de Corpo da Requisição:**
     /// ```json
     /// {
-    ///   "name": "Desconto de 10%",
-    ///   "description": "10% de desconto em pedidos",
+    ///   "name": "Desconto de 10% no Verão",
+    ///   "description": "10% de desconto em todos os pedidos acima de R$50 durante o verão.",
     ///   "discountType": "Percentage",
     ///   "discountValue": 10.00,
     ///   "menuItemId": null,
@@ -68,67 +74,94 @@ public class PromotionController : ControllerBase
     ///   "maxUsagePerCustomer": 1,
     ///   "maxTotalUses": 100,
     ///   "applicableToTags": ["pizza", "lanche"],
-    ///   "startDate": "2025-07-12T00:00:00",
-    ///   "endDate": "2025-12-31T23:59:59",
+    ///   "startDate": "2025-07-12T00:00:00Z",
+    ///   "endDate": "2025-12-31T23:59:59Z",
     ///   "isActive": true,
-    ///   "imageUrl": "https://exemplo.com/imagem.jpg"
+    ///   "imageUrl": "[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)"
     /// }
     /// ```
-    /// Exemplo de resposta de sucesso:
+    ///
+    /// **Exemplo de Resposta de Sucesso (Status 201 Created):**
     /// ```json
     /// {
     ///   "id": "123e4567-e89b-12d3-a456-426614174001"
     /// }
     /// ```
-    /// Exemplo de erro de validação:
+    ///
+    /// **Exemplo de Erro de Validação (Status 400 Bad Request):**
     /// ```json
     /// {
-    ///   "error": {
-    ///     "code": "VALIDATION_ERROR",
-    ///     "message": "Erro de validação",
-    ///     "details": {
-    ///       "errors": [
-    ///         {
-    ///           "field": "Name",
-    ///           "message": "Nome é obrigatório."
-    ///         }
-    ///       ]
-    ///     }
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+    ///   "title": "One or more validation errors occurred.",
+    ///   "status": 400,
+    ///   "errors": {
+    ///     "Name": [
+    ///       "O campo 'Name' é obrigatório."
+    ///     ],
+    ///     "DiscountValue": [
+    ///       "O valor do desconto deve ser positivo."
+    ///     ]
     ///   }
     /// }
     /// ```
+    ///
+    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+    ///   "title": "Unauthorized",
+    ///   "status": 401,
+    ///   "detail": "TenantId não encontrado no token."
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+    ///   "title": "Internal Server Error",
+    ///   "status": 500,
+    ///   "detail": "Ocorreu um erro inesperado ao criar a promoção."
+    /// }
+    /// ```
     /// </remarks>
-    /// <param name="request">Dados da promoção a ser criada.</param>
-    /// <returns>ID da promoção criada.</returns>
+    /// <param name="request">Dados da promoção a ser criada (<see cref="CreatePromotionRequest"/>).</param>
+    /// <returns>Um <see cref="CreatedAtActionResult"/> contendo o ID da promoção criada.</returns>
     [HttpPost]
     [SwaggerOperation(Summary = "Cria promoção", Description = "Cria uma nova promoção para o tenant. Requer autenticação com Role=Tenant.")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))] // Retorna um objeto anônimo { id }
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))] // Detalhes do erro de validação
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))] // Erro de autorização com detalhes
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))] // Erro interno do servidor com detalhes
     public async Task<IActionResult> CreatePromotion([FromBody] CreatePromotionRequest request)
     {
-        var tenantId = GetTenantId();
-        var id = await _createPromotionUseCase.ExecuteAsync(request, tenantId);
+        var id = await _createPromotionUseCase.ExecuteAsync(request, User);
         return CreatedAtAction(nameof(GetPromotionById), new { id }, new { id });
     }
 
+    /// GetPromotions
+
     /// <summary>
-    /// Lista promoções do tenant.
+    /// Lista as promoções do tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Exemplo de requisição:
+    /// Este endpoint retorna uma lista de promoções registradas para o tenant.
+    /// É possível filtrar as promoções por status de ativação (`isActive`).
+    /// Requer autenticação com a role **Tenant**.
+    ///
+    /// **Exemplo de Requisição:**
     /// ```http
-    /// GET /api/promotion?isActive=true
+    /// GET /api/Promotion?isActive=true
     /// ```
-    /// Exemplo de resposta de sucesso:
+    ///
+    /// **Exemplo de Resposta de Sucesso (Status 200 OK):**
     /// ```json
     /// [
     ///   {
     ///     "id": "123e4567-e89b-12d3-a456-426614174001",
     ///     "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-    ///     "name": "Desconto de 10%",
-    ///     "description": "10% de desconto em pedidos",
+    ///     "name": "Desconto de 10% no Verão",
+    ///     "description": "10% de desconto em todos os pedidos.",
     ///     "discountType": "Percentage",
     ///     "discountValue": 10.00,
     ///     "menuItemId": null,
@@ -136,43 +169,85 @@ public class PromotionController : ControllerBase
     ///     "maxUsagePerCustomer": 1,
     ///     "maxTotalUses": 100,
     ///     "applicableToTags": ["pizza", "lanche"],
-    ///     "startDate": "2025-07-12T00:00:00",
-    ///     "endDate": "2025-12-31T23:59:59",
+    ///     "startDate": "2025-07-12T00:00:00Z",
+    ///     "endDate": "2025-12-31T23:59:59Z",
     ///     "isActive": true,
-    ///     "imageUrl": "https://exemplo.com/imagem.jpg"
+    ///     "imageUrl": "[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)"
+    ///   },
+    ///   {
+    ///     "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    ///     "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///     "name": "Frete Grátis para Novos Clientes",
+    ///     "description": "Frete grátis na primeira compra.",
+    ///     "discountType": "FreeShipping",
+    ///     "discountValue": 0.00,
+    ///     "menuItemId": null,
+    ///     "minOrderValue": 30.00,
+    ///     "maxUsagePerCustomer": 1,
+    ///     "maxTotalUses": 50,
+    ///     "applicableToTags": [],
+    ///     "startDate": "2025-07-01T00:00:00Z",
+    ///     "endDate": "2025-08-31T23:59:59Z",
+    ///     "isActive": true,
+    ///     "imageUrl": null
     ///   }
     /// ]
     /// ```
+    ///
+    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+    ///   "title": "Unauthorized",
+    ///   "status": 401,
+    ///   "detail": "TenantId não encontrado no token."
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
+    ///   "title": "Internal Server Error",
+    ///   "status": 500,
+    ///   "detail": "Ocorreu um erro inesperado ao listar as promoções."
+    /// }
+    /// ```
     /// </remarks>
-    /// <param name="isActive">Filtro opcional para promoções ativas (true) ou inativas (false).</param>
-    /// <returns>Lista de promoções do tenant.</returns>
+    /// <param name="isActive">Filtro opcional: `true` para promoções ativas, `false` para inativas. Se omitido, retorna todas as promoções.</param>
+    /// <returns>Um <see cref="OkObjectResult"/> contendo uma lista de objetos <see cref="PromotionResponse"/>.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista promoções do tenant", Description = "Retorna a lista de promoções do tenant, com filtro opcional por status de ativação. Suporta cache Redis. Requer autenticação com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Lista promoções do tenant", Description = "Retorna a lista de promoções do tenant, com filtro opcional por status de ativação. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PromotionResponse>))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> GetPromotions([FromQuery] bool? isActive = null)
     {
-        var tenantId = GetTenantId();
-        var promotions = await _getPromotionsUseCase.ExecuteAsync(tenantId, isActive);
+        var promotions = await _getPromotionsUseCase.ExecuteAsync(User, isActive);
         return Ok(promotions);
     }
 
+    /// GetPromotionById
+
     /// <summary>
-    /// Obtém detalhes de uma promoção por ID.
+    /// Obtém os detalhes de uma promoção específica por ID.
     /// </summary>
     /// <remarks>
-    /// Exemplo de requisição:
+    /// Este endpoint retorna todas as informações de uma promoção, desde que a promoção pertença ao tenant autenticado.
+    /// Requer autenticação com a role **Tenant**.
+    ///
+    /// **Exemplo de Requisição:**
     /// ```http
-    /// GET /api/promotion/123e4567-e89b-12d3-a456-426614174001
+    /// GET /api/Promotion/123e4567-e89b-12d3-a456-426614174001
     /// ```
-    /// Exemplo de resposta de sucesso:
+    ///
+    /// **Exemplo de Resposta de Sucesso (Status 200 OK):**
     /// ```json
     /// {
     ///   "id": "123e4567-e89b-12d3-a456-426614174001",
     ///   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-    ///   "name": "Desconto de 10%",
-    ///   "description": "10% de desconto em pedidos",
+    ///   "name": "Desconto de 10% no Verão",
+    ///   "description": "10% de desconto em todos os pedidos acima de R$50 durante o verão.",
     ///   "discountType": "Percentage",
     ///   "discountValue": 10.00,
     ///   "menuItemId": null,
@@ -180,166 +255,281 @@ public class PromotionController : ControllerBase
     ///   "maxUsagePerCustomer": 1,
     ///   "maxTotalUses": 100,
     ///   "applicableToTags": ["pizza", "lanche"],
-    ///   "startDate": "2025-07-12T00:00:00",
-    ///   "endDate": "2025-12-31T23:59:59",
+    ///   "startDate": "2025-07-12T00:00:00Z",
+    ///   "endDate": "2025-12-31T23:59:59Z",
     ///   "isActive": true,
-    ///   "imageUrl": "https://exemplo.com/imagem.jpg"
+    ///   "imageUrl": "[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)"
     /// }
     /// ```
-    /// Exemplo de erro:
+    ///
+    /// **Exemplo de Erro (Status 400 Bad Request):**
     /// ```json
     /// {
-    ///   "error": "Promoção não encontrada."
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+    ///   "title": "Bad Request",
+    ///   "status": 400,
+    ///   "detail": "O ID da promoção 'invalido-id' não é um GUID válido."
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro (Status 404 Not Found):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+    ///   "title": "Not Found",
+    ///   "status": 404,
+    ///   "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+    ///   "title": "Unauthorized",
+    ///   "status": 401,
+    ///   "detail": "TenantId não encontrado no token."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID da promoção (GUID).</param>
-    /// <returns>Detalhes da promoção.</returns>
+    /// <param name="id">O **ID (GUID)** da promoção a ser consultada.</param>
+    /// <returns>Um <see cref="OkObjectResult"/> contendo o <see cref="PromotionResponse"/> ou um <see cref="NotFoundResult"/> se a promoção não for encontrada.</returns>
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Obtém promoção por ID", Description = "Retorna detalhes de uma promoção do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PromotionResponse))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para ID inválido
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> GetPromotionById(string id)
     {
-        var tenantId = GetTenantId();
-        var promotion = await _getPromotionByIdUseCase.ExecuteAsync(id, tenantId);
+        var promotion = await _getPromotionByIdUseCase.ExecuteAsync(id, User);
         return Ok(promotion);
     }
 
+    /// UpdatePromotion
+
     /// <summary>
-    /// Atualiza uma promoção do tenant.
+    /// Atualiza uma promoção existente para o tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Exemplo de corpo da requisição:
+    /// Este endpoint permite que um tenant atualize os dados de uma promoção existente.
+    /// Requer autenticação com a role **Tenant**.
+    ///
+    /// **Exemplo de Corpo da Requisição:**
     /// ```json
     /// {
-    ///   "name": "Desconto de 15%",
-    ///   "description": "15% de desconto em pedidos",
+    ///   "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///   "name": "Desconto de 15% no Verão",
+    ///   "description": "15% de desconto em todos os pedidos acima de R$60 durante o verão.",
     ///   "discountType": "Percentage",
     ///   "discountValue": 15.00,
     ///   "menuItemId": null,
     ///   "minOrderValue": 60.00,
     ///   "maxUsagePerCustomer": 2,
-    ///   "maxTotalUses": 200,
-    ///   "applicableToTags": ["pizza", "lanche"],
-    ///   "startDate": "2025-07-12T00:00:00",
-    ///   "endDate": "2025-12-31T23:59:59",
+    ///   "maxTotalUses": 150,
+    ///   "applicableToTags": ["pizza", "lanche", "bebidas"],
+    ///   "startDate": "2025-07-12T00:00:00Z",
+    ///   "endDate": "2025-12-31T23:59:59Z",
     ///   "isActive": true,
-    ///   "imageUrl": "https://exemplo.com/imagem.jpg"
+    ///   "imageUrl": "[https://exemplo.com/promocao-verao-atualizada.jpg](https://exemplo.com/promocao-verao-atualizada.jpg)"
     /// }
     /// ```
-    /// Exemplo de resposta de sucesso:
+    ///
+    /// **Exemplo de Resposta de Sucesso (Status 204 No Content):**
     /// ```
-    /// Status: 204 No Content
+    /// (Nenhum corpo de resposta, apenas status 204)
     /// ```
-    /// Exemplo de erro:
+    ///
+    /// **Exemplo de Erro de Validação (Status 400 Bad Request):**
     /// ```json
     /// {
-    ///   "error": "Promoção não encontrada."
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+    ///   "title": "One or more validation errors occurred.",
+    ///   "status": 400,
+    ///   "errors": {
+    ///     "Name": [
+    ///       "O campo 'Name' é obrigatório."
+    ///     ],
+    ///     "DiscountValue": [
+    ///       "O valor do desconto deve ser positivo."
+    ///     ]
+    ///   }
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro (Status 404 Not Found):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+    ///   "title": "Not Found",
+    ///   "status": 404,
+    ///   "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+    ///   "title": "Unauthorized",
+    ///   "status": 401,
+    ///   "detail": "TenantId não encontrado no token."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID da promoção a ser atualizada.</param>
-    /// <param name="request">Dados atualizados da promoção.</param>
-    /// <returns>Status da atualização.</returns>
+    /// <param name="id">O **ID (GUID)** da promoção a ser atualizada.</param>
+    /// <param name="request">Dados atualizados da promoção (<see cref="UpdatePromotionRequest"/>).</param>
+    /// <returns>Um <see cref="NoContentResult"/> em caso de sucesso.</returns>
     [HttpPut("{id}")]
     [SwaggerOperation(Summary = "Atualiza promoção", Description = "Atualiza uma promoção do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> UpdatePromotion(string id, [FromBody] UpdatePromotionRequest request)
     {
-        var tenantId = GetTenantId();
-        await _updatePromotionUseCase.ExecuteAsync(id, request, tenantId);
+        await _updatePromotionUseCase.ExecuteAsync(id, request, User);
         return NoContent();
     }
 
+    /// DeletePromotion
+
     /// <summary>
-    /// Remove uma promoção do tenant.
+    /// Remove uma promoção do tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Este endpoint permite que um tenant remova uma promoção existente.
+    /// Requer autenticação com a role **Tenant**.
+    ///
+    /// **Exemplo de Requisição:**
+    /// ```http
+    /// DELETE /api/Promotion/123e4567-e89b-12d3-a456-426614174001
     /// ```
-    /// Status: 204 No Content
+    ///
+    /// **Exemplo de Resposta de Sucesso (Status 204 No Content):**
     /// ```
-    /// Exemplo de erro:
+    /// (Nenhum corpo de resposta, apenas status 204)
+    /// ```
+    ///
+    /// **Exemplo de Erro (Status 400 Bad Request):**
     /// ```json
     /// {
-    ///   "error": "Promoção não encontrada."
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+    ///   "title": "Bad Request",
+    ///   "status": 400,
+    ///   "detail": "O ID da promoção 'invalido-id' não é um GUID válido."
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro (Status 404 Not Found):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+    ///   "title": "Not Found",
+    ///   "status": 404,
+    ///   "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+    ///   "title": "Unauthorized",
+    ///   "status": 401,
+    ///   "detail": "TenantId não encontrado no token."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID da promoção a ser removida.</param>
-    /// <returns>Status da remoção.</returns>
+    /// <param name="id">O **ID (GUID)** da promoção a ser removida.</param>
+    /// <returns>Um <see cref="NoContentResult"/> em caso de sucesso.</returns>
     [HttpDelete("{id}")]
     [SwaggerOperation(Summary = "Remove promoção", Description = "Remove uma promoção do tenant. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para ID inválido
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> DeletePromotion(string id)
     {
-        var tenantId = GetTenantId();
-        await _deletePromotionUseCase.ExecuteAsync(id, tenantId);
+        await _deletePromotionUseCase.ExecuteAsync(id, User);
         return NoContent();
     }
 
+    /// NotifyPromotion
+
     /// <summary>
-    /// Notifica uma promoção via WhatsApp.
+    /// Envia notificação de uma promoção via WhatsApp.
     /// </summary>
     /// <remarks>
-    /// Exemplo de corpo da requisição:
+    /// Este endpoint permite que um tenant envie notificações de promoções para seus clientes via WhatsApp.
+    /// Requer autenticação com a role **Tenant**.
+    ///
+    /// **Exemplo de Corpo da Requisição:**
     /// ```json
     /// {
     ///   "promotionId": "123e4567-e89b-12d3-a456-426614174001",
-    ///   "phoneNumbers": ["11987654321", "11987654322"],
-    ///   "message": "Promoção especial para você!"
+    ///   "messageTemplate": "🎉 Promoção especial! {promotionName} - {promotionDescription} Válida até {endDate}. Aproveite!",
+    ///   "customerPhoneNumbers": ["11987654321", "21987654321"]
     /// }
     /// ```
-    /// Exemplo de resposta de sucesso:
+    ///
+    /// **Exemplo de Resposta de Sucesso (Status 204 No Content):**
     /// ```
-    /// Status: 204 No Content
+    /// (Nenhum corpo de resposta, apenas status 204)
     /// ```
-    /// Exemplo de erro:
+    ///
+    /// **Exemplo de Erro de Validação (Status 400 Bad Request):**
     /// ```json
     /// {
-    ///   "error": "Promoção não encontrada."
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+    ///   "title": "One or more validation errors occurred.",
+    ///   "status": 400,
+    ///   "errors": {
+    ///     "PromotionId": [
+    ///       "O ID da promoção é obrigatório."
+    ///     ],
+    ///     "MessageTemplate": [
+    ///       "O template da mensagem é obrigatório."
+    ///     ]
+    ///   }
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro (Status 404 Not Found):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
+    ///   "title": "Not Found",
+    ///   "status": 404,
+    ///   "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// ```json
+    /// {
+    ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
+    ///   "title": "Unauthorized",
+    ///   "status": 401,
+    ///   "detail": "TenantId não encontrado no token."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="request">Dados da notificação.</param>
-    /// <returns>Status da notificação.</returns>
+    /// <param name="request">Dados da notificação (<see cref="NotifyPromotionRequest"/>).</param>
+    /// <returns>Um <see cref="NoContentResult"/> em caso de sucesso.</returns>
     [HttpPost("notify")]
     [SwaggerOperation(Summary = "Notifica promoção via WhatsApp", Description = "Envia notificação de promoção via WhatsApp. Requer autenticação com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> NotifyPromotion([FromBody] NotifyPromotionRequest request)
     {
-        var tenantId = GetTenantId();
-        await _notifyPromotionUseCase.ExecuteAsync(request, tenantId);
+        await _notifyPromotionUseCase.ExecuteAsync(request, User);
         return NoContent();
-    }
-
-    /// <summary>
-    /// Obtém o TenantId do token de autenticação.
-    /// </summary>
-    /// <returns>TenantId do token.</returns>
-    private string GetTenantId()
-    {
-        var tenantId = User.FindFirst("TenantId")?.Value;
-        if (string.IsNullOrEmpty(tenantId))
-        {
-            _logger.LogWarning("TenantId não encontrado no token para o usuário {UserId}", 
-                User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
-            throw new UnauthorizedAccessException("TenantId não encontrado no token.");
-        }
-        return tenantId;
     }
 }

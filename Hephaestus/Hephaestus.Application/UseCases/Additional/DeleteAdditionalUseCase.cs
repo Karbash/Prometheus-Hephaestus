@@ -4,6 +4,8 @@ using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
+using System.Security.Claims;
 using FluentValidation.Results;
 
 namespace Hephaestus.Application.UseCases.Additional;
@@ -14,6 +16,7 @@ namespace Hephaestus.Application.UseCases.Additional;
 public class DeleteAdditionalUseCase : BaseUseCase, IDeleteAdditionalUseCase
 {
     private readonly IAdditionalRepository _additionalRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="DeleteAdditionalUseCase"/>.
@@ -21,24 +24,30 @@ public class DeleteAdditionalUseCase : BaseUseCase, IDeleteAdditionalUseCase
     /// <param name="additionalRepository">Repositório de adicionais.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="loggedUserService">Serviço do usuário logado.</param>
     public DeleteAdditionalUseCase(
         IAdditionalRepository additionalRepository,
         ILogger<DeleteAdditionalUseCase> logger,
-        IExceptionHandlerService exceptionHandler)
+        IExceptionHandlerService exceptionHandler,
+        ILoggedUserService loggedUserService)
         : base(logger, exceptionHandler)
     {
         _additionalRepository = additionalRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a exclusão de um adicional.
     /// </summary>
     /// <param name="id">ID do adicional a ser excluído.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    public async Task ExecuteAsync(string id, string tenantId)
+    /// <param name="user">Usuário autenticado.</param>
+    public async Task ExecuteAsync(string id, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            // Obter tenantId do usuário logado
+            var tenantId = _loggedUserService.GetTenantId(user);
+
             // Validação dos dados de entrada
             ValidateInputParameters(id, tenantId);
 

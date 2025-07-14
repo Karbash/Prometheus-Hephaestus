@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Hephaestus.Application.DTOs.Request;
-using Hephaestus.Domain.Enum;
 
 namespace Hephaestus.Application.Validators;
 
@@ -8,53 +7,50 @@ public class UpdatePromotionRequestValidator : AbstractValidator<UpdatePromotion
 {
     public UpdatePromotionRequestValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("ID é obrigatório.")
-            .MaximumLength(36).WithMessage("ID deve ter no máximo 36 caracteres.");
-
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Nome é obrigatório.")
-            .MaximumLength(100).WithMessage("Nome não pode exceder 100 caracteres.");
+            .NotEmpty()
+            .WithMessage("Nome é obrigatório.")
+            .MaximumLength(100)
+            .WithMessage("Nome deve ter no máximo 100 caracteres.");
 
         RuleFor(x => x.Description)
-            .NotEmpty().WithMessage("Descrição é obrigatória.")
-            .MaximumLength(500).WithMessage("Descrição não pode exceder 500 caracteres.");
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrEmpty(x.Description))
+            .WithMessage("Descrição deve ter no máximo 500 caracteres.");
 
         RuleFor(x => x.DiscountType)
-            .NotEmpty().WithMessage("Tipo de desconto é obrigatório.")
-            .Must(type => Enum.TryParse<DiscountType>(type, true, out _))
-            .WithMessage("Tipo de desconto inválido. Use: Percentage, Fixed ou FreeItem.");
+            .NotEmpty()
+            .WithMessage("Tipo de desconto é obrigatório.")
+            .IsInEnum()
+            .WithMessage("Tipo de desconto inválido.");
 
         RuleFor(x => x.DiscountValue)
-            .GreaterThan(0).WithMessage("Valor do desconto deve ser maior que zero.");
-
-        RuleFor(x => x.MenuItemId)
-            .NotEmpty()
-            .When(x => x.DiscountType == "FreeItem")
-            .WithMessage("MenuItemId é obrigatório para DiscountType FreeItem.");
+            .GreaterThan(0)
+            .WithMessage("Valor do desconto deve ser maior que zero.");
 
         RuleFor(x => x.MinOrderValue)
-            .GreaterThanOrEqualTo(0).When(x => x.MinOrderValue.HasValue)
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.MinOrderValue.HasValue)
             .WithMessage("Valor mínimo do pedido deve ser maior ou igual a zero.");
 
         RuleFor(x => x.MaxUsagePerCustomer)
-            .GreaterThan(0).When(x => x.MaxUsagePerCustomer.HasValue)
-            .WithMessage("Máximo de usos por cliente deve ser maior que zero.");
+            .GreaterThan(0)
+            .When(x => x.MaxUsagePerCustomer.HasValue)
+            .WithMessage("Uso máximo por cliente deve ser maior que zero.");
 
         RuleFor(x => x.MaxTotalUses)
-            .GreaterThan(0).When(x => x.MaxTotalUses.HasValue)
-            .WithMessage("Máximo de usos totais deve ser maior que zero.");
+            .GreaterThan(0)
+            .When(x => x.MaxTotalUses.HasValue)
+            .WithMessage("Uso total máximo deve ser maior que zero.");
 
         RuleFor(x => x.StartDate)
-            .NotEmpty().WithMessage("Data de início é obrigatória.")
-            .LessThanOrEqualTo(x => x.EndDate).WithMessage("Data de início deve ser anterior ou igual à data de término.");
+            .NotEmpty()
+            .WithMessage("Data de início é obrigatória.");
 
         RuleFor(x => x.EndDate)
-            .NotEmpty().WithMessage("Data de término é obrigatória.")
-            .GreaterThanOrEqualTo(x => x.StartDate).WithMessage("Data de término deve ser posterior ou igual à data de início.");
-
-        RuleFor(x => x.ImageUrl)
-            .MaximumLength(500).When(x => !string.IsNullOrEmpty(x.ImageUrl))
-            .WithMessage("URL da imagem não pode exceder 500 caracteres.");
+            .NotEmpty()
+            .WithMessage("Data de fim é obrigatória.")
+            .GreaterThan(x => x.StartDate)
+            .WithMessage("Data de fim deve ser posterior à data de início.");
     }
 }

@@ -3,102 +3,108 @@ using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using Hephaestus.Application.DTOs.Response;
 
 namespace Hephaestus.Infrastructure.Repositories;
 
 public class CompanyRepository : ICompanyRepository
 {
     private readonly HephaestusDbContext _context;
+    private readonly ILogger<CompanyRepository> _logger;
 
-    public CompanyRepository(HephaestusDbContext context)
+    public CompanyRepository(HephaestusDbContext context, ILogger<CompanyRepository> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
-    public async Task<IEnumerable<Company>> GetAllAsync(bool? isEnabled)
+    public async Task<PagedResult<Company>> GetAllAsync(bool? isEnabled, int pageNumber = 1, int pageSize = 20)
     {
-        Console.WriteLine($"Buscando empresas com isEnabled: {isEnabled}");
-        var query = _context.Companies.AsQueryable();
+        _logger.LogInformation("Buscando empresas com isEnabled: {IsEnabled}", isEnabled);
+        var query = _context.Companies.AsNoTracking().AsQueryable();
         if (isEnabled.HasValue)
             query = query.Where(c => c.IsEnabled == isEnabled.Value);
-        var companies = await query.ToListAsync();
-        Console.WriteLine($"Empresas encontradas: {JsonSerializer.Serialize(companies)}");
-        return companies;
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        return new PagedResult<Company>
+        {
+            Items = items,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
     }
 
     public async Task<Company?> GetByIdAsync(string id)
     {
-        Console.WriteLine($"Buscando empresa por ID: {id}");
+        _logger.LogInformation("Buscando empresa por ID: {Id}", id);
         var company = await _context.Companies.FindAsync(id);
-        Console.WriteLine($"Empresa encontrada: {JsonSerializer.Serialize(company)}");
+        _logger.LogInformation("Empresa encontrada: {@Company}", company);
         return company;
     }
 
     public async Task<Company?> GetByEmailAsync(string email)
     {
-        Console.WriteLine($"Buscando empresa por e-mail: {email}");
+        _logger.LogInformation("Buscando empresa por e-mail: {Email}", email);
         var company = await _context.Companies.FirstOrDefaultAsync(c => c.Email == email);
-        Console.WriteLine($"Empresa encontrada: {JsonSerializer.Serialize(company)}");
+        _logger.LogInformation("Empresa encontrada: {@Company}", company);
         return company;
     }
 
     public async Task<Company?> GetByPhoneNumberAsync(string phoneNumber)
     {
-        Console.WriteLine($"Buscando empresa por telefone: {phoneNumber}");
+        _logger.LogInformation("Buscando empresa por telefone: {PhoneNumber}", phoneNumber);
         var company = await _context.Companies.FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
-        Console.WriteLine($"Empresa encontrada: {JsonSerializer.Serialize(company)}");
+        _logger.LogInformation("Empresa encontrada: {@Company}", company);
         return company;
     }
 
     public async Task AddAsync(Company company)
     {
-        Console.WriteLine($"Adicionando empresa: {JsonSerializer.Serialize(company)}");
+        _logger.LogInformation("Adicionando empresa: {@Company}", company);
         try
         {
             _context.Companies.Add(company);
-            Console.WriteLine($"Estado da entidade antes de salvar: {_context.Entry(company).State}");
+            _logger.LogDebug("Estado da entidade antes de salvar: {State}", _context.Entry(company).State);
             var changes = await _context.SaveChangesAsync();
-            Console.WriteLine($"Alterações salvas: {changes}");
+            _logger.LogInformation("Alterações salvas: {Changes}", changes);
             if (changes == 0)
-                Console.WriteLine("Nenhuma alteração foi salva no banco de dados.");
+                _logger.LogWarning("Nenhuma alteração foi salva no banco de dados.");
             else
-                Console.WriteLine("Empresa salva com sucesso.");
+                _logger.LogInformation("Empresa salva com sucesso.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao salvar empresa: {ex.Message}");
-            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+            _logger.LogError(ex, "Erro ao salvar empresa: {Message}", ex.Message);
             throw;
         }
     }
 
     public async Task UpdateAsync(Company company)
     {
-        Console.WriteLine($"Atualizando empresa: {JsonSerializer.Serialize(company)}");
+        _logger.LogInformation("Atualizando empresa: {@Company}", company);
         try
         {
             _context.Companies.Update(company);
-            Console.WriteLine($"Estado da entidade antes de salvar: {_context.Entry(company).State}");
+            _logger.LogDebug("Estado da entidade antes de salvar: {State}", _context.Entry(company).State);
             var changes = await _context.SaveChangesAsync();
-            Console.WriteLine($"Alterações salvas: {changes}");
+            _logger.LogInformation("Alterações salvas: {Changes}", changes);
             if (changes == 0)
-                Console.WriteLine("Nenhuma alteração foi salva no banco de dados.");
+                _logger.LogWarning("Nenhuma alteração foi salva no banco de dados.");
             else
-                Console.WriteLine("Empresa atualizada com sucesso.");
+                _logger.LogInformation("Empresa atualizada com sucesso.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao atualizar empresa: {ex.Message}");
-            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+            _logger.LogError(ex, "Erro ao atualizar empresa: {Message}", ex.Message);
             throw;
         }
     }
 
     public async Task<IEnumerable<Company>> GetCompaniesWithinRadiusAsync(double centerLat, double centerLon, double radiusKm, string? city = null, string? neighborhood = null)
     {
-        Console.WriteLine($"Buscando empresas dentro de {radiusKm} km de ({centerLat}, {centerLon})" +
-                         (city != null ? $" na cidade {city}" : "") +
-                         (neighborhood != null ? $" no bairro {neighborhood}" : ""));
+        _logger.LogInformation("Buscando empresas dentro de {RadiusKm} km de ({CenterLat}, {CenterLon}){City}{Neighborhood}", radiusKm, centerLat, centerLon, city != null ? $" na cidade {city}" : string.Empty, neighborhood != null ? $" no bairro {neighborhood}" : string.Empty);
         try
         {
             const double earthRadius = 6371; // Raio da Terra em km
@@ -119,13 +125,12 @@ public class CompanyRepository : ICompanyRepository
                 )) <= radiusKm)
                 .ToListAsync();
 
-            Console.WriteLine($"Empresas encontradas no raio: {JsonSerializer.Serialize(companies)}");
+            _logger.LogInformation("Empresas encontradas no raio: {@Companies}", companies);
             return companies;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao buscar empresas no raio: {ex.Message}");
-            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+            _logger.LogError(ex, "Erro ao buscar empresas no raio: {Message}", ex.Message);
             throw;
         }
     }

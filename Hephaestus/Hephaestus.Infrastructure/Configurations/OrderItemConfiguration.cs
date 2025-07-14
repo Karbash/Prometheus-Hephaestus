@@ -1,7 +1,8 @@
 ﻿using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text.Json;
 
 namespace Hephaestus.Infrastructure.Configurations;
 
@@ -13,32 +14,60 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 
         builder.HasKey(oi => oi.Id);
 
-        builder.Property(oi => oi.TenantId).IsRequired();
-        builder.Property(oi => oi.OrderId).IsRequired();
-        builder.Property(oi => oi.MenuItemId).IsRequired();
-        builder.Property(oi => oi.Quantity).IsRequired();
-        builder.Property(oi => oi.UnitPrice).IsRequired().HasPrecision(18, 2);
-        builder.Property(oi => oi.Notes).HasMaxLength(500);
+        builder.Property(oi => oi.TenantId)
+            .IsRequired()
+            .HasMaxLength(36);
 
-        var listComparer = new ValueComparer<List<string>>(
-            (c1, c2) => (c1 == null && c2 == null) || (c1 != null && c2 != null && c1.SequenceEqual(c2)),
-            c => c == null ? 0 : c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-            c => c == null ? new List<string>() : c.ToList());
+        builder.Property(oi => oi.OrderId)
+            .IsRequired()
+            .HasMaxLength(36);
+
+        builder.Property(oi => oi.MenuItemId)
+            .IsRequired()
+            .HasMaxLength(36);
+
+        builder.Property(oi => oi.Quantity)
+            .IsRequired();
+
+        builder.Property(oi => oi.UnitPrice)
+            .IsRequired()
+            .HasPrecision(18, 2);
+
+        builder.Property(oi => oi.Notes)
+            .HasMaxLength(500);
+
+        builder.Property(oi => oi.Customizations)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                v => JsonSerializer.Deserialize<List<Customization>>(v, (JsonSerializerOptions?)null) ?? new List<Customization>(),
+                new ValueComparer<List<Customization>>(
+                    (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
+                    c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
+                    c => c != null ? new List<Customization>(c) : new List<Customization>()
+                )
+            );
 
         builder.Property(oi => oi.AdditionalIds)
-            .HasConversion(v => string.Join(',', v), v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList())
-            .Metadata.SetValueComparer(listComparer);
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>(),
+                new ValueComparer<List<string>>(
+                    (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
+                    c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
+                    c => c != null ? new List<string>(c) : new List<string>()
+                )
+            );
 
         builder.Property(oi => oi.Tags)
-            .HasConversion(v => string.Join(',', v), v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList())
-            .Metadata.SetValueComparer(listComparer);
-
-        builder.OwnsMany(oi => oi.Customizations, c =>
-        {
-            c.Property(cu => cu.AdditionalId).IsRequired();
-            c.Property(cu => cu.Name).IsRequired().HasMaxLength(100);
-            c.Property(cu => cu.Price).IsRequired().HasPrecision(18, 2);
-        });
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>(),
+                new ValueComparer<List<string>>(
+                    (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
+                    c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
+                    c => c != null ? new List<string>(c) : new List<string>()
+                )
+            );
 
         builder.HasIndex(oi => new { oi.TenantId, oi.OrderId });
     }

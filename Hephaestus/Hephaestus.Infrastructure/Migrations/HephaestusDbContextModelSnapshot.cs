@@ -538,9 +538,14 @@ namespace Hephaestus.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("MenuItemId")
+                    b.Property<string>("Customizations")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("MenuItemId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -549,7 +554,8 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.Property<string>("OrderId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
@@ -560,13 +566,16 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.Property<string>("TenantId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("TenantId", "OrderId");
 
@@ -814,44 +823,21 @@ namespace Hephaestus.Infrastructure.Migrations
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.OrderItem", b =>
                 {
-                    b.OwnsMany("Hephaestus.Domain.Entities.Customization", "Customizations", b1 =>
-                        {
-                            b1.Property<string>("OrderItemId")
-                                .HasColumnType("text");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("AdditionalId")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.Property<decimal>("Price")
-                                .HasPrecision(18, 2)
-                                .HasColumnType("numeric(18,2)");
-
-                            b1.HasKey("OrderItemId", "Id");
-
-                            b1.ToTable("Customization");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrderItemId");
-                        });
-
-                    b.Navigation("Customizations");
+                    b.HasOne("Hephaestus.Domain.Entities.Order", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItem", b =>
                 {
                     b.Navigation("MenuItemTags");
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.Order", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

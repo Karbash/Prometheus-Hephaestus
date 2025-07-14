@@ -6,6 +6,8 @@ using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
+using System.Security.Claims;
 using FluentValidation.Results;
 
 namespace Hephaestus.Application.UseCases.Additional;
@@ -17,6 +19,7 @@ public class UpdateAdditionalUseCase : BaseUseCase, IUpdateAdditionalUseCase
 {
     private readonly IAdditionalRepository _additionalRepository;
     private readonly IValidator<UpdateAdditionalRequest> _validator;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="UpdateAdditionalUseCase"/>.
@@ -25,15 +28,18 @@ public class UpdateAdditionalUseCase : BaseUseCase, IUpdateAdditionalUseCase
     /// <param name="validator">Validador para a requisição.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="loggedUserService">Serviço do usuário logado.</param>
     public UpdateAdditionalUseCase(
         IAdditionalRepository additionalRepository,
         IValidator<UpdateAdditionalRequest> validator,
         ILogger<UpdateAdditionalUseCase> logger,
-        IExceptionHandlerService exceptionHandler)
+        IExceptionHandlerService exceptionHandler,
+        ILoggedUserService loggedUserService)
         : base(logger, exceptionHandler)
     {
         _additionalRepository = additionalRepository;
         _validator = validator;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
@@ -41,11 +47,14 @@ public class UpdateAdditionalUseCase : BaseUseCase, IUpdateAdditionalUseCase
     /// </summary>
     /// <param name="id">ID do adicional.</param>
     /// <param name="request">Dados atualizados do adicional.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    public async Task ExecuteAsync(string id, UpdateAdditionalRequest request, string tenantId)
+    /// <param name="user">Usuário autenticado.</param>
+    public async Task ExecuteAsync(string id, UpdateAdditionalRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            // Obter tenantId do usuário logado
+            var tenantId = _loggedUserService.GetTenantId(user);
+
             // Validação dos dados de entrada
             await ValidateRequestAsync(request, id);
 
@@ -68,11 +77,6 @@ public class UpdateAdditionalUseCase : BaseUseCase, IUpdateAdditionalUseCase
         if (!validationResult.IsValid)
         {
             throw new Hephaestus.Application.Exceptions.ValidationException("Dados do adicional inválidos", validationResult);
-        }
-
-        if (request.Id != id)
-        {
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID no corpo da requisição deve corresponder ao ID na URL.", new ValidationResult());
         }
     }
 

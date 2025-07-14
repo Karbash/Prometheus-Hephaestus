@@ -103,8 +103,7 @@ public class DeleteTagUseCase : BaseUseCase, IDeleteTagUseCase
     /// <returns>Tag encontrada.</returns>
     private async Task<Domain.Entities.Tag> GetAndValidateTagAsync(string id, ClaimsPrincipal user)
     {
-        var tenantId = user.FindFirst("TenantId")?.Value
-            ?? throw new Hephaestus.Application.Exceptions.ValidationException("TenantId não encontrado no token.", new ValidationResult());
+        var tenantId = _loggedUserService.GetTenantId(user);
 
         var tag = await _tagRepository.GetByIdAsync(id, tenantId);
         if (tag == null)

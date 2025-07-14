@@ -1,16 +1,12 @@
-﻿using Hephaestus.Application.DTOs.Response;
-using Hephaestus.Application.Interfaces.Administration;
-using Hephaestus.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Hephaestus.Application.Exceptions;
+﻿using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Microsoft.Extensions.Logging;
+using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Services;
-using FluentValidation.Results;
+using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Services;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Administration;
 
@@ -21,6 +17,7 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
 {
     private readonly ISalesRepository _salesRepository;
     private readonly ICompanyRepository _companyRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="SalesReportUseCase"/>.
@@ -29,15 +26,18 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
     /// <param name="companyRepository">Repositório de empresas.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="loggedUserService">Serviço do usuário logado.</param>
     public SalesReportUseCase(
         ISalesRepository salesRepository, 
         ICompanyRepository companyRepository,
         ILogger<SalesReportUseCase> logger,
-        IExceptionHandlerService exceptionHandler)
+        IExceptionHandlerService exceptionHandler,
+        ILoggedUserService loggedUserService)
         : base(logger, exceptionHandler)
     {
         _salesRepository = salesRepository;
         _companyRepository = companyRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
@@ -45,15 +45,17 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
     /// </summary>
     /// <param name="startDate">Data inicial (opcional).</param>
     /// <param name="endDate">Data final (opcional).</param>
-    /// <param name="tenantId">ID do tenant (opcional).</param>
     /// <param name="user">Usuário autenticado.</param>
     /// <returns>Relatório de vendas.</returns>
-    public async Task<SalesReportResponse> ExecuteAsync(DateTime? startDate, DateTime? endDate, string? tenantId, ClaimsPrincipal user)
+    public async Task<SalesReportResponse> ExecuteAsync(DateTime? startDate, DateTime? endDate, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             // Validação de autorização
             ValidateAuthorization(user);
+
+            // Obter tenantId do usuário logado (se aplicável)
+            var tenantId = GetTenantIdIfApplicable(user);
 
             // Validação dos parâmetros
             await ValidateParametersAsync(tenantId, startDate, endDate);
@@ -67,13 +69,28 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
     }
 
     /// <summary>
+    /// Obtém o tenantId se o usuário for um tenant, caso contrário retorna null.
+    /// </summary>
+    /// <param name="user">Usuário autenticado.</param>
+    /// <returns>TenantId ou null.</returns>
+    private string? GetTenantIdIfApplicable(ClaimsPrincipal user)
+    {
+        var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
+        if (userRole == "Tenant" && user != null)
+        {
+            return _loggedUserService.GetTenantId(user);
+        }
+        return null; // Admin pode ver todos os tenants
+    }
+
+    /// <summary>
     /// Valida a autorização do usuário.
     /// </summary>
     /// <param name="user">Usuário autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal user)
     {
         var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
-        ValidateAuthorization(userRole == "Admin", "Apenas administradores podem gerar relatórios de vendas.", "Gerar Relatório", "Vendas");
+        ValidateAuthorization(userRole == "Admin" || userRole == "Tenant", "Apenas administradores ou tenants podem gerar relatórios de vendas.", "Gerar Relatório", "Vendas");
     }
 
     /// <summary>

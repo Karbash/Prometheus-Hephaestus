@@ -10,9 +10,11 @@ using Hephaestus.Application.Interfaces.Database;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Application.Interfaces.OpenAI;
 using Hephaestus.Application.Interfaces.Order;
+using Hephaestus.Application.Interfaces.Payment;
 using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Application.Interfaces.Tag;
 using Hephaestus.Application.Services;
+using Hephaestus.Application.UseCases;
 using Hephaestus.Application.UseCases.Additional;
 using Hephaestus.Application.UseCases.Administration;
 using Hephaestus.Application.UseCases.Auth;
@@ -115,6 +117,9 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IGetOrderByIdUseCase, GetOrderByIdUseCase>();
         services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
         services.AddScoped<IGetCustomerOrderStatusUseCase, GetCustomerOrderStatusUseCase>();
+
+        //Payment
+        services.AddScoped<IProcessPaymentUseCase, ProcessPaymentUseCase>();
     }
 
     private static void AddServices(IServiceCollection services)

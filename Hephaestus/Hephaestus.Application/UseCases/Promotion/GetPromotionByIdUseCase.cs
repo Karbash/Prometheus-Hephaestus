@@ -3,9 +3,12 @@ using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
 using FluentValidation.Results;
+using Hephaestus.Domain.Enum;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Promotion;
 
@@ -15,32 +18,38 @@ namespace Hephaestus.Application.UseCases.Promotion;
 public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
 {
     private readonly IPromotionRepository _promotionRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="GetPromotionByIdUseCase"/>.
     /// </summary>
     /// <param name="promotionRepository">Repositório de promoções.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public GetPromotionByIdUseCase(
         IPromotionRepository promotionRepository,
+        ILoggedUserService loggedUserService,
         ILogger<GetPromotionByIdUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _promotionRepository = promotionRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a busca de uma promoção específica.
     /// </summary>
     /// <param name="id">ID da promoção.</param>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <returns>Promoção encontrada.</returns>
-    public async Task<PromotionResponse> ExecuteAsync(string id, string tenantId)
+    public async Task<PromotionResponse> ExecuteAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             // Validação dos parâmetros de entrada
             ValidateInputParameters(id, tenantId);
 
@@ -104,5 +113,14 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
             IsActive = promotion.IsActive,
             ImageUrl = promotion.ImageUrl
         };
+    }
+
+    private DiscountType ParseDiscountType(string discountTypeStr)
+    {
+        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
+        {
+            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
+        }
+        return discountType;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Coupon;
 
@@ -11,6 +12,6 @@ public interface IDeleteCouponUseCase
     /// Remove um cupom do tenant.
     /// </summary>
     /// <param name="id">ID do cupom a ser removido.</param>
-    /// <param name="tenantId">ID do tenant extraído do token JWT.</param>
-    Task ExecuteAsync(string id, string tenantId);
+    /// <param name="user">Usuário autenticado.</param>
+    Task ExecuteAsync(string id, ClaimsPrincipal user);
 }

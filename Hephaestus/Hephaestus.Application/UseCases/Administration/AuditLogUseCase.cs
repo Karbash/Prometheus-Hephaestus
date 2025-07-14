@@ -1,18 +1,13 @@
-﻿using Hephaestus.Application.DTOs.Response;
+﻿using FluentValidation.Results;
+using Hephaestus.Application.Base;
+using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Administration;
+using Hephaestus.Application.Services;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Hephaestus.Application.Exceptions;
-using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
-using Hephaestus.Application.Services;
-using FluentValidation.Results;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Administration;
 
@@ -49,23 +44,25 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
     /// <summary>
     /// Executa a busca de logs de auditoria.
     /// </summary>
-    /// <param name="userId">ID do usuário (opcional).</param>
     /// <param name="startDate">Data inicial (opcional).</param>
     /// <param name="endDate">Data final (opcional).</param>
     /// <param name="user">Usuário autenticado.</param>
     /// <returns>Lista de logs de auditoria.</returns>
-    public async Task<IEnumerable<AuditLogResponse>> ExecuteAsync(string? userId, DateTime? startDate, DateTime? endDate, ClaimsPrincipal user)
+    public async Task<IEnumerable<AuditLogResponse>> ExecuteAsync(DateTime? startDate, DateTime? endDate, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             // Validação de autorização
             ValidateAuthorization(user);
 
+            // Obter adminId do usuário logado (se aplicável)
+            var adminId = GetAdminIdIfApplicable(user);
+
             // Validação dos parâmetros
-            await ValidateParametersAsync(userId, startDate, endDate);
+            await ValidateParametersAsync(adminId, startDate, endDate);
 
             // Busca dos logs
-            var logs = await GetLogsAsync(userId, startDate, endDate);
+            var logs = await GetLogsAsync(adminId, startDate, endDate);
 
             // Conversão para DTOs de resposta
             return ConvertToResponseDtos(logs);
@@ -208,5 +205,20 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
         };
 
         await _auditLogRepository.AddAsync(auditLog);
+    }
+
+    /// <summary>
+    /// Obtém o adminId se o usuário for um admin, caso contrário retorna null.
+    /// </summary>
+    /// <param name="user">Usuário autenticado.</param>
+    /// <returns>AdminId ou null.</returns>
+    private string? GetAdminIdIfApplicable(ClaimsPrincipal user)
+    {
+        var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
+        if (userRole == "Admin")
+        {
+            return user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+        return null; // Apenas admins podem ver logs de auditoria
     }
 }

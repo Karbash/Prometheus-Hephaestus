@@ -3,6 +3,7 @@ using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using FluentValidation.Results;
@@ -16,54 +17,61 @@ namespace Hephaestus.Application.UseCases.Tags;
 public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
 {
     private readonly ITagRepository _tagRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     public GetAllTagsByTenantUseCase(
         ITagRepository tagRepository,
         ILogger<GetAllTagsByTenantUseCase> logger,
-        IExceptionHandlerService exceptionHandler)
+        IExceptionHandlerService exceptionHandler,
+        ILoggedUserService loggedUserService)
         : base(logger, exceptionHandler)
     {
         _tagRepository = tagRepository;
+        _loggedUserService = loggedUserService;
     }
 
-    public async Task<IEnumerable<TagResponse>> ExecuteAsync(string tenantId, ClaimsPrincipal user)
+    public async Task<PagedResult<TagResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            ValidateInputParameters(tenantId, user);
-            ValidateAuthorization(user);
-            var tags = await GetTagsAsync(tenantId);
-            return ConvertToResponseDtos(tags);
+            // Obter tenantId do usuário logado
+            var tenantId = _loggedUserService.GetTenantId(user);
+
+            ValidateInputParameters(tenantId);
+            var pagedTags = await _tagRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize);
+            if (!pagedTags.Items.Any())
+            {
+                throw new NotFoundException("Tags", tenantId);
+            }
+            return new PagedResult<TagResponse>
+            {
+                Items = pagedTags.Items.Select(t => new TagResponse
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    TenantId = t.TenantId
+                }).ToList(),
+                TotalCount = pagedTags.TotalCount,
+                PageNumber = pagedTags.PageNumber,
+                PageSize = pagedTags.PageSize
+            };
         });
     }
 
-    private void ValidateInputParameters(string tenantId, ClaimsPrincipal user)
+    private void ValidateInputParameters(string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
             throw new ValidationException("ID do tenant é obrigatório.", new ValidationResult());
-        if (user == null)
-            throw new ValidationException("Usuário autenticado é obrigatório.", new ValidationResult());
         if (!Guid.TryParse(tenantId, out _))
             throw new ValidationException("ID do tenant deve ser um GUID válido.", new ValidationResult());
     }
 
-    private void ValidateAuthorization(ClaimsPrincipal user)
-    {
-        var userRole = user.FindFirst(ClaimTypes.Role)?.Value;
-        if (userRole != "Admin" && userRole != "Tenant")
-            throw new UnauthorizedException("Apenas administradores ou tenants podem visualizar tags.", "GET_TAGS", "Tag");
-        var userTenantId = user.FindFirst("TenantId")?.Value;
-        var tenantId = user.FindFirst("TenantId")?.Value;
-        if (userRole == "Tenant" && userTenantId != tenantId)
-            throw new UnauthorizedException("Tenants só podem visualizar suas próprias tags.", "GET_TAGS", "Tag");
-    }
-
     private async Task<IEnumerable<Domain.Entities.Tag>> GetTagsAsync(string tenantId)
     {
-        var tags = await _tagRepository.GetByTenantIdAsync(tenantId);
-        if (tags == null || !tags.Any())
+        var pagedTags = await _tagRepository.GetByTenantIdAsync(tenantId);
+        if (pagedTags == null || !pagedTags.Items.Any())
             throw new NotFoundException("Tags", tenantId);
-        return tags;
+        return pagedTags.Items;
     }
 
     private IEnumerable<TagResponse> ConvertToResponseDtos(IEnumerable<Domain.Entities.Tag> tags)

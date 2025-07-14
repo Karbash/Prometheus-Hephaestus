@@ -9,6 +9,7 @@ namespace Hephaestus.Controllers;
 
 /// <summary>
 /// Controller para gerenciamento administrativo de empresas, vendas e logs.
+/// Todas as operações requerem autenticação com a role "Admin" e a policy "RequireMfa".
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -48,106 +49,123 @@ public class AdministrationController : ControllerBase
     }
 
     /// <summary>
-    /// Lista todas as empresas.
+    /// Lista todas as empresas registradas no sistema, com opções de filtro e paginação.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Requer **Role: Admin** e **MFA validado**.
+    /// 
+    /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
-    /// [
-    ///   {
-    ///     "id": "123e4567-e89b-12d3-a456-426614174001",
-    ///     "name": "Empresa Exemplo",
-    ///     "email": "exemplo@empresa.com",
-    ///     "phoneNumber": "123456789",
-    ///     "isEnabled": true,
-    ///     "feeType": "Percentage",
-    ///     "feeValue": 5.0,
-    ///     "city": "São Paulo",
-    ///     "neighborhood": "Vila Mariana",
-    ///     "street": "Rua Exemplo",
-    ///     "number": "123",
-    ///     "latitude": -23.550520,
-    ///     "longitude": -46.633308,
-    ///     "slogan": "O melhor da cidade!",
-    ///     "description": "Descrição da empresa."
-    ///   }
-    /// ]
+    /// {
+    ///   "items": [
+    ///     {
+    ///       "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///       "name": "Empresa Exemplo",
+    ///       "email": "exemplo@empresa.com",
+    ///       "phoneNumber": "123456789",
+    ///       "isEnabled": true,
+    ///       "feeType": "Percentage",
+    ///       "feeValue": 5.0,
+    ///       "city": "São Paulo",
+    ///       "neighborhood": "Vila Mariana",
+    ///       "street": "Rua Exemplo",
+    ///       "number": "123",
+    ///       "latitude": -23.550520,
+    ///       "longitude": -46.633308,
+    ///       "slogan": "O melhor da cidade!",
+    ///       "description": "Descrição da empresa."
+    ///     }
+    ///   ],
+    ///   "totalCount": 1,
+    ///   "pageNumber": 1,
+    ///   "pageSize": 20
+    /// }
     /// ```
     /// </remarks>
     /// <param name="isEnabled">Filtro opcional para empresas habilitadas (true) ou desabilitadas (false).</param>
-    /// <returns>Lista de empresas.</returns>
+    /// <param name="pageNumber">Número da página a ser retornada (padrão: 1).</param>
+    /// <param name="pageSize">Número de itens por página (padrão: 20).</param>
+    /// <returns>Uma lista paginada de objetos `CompanyResponse`.</returns>
     [HttpGet("company")]
-    [SwaggerOperation(Summary = "Lista todas as empresas", Description = "Retorna uma lista de empresas com filtro opcional por status de habilitação (true para habilitadas, false para desabilitadas). Requer autenticação de administrador.")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CompanyResponse>))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
-    public async Task<IActionResult> GetCompanies([FromQuery] bool? isEnabled = null)
+    [SwaggerOperation(Summary = "Lista todas as empresas", Description = "Retorna uma lista paginada de empresas, com filtro opcional por status de habilitação (habilitadas ou desabilitadas).")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<CompanyResponse>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetCompanies(
+        [FromQuery] bool? isEnabled = null,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 20)
     {
-        var companies = await _getCompaniesUseCase.ExecuteAsync(isEnabled);
+        var companies = await _getCompaniesUseCase.ExecuteAsync(isEnabled, pageNumber, pageSize);
         return Ok(companies);
     }
 
     /// <summary>
-    /// Atualiza configurações de uma empresa.
+    /// Atualiza as informações de uma empresa específica.
     /// </summary>
     /// <remarks>
-    /// Exemplo de corpo da requisição:
+    /// Requer **Role: Admin** e **MFA validado**.
+    /// O `id` na URL deve corresponder ao `Id` no corpo da requisição.
+    /// 
+    /// Exemplo de requisição:
     /// ```json
     /// {
     ///   "id": "123e4567-e89b-12d3-a456-426614174001",
-    ///   "name": "Empresa Atualizada",
-    ///   "email": "atualizada@empresa.com",
-    ///   "phoneNumber": "987654321",
-    ///   "apiKey": "xyz789",
-    ///   "feeType": "Percentage",
-    ///   "feeValue": 5.0,
+    ///   "name": "Empresa Atualizada Ltda.",
+    ///   "email": "contato_novo@empresa.com",
+    ///   "phoneNumber": "998877665",
+    ///   "apiKey": "nova_api_key_xyz",
+    ///   "feeType": "Fixed",
+    ///   "feeValue": 2.50,
     ///   "isEnabled": true,
     ///   "city": "Rio de Janeiro",
-    ///   "neighborhood": "Copacabana",
-    ///   "street": "Avenida Nova",
+    ///   "neighborhood": "Botafogo",
+    ///   "street": "Rua Exemplo Nova",
     ///   "number": "456",
-    ///   "latitude": -22.906847,
-    ///   "longitude": -43.172896,
-    ///   "slogan": "Novo slogan!",
-    ///   "description": "Nova descrição."
+    ///   "latitude": -22.951916,
+    ///   "longitude": -43.210487,
+    ///   "slogan": "Inovação a cada passo!",
+    ///   "description": "Empresa líder em tecnologia."
     /// }
     /// ```
-    /// Exemplo de resposta de sucesso:
+    /// 
+    /// Exemplo de resposta de sucesso (Status 204 No Content):
     /// ```
-    /// Status: 204 No Content
+    /// (Nenhum corpo de resposta)
     /// ```
-    /// Exemplo de erro:
+    /// 
+    /// Exemplo de erro (Status 404 Not Found):
     /// ```json
     /// {
-    ///   "error": "Empresa não encontrada."
+    ///   "message": "Empresa com ID 'xyz' não encontrada."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID da empresa a ser atualizada.</param>
-    /// <param name="request">Dados atualizados da empresa.</param>
-    /// <returns>Status da atualização.</returns>
+    /// <param name="id">ID da empresa a ser atualizada (GUID).</param>
+    /// <param name="request">Objeto com os dados atualizados da empresa.</param>
+    /// <returns>Um `NoContentResult` em caso de sucesso.</returns>
     [HttpPut("company/{id}")]
-    [SwaggerOperation(Summary = "Atualiza uma empresa", Description = "Atualiza configurações de uma empresa (nome, e-mail, telefone, API key, tipo de taxa, valor da taxa, status de habilitação, cidade, bairro, rua, número, latitude, longitude, slogan, descrição). Requer autenticação de administrador com MFA validado.")]
+    [SwaggerOperation(Summary = "Atualiza uma empresa", Description = "Atualiza as informações de uma empresa existente. O ID na URL deve coincidir com o da empresa a ser atualizada.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateCompany(string id, [FromBody] UpdateCompanyRequest request)
     {
-        if (request.Id != id)
-            return BadRequest(new { error = "ID no corpo da requisição deve corresponder ao ID na URL." });
-
         await _updateCompanyUseCase.ExecuteAsync(id, request, User);
         return NoContent();
     }
 
     /// <summary>
-    /// Relatório consolidado de vendas de todas as empresas.
+    /// Gera um relatório consolidado de vendas de todas as empresas, com filtros opcionais por data.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Requer **Role: Admin** e **MFA validado**.
+    /// As datas devem estar no formato ISO 8601 (ex: `2024-01-01`).
+    /// 
+    /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
     /// {
     ///   "totalSales": 1000.00,
@@ -159,30 +177,36 @@ public class AdministrationController : ControllerBase
     ///       "companyName": "Empresa Exemplo",
     ///       "totalSales": 500.00,
     ///       "totalTransactions": 25
+    ///     },
+    ///     {
+    ///       "companyId": "a7b8c9d0-e1f2-3g4h-5i6j-7k8l9m0n1o2p",
+    ///       "companyName": "Outra Empresa",
+    ///       "totalSales": 500.00,
+    ///       "totalTransactions": 25
     ///     }
     ///   ]
     /// }
     /// ```
-    /// Exemplo de erro:
+    /// 
+    /// Exemplo de erro (Status 400 Bad Request):
     /// ```json
     /// {
-    ///   "error": "Datas inválidas."
+    ///   "message": "Data inicial não pode ser maior que a data final."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="startDate">Data inicial do relatório no formato ISO 8601 (ex.: 2024-01-01). Opcional.</param>
-    /// <param name="endDate">Data final do relatório no formato ISO 8601 (ex.: 2024-12-31). Opcional.</param>
-    /// <param name="tenantId">ID da empresa (tenant) para filtrar vendas. Opcional.</param>
-    /// <returns>Relatório de vendas consolidado.</returns>
+    /// <param name="startDate">Data inicial para filtrar as vendas (opcional, formato ISO 8601).</param>
+    /// <param name="endDate">Data final para filtrar as vendas (opcional, formato ISO 8601).</param>
+    /// <returns>Um objeto `SalesReportResponse` contendo o relatório de vendas.</returns>
     [HttpGet("sales/admin")]
-    [SwaggerOperation(Summary = "Relatório de vendas", Description = "Retorna relatório consolidado de vendas de todas as empresas, com filtros opcionais por data (ISO 8601) e tenantId (GUID válido). Requer autenticação de administrador.")]
+    [SwaggerOperation(Summary = "Relatório de vendas consolidado", Description = "Retorna um relatório consolidado de vendas de todas as empresas, com filtros opcionais por período.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SalesReportResponse))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
-    public async Task<IActionResult> GetSalesReport([FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null, [FromQuery] string? tenantId = null)
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetSalesReport([FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
     {
-        var report = await _salesReportUseCase.ExecuteAsync(startDate, endDate, tenantId, User);
+        var report = await _salesReportUseCase.ExecuteAsync(startDate, endDate, User);
         return Ok(report);
     }
 
@@ -190,7 +214,10 @@ public class AdministrationController : ControllerBase
     /// Lista logs de auditoria de ações administrativas.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Requer **Role: Admin** e **MFA validado**.
+    /// As datas devem estar no formato ISO 8601 (ex: `2024-01-01`).
+    /// 
+    /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
     /// [
     ///   {
@@ -198,33 +225,34 @@ public class AdministrationController : ControllerBase
     ///     "userId": "456e7890-e89b-12d3-a456-426614174002",
     ///     "action": "UpdateCompany",
     ///     "entityId": "789e0123-e89b-12d3-a456-426614174003",
-    ///     "description": "Empresa atualizada com sucesso",
-    ///     "timestamp": "2024-01-01T12:00:00Z"
+    ///     "description": "Empresa 'XYZ Corp' atualizada com sucesso",
+    ///     "timestamp": "2024-07-14T15:30:00Z"
     ///   }
     /// ]
     /// ```
     /// </remarks>
-    /// <param name="adminId">ID do administrador para filtrar logs. Opcional.</param>
-    /// <param name="startDate">Data inicial para filtrar logs. Opcional.</param>
-    /// <param name="endDate">Data final para filtrar logs. Opcional.</param>
-    /// <returns>Lista de logs de auditoria.</returns>
+    /// <param name="startDate">Data inicial para filtrar logs (opcional, formato ISO 8601).</param>
+    /// <param name="endDate">Data final para filtrar logs (opcional, formato ISO 8601).</param>
+    /// <returns>Uma lista de objetos `AuditLogResponse`.</returns>
     [HttpGet("audit-log")]
-    [SwaggerOperation(Summary = "Lista logs de auditoria", Description = "Retorna logs de auditoria de ações administrativas, com filtros opcionais por adminId (GUID válido) e data (ISO 8601). Requer autenticação de administrador.")]
+    [SwaggerOperation(Summary = "Lista logs de auditoria", Description = "Retorna logs de auditoria de ações administrativas, com filtros opcionais por período.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AuditLogResponse>))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
-    public async Task<IActionResult> GetAuditLogs([FromQuery] string? adminId = null, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetAuditLogs([FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
     {
-        var logs = await _auditLogUseCase.ExecuteAsync(adminId, startDate, endDate, User);
+        var logs = await _auditLogUseCase.ExecuteAsync(startDate, endDate, User);
         return Ok(logs);
     }
 
     /// <summary>
-    /// Lista empresas dentro de um raio específico.
+    /// Lista empresas localizadas dentro de um raio geográfico específico.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Requer **Role: Admin** e **MFA validado**.
+    /// 
+    /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
     /// [
     ///   {
@@ -246,25 +274,26 @@ public class AdministrationController : ControllerBase
     ///   }
     /// ]
     /// ```
-    /// Exemplo de erro:
+    /// 
+    /// Exemplo de erro (Status 400 Bad Request):
     /// ```json
     /// {
-    ///   "error": "Coordenadas inválidas."
+    ///   "message": "Parâmetros de localização inválidos. Latitude e Longitude devem ser fornecidos."
     /// }
     /// ```
     /// </remarks>
     /// <param name="centerLat">Latitude do centro do raio.</param>
     /// <param name="centerLon">Longitude do centro do raio.</param>
-    /// <param name="radiusKm">Raio em quilômetros.</param>
+    /// <param name="radiusKm">Raio em quilômetros para a busca.</param>
     /// <param name="city">Filtro opcional por cidade.</param>
     /// <param name="neighborhood">Filtro opcional por bairro.</param>
-    /// <returns>Lista de empresas dentro do raio.</returns>
+    /// <returns>Uma lista de objetos `CompanyResponse` que estão dentro do raio especificado.</returns>
     [HttpGet("company/radius")]
-    [SwaggerOperation(Summary = "Lista empresas por raio", Description = "Retorna empresas dentro de um raio (em km) a partir de uma coordenada (latitude, longitude), com pré-filtro opcional por cidade e bairro. Requer autenticação de administrador com MFA validado.")]
+    [SwaggerOperation(Summary = "Lista empresas por raio geográfico", Description = "Retorna empresas localizadas dentro de um raio especificado (em km) a partir de uma coordenada central, com filtros opcionais por cidade e bairro.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CompanyResponse>))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetCompaniesByRadius([FromQuery] double centerLat, [FromQuery] double centerLon, [FromQuery] double radiusKm, [FromQuery] string? city = null, [FromQuery] string? neighborhood = null)
     {
         var companies = await _getCompaniesWithinRadiusUseCase.ExecuteAsync(centerLat, centerLon, radiusKm, city, neighborhood);

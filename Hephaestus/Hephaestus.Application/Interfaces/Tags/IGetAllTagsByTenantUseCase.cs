@@ -5,5 +5,5 @@ namespace Hephaestus.Application.Interfaces.Tag;
 
 public interface IGetAllTagsByTenantUseCase
 {
-    Task<IEnumerable<TagResponse>> ExecuteAsync(string tenantId, ClaimsPrincipal user);
+    Task<PagedResult<TagResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20);
 }

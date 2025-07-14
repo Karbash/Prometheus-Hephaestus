@@ -1,10 +1,11 @@
-﻿using Hephaestus.Application.DTOs.Response;
-using Hephaestus.Application.Interfaces.Administration;
-using Hephaestus.Domain.Repositories;
+﻿using Hephaestus.Application.Base;
+using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Exceptions;
-using Hephaestus.Application.Base;
-using Microsoft.Extensions.Logging;
+using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Enum;
+using Hephaestus.Domain.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace Hephaestus.Application.UseCases.Administration;
 
@@ -35,15 +36,20 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
     /// </summary>
     /// <param name="isEnabled">Filtro opcional para empresas habilitadas.</param>
     /// <returns>Lista de empresas.</returns>
-    public async Task<IEnumerable<CompanyResponse>> ExecuteAsync(bool? isEnabled)
+    public async Task<PagedResult<CompanyResponse>> ExecuteAsync(bool? isEnabled, int pageNumber = 1, int pageSize = 20)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Busca das empresas
-            var companies = await GetCompaniesAsync(isEnabled);
-
+            // Busca das empresas paginadas
+            var pagedCompanies = await GetCompaniesAsync(isEnabled, pageNumber, pageSize);
             // Conversão para DTOs de resposta
-            return ConvertToResponseDtos(companies);
+            return new PagedResult<CompanyResponse>
+            {
+                Items = (List<CompanyResponse>)ConvertToResponseDtos(pagedCompanies.Items),
+                TotalCount = pagedCompanies.TotalCount,
+                PageNumber = pagedCompanies.PageNumber,
+                PageSize = pagedCompanies.PageSize
+            };
         });
     }
 
@@ -52,9 +58,9 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
     /// </summary>
     /// <param name="isEnabled">Filtro opcional para empresas habilitadas.</param>
     /// <returns>Lista de empresas.</returns>
-    private async Task<IEnumerable<Domain.Entities.Company>> GetCompaniesAsync(bool? isEnabled)
+    private async Task<PagedResult<Domain.Entities.Company>> GetCompaniesAsync(bool? isEnabled, int pageNumber, int pageSize)
     {
-        return await _companyRepository.GetAllAsync(isEnabled);
+        return await _companyRepository.GetAllAsync(isEnabled, pageNumber, pageSize);
     }
 
     /// <summary>
@@ -83,5 +89,14 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
             Slogan = c.Slogan,
             Description = c.Description
         });
+    }
+
+    private FeeType ParseFeeType(string feeTypeStr)
+    {
+        if (!Enum.TryParse<FeeType>(feeTypeStr, true, out var feeType))
+        {
+            throw new BusinessRuleException($"Tipo de taxa inválido: {feeTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(FeeType)))}.", "FEE_TYPE_VALIDATION");
+        }
+        return feeType;
     }
 }

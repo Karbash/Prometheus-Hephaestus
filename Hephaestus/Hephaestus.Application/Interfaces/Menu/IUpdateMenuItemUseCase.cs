@@ -1,4 +1,5 @@
 ﻿using Hephaestus.Application.DTOs.Request;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Menu;
 
@@ -12,6 +13,6 @@ public interface IUpdateMenuItemUseCase
     /// </summary>
     /// <param name="id">ID do item.</param>
     /// <param name="request">Dados atualizados do item.</param>
-    /// <param name="tenantId">ID do tenant extraído do token JWT.</param>
-    Task ExecuteAsync(string id, UpdateMenuItemRequest request, string tenantId);
+    /// <param name="user">Usuário autenticado.</param>
+    Task ExecuteAsync(string id, UpdateMenuItemRequest request, ClaimsPrincipal user);
 }

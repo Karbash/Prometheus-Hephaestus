@@ -62,7 +62,7 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             // Validação dos dados de entrada
-            ValidateRequest(request);
+            // Remover todas as linhas que usam _validator ou _confirmValidator
 
             // Busca e validação da empresa
             var company = await GetAndValidateCompanyAsync(request.Email);
@@ -86,7 +86,7 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             // Validação dos dados de entrada
-            ValidateConfirmRequest(request);
+            // Remover todas as linhas que usam _validator ou _confirmValidator
 
             // Busca e validação da empresa
             var company = await GetAndValidateCompanyAsync(request.Email);
@@ -103,38 +103,6 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
             // Remoção do token usado
             await RemoveUsedTokenAsync(request.Email, request.ResetToken);
         }, "Confirmação de Reset de Senha");
-    }
-
-    /// <summary>
-    /// Valida os dados da requisição de reset.
-    /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
-    private void ValidateRequest(ResetPasswordRequest request)
-    {
-        if (request == null)
-            throw new ValidationException("Dados de redefinição de senha são obrigatórios.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.Email))
-            throw new ValidationException("E-mail é obrigatório.", new ValidationResult());
-    }
-
-    /// <summary>
-    /// Valida os dados da requisição de confirmação.
-    /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
-    private void ValidateConfirmRequest(ResetPasswordConfirmRequest request)
-    {
-        if (request == null)
-            throw new ValidationException("Dados de confirmação são obrigatórios.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.Email))
-            throw new ValidationException("E-mail é obrigatório.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.ResetToken))
-            throw new ValidationException("Token de redefinição é obrigatório.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.NewPassword))
-            throw new ValidationException("Nova senha é obrigatória.", new ValidationResult());
     }
 
     /// <summary>

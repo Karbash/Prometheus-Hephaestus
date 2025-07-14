@@ -1,15 +1,15 @@
-﻿using Hephaestus.Application.DTOs.Request;
+﻿using FluentValidation.Results;
+using Hephaestus.Application.Base;
+using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Tag;
+using Hephaestus.Application.Services;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
-using System.Security.Claims;
-using Hephaestus.Application.Exceptions;
-using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
-using Hephaestus.Application.Services;
-using FluentValidation.Results;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Tag;
 
@@ -60,7 +60,7 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
             ValidateAuthorization(user);
 
             // Obtenção do tenant ID
-            var tenantId = GetTenantId(user);
+            var tenantId = _loggedUserService.GetTenantId(user);
 
             // Validação das regras de negócio
             await ValidateBusinessRulesAsync(request, tenantId);
@@ -105,21 +105,6 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
         {
             throw new UnauthorizedException("Apenas administradores ou tenants podem criar tags.", "CREATE_TAG", "Tag");
         }
-    }
-
-    /// <summary>
-    /// Obtém o TenantId do token de autenticação.
-    /// </summary>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <returns>TenantId do token.</returns>
-    private string GetTenantId(ClaimsPrincipal user)
-    {
-        var tenantId = user.FindFirst("TenantId")?.Value;
-        if (string.IsNullOrEmpty(tenantId))
-        {
-            throw new UnauthorizedException("TenantId não encontrado no token.", "GET_TENANT_ID", "Token");
-        }
-        return tenantId;
     }
 
     /// <summary>

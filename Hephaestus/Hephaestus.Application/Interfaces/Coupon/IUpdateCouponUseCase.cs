@@ -1,5 +1,5 @@
 ﻿using Hephaestus.Application.DTOs.Request;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Coupon;
 
@@ -13,6 +13,6 @@ public interface IUpdateCouponUseCase
     /// </summary>
     /// <param name="id">ID do cupom a ser atualizado.</param>
     /// <param name="request">Dados atualizados do cupom.</param>
-    /// <param name="tenantId">ID do tenant extraído do token JWT.</param>
-    Task ExecuteAsync(string id, UpdateCouponRequest request, string tenantId);
+    /// <param name="user">Usuário autenticado.</param>
+    Task ExecuteAsync(string id, UpdateCouponRequest request, ClaimsPrincipal user);
 }

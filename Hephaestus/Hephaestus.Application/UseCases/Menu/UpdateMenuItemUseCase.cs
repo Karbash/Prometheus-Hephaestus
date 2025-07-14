@@ -6,7 +6,9 @@ using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
 using FluentValidation.Results;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Menu;
 
@@ -18,6 +20,7 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     private readonly IMenuItemRepository _menuItemRepository;
     private readonly ITagRepository _tagRepository;
     private readonly IValidator<UpdateMenuItemRequest> _validator;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="UpdateMenuItemUseCase"/>.
@@ -25,12 +28,14 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
     /// <param name="tagRepository">Repositório de tags.</param>
     /// <param name="validator">Validador para a requisição.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public UpdateMenuItemUseCase(
         IMenuItemRepository menuItemRepository,
         ITagRepository tagRepository,
         IValidator<UpdateMenuItemRequest> validator,
+        ILoggedUserService loggedUserService,
         ILogger<UpdateMenuItemUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -38,6 +43,7 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
         _menuItemRepository = menuItemRepository;
         _tagRepository = tagRepository;
         _validator = validator;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
@@ -45,42 +51,26 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     /// </summary>
     /// <param name="id">ID do item do cardápio.</param>
     /// <param name="request">Dados atualizados do item do cardápio.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    public async Task ExecuteAsync(string id, UpdateMenuItemRequest request, string tenantId)
+    /// <param name="user">Usuário autenticado.</param>
+    public async Task ExecuteAsync(string id, UpdateMenuItemRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             // Validação dos dados de entrada
-            await ValidateRequestAsync(request, id);
+            await _validator.ValidateAndThrowAsync(request);
 
             // Validação das regras de negócio
             await ValidateBusinessRulesAsync(request, tenantId);
 
-            // Busca e validação da existência do item
-            var menuItem = await GetAndValidateMenuItemAsync(id, tenantId);
+            // Busca e validação do item
+            var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
+            EnsureResourceExists(menuItem, "MenuItem", id);
 
-            // Atualização do item do cardápio
-            await UpdateMenuItemAsync(menuItem, request, id, tenantId);
+            // Atualização dos dados
+            await UpdateMenuItemEntityAsync(menuItem!, request);
         });
-    }
-
-    /// <summary>
-    /// Valida os dados da requisição.
-    /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
-    /// <param name="id">ID do item do cardápio.</param>
-    private async Task ValidateRequestAsync(UpdateMenuItemRequest request, string id)
-    {
-        var validationResult = await _validator.ValidateAsync(request);
-        if (!validationResult.IsValid)
-        {
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados do item do cardápio inválidos", validationResult);
-        }
-
-        if (request.Id != id)
-        {
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID no corpo da requisição deve corresponder ao ID na URL.", new ValidationResult());
-        }
     }
 
     /// <summary>
@@ -101,26 +91,13 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     }
 
     /// <summary>
-    /// Busca e valida a existência do item do cardápio.
-    /// </summary>
-    /// <param name="id">ID do item do cardápio.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Item do cardápio encontrado.</returns>
-    private async Task<Domain.Entities.MenuItem> GetAndValidateMenuItemAsync(string id, string tenantId)
-    {
-        var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
-        EnsureEntityExists(menuItem, "MenuItem", id);
-        return menuItem!; // Garantido que não é null após EnsureEntityExists
-    }
-
-    /// <summary>
     /// Atualiza o item do cardápio com os novos dados.
     /// </summary>
     /// <param name="menuItem">Item do cardápio a ser atualizado.</param>
     /// <param name="request">Dados atualizados.</param>
     /// <param name="id">ID do item do cardápio.</param>
     /// <param name="tenantId">ID do tenant.</param>
-    private async Task UpdateMenuItemAsync(Domain.Entities.MenuItem menuItem, UpdateMenuItemRequest request, string id, string tenantId)
+    private async Task UpdateMenuItemEntityAsync(Domain.Entities.MenuItem menuItem, UpdateMenuItemRequest request)
     {
         // Atualiza as propriedades do item
         menuItem.Name = request.Name ?? menuItem.Name;
@@ -134,7 +111,7 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
         // Atualiza as tags se especificadas
         if (request.TagIds != null)
         {
-            await _menuItemRepository.AddTagsAsync(id, request.TagIds, tenantId);
+            await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, menuItem.TenantId);
         }
 
         // Persiste as alterações

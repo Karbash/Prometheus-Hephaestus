@@ -1,5 +1,5 @@
 ﻿using Hephaestus.Application.DTOs.Response;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Coupon;
 
@@ -12,7 +12,7 @@ public interface IGetCouponByIdUseCase
     /// Obtém detalhes de um cupom por ID.
     /// </summary>
     /// <param name="id">ID do cupom.</param>
-    /// <param name="tenantId">ID do tenant extraído do token JWT.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <returns>Detalhes do cupom.</returns>
-    Task<CouponResponse> ExecuteAsync(string id, string tenantId);
+    Task<CouponResponse> ExecuteAsync(string id, ClaimsPrincipal user);
 }

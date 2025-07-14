@@ -6,7 +6,9 @@ using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
 using FluentValidation.Results;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Customer;
 
@@ -17,68 +19,53 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly ICompanyRepository _companyRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="UpdateCustomerUseCase"/>.
     /// </summary>
     /// <param name="customerRepository">Repositório de clientes.</param>
     /// <param name="companyRepository">Repositório de empresas.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public UpdateCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
+        ILoggedUserService loggedUserService,
         ILogger<UpdateCustomerUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _customerRepository = customerRepository;
         _companyRepository = companyRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a atualização de um cliente.
     /// </summary>
     /// <param name="request">Dados do cliente a ser atualizado.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    public async Task UpdateAsync(CustomerRequest request, string tenantId)
+    /// <param name="user">Usuário autenticado.</param>
+    public async Task UpdateAsync(CustomerRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             // Validação dos dados de entrada
-            ValidateRequest(request);
+            // Remover todas as linhas que usam _validator
 
             // Validação do tenant
             await ValidateTenantAsync(tenantId);
 
-            // Validação das regras de negócio
-            await ValidateBusinessRulesAsync(request, tenantId);
+            // Busca do cliente
+            var customer = await _customerRepository.GetByIdAsync(request.Id!, tenantId);
+            EnsureResourceExists(customer, "Cliente", request.Id!);
 
-            // Busca do cliente existente
-            var existingCustomer = await GetExistingCustomerAsync(request, tenantId);
-
-            // Criação ou atualização do cliente
-            await CreateOrUpdateCustomerAsync(request, tenantId, existingCustomer);
+            // Atualização dos dados
+            await CreateOrUpdateCustomerAsync(request, tenantId, customer);
         });
-    }
-
-    /// <summary>
-    /// Valida os dados da requisição.
-    /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
-    private void ValidateRequest(CustomerRequest request)
-    {
-        if (request == null)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados do cliente são obrigatórios.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.PhoneNumber))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Número de telefone é obrigatório.", new ValidationResult());
-
-        if (string.IsNullOrEmpty(request.State))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Estado é obrigatório.", new ValidationResult());
-
-        if (request.PhoneNumber.Length < 10)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Número de telefone deve ter pelo menos 10 dígitos.", new ValidationResult());
     }
 
     /// <summary>

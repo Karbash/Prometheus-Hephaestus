@@ -1,9 +1,9 @@
 ﻿using Hephaestus.Application.DTOs.Request;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Order;
 
 public interface ICreateOrderUseCase
 {
-    Task<string> ExecuteAsync(CreateOrderRequest request, string tenantId);
+    Task<string> ExecuteAsync(CreateOrderRequest request, ClaimsPrincipal user);
 }

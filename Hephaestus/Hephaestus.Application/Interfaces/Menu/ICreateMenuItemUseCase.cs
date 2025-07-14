@@ -1,4 +1,5 @@
 ﻿using Hephaestus.Application.DTOs.Request;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Menu;
 
@@ -11,7 +12,7 @@ public interface ICreateMenuItemUseCase
     /// Cria um novo item do cardápio para o tenant.
     /// </summary>
     /// <param name="request">Dados do item do cardápio.</param>
-    /// <param name="tenantId">ID do tenant extraído do token JWT.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <returns>ID do item criado.</returns>
-    Task<string> ExecuteAsync(CreateMenuItemRequest request, string tenantId);
+    Task<string> ExecuteAsync(CreateMenuItemRequest request, ClaimsPrincipal user);
 }

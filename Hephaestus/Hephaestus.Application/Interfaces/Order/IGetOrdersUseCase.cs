@@ -1,10 +1,9 @@
 ﻿using Hephaestus.Application.DTOs.Response;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Order;
 
 public interface IGetOrdersUseCase
 {
-    Task<IEnumerable<OrderResponse>> ExecuteAsync(string tenantId, string? customerPhoneNumber, string? status);
+    Task<IEnumerable<OrderResponse>> ExecuteAsync(ClaimsPrincipal user, string? customerPhoneNumber, string? status);
 }

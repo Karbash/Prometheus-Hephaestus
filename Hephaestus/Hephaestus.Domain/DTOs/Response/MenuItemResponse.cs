@@ -1,4 +1,4 @@
-﻿namespace Hephaestus.Application.DTOs.Response;
+namespace Hephaestus.Application.DTOs.Response;
 
 public class MenuItemResponse
 {
@@ -12,4 +12,5 @@ public class MenuItemResponse
     public List<string> TagIds { get; set; } = new List<string>(); // Alterado de Tags para TagIds
     public List<string> AvailableAdditionalIds { get; set; } = new List<string>();
     public string? ImageUrl { get; set; }
-}
+    public List<string> Tags { get; set; } = new(); // Adicionando campo Tags
+} 

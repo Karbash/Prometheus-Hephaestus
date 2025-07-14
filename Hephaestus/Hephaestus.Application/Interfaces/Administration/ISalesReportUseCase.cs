@@ -5,5 +5,5 @@ namespace Hephaestus.Application.Interfaces.Administration;
 
 public interface ISalesReportUseCase
 {
-    Task<SalesReportResponse> ExecuteAsync(DateTime? startDate, DateTime? endDate, string? tenantId, ClaimsPrincipal user);
+    Task<SalesReportResponse> ExecuteAsync(DateTime? startDate, DateTime? endDate, ClaimsPrincipal user);
 }

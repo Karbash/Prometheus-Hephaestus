@@ -3,8 +3,8 @@
     public class CreateOrderRequest
     {
         public string CustomerPhoneNumber { get; set; } = string.Empty;
-        public List<OrderItemRequest> Items { get; set; } = new List<OrderItemRequest>();
-        public string? PromotionId { get; set; }
         public string? CouponId { get; set; }
+        public string? PromotionId { get; set; }
+        public List<OrderItemRequest> Items { get; set; } = new List<OrderItemRequest>();
     }
 }

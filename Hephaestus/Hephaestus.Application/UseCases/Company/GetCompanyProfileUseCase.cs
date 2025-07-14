@@ -122,6 +122,7 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
          IEnumerable<Domain.Entities.CompanyOperatingHour> operatingHours, 
          IEnumerable<Domain.Entities.CompanySocialMedia> socialMedia) relatedData)
     {
+        // Nunca expor PasswordHash, ApiKey ou MfaSecret em DTOs de resposta. Se adicionar novos campos sensíveis, garantir que não sejam expostos aqui.
         return new CompanyProfileResponse
         {
             Id = company.Id,

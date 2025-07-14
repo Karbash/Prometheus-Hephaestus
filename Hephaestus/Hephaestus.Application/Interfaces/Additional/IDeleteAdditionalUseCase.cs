@@ -1,7 +1,9 @@
-﻿namespace Hephaestus.Application.Interfaces.Additional
+﻿using System.Security.Claims;
+
+namespace Hephaestus.Application.Interfaces.Additional
 {
     public interface IDeleteAdditionalUseCase
     {
-        Task ExecuteAsync(string id, string tenantId);
+        Task ExecuteAsync(string id, ClaimsPrincipal user);
     }
 }

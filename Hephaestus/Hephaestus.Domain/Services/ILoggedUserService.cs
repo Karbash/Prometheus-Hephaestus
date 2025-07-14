@@ -22,6 +22,14 @@ public interface ILoggedUserService
     /// <returns>ID do usuário.</returns>
     /// <exception cref="InvalidOperationException">ID não encontrado no token.</exception>
     string GetUserId(ClaimsPrincipal claimsPrincipal);
+
+    /// <summary>
+    /// Obtém o ID do tenant do usuário logado.
+    /// </summary>
+    /// <param name="claimsPrincipal">Claims do usuário autenticado.</param>
+    /// <returns>ID do tenant.</returns>
+    /// <exception cref="InvalidOperationException">TenantId não encontrado no token.</exception>
+    string GetTenantId(ClaimsPrincipal claimsPrincipal);
 }
 
 /// <summary>

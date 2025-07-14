@@ -7,7 +7,9 @@ using Hephaestus.Application.Services;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Enum;
 using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Coupon;
 
@@ -19,11 +21,13 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
     private readonly ICouponRepository _couponRepository;
     private readonly IMenuItemRepository _menuItemRepository;
     private readonly IValidator<CreateCouponRequest> _validator;
+    private readonly ILoggedUserService _loggedUserService;
 
     public CreateCouponUseCase(
         ICouponRepository couponRepository,
         IMenuItemRepository menuItemRepository,
         IValidator<CreateCouponRequest> validator,
+        ILoggedUserService loggedUserService,
         ILogger<CreateCouponUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -31,12 +35,15 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
         _couponRepository = couponRepository;
         _menuItemRepository = menuItemRepository;
         _validator = validator;
+        _loggedUserService = loggedUserService;
     }
 
-    public async Task<string> ExecuteAsync(CreateCouponRequest request, string tenantId)
+    public async Task<string> ExecuteAsync(CreateCouponRequest request, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             await ValidateAsync(_validator, request);
 
             await ValidateBusinessRulesAsync(request, tenantId);
@@ -47,7 +54,7 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
                 TenantId = tenantId,
                 Code = request.Code,
                 CustomerPhoneNumber = request.CustomerPhoneNumber,
-                DiscountType = Enum.Parse<DiscountType>(request.DiscountType),
+                DiscountType = ParseDiscountType(request.DiscountType),
                 DiscountValue = request.DiscountValue,
                 MenuItemId = request.MenuItemId,
                 MinOrderValue = request.MinOrderValue,
@@ -77,5 +84,14 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
 
         EnsureBusinessRule(request.DiscountValue > 0,
             "Valor do desconto deve ser maior que zero.", "DISCOUNT_VALUE_RULE");
+    }
+
+    private DiscountType ParseDiscountType(string discountTypeStr)
+    {
+        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
+        {
+            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
+        }
+        return discountType;
     }
 }

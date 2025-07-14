@@ -7,8 +7,9 @@ using Hephaestus.Application.Services;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Enum;
 using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Coupon;
 
@@ -20,11 +21,13 @@ public class UpdateCouponUseCase : BaseUseCase, IUpdateCouponUseCase
     private readonly ICouponRepository _couponRepository;
     private readonly IMenuItemRepository _menuItemRepository;
     private readonly IValidator<UpdateCouponRequest> _validator;
+    private readonly ILoggedUserService _loggedUserService;
 
     public UpdateCouponUseCase(
         ICouponRepository couponRepository,
         IMenuItemRepository menuItemRepository,
         IValidator<UpdateCouponRequest> validator,
+        ILoggedUserService loggedUserService,
         ILogger<UpdateCouponUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -32,12 +35,37 @@ public class UpdateCouponUseCase : BaseUseCase, IUpdateCouponUseCase
         _couponRepository = couponRepository;
         _menuItemRepository = menuItemRepository;
         _validator = validator;
+        _loggedUserService = loggedUserService;
     }
 
-    public async Task ExecuteAsync(string id, UpdateCouponRequest request, string tenantId)
+    private DiscountType ParseDiscountType(string discountTypeStr)
+    {
+        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
+        {
+            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
+        }
+        return discountType;
+    }
+
+    private async Task UpdateCouponEntityAsync(Domain.Entities.Coupon coupon, UpdateCouponRequest request)
+    {
+        coupon.Code = request.Code;
+        coupon.CustomerPhoneNumber = request.CustomerPhoneNumber;
+        coupon.DiscountType = ParseDiscountType(request.DiscountType);
+        coupon.DiscountValue = request.DiscountValue;
+        coupon.MenuItemId = request.MenuItemId;
+        coupon.MinOrderValue = request.MinOrderValue;
+        coupon.StartDate = request.StartDate;
+        coupon.EndDate = request.EndDate;
+        coupon.IsActive = request.IsActive;
+    }
+
+    public async Task ExecuteAsync(string id, UpdateCouponRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             await ValidateAsync(_validator, request);
 
             var coupon = await _couponRepository.GetByIdAsync(id, tenantId);
@@ -61,15 +89,7 @@ public class UpdateCouponUseCase : BaseUseCase, IUpdateCouponUseCase
             EnsureBusinessRule(request.DiscountValue > 0,
                 "Valor do desconto deve ser maior que zero.", "DISCOUNT_VALUE_RULE");
 
-            coupon.Code = request.Code;
-            coupon.CustomerPhoneNumber = request.CustomerPhoneNumber;
-            coupon.DiscountType = Enum.Parse<DiscountType>(request.DiscountType);
-            coupon.DiscountValue = request.DiscountValue;
-            coupon.MenuItemId = request.MenuItemId;
-            coupon.MinOrderValue = request.MinOrderValue;
-            coupon.StartDate = request.StartDate;
-            coupon.EndDate = request.EndDate;
-            coupon.IsActive = request.IsActive;
+            await UpdateCouponEntityAsync(coupon, request);
 
             await _couponRepository.UpdateAsync(coupon);
         }, "UpdateCoupon");

@@ -1,15 +1,16 @@
-﻿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Additional;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
 
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controller para gerenciamento de adicionais.
+/// Controller para gerenciamento de adicionais (itens extras) para um tenant.
+/// Todas as operações requerem autenticação com a role "Tenant".
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -49,53 +50,63 @@ public class AdditionalController : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo adicional.
+    /// Cria um novo adicional para o tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Requer **Role: Tenant**.
+    /// 
+    /// Exemplo de requisição:
+    /// ```json
+    /// {
+    ///   "name": "Bacon Crocante",
+    ///   "description": "Fatias crocantes de bacon",
+    ///   "price": 4.99,
+    ///   "isAvailable": true
+    /// }
+    /// ```
+    /// 
+    /// Exemplo de resposta de sucesso (Status 201 Created):
     /// ```json
     /// {
     ///   "id": "123e4567-e89b-12d3-a456-426614174001"
     /// }
     /// ```
-    /// Exemplo de erro de validação:
+    /// 
+    /// Exemplo de erro de validação (Status 400 Bad Request):
     /// ```json
     /// {
-    ///   "error": {
-    ///     "code": "VALIDATION_ERROR",
-    ///     "message": "Erro de validação",
-    ///     "details": {
-    ///       "errors": [
-    ///         {
-    ///           "field": "Name",
-    ///           "message": "Nome é obrigatório."
-    ///         }
-    ///       ]
-    ///     }
+    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
+    ///   "title": "One or more validation errors occurred.",
+    ///   "status": 400,
+    ///   "errors": {
+    ///     "Name": [
+    ///       "O campo 'Name' é obrigatório."
+    ///     ]
     ///   }
     /// }
     /// ```
     /// </remarks>
     /// <param name="request">Dados do adicional a ser criado.</param>
-    /// <returns>ID do adicional criado.</returns>
+    /// <returns>Um `CreatedAtActionResult` contendo o ID do novo adicional.</returns>
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria adicional", Description = "Cria um novo adicional para o tenant. Requer autenticação com Role=Tenant.")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(string))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [SwaggerOperation(Summary = "Cria um novo adicional", Description = "Cria um novo adicional associado ao tenant do usuário autenticado.")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateAdditional([FromBody] CreateAdditionalRequest request)
     {
-        var tenantId = GetTenantId();
-        var id = await _createAdditionalUseCase.ExecuteAsync(request, tenantId);
+        var id = await _createAdditionalUseCase.ExecuteAsync(request, User);
         return CreatedAtAction(nameof(GetAdditionalById), new { id }, new { id });
     }
 
     /// <summary>
-    /// Lista adicionais do tenant.
+    /// Lista todos os adicionais pertencentes ao tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Requer **Role: Tenant**.
+    /// 
+    /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
     /// [
     ///   {
@@ -105,28 +116,37 @@ public class AdditionalController : ControllerBase
     ///     "description": "Adicional de queijo",
     ///     "price": 3.50,
     ///     "isAvailable": true
+    ///   },
+    ///   {
+    ///     "id": "a7b8c9d0-e1f2-3g4h-5i6j-7k8l9m0n1o2p",
+    ///     "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///     "name": "Borda Recheada",
+    ///     "description": "Borda com cheddar e catupiry",
+    ///     "price": 8.00,
+    ///     "isAvailable": false
     ///   }
     /// ]
     /// ```
     /// </remarks>
-    /// <returns>Lista de adicionais do tenant.</returns>
+    /// <returns>Uma lista de objetos `AdditionalResponse`.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista adicionais do tenant", Description = "Retorna a lista de adicionais do tenant. Requer autenticação com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Lista adicionais do tenant", Description = "Retorna uma lista de todos os adicionais pertencentes ao tenant do usuário autenticado.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AdditionalResponse>))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAdditionals()
     {
-        var tenantId = GetTenantId();
-        var additionals = await _getAdditionalsUseCase.ExecuteAsync(tenantId);
+        var additionals = await _getAdditionalsUseCase.ExecuteAsync(User);
         return Ok(additionals);
     }
 
     /// <summary>
-    /// Obtém adicional por ID.
+    /// Obtém os detalhes de um adicional específico pelo seu ID.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
+    /// 
+    /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
     /// {
     ///   "id": "123e4567-e89b-12d3-a456-426614174001",
@@ -137,103 +157,101 @@ public class AdditionalController : ControllerBase
     ///   "isAvailable": true
     /// }
     /// ```
-    /// Exemplo de erro:
+    /// 
+    /// Exemplo de erro (Status 404 Not Found):
     /// ```json
     /// {
-    ///   "error": "Adicional não encontrado."
+    ///   "message": "Adicional com ID 'xyz' não encontrado para o tenant."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID do adicional.</param>
-    /// <returns>Detalhes do adicional.</returns>
+    /// <param name="id">ID do adicional (GUID).</param>
+    /// <returns>Um objeto `AdditionalResponse` contendo os detalhes do adicional.</returns>
     [HttpGet("{id}")]
-    [SwaggerOperation(Summary = "Obtém adicional por ID", Description = "Retorna detalhes de um adicional. Requer autenticação com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Obtém adicional por ID", Description = "Retorna os detalhes de um adicional específico pelo seu ID, se ele pertencer ao tenant do usuário autenticado.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AdditionalResponse))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAdditionalById(string id)
     {
-        var tenantId = GetTenantId();
-        var additional = await _getAdditionalByIdUseCase.ExecuteAsync(id, tenantId);
+        var additional = await _getAdditionalByIdUseCase.ExecuteAsync(id, User);
         return Ok(additional);
     }
 
     /// <summary>
-    /// Atualiza adicional.
+    /// Atualiza as informações de um adicional existente.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
-    /// ```
-    /// Status: 204 No Content
-    /// ```
-    /// Exemplo de erro:
+    /// Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
+    /// 
+    /// Exemplo de requisição:
     /// ```json
     /// {
-    ///   "error": "Adicional não encontrado."
+    ///   "name": "Bacon Premium",
+    ///   "description": "Fatias de bacon artesanal",
+    ///   "price": 6.50,
+    ///   "isAvailable": true
+    /// }
+    /// ```
+    /// 
+    /// Exemplo de resposta de sucesso (Status 204 No Content):
+    /// ```
+    /// (Nenhum corpo de resposta)
+    /// ```
+    /// 
+    /// Exemplo de erro (Status 404 Not Found):
+    /// ```json
+    /// {
+    ///   "message": "Adicional com ID 'xyz' não encontrado para o tenant."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID do adicional.</param>
+    /// <param name="id">ID do adicional a ser atualizado (GUID).</param>
     /// <param name="request">Dados atualizados do adicional.</param>
-    /// <returns>Status da atualização.</returns>
+    /// <returns>Um `NoContentResult` em caso de sucesso.</returns>
     [HttpPut("{id}")]
-    [SwaggerOperation(Summary = "Atualiza adicional", Description = "Atualiza um adicional do tenant. Requer autenticação com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Atualiza um adicional", Description = "Atualiza as informações de um adicional existente, se ele pertencer ao tenant do usuário autenticado.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateAdditional(string id, [FromBody] UpdateAdditionalRequest request)
     {
-        var tenantId = GetTenantId();
-        await _updateAdditionalUseCase.ExecuteAsync(id, request, tenantId);
+        await _updateAdditionalUseCase.ExecuteAsync(id, request, User);
         return NoContent();
     }
 
     /// <summary>
-    /// Remove adicional.
+    /// Remove um adicional existente.
     /// </summary>
     /// <remarks>
-    /// Exemplo de resposta de sucesso:
+    /// Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
+    /// 
+    /// Exemplo de resposta de sucesso (Status 204 No Content):
     /// ```
-    /// Status: 204 No Content
+    /// (Nenhum corpo de resposta)
     /// ```
-    /// Exemplo de erro:
+    /// 
+    /// Exemplo de erro (Status 404 Not Found):
     /// ```json
     /// {
-    ///   "error": "Adicional não encontrado."
+    ///   "message": "Adicional com ID 'xyz' não encontrado para o tenant."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">ID do adicional.</param>
-    /// <returns>Status da remoção.</returns>
+    /// <param name="id">ID do adicional a ser removido (GUID).</param>
+    /// <returns>Um `NoContentResult` em caso de sucesso.</returns>
     [HttpDelete("{id}")]
-    [SwaggerOperation(Summary = "Remove adicional", Description = "Remove um adicional do tenant. Requer autenticação com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Remove um adicional", Description = "Remove um adicional existente, se ele pertencer ao tenant do usuário autenticado.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(object))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteAdditional(string id)
     {
-        var tenantId = GetTenantId();
-        await _deleteAdditionalUseCase.ExecuteAsync(id, tenantId);
+        await _deleteAdditionalUseCase.ExecuteAsync(id, User);
         return NoContent();
-    }
-
-    /// <summary>
-    /// Obtém o TenantId do token de autenticação.
-    /// </summary>
-    /// <returns>TenantId do token.</returns>
-    private string GetTenantId()
-    {
-        var tenantId = User.FindFirst("TenantId")?.Value;
-        if (string.IsNullOrEmpty(tenantId))
-        {
-            _logger.LogWarning("TenantId não encontrado no token para o usuário {UserId}", 
-                User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
-            throw new UnauthorizedAccessException("TenantId não encontrado no token.");
-        }
-        return tenantId;
     }
 }

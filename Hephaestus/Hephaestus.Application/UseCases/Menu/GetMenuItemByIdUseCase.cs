@@ -5,7 +5,9 @@ using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
 using FluentValidation.Results;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Menu;
 
@@ -15,32 +17,38 @@ namespace Hephaestus.Application.UseCases.Menu;
 public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
 {
     private readonly IMenuItemRepository _menuItemRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="GetMenuItemByIdUseCase"/>.
     /// </summary>
     /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public GetMenuItemByIdUseCase(
         IMenuItemRepository menuItemRepository,
+        ILoggedUserService loggedUserService,
         ILogger<GetMenuItemByIdUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _menuItemRepository = menuItemRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a obtenção de um item do cardápio por ID.
     /// </summary>
     /// <param name="id">ID do item do cardápio.</param>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <returns>Item do cardápio encontrado.</returns>
-    public async Task<MenuItemResponse> ExecuteAsync(string id, string tenantId)
+    public async Task<MenuItemResponse> ExecuteAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             // Validação dos parâmetros de entrada
             ValidateInputParameters(id, tenantId);
 

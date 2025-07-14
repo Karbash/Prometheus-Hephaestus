@@ -1,11 +1,13 @@
-﻿using Hephaestus.Application.DTOs.Response;
-using Hephaestus.Application.Interfaces.Customer;
-using Hephaestus.Domain.Repositories;
-using Hephaestus.Application.Exceptions;
+﻿using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Microsoft.Extensions.Logging;
+using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Application.Exceptions;
+using Hephaestus.Application.Interfaces.Customer;
 using Hephaestus.Application.Services;
-using FluentValidation.Results;
+using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Services;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Customer;
 
@@ -16,46 +18,57 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly ICompanyRepository _companyRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="GetCustomerUseCase"/>.
     /// </summary>
     /// <param name="customerRepository">Repositório de clientes.</param>
     /// <param name="companyRepository">Repositório de empresas.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public GetCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
+        ILoggedUserService loggedUserService,
         ILogger<GetCustomerUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _customerRepository = customerRepository;
         _companyRepository = companyRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a busca de clientes de um tenant.
     /// </summary>
     /// <param name="phoneNumber">Número de telefone para filtrar (opcional).</param>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="pageNumber">Número da página.</param>
+    /// <param name="pageSize">Tamanho da página.</param>
     /// <returns>Lista de clientes.</returns>
-    public async Task<IEnumerable<CustomerResponse>> GetAsync(string? phoneNumber, string tenantId)
+    public async Task<PagedResult<CustomerResponse>> ExecuteAsync(string? phoneNumber, ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Validação dos parâmetros de entrada
-            ValidateInputParameters(phoneNumber, tenantId);
-
-            // Validação do tenant
-            await ValidateTenantAsync(tenantId);
-
-            // Busca dos clientes
-            var customers = await GetCustomersAsync(phoneNumber, tenantId);
-
-            // Conversão para DTOs de resposta
-            return ConvertToResponseDtos(customers);
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
+            var pagedCustomers = await _customerRepository.GetAllAsync(phoneNumber, tenantId, pageNumber, pageSize);
+            return new PagedResult<CustomerResponse>
+            {
+                Items = pagedCustomers.Items.Select(c => new CustomerResponse
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    PhoneNumber = c.PhoneNumber,
+                    TenantId = c.TenantId
+                }).ToList(),
+                TotalCount = pagedCustomers.TotalCount,
+                PageNumber = pagedCustomers.PageNumber,
+                PageSize = pagedCustomers.PageSize
+            };
         });
     }
 
@@ -95,7 +108,8 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     /// <returns>Lista de clientes.</returns>
     private async Task<IEnumerable<Domain.Entities.Customer>> GetCustomersAsync(string? phoneNumber, string tenantId)
     {
-        return await _customerRepository.GetAllAsync(phoneNumber, tenantId);
+        var pagedCustomers = await _customerRepository.GetAllAsync(phoneNumber, tenantId);
+        return pagedCustomers.Items;
     }
 
     /// <summary>

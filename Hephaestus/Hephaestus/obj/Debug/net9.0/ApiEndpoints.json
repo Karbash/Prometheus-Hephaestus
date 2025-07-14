@@ -15,7 +15,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "System.Object",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -24,7 +24,7 @@
         "StatusCode": 201
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -33,7 +33,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -42,12 +42,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -62,7 +58,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.AdditionalResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.AdditionalResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -71,7 +67,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -80,12 +76,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -115,7 +107,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -124,7 +116,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -133,12 +125,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -169,7 +157,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -178,7 +166,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -187,7 +175,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -196,12 +184,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -227,7 +211,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -236,7 +220,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -245,12 +229,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -264,11 +244,6 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "adminId",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
         "Name": "startDate",
         "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
@@ -281,7 +256,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.AuditLogResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.AuditLogResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -290,7 +265,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -299,7 +274,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -308,12 +283,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -330,11 +301,21 @@
         "Name": "isEnabled",
         "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.CompanyResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.CompanyResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -343,7 +324,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -352,7 +333,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -361,12 +342,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -397,7 +374,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -406,7 +383,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -415,7 +392,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -424,12 +401,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -470,7 +443,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.CompanyResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.CompanyResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -479,7 +452,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -488,7 +461,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -497,12 +470,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -524,11 +493,6 @@
         "Name": "endDate",
         "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
-      },
-      {
-        "Name": "tenantId",
-        "Type": "System.String",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -542,7 +506,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -551,7 +515,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -560,12 +524,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -600,7 +560,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -609,12 +569,17 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
           "text/json"
         ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -638,16 +603,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 400
-      },
-      {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -656,12 +612,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -691,7 +643,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -700,7 +652,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -709,12 +661,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -738,16 +686,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 401
-      },
-      {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -756,12 +695,17 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
           "text/json"
         ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -791,7 +735,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -800,7 +744,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -809,12 +753,17 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
           "text/json"
         ],
+        "StatusCode": 409
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -840,7 +789,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -849,12 +798,17 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
           "text/json"
         ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -884,7 +838,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -893,12 +847,17 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
           "text/json"
         ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -928,7 +887,16 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -937,12 +905,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -963,7 +927,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "System.Object",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -972,7 +936,7 @@
         "StatusCode": 201
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -981,7 +945,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -990,7 +954,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -999,12 +963,8 @@
         "StatusCode": 409
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1030,7 +990,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.CouponResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.CouponResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1039,7 +999,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1048,12 +1008,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1083,7 +1039,16 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1092,7 +1057,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1101,12 +1066,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1137,7 +1098,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1146,7 +1107,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1155,7 +1116,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1164,7 +1125,7 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1173,12 +1134,8 @@
         "StatusCode": 409
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1204,7 +1161,16 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1213,7 +1179,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1222,12 +1188,17 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
           "text/json"
         ],
+        "StatusCode": 409
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1253,7 +1224,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1262,7 +1233,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1271,12 +1242,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1293,11 +1260,21 @@
         "Name": "phoneNumber",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.CustomerResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.CustomerResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1306,7 +1283,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1315,7 +1292,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1324,12 +1301,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1359,16 +1332,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 404
-      },
-      {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1377,7 +1341,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1386,12 +1350,17 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
           "text/json"
         ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1421,7 +1390,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1430,7 +1399,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1439,12 +1408,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1465,7 +1430,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "System.Object",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1474,7 +1439,7 @@
         "StatusCode": 201
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1483,7 +1448,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1492,12 +1457,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1509,10 +1470,21 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.MenuItemResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.MenuItemResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1521,7 +1493,16 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1530,12 +1511,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1565,7 +1542,16 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1574,7 +1560,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1583,12 +1569,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1619,7 +1601,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1628,7 +1610,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1637,7 +1619,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1646,12 +1628,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1677,7 +1655,16 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1686,7 +1673,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1695,12 +1682,8 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1730,7 +1713,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1739,7 +1722,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1748,12 +1731,8 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 500
       }
     ]
@@ -1772,7 +1751,44 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
   },
   {
     "ContainingType": "Hephaestus.Api.Controllers.OrderController",
@@ -1793,7 +1809,35 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
   },
   {
     "ContainingType": "Hephaestus.Api.Controllers.OrderController",
@@ -1809,7 +1853,44 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
   },
   {
     "ContainingType": "Hephaestus.Api.Controllers.OrderController",
@@ -1830,7 +1911,49 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
   },
   {
     "ContainingType": "Hephaestus.Api.Controllers.OrderController",
@@ -1846,7 +1969,115 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "Hephaestus.Controllers.PaymentController",
+    "Method": "ProcessPayment",
+    "RelativePath": "api/payment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Hephaestus.Domain.DTOs.Request.PaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Hephaestus.Domain.DTOs.Response.PaymentResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 409
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
   },
   {
     "ContainingType": "Hephaestus.Controllers.PromotionController",
@@ -1873,7 +2104,7 @@
         "StatusCode": 201
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1882,7 +2113,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1891,7 +2122,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1917,7 +2148,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.PromotionResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.PromotionResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1926,7 +2157,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1935,7 +2166,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1970,7 +2201,16 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1979,7 +2219,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1988,7 +2228,7 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2024,7 +2264,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2033,7 +2273,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2042,7 +2282,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2051,7 +2291,7 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2082,7 +2322,16 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2091,7 +2340,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2100,7 +2349,7 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2131,7 +2380,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2140,7 +2389,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2149,7 +2398,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2158,7 +2407,7 @@
         "StatusCode": 404
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2193,7 +2442,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2202,7 +2451,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2211,7 +2460,16 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 409
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2223,21 +2481,26 @@
   },
   {
     "ContainingType": "Hephaestus.Controllers.TagController",
-    "Method": "GetAllTagsByTenant",
+    "Method": "GetTags",
     "RelativePath": "api/Tag",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "tenantId",
-        "Type": "System.String",
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.TagResponse, Hephaestus.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.TagResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2246,16 +2509,7 @@
         "StatusCode": 200
       },
       {
-        "Type": "System.Object",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 400
-      },
-      {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2264,7 +2518,7 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2295,7 +2549,7 @@
         "StatusCode": 204
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2304,7 +2558,7 @@
         "StatusCode": 400
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2313,7 +2567,25 @@
         "StatusCode": 401
       },
       {
-        "Type": "System.Object",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 409
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "text/plain",
           "application/json",

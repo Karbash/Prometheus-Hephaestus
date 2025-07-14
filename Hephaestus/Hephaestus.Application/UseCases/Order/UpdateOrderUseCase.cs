@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
+using Hephaestus.Application.Base;
 using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Application.Interfaces.Order;
+using Hephaestus.Application.Services;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
-using Hephaestus.Application.Interfaces.Order;
-using Hephaestus.Application.Base;
-using Hephaestus.Application.Exceptions;
-using Hephaestus.Application.Services;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Order;
 
@@ -18,6 +18,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
     private readonly ICouponRepository _couponRepository;
     private readonly IPromotionRepository _promotionRepository;
     private readonly IValidator<UpdateOrderRequest> _validator;
+    private readonly ILoggedUserService _loggedUserService;
 
     public UpdateOrderUseCase(
         IOrderRepository orderRepository,
@@ -25,6 +26,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
         ICouponRepository couponRepository,
         IPromotionRepository promotionRepository,
         IValidator<UpdateOrderRequest> validator,
+        ILoggedUserService loggedUserService,
         ILogger<UpdateOrderUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -34,21 +36,42 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
         _couponRepository = couponRepository;
         _promotionRepository = promotionRepository;
         _validator = validator;
+        _loggedUserService = loggedUserService;
     }
 
-    public async Task ExecuteAsync(string id, UpdateOrderRequest request, string tenantId)
+    public async Task ExecuteAsync(string id, UpdateOrderRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             await ValidateAsync(_validator, request);
 
+            var tenantId = _loggedUserService.GetTenantId(user);
             var order = await _orderRepository.GetByIdAsync(id, tenantId);
             EnsureResourceExists(order, "Order", id);
+
+            var orderItems = new List<OrderItem>();
+            decimal totalAmount = 0;
 
             foreach (var item in request.Items)
             {
                 var menuItem = await _menuItemRepository.GetByIdAsync(item.MenuItemId, tenantId);
                 EnsureResourceExists(menuItem, "MenuItem", item.MenuItemId);
+
+                var orderItem = new OrderItem
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    TenantId = tenantId,
+                    OrderId = id,
+                    MenuItemId = item.MenuItemId,
+                    Quantity = item.Quantity,
+                    UnitPrice = menuItem.Price,
+                    Notes = item.Notes ?? string.Empty,
+                    Tags = item.Tags ?? new List<string>(),
+                    AdditionalIds = item.AdditionalIds ?? new List<string>(),
+                    Customizations = item.Customizations ?? new List<Customization>()
+                };
+                orderItems.Add(orderItem);
+                totalAmount += item.Quantity * menuItem.Price;
             }
 
             if (!string.IsNullOrEmpty(request.CouponId))
@@ -72,6 +95,8 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
             order.CouponId = request.CouponId;
             order.Status = request.Status;
             order.PaymentStatus = request.PaymentStatus;
+            order.TotalAmount = totalAmount;
+            order.OrderItems = orderItems;
             order.UpdatedAt = DateTime.UtcNow;
 
             await _orderRepository.UpdateAsync(order);

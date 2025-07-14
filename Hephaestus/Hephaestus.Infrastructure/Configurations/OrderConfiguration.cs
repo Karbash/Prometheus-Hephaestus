@@ -48,6 +48,11 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.UpdatedAt)
             .IsRequired();
 
+        builder.HasMany(o => o.OrderItems)
+            .WithOne()
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasIndex(o => new { o.TenantId, o.CustomerPhoneNumber });
         builder.HasIndex(o => new { o.TenantId, o.Status });
     }

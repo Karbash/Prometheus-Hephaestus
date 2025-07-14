@@ -2,10 +2,12 @@
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Interfaces.Coupon;
 using Hephaestus.Application.Base;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Hephaestus.Application.UseCases.Coupon;
@@ -16,20 +18,25 @@ namespace Hephaestus.Application.UseCases.Coupon;
 public class GetCouponsUseCase : BaseUseCase, IGetCouponsUseCase
 {
     private readonly ICouponRepository _couponRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     public GetCouponsUseCase(
         ICouponRepository couponRepository,
+        ILoggedUserService loggedUserService,
         ILogger<GetCouponsUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _couponRepository = couponRepository;
+        _loggedUserService = loggedUserService;
     }
 
-    public async Task<IEnumerable<CouponResponse>> ExecuteAsync(string tenantId, bool? isActive, string? customerPhoneNumber)
+    public async Task<IEnumerable<CouponResponse>> ExecuteAsync(ClaimsPrincipal user, bool? isActive, string? customerPhoneNumber)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             var coupons = await _couponRepository.GetByTenantIdAsync(tenantId, isActive, customerPhoneNumber);
             return coupons.Select(c => new CouponResponse
             {

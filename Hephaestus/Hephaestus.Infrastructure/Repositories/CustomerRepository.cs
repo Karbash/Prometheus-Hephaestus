@@ -2,6 +2,7 @@
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Hephaestus.Application.DTOs.Response;
 
 namespace Hephaestus.Infrastructure.Repositories;
 
@@ -24,19 +25,20 @@ public class CustomerRepository : ICustomerRepository
             .FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber && c.TenantId == tenantId);
     }
 
-    public async Task<IEnumerable<Customer>> GetAllAsync(string? phoneNumber, string tenantId)
+    public async Task<PagedResult<Customer>> GetAllAsync(string? phoneNumber, string tenantId, int pageNumber = 1, int pageSize = 20)
     {
-        if (string.IsNullOrEmpty(tenantId))
-            throw new ArgumentException("TenantId é obrigatório.");
-
-        var query = _context.Customers
-            .AsNoTracking()
-            .Where(c => c.TenantId == tenantId);
-
+        var query = _context.Customers.AsNoTracking().Where(c => c.TenantId == tenantId);
         if (!string.IsNullOrEmpty(phoneNumber))
             query = query.Where(c => c.PhoneNumber == phoneNumber);
-
-        return await query.ToListAsync();
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        return new PagedResult<Customer>
+        {
+            Items = items,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
     }
 
     public async Task<Customer?> GetByIdAsync(string id, string tenantId)

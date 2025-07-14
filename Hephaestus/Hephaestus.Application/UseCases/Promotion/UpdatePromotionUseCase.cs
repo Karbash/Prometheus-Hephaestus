@@ -5,9 +5,11 @@ using Hephaestus.Domain.Enum;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
 using FluentValidation.Results;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Promotion;
 
@@ -19,6 +21,7 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     private readonly IPromotionRepository _promotionRepository;
     private readonly IValidator<UpdatePromotionRequest> _validator;
     private readonly IMenuItemRepository _menuItemRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="UpdatePromotionUseCase"/>.
@@ -26,12 +29,14 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     /// <param name="promotionRepository">Repositório de promoções.</param>
     /// <param name="validator">Validador para a requisição.</param>
     /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public UpdatePromotionUseCase(
         IPromotionRepository promotionRepository,
         IValidator<UpdatePromotionRequest> validator,
         IMenuItemRepository menuItemRepository,
+        ILoggedUserService loggedUserService,
         ILogger<UpdatePromotionUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -39,6 +44,7 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
         _promotionRepository = promotionRepository;
         _validator = validator;
         _menuItemRepository = menuItemRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
@@ -46,11 +52,13 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     /// </summary>
     /// <param name="id">ID da promoção.</param>
     /// <param name="request">Dados atualizados da promoção.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    public async Task ExecuteAsync(string id, UpdatePromotionRequest request, string tenantId)
+    /// <param name="user">Usuário autenticado.</param>
+    public async Task ExecuteAsync(string id, UpdatePromotionRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             // Validação dos dados de entrada
             await ValidateRequestAsync(request, id);
 
@@ -76,11 +84,6 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
         if (!validationResult.IsValid)
         {
             throw new Hephaestus.Application.Exceptions.ValidationException("Dados da promoção inválidos", validationResult);
-        }
-
-        if (request.Id != id)
-        {
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID no corpo da requisição deve corresponder ao ID na URL.", new ValidationResult());
         }
     }
 
@@ -116,6 +119,15 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
         }
     }
 
+    private DiscountType ParseDiscountType(string discountTypeStr)
+    {
+        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
+        {
+            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
+        }
+        return discountType;
+    }
+
     /// <summary>
     /// Atualiza a promoção com os novos dados.
     /// </summary>
@@ -123,14 +135,9 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     /// <param name="request">Dados atualizados.</param>
     private async Task UpdatePromotionAsync(Domain.Entities.Promotion promotion, UpdatePromotionRequest request)
     {
-        if (!Enum.TryParse<DiscountType>(request.DiscountType, true, out var discountType))
-        {
-            throw new Hephaestus.Application.Exceptions.ValidationException("Tipo de desconto inválido.", new ValidationResult());
-        }
-
         promotion.Name = request.Name;
         promotion.Description = request.Description;
-        promotion.DiscountType = discountType;
+        promotion.DiscountType = ParseDiscountType(request.DiscountType);
         promotion.DiscountValue = request.DiscountValue;
         promotion.MenuItemId = request.MenuItemId;
         promotion.MinOrderValue = request.MinOrderValue;

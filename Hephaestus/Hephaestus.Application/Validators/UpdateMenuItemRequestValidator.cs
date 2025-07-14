@@ -7,32 +7,29 @@ public class UpdateMenuItemRequestValidator : AbstractValidator<UpdateMenuItemRe
 {
     public UpdateMenuItemRequestValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id é obrigatório.")
-            .Must(BeValidGuid).WithMessage("Id deve ser um GUID válido.");
-
         RuleFor(x => x.Name)
-            .NotEmpty().When(x => x.Name != null).WithMessage("Nome não pode ser vazio.")
-            .MaximumLength(100).When(x => x.Name != null).WithMessage("Nome deve ter no máximo 100 caracteres.");
+            .MaximumLength(100)
+            .When(x => !string.IsNullOrEmpty(x.Name))
+            .WithMessage("Nome deve ter no máximo 100 caracteres.");
 
         RuleFor(x => x.Description)
-            .MaximumLength(500).When(x => x.Description != null).WithMessage("Descrição deve ter no máximo 500 caracteres.");
-
-        RuleFor(x => x.CategoryId)
-            .Must(BeValidGuid).When(x => x.CategoryId != null).WithMessage("CategoryId deve ser um GUID válido.");
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrEmpty(x.Description))
+            .WithMessage("Descrição deve ter no máximo 500 caracteres.");
 
         RuleFor(x => x.Price)
-            .GreaterThan(0).When(x => x.Price.HasValue).WithMessage("Preço deve ser maior que zero.");
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.Price.HasValue)
+            .WithMessage("Preço deve ser maior ou igual a zero.");
 
-        RuleForEach(x => x.TagIds)
-            .Must(BeValidGuid).When(x => x.TagIds != null).WithMessage("Cada TagId deve ser um GUID válido.");
+        RuleFor(x => x.CategoryId)
+            .MaximumLength(36)
+            .When(x => !string.IsNullOrEmpty(x.CategoryId))
+            .WithMessage("CategoryId deve ter no máximo 36 caracteres.");
 
-        RuleForEach(x => x.AvailableAdditionalIds)
-            .Must(BeValidGuid).When(x => x.AvailableAdditionalIds != null).WithMessage("Cada AdditionalId deve ser um GUID válido.");
-    }
-
-    private bool BeValidGuid(string? id)
-    {
-        return id == null || Guid.TryParse(id, out _);
+        RuleFor(x => x.ImageUrl)
+            .MaximumLength(500)
+            .When(x => !string.IsNullOrEmpty(x.ImageUrl))
+            .WithMessage("URL da imagem deve ter no máximo 500 caracteres.");
     }
 }

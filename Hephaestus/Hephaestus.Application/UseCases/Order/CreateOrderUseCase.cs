@@ -3,9 +3,12 @@ using Hephaestus.Application.Base;
 using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.Order;
 using Hephaestus.Application.Services;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Enum;
 using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Order;
 
@@ -16,6 +19,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
     private readonly ICouponRepository _couponRepository;
     private readonly IPromotionRepository _promotionRepository;
     private readonly IValidator<CreateOrderRequest> _validator;
+    private readonly ILoggedUserService _loggedUserService;
 
     public CreateOrderUseCase(
         IOrderRepository orderRepository,
@@ -23,6 +27,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
         ICouponRepository couponRepository,
         IPromotionRepository promotionRepository,
         IValidator<CreateOrderRequest> validator,
+        ILoggedUserService loggedUserService,
         ILogger<CreateOrderUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -32,18 +37,39 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
         _couponRepository = couponRepository;
         _promotionRepository = promotionRepository;
         _validator = validator;
+        _loggedUserService = loggedUserService;
     }
 
-    public async Task<string> ExecuteAsync(CreateOrderRequest request, string tenantId)
+    public async Task<string> ExecuteAsync(CreateOrderRequest request, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             await ValidateAsync(_validator, request);
 
+            var tenantId = _loggedUserService.GetTenantId(user);
+            decimal totalAmount = 0;
+            var orderItems = new List<OrderItem>();
+
             foreach (var item in request.Items)
             {
                 var menuItem = await _menuItemRepository.GetByIdAsync(item.MenuItemId, tenantId);
                 EnsureResourceExists(menuItem, "MenuItem", item.MenuItemId);
+
+                var orderItem = new OrderItem
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    TenantId = tenantId,
+                    OrderId = Guid.NewGuid().ToString(),
+                    MenuItemId = item.MenuItemId,
+                    Quantity = item.Quantity,
+                    UnitPrice = menuItem.Price,
+                    Notes = item.Notes ?? string.Empty,
+                    Tags = item.Tags ?? new List<string>(),
+                    AdditionalIds = item.AdditionalIds ?? new List<string>(),
+                    Customizations = item.Customizations ?? new List<Customization>()
+                };
+                orderItems.Add(orderItem);
+                totalAmount += item.Quantity * menuItem.Price;
             }
 
             if (!string.IsNullOrEmpty(request.CouponId))
@@ -67,14 +93,15 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                 Id = Guid.NewGuid().ToString(),
                 TenantId = tenantId,
                 CustomerPhoneNumber = request.CustomerPhoneNumber,
-                TotalAmount = 0, // Calcular com base nos itens
+                TotalAmount = totalAmount,
                 PlatformFee = 0, // Calcular com base na configuração da empresa
                 PromotionId = request.PromotionId,
                 CouponId = request.CouponId,
                 Status = OrderStatus.Pending,
                 PaymentStatus = PaymentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                OrderItems = orderItems
             };
 
             await _orderRepository.AddAsync(order);

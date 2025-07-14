@@ -1,11 +1,12 @@
-﻿using Hephaestus.Application.DTOs.Response;
-using Hephaestus.Application.Interfaces.Menu;
-using Hephaestus.Domain.Repositories;
-using Hephaestus.Application.Exceptions;
+﻿using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Microsoft.Extensions.Logging;
+using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Application.Services;
-using FluentValidation.Results;
+using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Services;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Menu;
 
@@ -15,39 +16,48 @@ namespace Hephaestus.Application.UseCases.Menu;
 public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
 {
     private readonly IMenuItemRepository _menuItemRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="GetMenuItemsUseCase"/>.
     /// </summary>
     /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public GetMenuItemsUseCase(
         IMenuItemRepository menuItemRepository,
+        ILoggedUserService loggedUserService,
         ILogger<GetMenuItemsUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _menuItemRepository = menuItemRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a busca de todos os itens do cardápio de um tenant.
     /// </summary>
-    /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Lista de itens do cardápio.</returns>
-    public async Task<IEnumerable<MenuItemResponse>> ExecuteAsync(string tenantId)
+    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="pageNumber">Número da página (padrão: 1).</param>
+    /// <param name="pageSize">Tamanho da página (padrão: 20).</param>
+    /// <returns>Lista paginada de itens do cardápio.</returns>
+    public async Task<PagedResult<MenuItemResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Validação dos parâmetros de entrada
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             ValidateInputParameters(tenantId);
-
-            // Busca dos itens do cardápio
-            var menuItems = await GetMenuItemsAsync(tenantId);
-
-            // Conversão para DTOs de resposta
-            return ConvertToResponseDtos(menuItems);
+            var pagedMenuItems = await _menuItemRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize);
+            return new PagedResult<MenuItemResponse>
+            {
+                Items = (List<MenuItemResponse>)ConvertToResponseDtos(pagedMenuItems.Items),
+                TotalCount = pagedMenuItems.TotalCount,
+                PageNumber = pagedMenuItems.PageNumber,
+                PageSize = pagedMenuItems.PageSize
+            };
         });
     }
 
@@ -59,16 +69,6 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
     {
         if (string.IsNullOrEmpty(tenantId))
             throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
-    }
-
-    /// <summary>
-    /// Busca os itens do cardápio.
-    /// </summary>
-    /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Lista de itens do cardápio.</returns>
-    private async Task<IEnumerable<Domain.Entities.MenuItem>> GetMenuItemsAsync(string tenantId)
-    {
-        return await _menuItemRepository.GetByTenantIdAsync(tenantId);
     }
 
     /// <summary>
@@ -89,7 +89,8 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
             IsAvailable = m.IsAvailable,
             TagIds = m.MenuItemTags.Select(mt => mt.TagId).ToList(),
             AvailableAdditionalIds = m.AvailableAdditionalIds,
-            ImageUrl = m.ImageUrl
+            ImageUrl = m.ImageUrl,
+            Tags = m.MenuItemTags.Select(mt => mt.Tag.Name).ToList()
         }).ToList();
     }
 }

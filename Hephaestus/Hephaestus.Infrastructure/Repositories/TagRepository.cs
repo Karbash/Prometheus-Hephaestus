@@ -2,6 +2,7 @@
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Hephaestus.Application.DTOs.Response;
 
 namespace Hephaestus.Infrastructure.Repositories;
 
@@ -33,15 +34,18 @@ public class TagRepository : ITagRepository
             .FirstOrDefaultAsync(t => t.Name == name && t.TenantId == tenantId);
     }
 
-    public async Task<IEnumerable<Tag>> GetByTenantIdAsync(string tenantId)
+    public async Task<PagedResult<Tag>> GetByTenantIdAsync(string tenantId, int pageNumber = 1, int pageSize = 20)
     {
-        if (string.IsNullOrEmpty(tenantId))
-            throw new ArgumentException("TenantId é obrigatório.");
-
-        return await _context.Tags
-            .AsNoTracking()
-            .Where(t => t.TenantId == tenantId)
-            .ToListAsync();
+        var query = _context.Tags.AsNoTracking().Where(t => t.TenantId == tenantId);
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        return new PagedResult<Tag>
+        {
+            Items = items,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
     }
 
     public async Task<Tag?> GetByIdAsync(string id, string tenantId)

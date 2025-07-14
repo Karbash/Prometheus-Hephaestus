@@ -4,5 +4,5 @@ namespace Hephaestus.Application.Interfaces.Administration;
 
 public interface IGetCompaniesUseCase
 {
-    Task<IEnumerable<CompanyResponse>> ExecuteAsync(bool? isEnabled);
+    Task<PagedResult<CompanyResponse>> ExecuteAsync(bool? isEnabled, int pageNumber = 1, int pageSize = 20);
 }

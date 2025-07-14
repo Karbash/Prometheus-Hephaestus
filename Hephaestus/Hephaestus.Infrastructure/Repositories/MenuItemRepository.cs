@@ -2,6 +2,7 @@
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Hephaestus.Application.DTOs.Response;
 
 namespace Hephaestus.Infrastructure.Repositories;
 
@@ -67,17 +68,27 @@ public class MenuItemRepository : IMenuItemRepository
             .FirstOrDefaultAsync(m => m.Id == id && m.TenantId == tenantId);
     }
 
-    public async Task<IEnumerable<MenuItem>> GetByTenantIdAsync(string tenantId)
+    public async Task<PagedResult<MenuItem>> GetByTenantIdAsync(string tenantId, int pageNumber = 1, int pageSize = 20)
     {
-        if (string.IsNullOrEmpty(tenantId))
-            throw new ArgumentException("TenantId é obrigatório.");
-
-        return await _context.MenuItems
-            .Include(m => m.MenuItemTags)
-            .ThenInclude(mt => mt.Tag)
+        var query = _context.MenuItems
             .AsNoTracking()
             .Where(m => m.TenantId == tenantId)
+            .Include(m => m.MenuItemTags)
+            .ThenInclude(mt => mt.Tag);
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return new PagedResult<MenuItem>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 
     public async Task AddTagsAsync(string menuItemId, IEnumerable<string> tagIds, string tenantId)

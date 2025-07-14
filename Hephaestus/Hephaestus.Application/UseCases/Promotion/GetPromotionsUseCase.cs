@@ -3,9 +3,11 @@ using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
+using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
 using FluentValidation.Results;
+using System.Security.Claims;
 
 namespace Hephaestus.Application.UseCases.Promotion;
 
@@ -15,32 +17,38 @@ namespace Hephaestus.Application.UseCases.Promotion;
 public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
 {
     private readonly IPromotionRepository _promotionRepository;
+    private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="GetPromotionsUseCase"/>.
     /// </summary>
     /// <param name="promotionRepository">Repositório de promoções.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
     /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public GetPromotionsUseCase(
         IPromotionRepository promotionRepository,
+        ILoggedUserService loggedUserService,
         ILogger<GetPromotionsUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _promotionRepository = promotionRepository;
+        _loggedUserService = loggedUserService;
     }
 
     /// <summary>
     /// Executa a busca de todas as promoções de um tenant.
     /// </summary>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <param name="isActive">Filtro opcional para promoções ativas.</param>
     /// <returns>Lista de promoções.</returns>
-    public async Task<IEnumerable<PromotionResponse>> ExecuteAsync(string tenantId, bool? isActive)
+    public async Task<IEnumerable<PromotionResponse>> ExecuteAsync(ClaimsPrincipal user, bool? isActive)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
+            var tenantId = _loggedUserService.GetTenantId(user);
+            
             // Validação dos parâmetros de entrada
             ValidateInputParameters(tenantId);
 

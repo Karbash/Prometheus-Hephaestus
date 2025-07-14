@@ -43,23 +43,9 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
         builder.Property(p => p.MinOrderValue)
             .HasColumnType("decimal(18,2)");
 
-        builder.Property(p => p.MaxUsesPerCustomer)
-            .HasColumnType("int");
+        builder.Property(p => p.MaxUsesPerCustomer);
 
-        builder.Property(p => p.MaxTotalUses)
-            .HasColumnType("int");
-
-        builder.Property(p => p.ApplicableTags)
-            .HasConversion(
-                v => string.Join(",", v),
-                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList(),
-                new ValueComparer<List<string>>(
-                    (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
-                    c => c == null ? 0 : c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c == null ? new List<string>() : new List<string>(c)
-                )
-            )
-            .HasColumnType("text");
+        builder.Property(p => p.MaxTotalUses);
 
         builder.Property(p => p.StartDate)
             .IsRequired();
@@ -73,9 +59,21 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
         builder.Property(p => p.ImageUrl)
             .HasMaxLength(500);
 
-        builder.HasIndex(p => new { p.TenantId, p.Name })
-            .IsUnique();
+        var listComparer = new ValueComparer<List<string>>(
+            (c1, c2) => (c1 == null && c2 == null) || (c1 != null && c2 != null && c1.SequenceEqual(c2)),
+            c => c == null ? 0 : c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => c == null ? new List<string>() : c.ToList());
 
-        builder.HasIndex(p => p.TenantId);
+        builder.Property(p => p.ApplicableTags)
+            .HasConversion(v => string.Join(',', v), v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList())
+            .Metadata.SetValueComparer(listComparer);
+
+        builder.HasIndex(p => new { p.TenantId, p.IsActive });
+
+        // Relacionamento opcional com MenuItem
+        builder.HasOne<MenuItem>()
+            .WithMany()
+            .HasForeignKey(p => p.MenuItemId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

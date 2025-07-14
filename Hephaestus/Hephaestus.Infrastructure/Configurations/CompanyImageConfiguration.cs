@@ -18,5 +18,11 @@ public class CompanyImageConfiguration : IEntityTypeConfiguration<CompanyImage>
         builder.Property(ci => ci.CreatedAt).IsRequired();
 
         builder.HasIndex(ci => new { ci.CompanyId, ci.ImageType });
+
+        // Relacionamento com Company
+        builder.HasOne<Company>()
+            .WithMany()
+            .HasForeignKey(ci => ci.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

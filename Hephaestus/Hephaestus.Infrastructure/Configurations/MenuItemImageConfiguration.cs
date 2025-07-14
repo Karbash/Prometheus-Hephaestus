@@ -17,5 +17,11 @@ public class MenuItemImageConfiguration : IEntityTypeConfiguration<MenuItemImage
         builder.Property(mi => mi.CreatedAt).IsRequired();
 
         builder.HasIndex(mi => mi.MenuItemId);
+
+        // Relacionamento com MenuItem
+        builder.HasOne<MenuItem>()
+            .WithMany()
+            .HasForeignKey(mi => mi.MenuItemId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

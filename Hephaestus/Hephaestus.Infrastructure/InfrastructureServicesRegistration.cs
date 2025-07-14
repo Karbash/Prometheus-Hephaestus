@@ -46,6 +46,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<IPromotionRepository, PromotionRepository>();
         services.AddScoped<ICouponRepository, CouponRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
     }
 
     private static void AddServices(IServiceCollection services)

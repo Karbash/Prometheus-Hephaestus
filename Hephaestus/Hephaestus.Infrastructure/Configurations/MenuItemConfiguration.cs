@@ -48,5 +48,11 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             .Metadata.SetValueComparer(listComparer);
 
         builder.HasIndex(m => new { m.TenantId, m.CategoryId });
+
+        // Relacionamento com Category
+        builder.HasOne<Category>()
+            .WithMany()
+            .HasForeignKey(m => m.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

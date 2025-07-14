@@ -26,6 +26,7 @@ public class HephaestusDbContext : DbContext
     public DbSet<CompanyOperatingHour> CompanyOperatingHours { get; set; }
     public DbSet<CompanySocialMedia> CompanySocialMedia { get; set; }
     public DbSet<MenuItemImage> MenuItemImages { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     public HephaestusDbContext(DbContextOptions<HephaestusDbContext> options) : base(options) { }
 
@@ -50,5 +51,6 @@ public class HephaestusDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CompanyOperatingHourConfiguration());
         modelBuilder.ApplyConfiguration(new CompanySocialMediaConfiguration());
         modelBuilder.ApplyConfiguration(new MenuItemImageConfiguration());
+        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
     }
 }

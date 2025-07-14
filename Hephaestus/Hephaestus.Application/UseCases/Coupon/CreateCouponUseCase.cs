@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Coupon;
 using Hephaestus.Application.Services;

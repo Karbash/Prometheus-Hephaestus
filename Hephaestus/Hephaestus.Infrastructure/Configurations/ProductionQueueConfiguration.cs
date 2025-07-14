@@ -17,5 +17,11 @@ public class ProductionQueueConfiguration : IEntityTypeConfiguration<ProductionQ
         builder.Property(p => p.Status).IsRequired().HasConversion<string>();
 
         builder.HasIndex(p => p.OrderId);
+
+        // Relacionamento com Order
+        builder.HasOne<Order>()
+            .WithMany()
+            .HasForeignKey(p => p.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

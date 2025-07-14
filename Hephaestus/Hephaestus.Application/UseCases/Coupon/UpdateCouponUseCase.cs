@@ -10,6 +10,7 @@ using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.UseCases.Coupon;
 

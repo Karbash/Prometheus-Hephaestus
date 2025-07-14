@@ -20,5 +20,11 @@ public class ReviewConfiguration : IEntityTypeConfiguration<Review>
         builder.Property(r => r.CreatedAt).IsRequired();
 
         builder.HasIndex(r => new { r.TenantId, r.OrderId });
+
+        // Relacionamento com Order
+        builder.HasOne<Order>()
+            .WithMany()
+            .HasForeignKey(r => r.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

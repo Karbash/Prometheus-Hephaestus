@@ -26,17 +26,17 @@ public class CouponConfiguration : IEntityTypeConfiguration<Coupon>
 
         builder.Property(c => c.DiscountType)
             .IsRequired()
-            .HasConversion<string>(); // Garante que DiscountType seja armazenado como string
+            .HasConversion<string>();
 
         builder.Property(c => c.DiscountValue)
             .IsRequired()
-            .HasPrecision(18, 2);
+            .HasColumnType("decimal(18,2)");
 
         builder.Property(c => c.MenuItemId)
             .HasMaxLength(36);
 
         builder.Property(c => c.MinOrderValue)
-            .HasPrecision(18, 2);
+            .HasColumnType("decimal(18,2)");
 
         builder.Property(c => c.StartDate)
             .IsRequired();
@@ -49,5 +49,11 @@ public class CouponConfiguration : IEntityTypeConfiguration<Coupon>
 
         builder.HasIndex(c => new { c.TenantId, c.Code })
             .IsUnique();
+
+        // Relacionamento opcional com MenuItem
+        builder.HasOne<MenuItem>()
+            .WithMany()
+            .HasForeignKey(c => c.MenuItemId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

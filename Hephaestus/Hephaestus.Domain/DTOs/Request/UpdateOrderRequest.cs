@@ -1,7 +1,7 @@
 ﻿using Hephaestus.Domain.Enum;
 using System.Collections.Generic;
 
-namespace Hephaestus.Application.DTOs.Request;
+namespace Hephaestus.Domain.DTOs.Request;
 
 public class UpdateOrderRequest
 {

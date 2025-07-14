@@ -19,5 +19,11 @@ public class CompanyOperatingHourConfiguration : IEntityTypeConfiguration<Compan
         builder.Property(oh => oh.IsClosed).IsRequired();
 
         builder.HasIndex(oh => new { oh.CompanyId, oh.DayOfWeek }).IsUnique();
+
+        // Relacionamento com Company
+        builder.HasOne<Company>()
+            .WithMany()
+            .HasForeignKey(oh => oh.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

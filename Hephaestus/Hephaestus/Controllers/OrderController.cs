@@ -1,4 +1,4 @@
-﻿using Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Domain.DTOs.Request;
 // using Hephaestus.Application.DTOs.Response; // Removido, pois as DTOs não foram fornecidas e a instrução é não alterar métodos
 using Hephaestus.Application.Interfaces.Order;
 using Microsoft.AspNetCore.Authorization;

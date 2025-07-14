@@ -3,6 +3,7 @@ using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.Interfaces.Additional;
 using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Interfaces.Auth;
+using Hephaestus.Application.Interfaces.Category;
 using Hephaestus.Application.Interfaces.Company;
 using Hephaestus.Application.Interfaces.Coupon;
 using Hephaestus.Application.Interfaces.Customer;
@@ -18,6 +19,7 @@ using Hephaestus.Application.UseCases;
 using Hephaestus.Application.UseCases.Additional;
 using Hephaestus.Application.UseCases.Administration;
 using Hephaestus.Application.UseCases.Auth;
+using Hephaestus.Application.UseCases.Category;
 using Hephaestus.Application.UseCases.Company;
 using Hephaestus.Application.UseCases.Coupon;
 using Hephaestus.Application.UseCases.Customer;
@@ -68,6 +70,13 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IGetMenuItemByIdUseCase, GetMenuItemByIdUseCase>();
         services.AddScoped<IUpdateMenuItemUseCase, UpdateMenuItemUseCase>();
         services.AddScoped<IDeleteMenuItemUseCase, DeleteMenuItemUseCase>();
+
+        // Category UseCases
+        services.AddScoped<ICreateCategoryUseCase, CreateCategoryUseCase>();
+        services.AddScoped<IGetCategoriesUseCase, GetCategoriesUseCase>();
+        services.AddScoped<IGetCategoryByIdUseCase, GetCategoryByIdUseCase>();
+        services.AddScoped<IUpdateCategoryUseCase, UpdateCategoryUseCase>();
+        services.AddScoped<IDeleteCategoryUseCase, DeleteCategoryUseCase>();
 
         // Tag UseCases
         services.AddScoped<ICreateTagUseCase, CreateTagUseCase>();
@@ -133,6 +142,10 @@ public static class ApplicationServicesRegistration
         // Menu Validators
         services.AddScoped<IValidator<CreateMenuItemRequest>, CreateMenuItemRequestValidator>();
         services.AddScoped<IValidator<UpdateMenuItemRequest>, UpdateMenuItemRequestValidator>();
+
+        // Category Validators
+        services.AddScoped<IValidator<CreateCategoryRequest>, CreateCategoryRequestValidator>();
+        services.AddScoped<IValidator<UpdateCategoryRequest>, UpdateCategoryRequestValidator>();
 
         // Auth Validators
         services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();

@@ -1,6 +1,6 @@
 ﻿using Hephaestus.Domain.Entities;
 
-namespace Hephaestus.Application.DTOs.Request
+namespace Hephaestus.Domain.DTOs.Request
 {
     public class OrderItemRequest
     {

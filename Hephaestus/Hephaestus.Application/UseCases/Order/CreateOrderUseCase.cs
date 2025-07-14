@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Order;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Entities;

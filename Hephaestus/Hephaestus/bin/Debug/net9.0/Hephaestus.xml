@@ -667,6 +667,126 @@
             <returns>O e-mail do usuário como string.</returns>
             <exception cref="T:System.UnauthorizedAccessException">Lançada se o e-mail não for encontrado no token.</exception>
         </member>
+        <member name="T:Hephaestus.Controllers.CategoryController">
+            <summary>
+            Controller para gerenciamento de categorias de menu.
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.CategoryController.CreateCategory(Hephaestus.Application.DTOs.Request.CreateCategoryRequest)">
+             <summary>
+             Cria uma nova categoria para o tenant autenticado.
+             </summary>
+             <remarks>
+             Este endpoint permite que um tenant crie uma nova categoria para organizar seus itens de menu.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Request:**
+             ```json
+             {
+               "name": "Bebidas",
+               "description": "Categoria para todas as bebidas disponíveis",
+               "isActive": true
+             }
+             ```
+            
+             **Exemplo de Response (Status 201 Created):**
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001"
+             }
+             ```
+             </remarks>
+             <param name="request">Dados da categoria a ser criada.</param>
+             <returns>ID da categoria criada.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.CategoryController.GetCategories(System.Int32,System.Int32)">
+             <summary>
+             Lista as categorias do tenant autenticado com paginação.
+             </summary>
+             <remarks>
+             Este endpoint retorna uma lista paginada de categorias pertencentes ao tenant autenticado.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Response (Status 200 OK):**
+             ```json
+             {
+               "items": [
+                 {
+                   "id": "123e4567-e89b-12d3-a456-426614174001",
+                   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+                   "name": "Bebidas",
+                   "description": "Categoria para todas as bebidas disponíveis",
+                   "isActive": true,
+                   "createdAt": "2024-01-01T12:00:00Z",
+                   "updatedAt": "2024-01-01T12:00:00Z"
+                 }
+               ],
+               "totalCount": 1,
+               "pageNumber": 1,
+               "pageSize": 20
+             }
+             ```
+             </remarks>
+             <param name="pageNumber">Número da página para paginação (padrão: 1).</param>
+             <param name="pageSize">Número de itens por página para paginação (padrão: 20).</param>
+             <returns>Lista paginada de categorias.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.CategoryController.GetCategoryById(System.String)">
+             <summary>
+             Obtém uma categoria específica pelo seu ID.
+             </summary>
+             <remarks>
+             Este endpoint retorna as informações detalhadas de uma categoria específica, desde que pertença ao tenant autenticado.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Response (Status 200 OK):**
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001",
+               "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+               "name": "Bebidas",
+               "description": "Categoria para todas as bebidas disponíveis",
+               "isActive": true,
+               "createdAt": "2024-01-01T12:00:00Z",
+               "updatedAt": "2024-01-01T12:00:00Z"
+             }
+             ```
+             </remarks>
+             <param name="id">ID da categoria a ser obtida.</param>
+             <returns>Detalhes da categoria ou NotFound se não encontrada.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.CategoryController.UpdateCategory(System.String,Hephaestus.Application.DTOs.Request.UpdateCategoryRequest)">
+             <summary>
+             Atualiza uma categoria existente.
+             </summary>
+             <remarks>
+             Este endpoint permite que um tenant atualize uma categoria existente.
+             Requer autenticação com a role **Tenant**.
+            
+             **Exemplo de Request:**
+             ```json
+             {
+               "name": "Bebidas Refrigerantes",
+               "description": "Categoria para refrigerantes e bebidas geladas",
+               "isActive": true
+             }
+             ```
+             </remarks>
+             <param name="id">ID da categoria a ser atualizada.</param>
+             <param name="request">Dados atualizados da categoria.</param>
+             <returns>Status 204 No Content em caso de sucesso.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.CategoryController.DeleteCategory(System.String)">
+            <summary>
+            Exclui uma categoria.
+            </summary>
+            <remarks>
+            Este endpoint permite que um tenant exclua uma categoria existente.
+            Requer autenticação com a role **Tenant**.
+            </remarks>
+            <param name="id">ID da categoria a ser excluída.</param>
+            <returns>Status 204 No Content em caso de sucesso.</returns>
+        </member>
         <member name="T:Hephaestus.Controllers.CompanyController">
             <summary>
             Controller para gerenciamento de perfis de empresas, fornecendo endpoints para consulta de dados da empresa.
@@ -767,7 +887,7 @@
             <param name="deleteCouponUseCase">Caso de uso para deletar um cupom.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.CouponController.CreateCoupon(Hephaestus.Application.DTOs.Request.CreateCouponRequest)">
+        <member name="M:Hephaestus.Controllers.CouponController.CreateCoupon(Hephaestus.Domain.DTOs.Request.CreateCouponRequest)">
             <summary>
             Cria um novo cupom para o tenant autenticado.
             </summary>
@@ -906,7 +1026,7 @@
             <param name="id">O **ID (GUID)** do cupom a ser consultado.</param>
             <returns>Um `OkResult` contendo o `CouponResponse` ou um `NotFoundResult` se o cupom não for encontrado.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.CouponController.UpdateCoupon(System.String,Hephaestus.Application.DTOs.Request.UpdateCouponRequest)">
+        <member name="M:Hephaestus.Controllers.CouponController.UpdateCoupon(System.String,Hephaestus.Domain.DTOs.Request.UpdateCouponRequest)">
             <summary>
             Atualiza um cupom existente para o tenant autenticado.
             </summary>
@@ -2322,7 +2442,7 @@
             <param name="updateOrderUseCase">Caso de uso para atualização de pedidos.</param>
             <param name="getCustomerOrderStatusUseCase">Caso de uso para obtenção do status de pedidos de um cliente.</param>
         </member>
-        <member name="M:Hephaestus.Api.Controllers.OrderController.CreateOrder(Hephaestus.Application.DTOs.Request.CreateOrderRequest)">
+        <member name="M:Hephaestus.Api.Controllers.OrderController.CreateOrder(Hephaestus.Domain.DTOs.Request.CreateOrderRequest)">
             CreateOrder
              <summary>
              Cria um novo pedido para o tenant autenticado.
@@ -2380,7 +2500,7 @@
              }
              ```
              </remarks>
-             <param name="request">Dados para a criação do pedido (<see cref="T:Hephaestus.Application.DTOs.Request.CreateOrderRequest"/>).</param>
+             <param name="request">Dados para a criação do pedido (<see cref="T:Hephaestus.Domain.DTOs.Request.CreateOrderRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> contendo o ID do pedido criado.</returns>
         </member>
         <member name="M:Hephaestus.Api.Controllers.OrderController.GetOrders(System.String,System.String)">
@@ -2483,7 +2603,7 @@
              <param name="id">O **ID (GUID)** do pedido a ser consultado.</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo os detalhes do pedido, ou um <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> se não encontrado.</returns>
         </member>
-        <member name="M:Hephaestus.Api.Controllers.OrderController.UpdateOrder(System.String,Hephaestus.Application.DTOs.Request.UpdateOrderRequest)">
+        <member name="M:Hephaestus.Api.Controllers.OrderController.UpdateOrder(System.String,Hephaestus.Domain.DTOs.Request.UpdateOrderRequest)">
             UpdateOrder
              <summary>
              Atualiza um pedido existente para o tenant autenticado.
@@ -2544,7 +2664,7 @@
              ```
              </remarks>
              <param name="id">O **ID (GUID)** do pedido a ser atualizado.</param>
-             <param name="request">Dados para a atualização do pedido (<see cref="T:Hephaestus.Application.DTOs.Request.UpdateOrderRequest"/>).</param>
+             <param name="request">Dados para a atualização do pedido (<see cref="T:Hephaestus.Domain.DTOs.Request.UpdateOrderRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicando o sucesso da atualização.</returns>
         </member>
         <member name="M:Hephaestus.Api.Controllers.OrderController.GetCustomerOrderStatus(System.String)">

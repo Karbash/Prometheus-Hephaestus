@@ -17,5 +17,11 @@ public class CompanySocialMediaConfiguration : IEntityTypeConfiguration<CompanyS
         builder.Property(sm => sm.Url).IsRequired().HasMaxLength(500);
 
         builder.HasIndex(sm => new { sm.CompanyId, sm.Platform }).IsUnique();
+
+        // Relacionamento com Company
+        builder.HasOne<Company>()
+            .WithMany()
+            .HasForeignKey(sm => sm.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

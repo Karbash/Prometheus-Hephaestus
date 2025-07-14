@@ -87,6 +87,47 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.ToTable("AuditLogs", (string)null);
                 });
 
+            modelBuilder.Entity("Hephaestus.Domain.Entities.Category", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "IsActive");
+
+                    b.HasIndex("TenantId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("Categories", (string)null);
+                });
+
             modelBuilder.Entity("Hephaestus.Domain.Entities.Company", b =>
                 {
                     b.Property<string>("Id")
@@ -302,8 +343,7 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<decimal>("DiscountValue")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
@@ -316,8 +356,7 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("character varying(36)");
 
                     b.Property<decimal?>("MinOrderValue")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
@@ -328,6 +367,8 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("character varying(36)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MenuItemId");
 
                     b.HasIndex("TenantId", "Code")
                         .IsUnique();
@@ -430,6 +471,8 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("TenantId", "CategoryId");
 
                     b.ToTable("MenuItems", (string)null);
@@ -522,9 +565,11 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId", "CustomerPhoneNumber");
+                    b.HasIndex("CouponId");
 
-                    b.HasIndex("TenantId", "Status");
+                    b.HasIndex("PromotionId");
+
+                    b.HasIndex("TenantId", "CustomerPhoneNumber");
 
                     b.ToTable("Orders", (string)null);
                 });
@@ -575,9 +620,9 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("MenuItemId");
 
-                    b.HasIndex("TenantId", "OrderId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems", (string)null);
                 });
@@ -663,10 +708,10 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int?>("MaxTotalUses")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("MaxUsesPerCustomer")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("MenuItemId")
                         .HasMaxLength(36)
@@ -690,10 +735,9 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("MenuItemId");
 
-                    b.HasIndex("TenantId", "Name")
-                        .IsUnique();
+                    b.HasIndex("TenantId", "IsActive");
 
                     b.ToTable("Promotions", (string)null);
                 });
@@ -726,6 +770,8 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("TenantId", "OrderId");
 
@@ -774,6 +820,8 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrderId");
+
                     b.HasIndex("TenantId", "CustomerPhoneNumber");
 
                     b.ToTable("SalesLogs", (string)null);
@@ -802,6 +850,59 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.ToTable("Tags", (string)null);
                 });
 
+            modelBuilder.Entity("Hephaestus.Domain.Entities.CompanyImage", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.CompanyOperatingHour", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.CompanySocialMedia", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.Coupon", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.MenuItem", null)
+                        .WithMany()
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItem", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItemImage", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.MenuItem", null)
+                        .WithMany()
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItemTag", b =>
                 {
                     b.HasOne("Hephaestus.Domain.Entities.MenuItem", "MenuItem")
@@ -821,10 +922,64 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("Hephaestus.Domain.Entities.Order", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Coupon", null)
+                        .WithMany()
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Hephaestus.Domain.Entities.Promotion", null)
+                        .WithMany()
+                        .HasForeignKey("PromotionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
             modelBuilder.Entity("Hephaestus.Domain.Entities.OrderItem", b =>
                 {
+                    b.HasOne("Hephaestus.Domain.Entities.MenuItem", null)
+                        .WithMany()
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Hephaestus.Domain.Entities.Order", null)
                         .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.ProductionQueue", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.Promotion", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.MenuItem", null)
+                        .WithMany()
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.Review", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.SalesLog", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Order", null)
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

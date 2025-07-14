@@ -45,7 +45,7 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
             // Conversão para DTOs de resposta
             return new PagedResult<CompanyResponse>
             {
-                Items = (List<CompanyResponse>)ConvertToResponseDtos(pagedCompanies.Items),
+                Items = ConvertToResponseDtos(pagedCompanies.Items).ToList(),
                 TotalCount = pagedCompanies.TotalCount,
                 PageNumber = pagedCompanies.PageNumber,
                 PageSize = pagedCompanies.PageSize

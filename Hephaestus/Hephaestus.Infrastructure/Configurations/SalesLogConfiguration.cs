@@ -23,5 +23,11 @@ public class SalesLogConfiguration : IEntityTypeConfiguration<SalesLog>
         builder.Property(s => s.CreatedAt).IsRequired();
 
         builder.HasIndex(s => new { s.TenantId, s.CustomerPhoneNumber });
+
+        // Relacionamento com Order
+        builder.HasOne<Order>()
+            .WithMany()
+            .HasForeignKey(s => s.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

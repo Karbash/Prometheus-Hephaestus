@@ -1530,6 +1530,485 @@
         }
       }
     },
+    "/api/Category": {
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Cria uma nova categoria para o tenant autenticado.",
+        "description": "Este endpoint permite que um tenant crie uma nova categoria para organizar seus itens de menu.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Request:**\r\n```json\r\n{\r\n  \"name\": \"Bebidas\",\r\n  \"description\": \"Categoria para todas as bebidas disponíveis\",\r\n  \"isActive\": true\r\n}\r\n```\r\n            \r\n**Exemplo de Response (Status 201 Created):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```",
+        "requestBody": {
+          "description": "Dados da categoria a ser criada.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": { }
+              },
+              "application/json": {
+                "schema": { }
+              },
+              "text/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Lista as categorias do tenant autenticado com paginação.",
+        "description": "Este endpoint retorna uma lista paginada de categorias pertencentes ao tenant autenticado.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Response (Status 200 OK):**\r\n```json\r\n{\r\n  \"items\": [\r\n    {\r\n      \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n      \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n      \"name\": \"Bebidas\",\r\n      \"description\": \"Categoria para todas as bebidas disponíveis\",\r\n      \"isActive\": true,\r\n      \"createdAt\": \"2024-01-01T12:00:00Z\",\r\n      \"updatedAt\": \"2024-01-01T12:00:00Z\"\r\n    }\r\n  ],\r\n  \"totalCount\": 1,\r\n  \"pageNumber\": 1,\r\n  \"pageSize\": 20\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página para paginação (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Número de itens por página para paginação (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Category/{id}": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Obtém uma categoria específica pelo seu ID.",
+        "description": "Este endpoint retorna as informações detalhadas de uma categoria específica, desde que pertença ao tenant autenticado.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Response (Status 200 OK):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Bebidas\",\r\n  \"description\": \"Categoria para todas as bebidas disponíveis\",\r\n  \"isActive\": true,\r\n  \"createdAt\": \"2024-01-01T12:00:00Z\",\r\n  \"updatedAt\": \"2024-01-01T12:00:00Z\"\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da categoria a ser obtida.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Atualiza uma categoria existente.",
+        "description": "Este endpoint permite que um tenant atualize uma categoria existente.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Request:**\r\n```json\r\n{\r\n  \"name\": \"Bebidas Refrigerantes\",\r\n  \"description\": \"Categoria para refrigerantes e bebidas geladas\",\r\n  \"isActive\": true\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da categoria a ser atualizada.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados da categoria.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Exclui uma categoria.",
+        "description": "Este endpoint permite que um tenant exclua uma categoria existente.\r\nRequer autenticação com a role **Tenant**.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da categoria a ser excluída.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/Company/{id}/profile": {
       "get": {
         "tags": [
@@ -3098,7 +3577,7 @@
         "summary": "Cria um novo pedido para o tenant autenticado.",
         "description": "Este endpoint permite que um tenant registre um novo pedido. A autenticação com a role **Tenant** é obrigatória.\r\n            \r\n**Exemplo de Requisição:**\r\n```json\r\n{\r\n  \"customerPhoneNumber\": \"11987654321\",\r\n  \"items\": [\r\n    {\r\n      \"menuItemId\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\",\r\n      \"quantity\": 2\r\n    }\r\n  ],\r\n  \"notes\": \"Entrega sem contato\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 201 Created):**\r\n```json\r\n{\r\n  \"id\": \"e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 401 Unauthorized):**\r\n```\r\n(Sem corpo de resposta, apenas status 401)\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"CustomerPhoneNumber\": [\r\n      \"O número de telefone do cliente é obrigatório.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar o pedido.\"\r\n}\r\n```",
         "requestBody": {
-          "description": "Dados para a criação do pedido (Hephaestus.Application.DTOs.Request.CreateOrderRequest).",
+          "description": "Dados para a criação do pedido (Hephaestus.Domain.DTOs.Request.CreateOrderRequest).",
           "content": {
             "application/json": {
               "schema": {
@@ -3398,7 +3877,7 @@
           }
         ],
         "requestBody": {
-          "description": "Dados para a atualização do pedido (Hephaestus.Application.DTOs.Request.UpdateOrderRequest).",
+          "description": "Dados para a atualização do pedido (Hephaestus.Domain.DTOs.Request.UpdateOrderRequest).",
           "content": {
             "application/json": {
               "schema": {
@@ -4812,6 +5291,64 @@
         },
         "additionalProperties": false
       },
+      "CategoryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CategoryResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "CompanyImageResponse": {
         "type": "object",
         "properties": {
@@ -5097,6 +5634,23 @@
           "price": {
             "type": "number",
             "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -6027,6 +6581,24 @@
         },
         "additionalProperties": false
       },
+      "UpdateCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateCompanyRequest": {
         "type": "object",
         "properties": {
@@ -6346,6 +6918,10 @@
     {
       "name": "Auth",
       "description": "Controller para autenticação de usuários e gerenciamento de contas, incluindo login, registro de empresas, redefinição de senha e MFA."
+    },
+    {
+      "name": "Category",
+      "description": "Controller para gerenciamento de categorias de menu."
     },
     {
       "name": "Company",

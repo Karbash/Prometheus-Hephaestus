@@ -1,5 +1,5 @@
 ﻿using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Services;
@@ -77,7 +77,7 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
             Email = c.Email,
             PhoneNumber = c.PhoneNumber,
             IsEnabled = c.IsEnabled,
-            FeeType = c.FeeType.ToString(),
+            FeeType = c.FeeType,
             FeeValue = (double)c.FeeValue,
             State = c.State,
             City = c.City,
@@ -89,14 +89,5 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
             Slogan = c.Slogan,
             Description = c.Description
         });
-    }
-
-    private FeeType ParseFeeType(string feeTypeStr)
-    {
-        if (!Enum.TryParse<FeeType>(feeTypeStr, true, out var feeType))
-        {
-            throw new BusinessRuleException($"Tipo de taxa inválido: {feeTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(FeeType)))}.", "FEE_TYPE_VALIDATION");
-        }
-        return feeType;
     }
 }

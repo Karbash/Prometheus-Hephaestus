@@ -1,4 +1,5 @@
 ﻿using Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Coupon;
 using Microsoft.AspNetCore.Authorization;
@@ -157,9 +158,15 @@ public class CouponController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CouponResponse>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetCoupons([FromQuery] bool? isActive = null, [FromQuery] string? customerPhoneNumber = null)
+    public async Task<IActionResult> GetCoupons(
+        [FromQuery] bool? isActive = null,
+        [FromQuery] string? customerPhoneNumber = null,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortOrder = "asc")
     {
-        var coupons = await _getCouponsUseCase.ExecuteAsync(User, isActive, customerPhoneNumber);
+        var coupons = await _getCouponsUseCase.ExecuteAsync(User, isActive, customerPhoneNumber, pageNumber, pageSize, sortBy, sortOrder);
         return Ok(coupons);
     }
 

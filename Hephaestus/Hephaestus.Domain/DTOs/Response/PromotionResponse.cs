@@ -1,4 +1,6 @@
-﻿namespace Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.Enum;
+
+namespace Hephaestus.Domain.DTOs.Response;
 
 public class PromotionResponse
 {
@@ -6,7 +8,7 @@ public class PromotionResponse
     public string TenantId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string DiscountType { get; set; } = string.Empty;
+    public DiscountType DiscountType { get; set; }
     public decimal DiscountValue { get; set; }
     public string? MenuItemId { get; set; }
     public decimal? MinOrderValue { get; set; }

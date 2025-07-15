@@ -1,14 +1,12 @@
-﻿using Hephaestus.Application.DTOs.Response;
-using Hephaestus.Domain.Repositories;
+﻿using Hephaestus.Application.Base;
+using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Coupon;
-using Hephaestus.Application.Base;
+using Hephaestus.Application.Services;
+using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
-using Hephaestus.Application.Services;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Hephaestus.Application.UseCases.Coupon;
 
@@ -31,26 +29,34 @@ public class GetCouponsUseCase : BaseUseCase, IGetCouponsUseCase
         _loggedUserService = loggedUserService;
     }
 
-    public async Task<IEnumerable<CouponResponse>> ExecuteAsync(ClaimsPrincipal user, bool? isActive, string? customerPhoneNumber)
+    public async Task<PagedResult<CouponResponse>> ExecuteAsync(ClaimsPrincipal user, bool? isActive = null, string? customerPhoneNumber = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
-            
-            var coupons = await _couponRepository.GetByTenantIdAsync(tenantId, isActive, customerPhoneNumber);
-            return coupons.Select(c => new CouponResponse
+            var pagedCoupons = await _couponRepository.GetByTenantIdAsync(tenantId, isActive, customerPhoneNumber, pageNumber, pageSize, sortBy, sortOrder);
+            return new PagedResult<CouponResponse>
             {
-                Id = c.Id,
-                Code = c.Code,
-                CustomerPhoneNumber = c.CustomerPhoneNumber,
-                DiscountType = c.DiscountType.ToString(),
-                DiscountValue = c.DiscountValue,
-                MenuItemId = c.MenuItemId,
-                MinOrderValue = (decimal)c.MinOrderValue,
-                StartDate = c.StartDate,
-                EndDate = c.EndDate,
-                IsActive = c.IsActive
-            });
-        }, "GetCoupons");
+                Items = pagedCoupons.Items.Select(c => new CouponResponse
+                {
+                    Id = c.Id,
+                    TenantId = c.TenantId,
+                    Code = c.Code,
+                    CustomerPhoneNumber = c.CustomerPhoneNumber,
+                    DiscountType = c.DiscountType,
+                    DiscountValue = c.DiscountValue,
+                    MenuItemId = c.MenuItemId,
+                    MinOrderValue = c.MinOrderValue ?? 0,
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate,
+                    IsActive = c.IsActive,
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
+                }).ToList(),
+                TotalCount = pagedCoupons.TotalCount,
+                PageNumber = pagedCoupons.PageNumber,
+                PageSize = pagedCoupons.PageSize
+            };
+        });
     }
 }

@@ -107,25 +107,11 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(UpdatePromotionRequest request, string tenantId)
     {
-        if (request.DiscountType == "FreeItem" && !string.IsNullOrEmpty(request.MenuItemId))
+        if (request.DiscountType == DiscountType.FreeItem && !string.IsNullOrEmpty(request.MenuItemId))
         {
             var menuItem = await _menuItemRepository.GetByIdAsync(request.MenuItemId, tenantId);
             EnsureEntityExists(menuItem, "MenuItem", request.MenuItemId);
         }
-
-        if (!Enum.TryParse<DiscountType>(request.DiscountType, true, out _))
-        {
-            throw new Hephaestus.Application.Exceptions.ValidationException("Tipo de desconto inválido.", new ValidationResult());
-        }
-    }
-
-    private DiscountType ParseDiscountType(string discountTypeStr)
-    {
-        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
-        {
-            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
-        }
-        return discountType;
     }
 
     /// <summary>
@@ -137,7 +123,7 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     {
         promotion.Name = request.Name;
         promotion.Description = request.Description;
-        promotion.DiscountType = ParseDiscountType(request.DiscountType);
+        promotion.DiscountType = request.DiscountType;
         promotion.DiscountValue = request.DiscountValue;
         promotion.MenuItemId = request.MenuItemId;
         promotion.MinOrderValue = request.MinOrderValue;

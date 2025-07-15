@@ -126,6 +126,7 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IGetOrderByIdUseCase, GetOrderByIdUseCase>();
         services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
         services.AddScoped<IGetCustomerOrderStatusUseCase, GetCustomerOrderStatusUseCase>();
+        services.AddScoped<IPatchOrderUseCase, PatchOrderUseCase>();
 
         //Payment
         services.AddScoped<IProcessPaymentUseCase, ProcessPaymentUseCase>();

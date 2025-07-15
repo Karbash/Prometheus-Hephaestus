@@ -99,32 +99,58 @@
         ],
         "summary": "Lista todos os adicionais pertencentes ao tenant autenticado.",
         "description": "Requer **Role: Tenant**.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Queijo Extra\",\r\n    \"description\": \"Adicional de queijo\",\r\n    \"price\": 3.50,\r\n    \"isAvailable\": true\r\n  },\r\n  {\r\n    \"id\": \"a7b8c9d0-e1f2-3g4h-5i6j-7k8l9m0n1o2p\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Borda Recheada\",\r\n    \"description\": \"Borda com cheddar e catupiry\",\r\n    \"price\": 8.00,\r\n    \"isAvailable\": false\r\n  }\r\n]\r\n```",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AdditionalResponse"
-                  }
+                  "$ref": "#/components/schemas/AdditionalResponsePagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AdditionalResponse"
-                  }
+                  "$ref": "#/components/schemas/AdditionalResponsePagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AdditionalResponse"
-                  }
+                  "$ref": "#/components/schemas/AdditionalResponsePagedResult"
                 }
               }
             }
@@ -1643,6 +1669,21 @@
               "format": "int32",
               "default": 20
             }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
           }
         ],
         "responses": {
@@ -2223,6 +2264,39 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
           }
         ],
         "responses": {
@@ -2728,6 +2802,21 @@
               "format": "int32",
               "default": 20
             }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
           }
         ],
         "responses": {
@@ -3108,6 +3197,21 @@
               "type": "integer",
               "format": "int32",
               "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
             }
           }
         ],
@@ -3575,7 +3679,7 @@
           "Order"
         ],
         "summary": "Cria um novo pedido para o tenant autenticado.",
-        "description": "Este endpoint permite que um tenant registre um novo pedido. A autenticação com a role **Tenant** é obrigatória.\r\n            \r\n**Exemplo de Requisição:**\r\n```json\r\n{\r\n  \"customerPhoneNumber\": \"11987654321\",\r\n  \"items\": [\r\n    {\r\n      \"menuItemId\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\",\r\n      \"quantity\": 2\r\n    }\r\n  ],\r\n  \"notes\": \"Entrega sem contato\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 201 Created):**\r\n```json\r\n{\r\n  \"id\": \"e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 401 Unauthorized):**\r\n```\r\n(Sem corpo de resposta, apenas status 401)\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"CustomerPhoneNumber\": [\r\n      \"O número de telefone do cliente é obrigatório.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar o pedido.\"\r\n}\r\n```",
+        "description": "Este endpoint permite que um tenant registre um novo pedido. A autenticação com a role **Tenant** é obrigatória.\r\n            \r\n**Exemplo de Requisição:**\r\n```json\r\n{\r\n  \"customerPhoneNumber\": \"11987654321\",\r\n  \"items\": [\r\n    {\r\n      \"menuItemId\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\",\r\n      \"quantity\": 2,\r\n      \"customizations\": [\r\n        {\r\n          \"type\": \"Tamanho\",\r\n          \"value\": \"Grande\"\r\n        },\r\n        {\r\n          \"type\": \"Molho\",\r\n          \"value\": \"Barbecue\"\r\n        }\r\n      ]\r\n    }\r\n  ],\r\n  \"notes\": \"Entrega sem contato\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 201 Created):**\r\n```json\r\n{\r\n  \"id\": \"e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 401 Unauthorized):**\r\n```\r\n(Sem corpo de resposta, apenas status 401)\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"CustomerPhoneNumber\": [\r\n      \"O número de telefone do cliente é obrigatório.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar o pedido.\"\r\n}\r\n```",
         "requestBody": {
           "description": "Dados para a criação do pedido (Hephaestus.Domain.DTOs.Request.CreateOrderRequest).",
           "content": {
@@ -3695,6 +3799,39 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
           }
         ],
         "responses": {
@@ -3703,20 +3840,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "$ref": "#/components/schemas/OrderResponsePagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "$ref": "#/components/schemas/OrderResponsePagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": { }
+                  "$ref": "#/components/schemas/OrderResponsePagedResult"
                 }
               }
             }
@@ -3878,6 +4012,127 @@
         ],
         "requestBody": {
           "description": "Dados para a atualização do pedido (Hephaestus.Domain.DTOs.Request.UpdateOrderRequest).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Atualiza parcialmente um pedido existente para o tenant autenticado.",
+        "description": "Envie apenas os campos que deseja alterar. Campos não enviados permanecem inalterados.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
           "content": {
             "application/json": {
               "schema": {
@@ -4356,6 +4611,39 @@
             "schema": {
               "type": "boolean"
             }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
           }
         ],
         "responses": {
@@ -4364,26 +4652,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PromotionResponse"
-                  }
+                  "$ref": "#/components/schemas/PromotionResponsePagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PromotionResponse"
-                  }
+                  "$ref": "#/components/schemas/PromotionResponsePagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PromotionResponse"
-                  }
+                  "$ref": "#/components/schemas/PromotionResponsePagedResult"
                 }
               }
             }
@@ -4901,7 +5180,7 @@
         "summary": "Cria uma nova tag para o tenant autenticado.",
         "description": "Este endpoint permite que um **Administrador** ou um **Tenant** crie uma nova tag,\r\nque pode ser associada a itens do cardápio para categorização.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"name\": \"Vegetariano\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Vegetariano\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório e deve ter entre 3 e 50 caracteres.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Conflito (Status 409 Conflict):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"A tag com o nome 'Vegetariano' já está registrada para este tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token de autenticação ou token inválido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar a tag.\"\r\n}\r\n```",
         "requestBody": {
-          "description": "Dados da tag a ser criada (Hephaestus.Application.DTOs.Request.TagRequest).",
+          "description": "Dados da tag a ser criada (Hephaestus.Domain.DTOs.Request.TagRequest).",
           "content": {
             "application/json": {
               "schema": {
@@ -5044,6 +5323,21 @@
               "type": "integer",
               "format": "int32",
               "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
             }
           }
         ],
@@ -5257,6 +5551,31 @@
           "price": {
             "type": "number",
             "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AdditionalResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -5492,8 +5811,7 @@
             "type": "boolean"
           },
           "feeType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/FeeType"
           },
           "feeValue": {
             "type": "number",
@@ -5595,8 +5913,7 @@
             "nullable": true
           },
           "discountType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/DiscountType"
           },
           "discountValue": {
             "type": "number",
@@ -5620,6 +5937,18 @@
           },
           "isActive": {
             "type": "boolean"
+          },
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -5667,8 +5996,7 @@
             "nullable": true
           },
           "discountType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/DiscountType"
           },
           "discountValue": {
             "type": "number",
@@ -5773,8 +6101,7 @@
             "nullable": true
           },
           "discountType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/DiscountType"
           },
           "discountValue": {
             "type": "number",
@@ -5949,23 +6276,49 @@
         },
         "additionalProperties": false
       },
-      "Customization": {
+      "CustomizationRequest": {
         "type": "object",
         "properties": {
-          "additionalId": {
+          "type": {
+            "$ref": "#/components/schemas/CustomizationType"
+          },
+          "value": {
             "type": "string",
             "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "price": {
-            "type": "number",
-            "format": "double"
           }
         },
         "additionalProperties": false
+      },
+      "CustomizationResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/CustomizationType"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomizationType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "DiscountType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "ExecuteQueryRequest": {
         "type": "object",
@@ -6195,6 +6548,10 @@
             "type": "string",
             "nullable": true
           },
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
           "additionalIds": {
             "type": "array",
             "items": {
@@ -6212,9 +6569,132 @@
           "customizations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Customization"
+              "$ref": "#/components/schemas/CustomizationRequest"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "menuItemId": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "additionalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "customizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomizationResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerPhoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "platformFee": {
+            "type": "number",
+            "format": "double"
+          },
+          "promotionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "couponId": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "paymentStatus": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -6255,8 +6735,7 @@
             "format": "double"
           },
           "paymentStatus": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/PaymentStatus"
           }
         },
         "additionalProperties": false
@@ -6317,8 +6796,7 @@
             "nullable": true
           },
           "discountType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/DiscountType"
           },
           "discountValue": {
             "type": "number",
@@ -6364,6 +6842,31 @@
           "imageUrl": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PromotionResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromotionResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -6619,8 +7122,7 @@
             "nullable": true
           },
           "feeType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/FeeType"
           },
           "feeValue": {
             "type": "number",
@@ -6682,8 +7184,7 @@
             "nullable": true
           },
           "discountType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/DiscountType"
           },
           "discountValue": {
             "type": "number",
@@ -6759,6 +7260,10 @@
       "UpdateOrderRequest": {
         "type": "object",
         "properties": {
+          "orderId": {
+            "type": "string",
+            "nullable": true
+          },
           "customerPhoneNumber": {
             "type": "string",
             "nullable": true
@@ -6799,8 +7304,7 @@
             "nullable": true
           },
           "discountType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/DiscountType"
           },
           "discountValue": {
             "type": "number",

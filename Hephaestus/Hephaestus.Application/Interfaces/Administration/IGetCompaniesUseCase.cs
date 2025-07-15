@@ -1,8 +1,9 @@
-﻿using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 
-namespace Hephaestus.Application.Interfaces.Administration;
-
-public interface IGetCompaniesUseCase
+namespace Hephaestus.Application.Interfaces.Administration
 {
-    Task<PagedResult<CompanyResponse>> ExecuteAsync(bool? isEnabled, int pageNumber = 1, int pageSize = 20);
-}
+    public interface IGetCompaniesUseCase
+    {
+        Task<PagedResult<CompanyResponse>> ExecuteAsync(bool? isEnabled, int pageNumber = 1, int pageSize = 20);
+    }
+} 

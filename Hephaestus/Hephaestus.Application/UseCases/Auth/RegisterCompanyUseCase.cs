@@ -106,15 +106,6 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
         }
     }
 
-    private FeeType ParseFeeType(string feeTypeStr)
-    {
-        if (!Enum.TryParse<FeeType>(feeTypeStr, true, out var feeType))
-        {
-            throw new BusinessRuleException($"Tipo de taxa inválido: {feeTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(FeeType)))}.", "FEE_TYPE_VALIDATION");
-        }
-        return feeType;
-    }
-
     /// <summary>
     /// Cria a entidade de empresa.
     /// </summary>
@@ -131,7 +122,7 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             Role = Role.Tenant,
             IsEnabled = request.IsEnabled,
-            FeeType = ParseFeeType(request.FeeType.ToString()),
+            FeeType = request.FeeType,
             FeeValue = (decimal)request.FeeValue,
             State = request.State,
             City = request.City,

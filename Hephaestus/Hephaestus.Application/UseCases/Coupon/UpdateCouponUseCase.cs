@@ -39,20 +39,11 @@ public class UpdateCouponUseCase : BaseUseCase, IUpdateCouponUseCase
         _loggedUserService = loggedUserService;
     }
 
-    private DiscountType ParseDiscountType(string discountTypeStr)
-    {
-        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
-        {
-            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
-        }
-        return discountType;
-    }
-
     private async Task UpdateCouponEntityAsync(Domain.Entities.Coupon coupon, UpdateCouponRequest request)
     {
         coupon.Code = request.Code;
         coupon.CustomerPhoneNumber = request.CustomerPhoneNumber;
-        coupon.DiscountType = ParseDiscountType(request.DiscountType);
+        coupon.DiscountType = request.DiscountType;
         coupon.DiscountValue = request.DiscountValue;
         coupon.MenuItemId = request.MenuItemId;
         coupon.MinOrderValue = request.MinOrderValue;

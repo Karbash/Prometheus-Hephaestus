@@ -1,12 +1,12 @@
 ﻿using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using Hephaestus.Domain.DTOs.Response;
 
 namespace Hephaestus.Application.UseCases.Menu;
 
@@ -43,17 +43,16 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
     /// <param name="pageNumber">Número da página (padrão: 1).</param>
     /// <param name="pageSize">Tamanho da página (padrão: 20).</param>
     /// <returns>Lista paginada de itens do cardápio.</returns>
-    public async Task<PagedResult<MenuItemResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20)
+    public async Task<PagedResult<MenuItemResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
-            
             ValidateInputParameters(tenantId);
-            var pagedMenuItems = await _menuItemRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize);
+            var pagedMenuItems = await _menuItemRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
             return new PagedResult<MenuItemResponse>
             {
-                Items = (List<MenuItemResponse>)ConvertToResponseDtos(pagedMenuItems.Items),
+                Items = ConvertToResponseDtos(pagedMenuItems.Items).ToList(),
                 TotalCount = pagedMenuItems.TotalCount,
                 PageNumber = pagedMenuItems.PageNumber,
                 PageSize = pagedMenuItems.PageSize

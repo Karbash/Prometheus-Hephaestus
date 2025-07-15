@@ -31,7 +31,7 @@ public class GetCustomerOrderStatusUseCase : BaseUseCase, IGetCustomerOrderStatu
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             var orders = await _orderRepository.GetByTenantIdAsync(tenantId, customerPhoneNumber, null);
-            return orders.Select(o => new OrderStatusResponse
+            return orders.Items.Select(o => new OrderStatusResponse
             {
                 OrderId = o.Id,
                 Status = o.Status,

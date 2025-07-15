@@ -1,5 +1,5 @@
 ﻿using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Repositories;
@@ -30,7 +30,7 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
         _loggedUserService = loggedUserService;
     }
 
-    public async Task<PagedResult<TagResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20)
+    public async Task<PagedResult<TagResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
@@ -38,7 +38,7 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
             var tenantId = _loggedUserService.GetTenantId(user);
 
             ValidateInputParameters(tenantId);
-            var pagedTags = await _tagRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize);
+            var pagedTags = await _tagRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
             if (!pagedTags.Items.Any())
             {
                 throw new NotFoundException("Tags", tenantId);
@@ -48,8 +48,8 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
                 Items = pagedTags.Items.Select(t => new TagResponse
                 {
                     Id = t.Id,
-                    Name = t.Name,
-                    TenantId = t.TenantId
+                    TenantId = t.TenantId,
+                    Name = t.Name
                 }).ToList(),
                 TotalCount = pagedTags.TotalCount,
                 PageNumber = pagedTags.PageNumber,

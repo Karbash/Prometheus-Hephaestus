@@ -1,4 +1,5 @@
-﻿using Hephaestus.Domain.Entities;
+﻿using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -20,11 +21,36 @@ public class AdditionalRepository : IAdditionalRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Additional>> GetByTenantIdAsync(string tenantId)
+    public async Task<PagedResult<Additional>> GetByTenantIdAsync(string tenantId, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        return await _dbContext.Additionals
-            .Where(a => a.TenantId == tenantId)
+        var query = _dbContext.Additionals
+            .Where(a => a.TenantId == tenantId);
+
+        // Ordenação dinâmica
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            query = sortOrder?.ToLower() == "desc"
+                ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
+                : query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(a => a.Name);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return new PagedResult<Additional>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 
     public async Task<Additional?> GetByIdAsync(string id, string tenantId)

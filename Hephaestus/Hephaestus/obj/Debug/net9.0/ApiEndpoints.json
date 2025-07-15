@@ -55,10 +55,31 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.AdditionalResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Domain.DTOs.Response.PagedResult\u00601[[Hephaestus.Domain.DTOs.Response.AdditionalResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -98,7 +119,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.AdditionalResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.AdditionalResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -315,7 +336,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.CompanyResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Domain.DTOs.Response.PagedResult\u00601[[Hephaestus.Domain.DTOs.Response.CompanyResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -443,7 +464,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.CompanyResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Domain.DTOs.Response.CompanyResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -928,11 +949,21 @@
         "Name": "pageSize",
         "Type": "System.Int32",
         "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.CategoryResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Domain.DTOs.Response.PagedResult\u00601[[Hephaestus.Domain.DTOs.Response.CategoryResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -981,7 +1012,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.CategoryResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.CategoryResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1260,11 +1291,31 @@
         "Name": "customerPhoneNumber",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.CouponResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Domain.DTOs.Response.CouponResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1304,7 +1355,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.CouponResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.CouponResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1544,11 +1595,21 @@
         "Name": "pageSize",
         "Type": "System.Int32",
         "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.CustomerResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Domain.DTOs.Response.PagedResult\u00601[[Hephaestus.Domain.DTOs.Response.CustomerResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1597,7 +1658,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.CustomerResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.CustomerResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1754,11 +1815,21 @@
         "Name": "pageSize",
         "Type": "System.Int32",
         "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.MenuItemResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Domain.DTOs.Response.PagedResult\u00601[[Hephaestus.Domain.DTOs.Response.MenuItemResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1807,7 +1878,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.MenuItemResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.MenuItemResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2081,11 +2152,31 @@
         "Name": "status",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Hephaestus.Domain.DTOs.Response.PagedResult\u00601[[Hephaestus.Domain.DTOs.Response.OrderResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2171,6 +2262,69 @@
     "Method": "UpdateOrder",
     "RelativePath": "api/order/{id}",
     "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Hephaestus.Domain.DTOs.Request.UpdateOrderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ValidationProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "Hephaestus.Api.Controllers.OrderController",
+    "Method": "PatchOrder",
+    "RelativePath": "api/order/{id}",
+    "HttpMethod": "PATCH",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -2418,11 +2572,31 @@
         "Name": "isActive",
         "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.PromotionResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Domain.DTOs.Response.PagedResult\u00601[[Hephaestus.Domain.DTOs.Response.PromotionResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2466,7 +2640,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.PromotionResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.PromotionResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2701,13 +2875,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.TagRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.TagRequest",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.TagResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.TagResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2770,11 +2944,21 @@
         "Name": "pageSize",
         "Type": "System.Int32",
         "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.PagedResult\u00601[[Hephaestus.Application.DTOs.Response.TagResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Hephaestus.Domain.DTOs.Response.PagedResult\u00601[[Hephaestus.Domain.DTOs.Response.TagResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

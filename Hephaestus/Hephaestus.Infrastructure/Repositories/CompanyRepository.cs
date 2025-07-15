@@ -1,10 +1,9 @@
-ï»¿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Hephaestus.Application.DTOs.Response;
 
 namespace Hephaestus.Infrastructure.Repositories;
 
@@ -68,9 +67,9 @@ public class CompanyRepository : ICompanyRepository
             _context.Companies.Add(company);
             _logger.LogDebug("Estado da entidade antes de salvar: {State}", _context.Entry(company).State);
             var changes = await _context.SaveChangesAsync();
-            _logger.LogInformation("AlteraÃ§Ãµes salvas: {Changes}", changes);
+            _logger.LogInformation("Alterações salvas: {Changes}", changes);
             if (changes == 0)
-                _logger.LogWarning("Nenhuma alteraÃ§Ã£o foi salva no banco de dados.");
+                _logger.LogWarning("Nenhuma alteração foi salva no banco de dados.");
             else
                 _logger.LogInformation("Empresa salva com sucesso.");
         }
@@ -89,9 +88,9 @@ public class CompanyRepository : ICompanyRepository
             _context.Companies.Update(company);
             _logger.LogDebug("Estado da entidade antes de salvar: {State}", _context.Entry(company).State);
             var changes = await _context.SaveChangesAsync();
-            _logger.LogInformation("AlteraÃ§Ãµes salvas: {Changes}", changes);
+            _logger.LogInformation("Alterações salvas: {Changes}", changes);
             if (changes == 0)
-                _logger.LogWarning("Nenhuma alteraÃ§Ã£o foi salva no banco de dados.");
+                _logger.LogWarning("Nenhuma alteração foi salva no banco de dados.");
             else
                 _logger.LogInformation("Empresa atualizada com sucesso.");
         }

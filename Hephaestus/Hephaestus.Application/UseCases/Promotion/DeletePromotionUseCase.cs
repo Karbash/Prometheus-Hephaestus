@@ -83,13 +83,4 @@ public class DeletePromotionUseCase : BaseUseCase, IDeletePromotionUseCase
         var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(promotion, "Promotion", id);
     }
-
-    private DiscountType ParseDiscountType(string discountTypeStr)
-    {
-        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
-        {
-            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
-        }
-        return discountType;
-    }
 }

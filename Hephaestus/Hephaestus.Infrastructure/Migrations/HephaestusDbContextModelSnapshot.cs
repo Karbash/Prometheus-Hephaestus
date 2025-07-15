@@ -334,6 +334,9 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("CustomerPhoneNumber")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
@@ -365,6 +368,9 @@ namespace Hephaestus.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("character varying(36)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -580,11 +586,6 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("AdditionalIds")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Customizations")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("MenuItemId")
@@ -606,7 +607,6 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Tags")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TenantId")
@@ -948,6 +948,35 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsMany("Hephaestus.Domain.Entities.Customization", "Customizations", b1 =>
+                        {
+                            b1.Property<string>("OrderItemId")
+                                .HasColumnType("text");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Type")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("OrderItemId", "Id");
+
+                            b1.ToTable("Customization");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderItemId");
+                        });
+
+                    b.Navigation("Customizations");
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.ProductionQueue", b =>

@@ -1,6 +1,7 @@
 ﻿using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Promotion;
+using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -217,14 +218,19 @@ public class PromotionController : ControllerBase
     /// <param name="isActive">Filtro opcional: `true` para promoções ativas, `false` para inativas. Se omitido, retorna todas as promoções.</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo uma lista de objetos <see cref="PromotionResponse"/>.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista promoções do tenant", Description = "Retorna a lista de promoções do tenant, com filtro opcional por status de ativação. Requer autenticação com Role=Tenant.")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PromotionResponse>))]
+    [SwaggerOperation(Summary = "Lista promoções do tenant", Description = "Retorna uma lista paginada de promoções do tenant, com filtro opcional por status de ativação.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<PromotionResponse>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-    public async Task<IActionResult> GetPromotions([FromQuery] bool? isActive = null)
+    public async Task<IActionResult> GetPromotions(
+        [FromQuery] bool? isActive = null,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortOrder = "asc")
     {
-        var promotions = await _getPromotionsUseCase.ExecuteAsync(User, isActive);
-        return Ok(promotions);
+        var result = await _getPromotionsUseCase.ExecuteAsync(User, isActive, pageNumber, pageSize, sortBy, sortOrder);
+        return Ok(result);
     }
 
     /// GetPromotionById

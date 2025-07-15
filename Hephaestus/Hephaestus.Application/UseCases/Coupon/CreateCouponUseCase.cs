@@ -54,7 +54,7 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
                 TenantId = tenantId,
                 Code = request.Code,
                 CustomerPhoneNumber = request.CustomerPhoneNumber,
-                DiscountType = ParseDiscountType(request.DiscountType),
+                DiscountType = request.DiscountType,
                 DiscountValue = request.DiscountValue,
                 MenuItemId = request.MenuItemId,
                 MinOrderValue = request.MinOrderValue,
@@ -84,14 +84,5 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
 
         EnsureBusinessRule(request.DiscountValue > 0,
             "Valor do desconto deve ser maior que zero.", "DISCOUNT_VALUE_RULE");
-    }
-
-    private DiscountType ParseDiscountType(string discountTypeStr)
-    {
-        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
-        {
-            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
-        }
-        return discountType;
     }
 }

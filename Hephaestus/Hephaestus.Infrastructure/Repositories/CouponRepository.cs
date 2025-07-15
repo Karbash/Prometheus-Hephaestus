@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hephaestus.Domain.DTOs.Response;
 
 namespace Hephaestus.Infrastructure.Repositories;
 
@@ -30,23 +31,35 @@ public class CouponRepository : ICouponRepository
             .FirstOrDefaultAsync(c => c.Id == id && c.TenantId == tenantId);
     }
 
-    public async Task<IEnumerable<Coupon>> GetByTenantIdAsync(string tenantId, bool? isActive, string? customerPhoneNumber)
+    public async Task<PagedResult<Coupon>> GetByTenantIdAsync(string tenantId, bool? isActive = null, string? customerPhoneNumber = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        var query = _context.Coupons
-            .AsNoTracking()
-            .Where(c => c.TenantId == tenantId);
+        if (string.IsNullOrEmpty(tenantId))
+            throw new ArgumentException("TenantId é obrigatório.");
 
+        var query = _context.Coupons.AsNoTracking().Where(c => c.TenantId == tenantId);
         if (isActive.HasValue)
-        {
             query = query.Where(c => c.IsActive == isActive.Value);
-        }
-
         if (!string.IsNullOrEmpty(customerPhoneNumber))
-        {
             query = query.Where(c => c.CustomerPhoneNumber == customerPhoneNumber);
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            if (sortOrder?.ToLower() == "desc")
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            else
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
         }
 
-        return await query.ToListAsync();
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<Coupon>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 
     public async Task UpdateAsync(Coupon coupon)

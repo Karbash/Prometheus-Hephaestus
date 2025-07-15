@@ -1,6 +1,7 @@
 ﻿using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Menu;
+using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -169,16 +170,18 @@ public class MenuController : ControllerBase
     /// <param name="pageSize">The number of items per page for pagination (defaults to 20).</param>
     /// <returns>An <see cref="OkObjectResult"/> containing a paginated list of <see cref="MenuItemResponse"/>.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lists menu items", Description = "Returns a paginated list of menu items for the authenticated tenant. Requires authentication with Role=Tenant.")]
+    [SwaggerOperation(Summary = "Lista itens do menu", Description = "Retorna uma lista paginada de itens do menu do tenant autenticado.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<MenuItemResponse>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetMenuItems(
         [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortOrder = "asc")
     {
-        var menuItems = await _getMenuItemsUseCase.ExecuteAsync(User, pageNumber, pageSize);
+        var menuItems = await _getMenuItemsUseCase.ExecuteAsync(User, pageNumber, pageSize, sortBy, sortOrder);
         return Ok(menuItems);
     }
 

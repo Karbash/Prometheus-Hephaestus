@@ -1,4 +1,4 @@
-﻿using Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.DTOs.Response;
 using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Menu;
@@ -15,5 +15,5 @@ public interface IGetMenuItemsUseCase
     /// <param name="pageNumber">Número da página.</param>
     /// <param name="pageSize">Tamanho da página.</param>
     /// <returns>Lista de itens do cardápio.</returns>
-    Task<PagedResult<MenuItemResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20);
+    Task<PagedResult<MenuItemResponse>> ExecuteAsync(System.Security.Claims.ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
 }

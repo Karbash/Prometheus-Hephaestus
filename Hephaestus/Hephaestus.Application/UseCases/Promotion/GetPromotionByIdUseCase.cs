@@ -1,4 +1,4 @@
-﻿using Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -101,7 +101,7 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
             TenantId = promotion.TenantId,
             Name = promotion.Name,
             Description = promotion.Description,
-            DiscountType = promotion.DiscountType.ToString(),
+            DiscountType = promotion.DiscountType,
             DiscountValue = promotion.DiscountValue,
             MenuItemId = promotion.MenuItemId,
             MinOrderValue = promotion.MinOrderValue,
@@ -113,14 +113,5 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
             IsActive = promotion.IsActive,
             ImageUrl = promotion.ImageUrl
         };
-    }
-
-    private DiscountType ParseDiscountType(string discountTypeStr)
-    {
-        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
-        {
-            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
-        }
-        return discountType;
     }
 }

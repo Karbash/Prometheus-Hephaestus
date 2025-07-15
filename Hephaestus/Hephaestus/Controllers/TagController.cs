@@ -1,6 +1,7 @@
-﻿using Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.DTOs.Response; // Assuming TagResponse and PagedResult are defined here
 using Hephaestus.Application.Interfaces.Tag;
+using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -189,9 +190,11 @@ public class TagController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> GetTags(
         [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortOrder = "asc")
     {
-        var tags = await _getAllTagsByTenantUseCase.ExecuteAsync(User, pageNumber, pageSize);
+        var tags = await _getAllTagsByTenantUseCase.ExecuteAsync(User, pageNumber, pageSize, sortBy, sortOrder);
         return Ok(tags);
     }
 

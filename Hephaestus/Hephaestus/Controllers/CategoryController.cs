@@ -1,6 +1,7 @@
 using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Category;
+using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -113,9 +114,11 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetCategories(
         [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortOrder = "asc")
     {
-        var categories = await _getCategoriesUseCase.ExecuteAsync(User, pageNumber, pageSize);
+        var categories = await _getCategoriesUseCase.ExecuteAsync(User, pageNumber, pageSize, sortBy, sortOrder);
         return Ok(categories);
     }
 

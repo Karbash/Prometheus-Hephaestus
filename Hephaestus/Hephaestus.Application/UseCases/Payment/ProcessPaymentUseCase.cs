@@ -118,7 +118,7 @@ public class ProcessPaymentUseCase : BaseUseCase, IProcessPaymentUseCase
                 OrderId = order.Id,
                 TotalAmount = finalAmount,
                 PlatformFee = platformFee,
-                PaymentStatus = order.PaymentStatus.ToString()
+                PaymentStatus = order.PaymentStatus
             };
         }, "ProcessPayment");
     }

@@ -4,7 +4,8 @@ using Hephaestus.Application.Interfaces.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations; // Adicionado para as anotações do Swagger
-using System.Security.Claims; // Necessário para ClaimTypes
+using System.Security.Claims;
+using Hephaestus.Domain.DTOs.Response; // Necessário para ClaimTypes
 
 namespace Hephaestus.Api.Controllers;
 
@@ -21,6 +22,7 @@ public class OrderController : ControllerBase
     private readonly IGetOrderByIdUseCase _getOrderByIdUseCase;
     private readonly IUpdateOrderUseCase _updateOrderUseCase;
     private readonly IGetCustomerOrderStatusUseCase _getCustomerOrderStatusUseCase;
+    private readonly IPatchOrderUseCase _patchOrderUseCase;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="OrderController"/>.
@@ -35,13 +37,15 @@ public class OrderController : ControllerBase
         IGetOrdersUseCase getOrdersUseCase,
         IGetOrderByIdUseCase getOrderByIdUseCase,
         IUpdateOrderUseCase updateOrderUseCase,
-        IGetCustomerOrderStatusUseCase getCustomerOrderStatusUseCase)
+        IGetCustomerOrderStatusUseCase getCustomerOrderStatusUseCase,
+        IPatchOrderUseCase patchOrderUseCase)
     {
         _createOrderUseCase = createOrderUseCase;
         _getOrdersUseCase = getOrdersUseCase;
         _getOrderByIdUseCase = getOrderByIdUseCase;
         _updateOrderUseCase = updateOrderUseCase;
         _getCustomerOrderStatusUseCase = getCustomerOrderStatusUseCase;
+        _patchOrderUseCase = patchOrderUseCase;
     }
 
     /// CreateOrder
@@ -59,7 +63,17 @@ public class OrderController : ControllerBase
     ///   "items": [
     ///     {
     ///       "menuItemId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-    ///       "quantity": 2
+    ///       "quantity": 2,
+    ///       "customizations": [
+    ///         {
+    ///           "type": "Tamanho",
+    ///           "value": "Grande"
+    ///         },
+    ///         {
+    ///           "type": "Molho",
+    ///           "value": "Barbecue"
+    ///         }
+    ///       ]
     ///     }
     ///   ],
     ///   "notes": "Entrega sem contato"
@@ -167,13 +181,19 @@ public class OrderController : ControllerBase
     /// <returns>Um <see cref="OkObjectResult"/> contendo uma lista de pedidos.</returns>
     [HttpGet]
     [SwaggerOperation(Summary = "Lista pedidos", Description = "Retorna uma lista de pedidos do tenant, com filtros opcionais. Requer autenticação com Role=Tenant.")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<object>))] // Usando object, pois o DTO OrderResponse não foi fornecido
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<OrderResponse>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-    public async Task<IActionResult> GetOrders([FromQuery] string? customerPhoneNumber, [FromQuery] string? status)
+    public async Task<IActionResult> GetOrders(
+        [FromQuery] string? customerPhoneNumber,
+        [FromQuery] string? status,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortOrder = "asc")
     {
-        var orders = await _getOrdersUseCase.ExecuteAsync(User, customerPhoneNumber, status);
-        return Ok(orders);
+        var result = await _getOrdersUseCase.ExecuteAsync(User, customerPhoneNumber, status, pageNumber, pageSize, sortBy, sortOrder);
+        return Ok(result);
     }
 
     /// GetOrderById
@@ -310,7 +330,27 @@ public class OrderController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> UpdateOrder(string id, [FromBody] UpdateOrderRequest request)
     {
-        await _updateOrderUseCase.ExecuteAsync(id, request, User);
+        await _updateOrderUseCase.ExecuteAsync(request, User);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Atualiza parcialmente um pedido existente para o tenant autenticado.
+    /// </summary>
+    /// <remarks>
+    /// Envie apenas os campos que deseja alterar. Campos não enviados permanecem inalterados.
+    /// </remarks>
+    [HttpPatch("{id}")]
+    [SwaggerOperation(Summary = "Atualiza parcialmente um pedido", Description = "Atualiza apenas os campos enviados do pedido para o tenant. Requer autenticação com Role=Tenant.")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+    public async Task<IActionResult> PatchOrder(string id, [FromBody] UpdateOrderRequest request)
+    {
+        request.OrderId = id;
+        await _patchOrderUseCase.ExecuteAsync(request, User);
         return NoContent();
     }
 

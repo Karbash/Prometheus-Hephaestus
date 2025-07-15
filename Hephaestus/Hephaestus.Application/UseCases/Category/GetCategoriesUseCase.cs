@@ -1,5 +1,5 @@
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Category;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Repositories;
@@ -25,32 +25,28 @@ public class GetCategoriesUseCase : BaseUseCase, IGetCategoriesUseCase
         _loggedUserService = loggedUserService;
     }
 
-    public async Task<PagedResult<CategoryResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20)
+    public async Task<PagedResult<CategoryResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
-
-            var categories = await _categoryRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize);
-
-            var categoryResponses = categories.Items.Select(c => new CategoryResponse
-            {
-                Id = c.Id,
-                TenantId = c.TenantId,
-                Name = c.Name,
-                Description = c.Description,
-                IsActive = c.IsActive,
-                CreatedAt = c.CreatedAt,
-                UpdatedAt = c.UpdatedAt
-            }).ToList();
-
+            var pagedCategories = await _categoryRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
             return new PagedResult<CategoryResponse>
             {
-                Items = categoryResponses,
-                TotalCount = categories.TotalCount,
-                PageNumber = categories.PageNumber,
-                PageSize = categories.PageSize
+                Items = pagedCategories.Items.Select(c => new CategoryResponse
+                {
+                    Id = c.Id,
+                    TenantId = c.TenantId,
+                    Name = c.Name,
+                    Description = c.Description,
+                    IsActive = c.IsActive,
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
+                }).ToList(),
+                TotalCount = pagedCategories.TotalCount,
+                PageNumber = pagedCategories.PageNumber,
+                PageSize = pagedCategories.PageSize
             };
-        }, "GetCategories");
+        });
     }
 } 

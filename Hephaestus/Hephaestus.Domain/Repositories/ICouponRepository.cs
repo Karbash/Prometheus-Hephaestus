@@ -1,6 +1,7 @@
 ﻿using Hephaestus.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Hephaestus.Domain.DTOs.Response;
 
 namespace Hephaestus.Domain.Repositories;
 
@@ -8,7 +9,7 @@ public interface ICouponRepository
 {
     Task AddAsync(Coupon coupon);
     Task<Coupon?> GetByIdAsync(string id, string tenantId);
-    Task<IEnumerable<Coupon>> GetByTenantIdAsync(string tenantId, bool? isActive, string? customerPhoneNumber);
+    Task<PagedResult<Coupon>> GetByTenantIdAsync(string tenantId, bool? isActive = null, string? customerPhoneNumber = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
     Task UpdateAsync(Coupon coupon);
     Task DeleteAsync(string id, string tenantId);
     Task<bool> CodeExistsAsync(string code, string tenantId);

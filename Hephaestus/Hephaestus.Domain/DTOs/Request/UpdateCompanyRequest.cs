@@ -1,4 +1,6 @@
-﻿namespace Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Domain.Enum;
+
+namespace Hephaestus.Application.DTOs.Request;
 
 public class UpdateCompanyRequest
 {
@@ -6,7 +8,7 @@ public class UpdateCompanyRequest
     public string Email { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
     public string ApiKey { get; set; } = string.Empty;
-    public string FeeType { get; set; } = string.Empty;
+    public FeeType FeeType { get; set; } = FeeType.Percentage;
     public double FeeValue { get; set; }
     public bool IsEnabled { get; set; }
     public string State { get; set; } = string.Empty;

@@ -5,10 +5,11 @@ namespace Hephaestus.Domain.DTOs.Request;
 
 public class UpdateOrderRequest
 {
-    public string CustomerPhoneNumber { get; set; } = string.Empty;
-    public string? CouponId { get; set; }
-    public string? PromotionId { get; set; }
-    public OrderStatus Status { get; set; }
-    public PaymentStatus PaymentStatus { get; set; }
-    public List<OrderItemRequest> Items { get; set; } = new List<OrderItemRequest>();
+    public string OrderId { get; set; } = string.Empty;
+    public string? CustomerPhoneNumber { get; set; } // Opcional
+    public string? CouponId { get; set; } // Opcional
+    public string? PromotionId { get; set; } // Opcional
+    public OrderStatus? Status { get; set; } // Opcional
+    public PaymentStatus? PaymentStatus { get; set; } // Opcional
+    public List<OrderItemRequest>? Items { get; set; } // Opcional
 }

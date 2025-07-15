@@ -16,8 +16,7 @@ public class UpdateCouponRequestValidator : AbstractValidator<UpdateCouponReques
             .WithMessage("Número de telefone deve ter no máximo 20 caracteres.");
 
         RuleFor(x => x.DiscountType)
-            .NotEmpty().WithMessage("Tipo de desconto é obrigatório.")
-            .Must(x => x == "Percentage" || x == "Fixed" || x == "FreeItem")
+            .IsInEnum()
             .WithMessage("Tipo de desconto deve ser 'Percentage', 'Fixed' ou 'FreeItem'.");
 
         RuleFor(x => x.DiscountValue)

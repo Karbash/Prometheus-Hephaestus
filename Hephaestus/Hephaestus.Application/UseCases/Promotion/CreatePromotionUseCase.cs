@@ -94,14 +94,8 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(CreatePromotionRequest request, string tenantId)
     {
-        // Valida se o tipo de desconto é válido
-        if (!Enum.TryParse<DiscountType>(request.DiscountType, true, out _))
-        {
-            throw new BusinessRuleException("Tipo de desconto inválido.", "DISCOUNT_TYPE_VALIDATION");
-        }
-
         // Valida se o item do cardápio existe para promoções FreeItem
-        if (request.DiscountType == "FreeItem" && !string.IsNullOrEmpty(request.MenuItemId))
+        if (request.DiscountType == DiscountType.FreeItem && !string.IsNullOrEmpty(request.MenuItemId))
         {
             var menuItem = await _menuItemRepository.GetByIdAsync(request.MenuItemId, tenantId);
             if (menuItem == null)
@@ -119,18 +113,13 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     /// <returns>Entidade de promoção criada.</returns>
     private Task<Domain.Entities.Promotion> CreatePromotionEntityAsync(CreatePromotionRequest request, string tenantId)
     {
-        if (!Enum.TryParse<DiscountType>(request.DiscountType, true, out var discountType))
-        {
-            throw new BusinessRuleException($"Tipo de desconto inválido: {request.DiscountType}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
-        }
-
         return Task.FromResult(new Domain.Entities.Promotion
         {
             Id = Guid.NewGuid().ToString(),
             TenantId = tenantId,
             Name = request.Name,
             Description = request.Description,
-            DiscountType = discountType,
+            DiscountType = request.DiscountType,
             DiscountValue = request.DiscountValue,
             MenuItemId = request.MenuItemId,
             MinOrderValue = request.MinOrderValue,

@@ -1,6 +1,6 @@
-﻿using Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.DTOs.Response;
 using System.Security.Claims;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Interfaces.Tag;
 

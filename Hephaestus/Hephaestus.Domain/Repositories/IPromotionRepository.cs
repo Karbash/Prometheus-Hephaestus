@@ -1,11 +1,12 @@
 ﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.DTOs.Response;
 
 namespace Hephaestus.Domain.Repositories;
 
 public interface IPromotionRepository
 {
     Task AddAsync(Promotion promotion);
-    Task<IEnumerable<Promotion>> GetByTenantIdAsync(string tenantId, bool? isActive = null);
+    Task<PagedResult<Promotion>> GetByTenantIdAsync(string tenantId, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
     Task<Promotion?> GetByIdAsync(string id, string tenantId);
     Task UpdateAsync(Promotion promotion);
     Task DeleteAsync(string id, string tenantId);

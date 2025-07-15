@@ -1,6 +1,5 @@
 ﻿using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Tag;
@@ -10,6 +9,8 @@ using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.UseCases.Tag;
 

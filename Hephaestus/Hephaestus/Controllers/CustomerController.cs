@@ -1,5 +1,5 @@
 ﻿using Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Interfaces.Customer;
 using Microsoft.AspNetCore.Authorization;
@@ -165,9 +165,11 @@ public class CustomerController : ControllerBase
     public async Task<IActionResult> GetCustomers(
         [FromQuery] string? phoneNumber = null,
         [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortOrder = "asc")
     {
-        var customers = await _getCustomerUseCase.ExecuteAsync(phoneNumber, User, pageNumber, pageSize);
+        var customers = await _getCustomerUseCase.ExecuteAsync(phoneNumber, User, pageNumber, pageSize, sortBy, sortOrder);
         return Ok(customers);
     }
 

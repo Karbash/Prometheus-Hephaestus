@@ -1,5 +1,5 @@
 ﻿using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Order;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Repositories;
@@ -44,7 +44,22 @@ public class GetOrderByIdUseCase : BaseUseCase, IGetOrderByIdUseCase
                 Status = order.Status,
                 PaymentStatus = order.PaymentStatus,
                 CreatedAt = order.CreatedAt,
-                UpdatedAt = order.UpdatedAt
+                UpdatedAt = order.UpdatedAt,
+                Items = order.OrderItems?.Select(oi => new OrderItemResponse
+                {
+                    Id = oi.Id,
+                    MenuItemId = oi.MenuItemId,
+                    Quantity = oi.Quantity,
+                    UnitPrice = oi.UnitPrice,
+                    Notes = oi.Notes,
+                    Tags = oi.Tags,
+                    AdditionalIds = oi.AdditionalIds,
+                    Customizations = oi.Customizations?.Select(c => new CustomizationResponse
+                    {
+                        Type = c.Type,
+                        Value = c.Value
+                    }).ToList()
+                }).ToList() ?? new List<OrderItemResponse>()
             };
         }, "GetOrderById");
     }

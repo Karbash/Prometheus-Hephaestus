@@ -1,10 +1,12 @@
-﻿namespace Hephaestus.Application.DTOs.Request;
+﻿using Hephaestus.Domain.Enum;
+
+namespace Hephaestus.Application.DTOs.Request;
 
 public class UpdatePromotionRequest
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string DiscountType { get; set; } = string.Empty;
+    public DiscountType DiscountType { get; set; }
     public decimal DiscountValue { get; set; }
     public string? MenuItemId { get; set; }
     public decimal? MinOrderValue { get; set; }

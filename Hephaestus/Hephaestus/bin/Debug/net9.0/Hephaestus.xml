@@ -62,7 +62,7 @@
             <param name="request">Dados do adicional a ser criado.</param>
             <returns>Um `CreatedAtActionResult` contendo o ID do novo adicional.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AdditionalController.GetAdditionals">
+        <member name="M:Hephaestus.Controllers.AdditionalController.GetAdditionals(System.Int32,System.Int32,System.String,System.String)">
             <summary>
             Lista todos os adicionais pertencentes ao tenant autenticado.
             </summary>
@@ -699,7 +699,7 @@
              <param name="request">Dados da categoria a ser criada.</param>
              <returns>ID da categoria criada.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.CategoryController.GetCategories(System.Int32,System.Int32)">
+        <member name="M:Hephaestus.Controllers.CategoryController.GetCategories(System.Int32,System.Int32,System.String,System.String)">
              <summary>
              Lista as categorias do tenant autenticado com paginação.
              </summary>
@@ -940,7 +940,7 @@
             <param name="request">Dados do cupom a ser criado.</param>
             <returns>Um `CreatedAtActionResult` contendo o ID do cupom criado.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.CouponController.GetCoupons(System.Nullable{System.Boolean},System.String)">
+        <member name="M:Hephaestus.Controllers.CouponController.GetCoupons(System.Nullable{System.Boolean},System.String,System.Int32,System.Int32,System.String,System.String)">
             <summary>
             Lista os cupons disponíveis para o tenant autenticado, com filtros opcionais.
             </summary>
@@ -1196,7 +1196,7 @@
             <param name="request">Dados do cliente a serem atualizados ou cadastrados.</param>
             <returns>Um `NoContentResult` indicando o sucesso da operação.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.CustomerController.GetCustomers(System.String,System.Int32,System.Int32)">
+        <member name="M:Hephaestus.Controllers.CustomerController.GetCustomers(System.String,System.Int32,System.Int32,System.String,System.String)">
             <summary>
             Lista clientes do tenant, com opções de filtro e paginação.
             </summary>
@@ -1432,7 +1432,7 @@
              <param name="request">The data for the menu item to be created.</param>
              <returns>A <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> containing the ID of the created menu item.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.MenuController.GetMenuItems(System.Int32,System.Int32)">
+        <member name="M:Hephaestus.Controllers.MenuController.GetMenuItems(System.Int32,System.Int32,System.String,System.String)">
              <summary>
              Lists menu items for the authenticated tenant with pagination.
              </summary>
@@ -1488,7 +1488,7 @@
              </remarks>
              <param name="pageNumber">The page number for pagination (defaults to 1).</param>
              <param name="pageSize">The number of items per page for pagination (defaults to 20).</param>
-             <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing a paginated list of <see cref="T:Hephaestus.Application.DTOs.Response.MenuItemResponse"/>.</returns>
+             <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing a paginated list of <see cref="T:Hephaestus.Domain.DTOs.Response.MenuItemResponse"/>.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.MenuController.GetMenuItemById(System.String)">
              <summary>
@@ -1538,7 +1538,7 @@
              ```
              </remarks>
              <param name="id">The **ID (GUID)** of the menu item to retrieve.</param>
-             <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing the <see cref="T:Hephaestus.Application.DTOs.Response.MenuItemResponse"/> or a <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if the item is not found.</returns>
+             <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing the <see cref="T:Hephaestus.Domain.DTOs.Response.MenuItemResponse"/> or a <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if the item is not found.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.MenuController.UpdateMenuItem(System.String,Hephaestus.Application.DTOs.Request.UpdateMenuItemRequest)">
              <summary>
@@ -1931,7 +1931,7 @@
              <param name="request">Dados da promoção a ser criada (<see cref="T:Hephaestus.Application.DTOs.Request.CreatePromotionRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> contendo o ID da promoção criada.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.PromotionController.GetPromotions(System.Nullable{System.Boolean})">
+        <member name="M:Hephaestus.Controllers.PromotionController.GetPromotions(System.Nullable{System.Boolean},System.Int32,System.Int32,System.String,System.String)">
             GetPromotions
              <summary>
              Lista as promoções do tenant autenticado.
@@ -2007,7 +2007,7 @@
              ```
              </remarks>
              <param name="isActive">Filtro opcional: `true` para promoções ativas, `false` para inativas. Se omitido, retorna todas as promoções.</param>
-             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo uma lista de objetos <see cref="T:Hephaestus.Application.DTOs.Response.PromotionResponse"/>.</returns>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo uma lista de objetos <see cref="T:Hephaestus.Domain.DTOs.Response.PromotionResponse"/>.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.GetPromotionById(System.String)">
             GetPromotionById
@@ -2075,7 +2075,7 @@
              ```
              </remarks>
              <param name="id">O **ID (GUID)** da promoção a ser consultada.</param>
-             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o <see cref="T:Hephaestus.Application.DTOs.Response.PromotionResponse"/> ou um <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> se a promoção não for encontrada.</returns>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o <see cref="T:Hephaestus.Domain.DTOs.Response.PromotionResponse"/> ou um <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> se a promoção não for encontrada.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotion(System.String,Hephaestus.Application.DTOs.Request.UpdatePromotionRequest)">
             UpdatePromotion
@@ -2282,7 +2282,7 @@
             <param name="deleteTagUseCase">Caso de uso para remoção de tags.</param>
             <param name="logger">Logger para registro de eventos.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.TagController.CreateTag(Hephaestus.Application.DTOs.Request.TagRequest)">
+        <member name="M:Hephaestus.Controllers.TagController.CreateTag(Hephaestus.Domain.DTOs.Request.TagRequest)">
             CreateTag
              <summary>
              Cria uma nova tag para o tenant autenticado.
@@ -2351,10 +2351,10 @@
              }
              ```
              </remarks>
-             <param name="request">Dados da tag a ser criada (<see cref="T:Hephaestus.Application.DTOs.Request.TagRequest"/>).</param>
-             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o objeto <see cref="T:Hephaestus.Application.DTOs.Response.TagResponse"/> da tag criada.</returns>
+             <param name="request">Dados da tag a ser criada (<see cref="T:Hephaestus.Domain.DTOs.Request.TagRequest"/>).</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o objeto <see cref="T:Hephaestus.Domain.DTOs.Response.TagResponse"/> da tag criada.</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Hephaestus.Controllers.TagController.GetTags(System.Int32,System.Int32)" -->
+        <!-- Badly formed XML comment ignored for member "M:Hephaestus.Controllers.TagController.GetTags(System.Int32,System.Int32,System.String,System.String)" -->
         <member name="M:Hephaestus.Controllers.TagController.DeleteTag(System.String)">
             DeleteTag
              <summary>
@@ -2432,7 +2432,7 @@
             Controller para gerenciamento de pedidos, permitindo a criação, consulta, atualização e rastreamento de status de pedidos.
             </summary>
         </member>
-        <member name="M:Hephaestus.Api.Controllers.OrderController.#ctor(Hephaestus.Application.Interfaces.Order.ICreateOrderUseCase,Hephaestus.Application.Interfaces.Order.IGetOrdersUseCase,Hephaestus.Application.Interfaces.Order.IGetOrderByIdUseCase,Hephaestus.Application.Interfaces.Order.IUpdateOrderUseCase,Hephaestus.Application.Interfaces.Order.IGetCustomerOrderStatusUseCase)">
+        <member name="M:Hephaestus.Api.Controllers.OrderController.#ctor(Hephaestus.Application.Interfaces.Order.ICreateOrderUseCase,Hephaestus.Application.Interfaces.Order.IGetOrdersUseCase,Hephaestus.Application.Interfaces.Order.IGetOrderByIdUseCase,Hephaestus.Application.Interfaces.Order.IUpdateOrderUseCase,Hephaestus.Application.Interfaces.Order.IGetCustomerOrderStatusUseCase,Hephaestus.Application.Interfaces.Order.IPatchOrderUseCase)">
             <summary>
             Inicializa uma nova instância do <see cref="T:Hephaestus.Api.Controllers.OrderController"/>.
             </summary>
@@ -2457,7 +2457,17 @@
                "items": [
                  {
                    "menuItemId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                   "quantity": 2
+                   "quantity": 2,
+                   "customizations": [
+                     {
+                       "type": "Tamanho",
+                       "value": "Grande"
+                     },
+                     {
+                       "type": "Molho",
+                       "value": "Barbecue"
+                     }
+                   ]
                  }
                ],
                "notes": "Entrega sem contato"
@@ -2503,7 +2513,7 @@
              <param name="request">Dados para a criação do pedido (<see cref="T:Hephaestus.Domain.DTOs.Request.CreateOrderRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> contendo o ID do pedido criado.</returns>
         </member>
-        <member name="M:Hephaestus.Api.Controllers.OrderController.GetOrders(System.String,System.String)">
+        <member name="M:Hephaestus.Api.Controllers.OrderController.GetOrders(System.String,System.String,System.Int32,System.Int32,System.String,System.String)">
             ### GetOrders
              <summary>
              Lista pedidos para o tenant autenticado.
@@ -2666,6 +2676,14 @@
              <param name="id">O **ID (GUID)** do pedido a ser atualizado.</param>
              <param name="request">Dados para a atualização do pedido (<see cref="T:Hephaestus.Domain.DTOs.Request.UpdateOrderRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicando o sucesso da atualização.</returns>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.PatchOrder(System.String,Hephaestus.Domain.DTOs.Request.UpdateOrderRequest)">
+            <summary>
+            Atualiza parcialmente um pedido existente para o tenant autenticado.
+            </summary>
+            <remarks>
+            Envie apenas os campos que deseja alterar. Campos não enviados permanecem inalterados.
+            </remarks>
         </member>
         <member name="M:Hephaestus.Api.Controllers.OrderController.GetCustomerOrderStatus(System.String)">
             ### GetCustomerOrderStatus

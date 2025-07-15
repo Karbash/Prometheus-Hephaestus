@@ -17,8 +17,7 @@ public class CreateCouponRequestValidator : AbstractValidator<CreateCouponReques
 
         RuleFor(x => x.DiscountType)
             .NotEmpty().WithMessage("Tipo de desconto é obrigatório.")
-            .Must(x => x == "Percentage" || x == "Fixed" || x == "FreeItem")
-            .WithMessage("Tipo de desconto deve ser 'Percentage', 'Fixed' ou 'FreeItem'.");
+            .IsInEnum().WithMessage("Tipo de desconto inválido.");
 
         RuleFor(x => x.DiscountValue)
             .GreaterThan(0).WithMessage("Valor do desconto deve ser maior que zero.");

@@ -1,4 +1,4 @@
-﻿using Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Customer;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;

@@ -1,4 +1,4 @@
-﻿using Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -43,20 +43,20 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     /// <param name="user">Usuário autenticado.</param>
     /// <param name="isActive">Filtro opcional para promoções ativas.</param>
     /// <returns>Lista de promoções.</returns>
-    public async Task<IEnumerable<PromotionResponse>> ExecuteAsync(ClaimsPrincipal user, bool? isActive)
+    public async Task<PagedResult<PromotionResponse>> ExecuteAsync(ClaimsPrincipal user, bool? isActive, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
-            
-            // Validação dos parâmetros de entrada
             ValidateInputParameters(tenantId);
-
-            // Busca das promoções
-            var promotions = await GetPromotionsAsync(tenantId, isActive);
-
-            // Conversão para DTOs de resposta
-            return ConvertToResponseDtos(promotions);
+            var pagedPromotions = await _promotionRepository.GetByTenantIdAsync(tenantId, isActive, pageNumber, pageSize, sortBy, sortOrder);
+            return new PagedResult<PromotionResponse>
+            {
+                Items = ConvertToResponseDtos(pagedPromotions.Items).ToList(),
+                TotalCount = pagedPromotions.TotalCount,
+                PageNumber = pagedPromotions.PageNumber,
+                PageSize = pagedPromotions.PageSize
+            };
         });
     }
 
@@ -76,9 +76,9 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     /// <param name="tenantId">ID do tenant.</param>
     /// <param name="isActive">Filtro opcional para promoções ativas.</param>
     /// <returns>Lista de promoções.</returns>
-    private async Task<IEnumerable<Domain.Entities.Promotion>> GetPromotionsAsync(string tenantId, bool? isActive)
+    private async Task<PagedResult<Domain.Entities.Promotion>> GetPromotionsAsync(string tenantId, bool? isActive, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        return await _promotionRepository.GetByTenantIdAsync(tenantId, isActive);
+        return await _promotionRepository.GetByTenantIdAsync(tenantId, isActive, pageNumber, pageSize, sortBy, sortOrder);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
             TenantId = p.TenantId,
             Name = p.Name,
             Description = p.Description,
-            DiscountType = p.DiscountType.ToString(),
+            DiscountType = p.DiscountType,
             DiscountValue = p.DiscountValue,
             MenuItemId = p.MenuItemId,
             MinOrderValue = p.MinOrderValue,

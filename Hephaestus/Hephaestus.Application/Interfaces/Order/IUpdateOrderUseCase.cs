@@ -5,5 +5,6 @@ namespace Hephaestus.Application.Interfaces.Order;
 
 public interface IUpdateOrderUseCase
 {
-    Task ExecuteAsync(string id, UpdateOrderRequest request, ClaimsPrincipal user);
+    Task ExecuteAsync(UpdateOrderRequest request, ClaimsPrincipal user);
+    Task ExecutePartialAsync(UpdateOrderRequest request, System.Security.Claims.ClaimsPrincipal user);
 }

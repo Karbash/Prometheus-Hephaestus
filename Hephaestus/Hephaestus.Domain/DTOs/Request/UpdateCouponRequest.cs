@@ -1,10 +1,12 @@
-﻿namespace Hephaestus.Domain.DTOs.Request;
+﻿using Hephaestus.Domain.Enum;
+
+namespace Hephaestus.Domain.DTOs.Request;
 
 public class UpdateCouponRequest
 {
     public string Code { get; set; } = string.Empty;
     public string? CustomerPhoneNumber { get; set; }
-    public string DiscountType { get; set; } = string.Empty;
+    public DiscountType DiscountType { get; set; }
     public decimal DiscountValue { get; set; }
     public string? MenuItemId { get; set; }
     public decimal MinOrderValue { get; set; }

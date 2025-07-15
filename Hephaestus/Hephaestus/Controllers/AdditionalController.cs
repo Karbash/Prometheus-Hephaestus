@@ -1,6 +1,7 @@
 ﻿using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Additional;
+using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -130,14 +131,18 @@ public class AdditionalController : ControllerBase
     /// </remarks>
     /// <returns>Uma lista de objetos `AdditionalResponse`.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista adicionais do tenant", Description = "Retorna uma lista de todos os adicionais pertencentes ao tenant do usuário autenticado.")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AdditionalResponse>))]
+    [SwaggerOperation(Summary = "Lista adicionais do tenant", Description = "Retorna uma lista paginada de adicionais do tenant autenticado.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<AdditionalResponse>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAdditionals()
+    public async Task<IActionResult> GetAdditionals(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortOrder = "asc")
     {
-        var additionals = await _getAdditionalsUseCase.ExecuteAsync(User);
-        return Ok(additionals);
+        var result = await _getAdditionalsUseCase.ExecuteAsync(User, pageNumber, pageSize, sortBy, sortOrder);
+        return Ok(result);
     }
 
     /// <summary>

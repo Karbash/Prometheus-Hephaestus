@@ -36,15 +36,11 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
         builder.Property(oi => oi.Notes)
             .HasMaxLength(500);
 
-        builder.Property(oi => oi.Customizations)
-            .IsRequired(false)
-            .HasConversion(
-                v => v == null || v.Count == 0 ? null : JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => string.IsNullOrEmpty(v) ? new List<Customization>() : JsonSerializer.Deserialize<List<Customization>>(v, (JsonSerializerOptions?)null) ?? new List<Customization>(),
-                new ValueComparer<List<Customization>>(
-                    (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
-                    c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
-                    c => c != null ? c.ToList() : new List<Customization>()));
+        builder.OwnsMany(o => o.Customizations, cb =>
+        {
+            cb.Property(c => c.Type)
+              .HasConversion<string>();
+        });
 
         builder.Property(oi => oi.AdditionalIds)
             .IsRequired(false)

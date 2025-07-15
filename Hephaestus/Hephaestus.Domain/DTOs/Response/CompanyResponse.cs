@@ -1,4 +1,6 @@
-﻿namespace Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.Enum;
+
+namespace Hephaestus.Domain.DTOs.Response;
 
 public class CompanyResponse
 {
@@ -7,7 +9,7 @@ public class CompanyResponse
     public string Email { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
     public bool IsEnabled { get; set; }
-    public string FeeType { get; set; } = string.Empty;
+    public FeeType FeeType { get; set; }
     public double FeeValue { get; set; }
     public string State { get; set; } = string.Empty;
     public string? City { get; set; }

@@ -1,4 +1,4 @@
-﻿using Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Additional;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -42,21 +42,20 @@ public class GetAdditionalsUseCase : BaseUseCase, IGetAdditionalsUseCase
     /// </summary>
     /// <param name="user">Usuário autenticado.</param>
     /// <returns>Lista de adicionais.</returns>
-    public async Task<IEnumerable<AdditionalResponse>> ExecuteAsync(ClaimsPrincipal user)
+    public async Task<PagedResult<AdditionalResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Obter tenantId do usuário logado
             var tenantId = _loggedUserService.GetTenantId(user);
-
-            // Validação dos parâmetros de entrada
             ValidateInputParameters(tenantId);
-
-            // Busca dos adicionais
-            var additionals = await GetAdditionalsAsync(tenantId);
-
-            // Conversão para DTOs de resposta
-            return ConvertToResponseDtos(additionals);
+            var pagedAdditionals = await _additionalRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
+            return new PagedResult<AdditionalResponse>
+            {
+                Items = ConvertToResponseDtos(pagedAdditionals.Items).ToList(),
+                TotalCount = pagedAdditionals.TotalCount,
+                PageNumber = pagedAdditionals.PageNumber,
+                PageSize = pagedAdditionals.PageSize
+            };
         });
     }
 
@@ -75,9 +74,9 @@ public class GetAdditionalsUseCase : BaseUseCase, IGetAdditionalsUseCase
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     /// <returns>Lista de adicionais.</returns>
-    private async Task<IEnumerable<Domain.Entities.Additional>> GetAdditionalsAsync(string tenantId)
+    private async Task<PagedResult<Domain.Entities.Additional>> GetAdditionalsAsync(string tenantId, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        return await _additionalRepository.GetByTenantIdAsync(tenantId);
+        return await _additionalRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
     }
 
     /// <summary>

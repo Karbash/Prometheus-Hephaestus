@@ -109,15 +109,6 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
         }
     }
 
-    private FeeType ParseFeeType(string feeTypeStr)
-    {
-        if (!Enum.TryParse<FeeType>(feeTypeStr, true, out var feeType))
-        {
-            throw new BusinessRuleException($"Tipo de taxa inválido: {feeTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(FeeType)))}.", "FEE_TYPE_VALIDATION");
-        }
-        return feeType;
-    }
-
     /// <summary>
     /// Atualiza a empresa com os novos dados.
     /// </summary>
@@ -128,7 +119,7 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
         company.Name = request.Name;
         company.Email = request.Email;
         company.PhoneNumber = request.PhoneNumber;
-        company.FeeType = ParseFeeType(request.FeeType);
+        company.FeeType = request.FeeType;
         company.FeeValue = (decimal)request.FeeValue;
         company.IsEnabled = request.IsEnabled;
         company.State = request.State;

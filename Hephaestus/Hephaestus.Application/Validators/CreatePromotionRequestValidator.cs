@@ -17,8 +17,7 @@ public class CreatePromotionRequestValidator : AbstractValidator<CreatePromotion
             .MaximumLength(500).WithMessage("Descrição não pode exceder 500 caracteres.");
 
         RuleFor(x => x.DiscountType)
-            .NotEmpty().WithMessage("Tipo de desconto é obrigatório.")
-            .Must(type => Enum.TryParse<DiscountType>(type, true, out _))
+            .IsInEnum()
             .WithMessage("Tipo de desconto inválido. Use: Percentage, Fixed ou FreeItem.");
 
         RuleFor(x => x.DiscountValue)
@@ -26,7 +25,7 @@ public class CreatePromotionRequestValidator : AbstractValidator<CreatePromotion
 
         RuleFor(x => x.MenuItemId)
             .NotEmpty()
-            .When(x => x.DiscountType == "FreeItem")
+            .When(x => x.DiscountType == DiscountType.FreeItem)
             .WithMessage("MenuItemId é obrigatório para DiscountType FreeItem.");
 
         RuleFor(x => x.MinOrderValue)

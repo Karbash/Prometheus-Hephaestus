@@ -1,4 +1,4 @@
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
@@ -38,20 +38,23 @@ public class CategoryRepository : ICategoryRepository
             .FirstOrDefaultAsync(c => c.Name == name && c.TenantId == tenantId);
     }
 
-    public async Task<PagedResult<Category>> GetByTenantIdAsync(string tenantId, int pageNumber = 1, int pageSize = 20)
+    public async Task<PagedResult<Category>> GetByTenantIdAsync(string tenantId, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         if (string.IsNullOrEmpty(tenantId))
             throw new ArgumentException("TenantId é obrigatório.");
 
         var query = _context.Categories.AsNoTracking().Where(c => c.TenantId == tenantId);
 
-        var totalCount = await query.CountAsync();
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            if (sortOrder?.ToLower() == "desc")
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            else
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
 
-        var items = await query
-            .OrderBy(c => c.Name)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
         return new PagedResult<Category>
         {

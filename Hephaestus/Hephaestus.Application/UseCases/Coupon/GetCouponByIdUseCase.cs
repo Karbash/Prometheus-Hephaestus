@@ -1,4 +1,4 @@
-﻿using Hephaestus.Application.DTOs.Response;
+﻿using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Interfaces.Coupon;
@@ -31,15 +31,6 @@ public class GetCouponByIdUseCase : BaseUseCase, IGetCouponByIdUseCase
         _loggedUserService = loggedUserService;
     }
 
-    private DiscountType ParseDiscountType(string discountTypeStr)
-    {
-        if (!Enum.TryParse<DiscountType>(discountTypeStr, true, out var discountType))
-        {
-            throw new BusinessRuleException($"Tipo de desconto inválido: {discountTypeStr}. Os valores válidos são: {string.Join(", ", Enum.GetNames(typeof(DiscountType)))}.", "DISCOUNT_TYPE_VALIDATION");
-        }
-        return discountType;
-    }
-
     public async Task<CouponResponse> ExecuteAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
@@ -54,7 +45,7 @@ public class GetCouponByIdUseCase : BaseUseCase, IGetCouponByIdUseCase
                 Id = coupon.Id,
                 Code = coupon.Code,
                 CustomerPhoneNumber = coupon.CustomerPhoneNumber,
-                DiscountType = coupon.DiscountType.ToString(),
+                DiscountType = coupon.DiscountType,
                 DiscountValue = coupon.DiscountValue,
                 MenuItemId = coupon.MenuItemId,
                 MinOrderValue = (decimal)coupon.MinOrderValue,

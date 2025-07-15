@@ -20,6 +20,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
     private readonly IPromotionRepository _promotionRepository;
     private readonly IValidator<CreateOrderRequest> _validator;
     private readonly ILoggedUserService _loggedUserService;
+    private readonly ICompanyRepository _companyRepository;
 
     public CreateOrderUseCase(
         IOrderRepository orderRepository,
@@ -28,6 +29,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
         IPromotionRepository promotionRepository,
         IValidator<CreateOrderRequest> validator,
         ILoggedUserService loggedUserService,
+        ICompanyRepository companyRepository,
         ILogger<CreateOrderUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -38,6 +40,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
         _promotionRepository = promotionRepository;
         _validator = validator;
         _loggedUserService = loggedUserService;
+        _companyRepository = companyRepository;
     }
 
     public async Task<string> ExecuteAsync(CreateOrderRequest request, ClaimsPrincipal user)
@@ -48,6 +51,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
 
             var tenantId = _loggedUserService.GetTenantId(user);
             decimal totalAmount = 0;
+            var orderId = Guid.NewGuid().ToString();
             var orderItems = new List<OrderItem>();
 
             foreach (var item in request.Items)
@@ -59,14 +63,19 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                 {
                     Id = Guid.NewGuid().ToString(),
                     TenantId = tenantId,
-                    OrderId = Guid.NewGuid().ToString(),
+                    OrderId = orderId, // Corrigido: todos os itens usam o mesmo OrderId
                     MenuItemId = item.MenuItemId,
                     Quantity = item.Quantity,
                     UnitPrice = menuItem.Price,
                     Notes = item.Notes ?? string.Empty,
                     Tags = item.Tags ?? new List<string>(),
                     AdditionalIds = item.AdditionalIds ?? new List<string>(),
-                    Customizations = item.Customizations ?? new List<Customization>()
+                    Customizations = item.Customizations?
+                        .Select(c => new Customization
+                        {
+                            Type = c.Type,
+                            Value = c.Value
+                        }).ToList() ?? new List<Customization>()
                 };
                 orderItems.Add(orderItem);
                 totalAmount += item.Quantity * menuItem.Price;
@@ -88,13 +97,19 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                     "Promoção inválida ou expirada.", "PROMOTION_INVALID");
             }
 
+            var company = await _companyRepository.GetByIdAsync(tenantId);
+            EnsureResourceExists(company, "Company", tenantId);
+
+            // Calcula a taxa de plataforma
+            var platformFee = company.FeeType == FeeType.Percentage ? totalAmount * (company.FeeValue / 100) : company.FeeValue;
+
             var order = new Domain.Entities.Order
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = orderId,
                 TenantId = tenantId,
                 CustomerPhoneNumber = request.CustomerPhoneNumber,
                 TotalAmount = totalAmount,
-                PlatformFee = 0, // Calcular com base na configuração da empresa
+                PlatformFee = platformFee,
                 PromotionId = request.PromotionId,
                 CouponId = request.CouponId,
                 Status = OrderStatus.Pending,

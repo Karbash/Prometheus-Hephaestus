@@ -8,6 +8,7 @@ using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using Hephaestus.Domain.DTOs.Response;
 
 namespace Hephaestus.Application.UseCases.Customer;
 
@@ -49,21 +50,27 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     /// <param name="pageNumber">Número da página.</param>
     /// <param name="pageSize">Tamanho da página.</param>
     /// <returns>Lista de clientes.</returns>
-    public async Task<PagedResult<CustomerResponse>> ExecuteAsync(string? phoneNumber, ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20)
+    public async Task<PagedResult<CustomerResponse>> ExecuteAsync(string? phoneNumber, ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
-            
-            var pagedCustomers = await _customerRepository.GetAllAsync(phoneNumber, tenantId, pageNumber, pageSize);
+            var pagedCustomers = await _customerRepository.GetAllAsync(phoneNumber, tenantId, pageNumber, pageSize, sortBy, sortOrder);
             return new PagedResult<CustomerResponse>
             {
                 Items = pagedCustomers.Items.Select(c => new CustomerResponse
                 {
                     Id = c.Id,
-                    Name = c.Name,
+                    TenantId = c.TenantId,
                     PhoneNumber = c.PhoneNumber,
-                    TenantId = c.TenantId
+                    Name = c.Name,
+                    State = c.State,
+                    City = c.City,
+                    Street = c.Street,
+                    Number = c.Number,
+                    Latitude = c.Latitude,
+                    Longitude = c.Longitude,
+                    CreatedAt = c.CreatedAt
                 }).ToList(),
                 TotalCount = pagedCustomers.TotalCount,
                 PageNumber = pagedCustomers.PageNumber,

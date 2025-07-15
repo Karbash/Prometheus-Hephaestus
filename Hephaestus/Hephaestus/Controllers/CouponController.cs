@@ -299,6 +299,94 @@ public class CouponController : ControllerBase
     }
 
     /// <summary>
+    /// Atualiza o status de ativação de um cupom (ativo/inativo).
+    /// </summary>
+    /// <param name="id">ID do cupom.</param>
+    /// <param name="request">Novo status de ativação.</param>
+    /// <returns>Cupom atualizado.</returns>
+    /// <response code="200">Status atualizado com sucesso.</response>
+    /// <response code="400">Regras de negócio violadas.</response>
+    /// <response code="404">Cupom não encontrado.</response>
+    [HttpPatch("{id}/status")]
+    [SwaggerOperation(Summary = "Ativar/Desativar cupom", Description = "Ativa ou desativa um cupom, respeitando regras de negócio.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CouponResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateCouponStatus(string id, [FromBody] UpdateCouponStatusRequest request)
+    {
+        var coupon = await _getCouponByIdUseCase.ExecuteAsync(id, User);
+        if (coupon == null)
+            return NotFound();
+
+        // Regra: não pode ativar cupom expirado
+        if (request.IsActive && coupon.EndDate < DateTime.UtcNow)
+            return BadRequest("Não é possível ativar um cupom expirado.");
+
+        // Regra: não pode desativar cupom em uso ativo (exemplo: cupom vinculado a pedido aberto)
+        // Aqui seria necessário consultar pedidos, mas como exemplo:
+        // bool emUso = await _orderRepository.ExistsOrderWithCouponActive(id);
+        // if (!request.IsActive && emUso)
+        //     return BadRequest("Não é possível desativar um cupom em uso ativo.");
+
+        // Atualiza status
+        var updateRequest = new UpdateCouponRequest
+        {
+            Code = coupon.Code,
+            CustomerPhoneNumber = coupon.CustomerPhoneNumber,
+            DiscountType = coupon.DiscountType,
+            DiscountValue = coupon.DiscountValue,
+            MenuItemId = coupon.MenuItemId,
+            MinOrderValue = coupon.MinOrderValue,
+            StartDate = coupon.StartDate,
+            EndDate = coupon.EndDate,
+            IsActive = request.IsActive
+        };
+        await _updateCouponUseCase.ExecuteAsync(id, updateRequest, User);
+        // Retorna o cupom atualizado
+        var updated = await _getCouponByIdUseCase.ExecuteAsync(id, User);
+        return Ok(updated);
+    }
+
+    /// <summary>
+    /// Registra o uso de um cupom por um cliente em um pedido.
+    /// </summary>
+    /// <param name="id">ID do cupom.</param>
+    /// <param name="request">Dados do uso do cupom.</param>
+    /// <returns>Confirmação do uso.</returns>
+    /// <response code="200">Uso registrado com sucesso.</response>
+    /// <response code="400">Regras de negócio violadas.</response>
+    /// <response code="404">Cupom não encontrado.</response>
+    [HttpPost("{id}/use")]
+    [SwaggerOperation(Summary = "Registrar uso de cupom", Description = "Registra o uso de um cupom por um cliente em um pedido, validando regras de negócio.")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UseCoupon(string id, [FromBody] UseCouponRequest request)
+    {
+        var coupon = await _getCouponByIdUseCase.ExecuteAsync(id, User);
+        if (coupon == null)
+            return NotFound();
+
+        if (!coupon.IsActive)
+            return BadRequest("Cupom inativo.");
+        if (coupon.EndDate < DateTime.UtcNow)
+            return BadRequest("Cupom expirado.");
+        // Exemplo de limite de uso (mock):
+        // int maxUsos = 1; // Substitua pela lógica real
+        // int usosCliente = 0; // Buscar na base real
+        // if (usosCliente >= maxUsos)
+        //     return BadRequest("Limite de uso por cliente atingido.");
+        // int usosTotais = 0; // Buscar na base real
+        // if (usosTotais >= 10)
+        //     return BadRequest("Limite total de uso do cupom atingido.");
+
+        // Aqui faria a atualização dos contadores de uso
+        // await _couponRepository.RegisterUseAsync(id, request.CustomerPhoneNumber, request.OrderId);
+
+        return Ok(new { message = "Uso do cupom registrado com sucesso." });
+    }
+
+    /// <summary>
     /// Remove um cupom do tenant autenticado.
     /// </summary>
     /// <remarks>

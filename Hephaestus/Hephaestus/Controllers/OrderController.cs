@@ -354,6 +354,127 @@ public class OrderController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Atualiza o status de um pedido.
+    /// </summary>
+    /// <param name="id">ID do pedido.</param>
+    /// <param name="request">Novo status do pedido.</param>
+    /// <returns>Pedido atualizado.</returns>
+    /// <response code="200">Status atualizado com sucesso.</response>
+    /// <response code="400">Transição de status inválida.</response>
+    /// <response code="404">Pedido não encontrado.</response>
+    [HttpPatch("{id}/status")]
+    [SwaggerOperation(Summary = "Atualizar status do pedido", Description = "Atualiza o status de um pedido. Só permite transições válidas.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateOrderStatus(string id, [FromBody] UpdateOrderStatusRequest request)
+    {
+        var order = await _getOrderByIdUseCase.ExecuteAsync(id, User);
+        if (order == null)
+            return NotFound();
+
+        var currentStatus = order.Status.ToString();
+        var newStatus = request.Status.ToString();
+        // Corrigir para evitar ?. em enum não-nullable
+        var paymentStatus = order.PaymentStatus.ToString();
+
+        // Regras de transição
+        if (currentStatus == "Pending")
+        {
+            if (newStatus == "Cancelled")
+            {
+                if (paymentStatus == "Paid")
+                    return BadRequest("Não é possível cancelar um pedido já pago.");
+            }
+            else if (newStatus == "Completed")
+            {
+                if (paymentStatus != "Paid")
+                    return BadRequest("Só é permitido finalizar um pedido já pago.");
+            }
+            else if (newStatus != "InProduction")
+            {
+                return BadRequest("Transição de status inválida para pedido pendente.");
+            }
+        }
+        else if (currentStatus == "InProduction")
+        {
+            if (newStatus == "Cancelled")
+            {
+                if (paymentStatus == "Paid")
+                    return BadRequest("Não é possível cancelar um pedido já pago.");
+            }
+            else if (newStatus == "Completed")
+            {
+                if (paymentStatus != "Paid")
+                    return BadRequest("Só é permitido finalizar um pedido já pago.");
+            }
+            else if (newStatus != "Pending")
+            {
+                return BadRequest("Transição de status inválida para pedido em produção.");
+            }
+        }
+        else if (currentStatus == "Completed" || currentStatus == "Cancelled")
+        {
+            return BadRequest("Não é permitido alterar o status de um pedido já finalizado ou cancelado.");
+        }
+
+        // Atualiza status
+        var updateRequest = new UpdateOrderRequest
+        {
+            OrderId = order.Id,
+            Status = request.Status
+        };
+        await _updateOrderUseCase.ExecuteAsync(updateRequest, User);
+        // Retorna o pedido atualizado
+        var updated = await _getOrderByIdUseCase.ExecuteAsync(id, User);
+        return Ok(updated);
+    }
+
+    /// <summary>
+    /// Atualiza o status de pagamento de um pedido.
+    /// </summary>
+    /// <param name="id">ID do pedido.</param>
+    /// <param name="request">Novo status de pagamento.</param>
+    /// <returns>Pedido atualizado.</returns>
+    /// <response code="200">Status de pagamento atualizado com sucesso.</response>
+    /// <response code="400">Transição de status inválida.</response>
+    /// <response code="404">Pedido não encontrado.</response>
+    [HttpPatch("{id}/payment-status")]
+    [SwaggerOperation(Summary = "Atualizar status de pagamento do pedido", Description = "Atualiza o status de pagamento de um pedido. Só permite transições válidas.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateOrderPaymentStatus(string id, [FromBody] UpdateOrderPaymentStatusRequest request)
+    {
+        var order = await _getOrderByIdUseCase.ExecuteAsync(id, User);
+        if (order == null)
+            return NotFound();
+
+        var currentStatus = order.PaymentStatus.ToString();
+        var newStatus = request.PaymentStatus.ToString();
+
+        // Regras de transição (exemplo: só pode marcar como pago se não estiver pago, etc)
+        if (currentStatus == "Paid" && newStatus != "Refunded")
+            return BadRequest("O pedido já está pago. Só é permitido reembolsar.");
+        if (currentStatus == "Refunded")
+            return BadRequest("O pedido já foi reembolsado.");
+        if (currentStatus == "Failed" && newStatus != "Pending")
+            return BadRequest("Só é permitido retornar para pendente após falha.");
+        // Aqui pode-se integrar com gateway para validar pagamento real
+
+        // Atualiza status
+        var updateRequest = new UpdateOrderRequest
+        {
+            OrderId = order.Id,
+            PaymentStatus = request.PaymentStatus
+        };
+        await _updateOrderUseCase.ExecuteAsync(updateRequest, User);
+        // Retorna o pedido atualizado
+        var updated = await _getOrderByIdUseCase.ExecuteAsync(id, User);
+        return Ok(updated);
+    }
+
     ///### GetCustomerOrderStatus
 
     /// <summary>

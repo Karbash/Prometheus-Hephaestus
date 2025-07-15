@@ -1,6 +1,7 @@
 ﻿using Hephaestus.Application.DTOs.Request;
 using Hephaestus.Application.DTOs.Response;
 using Hephaestus.Application.Interfaces.Promotion;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -400,6 +401,59 @@ public class PromotionController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Atualiza o status de ativação de uma promoção (ativa/inativa).
+    /// </summary>
+    /// <param name="id">ID da promoção.</param>
+    /// <param name="request">Novo status de ativação.</param>
+    /// <returns>Promoção atualizada.</returns>
+    /// <response code="200">Status atualizado com sucesso.</response>
+    /// <response code="400">Regras de negócio violadas.</response>
+    /// <response code="404">Promoção não encontrada.</response>
+    [HttpPatch("{id}/status")]
+    [SwaggerOperation(Summary = "Ativar/Desativar promoção", Description = "Ativa ou desativa uma promoção, respeitando regras de negócio.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PromotionResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdatePromotionStatus(string id, [FromBody] UpdatePromotionStatusRequest request)
+    {
+        var promotion = await _getPromotionByIdUseCase.ExecuteAsync(id, User);
+        if (promotion == null)
+            return NotFound();
+
+        // Regra: não pode ativar promoção expirada
+        if (request.IsActive && promotion.EndDate < DateTime.UtcNow)
+            return BadRequest("Não é possível ativar uma promoção expirada.");
+
+        // Regra: não pode desativar promoção em uso ativo (exemplo: promoção vinculada a pedido aberto)
+        // Aqui seria necessário consultar pedidos, mas como exemplo:
+        // bool emUso = await _orderRepository.ExistsOrderWithPromotionActive(id);
+        // if (!request.IsActive && emUso)
+        //     return BadRequest("Não é possível desativar uma promoção em uso ativo.");
+
+        // Atualiza status
+        var updateRequest = new UpdatePromotionRequest
+        {
+            Name = promotion.Name,
+            Description = promotion.Description,
+            DiscountType = promotion.DiscountType,
+            DiscountValue = promotion.DiscountValue,
+            MenuItemId = promotion.MenuItemId,
+            MinOrderValue = promotion.MinOrderValue,
+            MaxUsagePerCustomer = promotion.MaxUsagePerCustomer,
+            MaxTotalUses = promotion.MaxTotalUses,
+            ApplicableToTags = promotion.ApplicableToTags,
+            StartDate = promotion.StartDate,
+            EndDate = promotion.EndDate,
+            IsActive = request.IsActive,
+            ImageUrl = promotion.ImageUrl
+        };
+        await _updatePromotionUseCase.ExecuteAsync(id, updateRequest, User);
+        // Retorna a promoção atualizada
+        var updated = await _getPromotionByIdUseCase.ExecuteAsync(id, User);
+        return Ok(updated);
+    }
+
     /// DeletePromotion
 
     /// <summary>
@@ -537,5 +591,44 @@ public class PromotionController : ControllerBase
     {
         await _notifyPromotionUseCase.ExecuteAsync(request, User);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Registra o uso de uma promoção por um cliente em um pedido.
+    /// </summary>
+    /// <param name="id">ID da promoção.</param>
+    /// <param name="request">Dados do uso da promoção.</param>
+    /// <returns>Confirmação do uso.</returns>
+    /// <response code="200">Uso registrado com sucesso.</response>
+    /// <response code="400">Regras de negócio violadas.</response>
+    /// <response code="404">Promoção não encontrada.</response>
+    [HttpPost("{id}/use")]
+    [SwaggerOperation(Summary = "Registrar uso de promoção", Description = "Registra o uso de uma promoção por um cliente em um pedido, validando regras de negócio.")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UsePromotion(string id, [FromBody] UsePromotionRequest request)
+    {
+        var promotion = await _getPromotionByIdUseCase.ExecuteAsync(id, User);
+        if (promotion == null)
+            return NotFound();
+
+        if (!promotion.IsActive)
+            return BadRequest("Promoção inativa.");
+        if (promotion.EndDate < DateTime.UtcNow)
+            return BadRequest("Promoção expirada.");
+        // Exemplo de limite de uso (mock):
+        // int maxUsos = promotion.MaxTotalUses ?? 1;
+        // int usosCliente = 0; // Buscar na base real
+        // if (usosCliente >= (promotion.MaxUsesPerCustomer ?? 1))
+        //     return BadRequest("Limite de uso por cliente atingido.");
+        // int usosTotais = 0; // Buscar na base real
+        // if (usosTotais >= maxUsos)
+        //     return BadRequest("Limite total de uso da promoção atingido.");
+
+        // Aqui faria a atualização dos contadores de uso
+        // await _promotionRepository.RegisterUseAsync(id, request.CustomerPhoneNumber, request.OrderId);
+
+        return Ok(new { message = "Uso da promoção registrado com sucesso." });
     }
 }

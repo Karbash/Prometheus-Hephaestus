@@ -1087,6 +1087,28 @@
             <param name="request">Dados atualizados do cupom.</param>
             <returns>Um `NoContentResult` em caso de sucesso na atualização.</returns>
         </member>
+        <member name="M:Hephaestus.Controllers.CouponController.UpdateCouponStatus(System.String,Hephaestus.Domain.DTOs.Request.UpdateCouponStatusRequest)">
+            <summary>
+            Atualiza o status de ativação de um cupom (ativo/inativo).
+            </summary>
+            <param name="id">ID do cupom.</param>
+            <param name="request">Novo status de ativação.</param>
+            <returns>Cupom atualizado.</returns>
+            <response code="200">Status atualizado com sucesso.</response>
+            <response code="400">Regras de negócio violadas.</response>
+            <response code="404">Cupom não encontrado.</response>
+        </member>
+        <member name="M:Hephaestus.Controllers.CouponController.UseCoupon(System.String,Hephaestus.Domain.DTOs.Request.UseCouponRequest)">
+            <summary>
+            Registra o uso de um cupom por um cliente em um pedido.
+            </summary>
+            <param name="id">ID do cupom.</param>
+            <param name="request">Dados do uso do cupom.</param>
+            <returns>Confirmação do uso.</returns>
+            <response code="200">Uso registrado com sucesso.</response>
+            <response code="400">Regras de negócio violadas.</response>
+            <response code="404">Cupom não encontrado.</response>
+        </member>
         <member name="M:Hephaestus.Controllers.CouponController.DeleteCoupon(System.String)">
             <summary>
             Remove um cupom do tenant autenticado.
@@ -1728,115 +1750,65 @@
         </member>
         <member name="T:Hephaestus.Controllers.PaymentController">
             <summary>
-            Controller for processing payments for a specific tenant.
+            Controlador responsável pelo gerenciamento de pagamentos, reembolsos e comprovantes.
             </summary>
         </member>
-        <member name="M:Hephaestus.Controllers.PaymentController.#ctor(Hephaestus.Application.Interfaces.Payment.IProcessPaymentUseCase)">
+        <member name="M:Hephaestus.Controllers.PaymentController.CreatePayment(Hephaestus.Domain.DTOs.Request.PaymentRequest)">
             <summary>
-            Initializes a new instance of the <see cref="T:Hephaestus.Controllers.PaymentController"/>.
+            Cria uma nova transação de pagamento.
             </summary>
-            <param name="processPaymentUseCase">The use case for processing payments.</param>
+            <remarks>
+            Exemplo de requisição:
+            {
+              "amount": 100.00,
+              "currency": "BRL",
+              "paymentMethod": "pix",
+              "customerId": "cliente123",
+              "orderId": "abc123"
+            }
+            </remarks>
+            <param name="request">Dados do pagamento.</param>
+            <returns>Dados do pagamento criado.</returns>
+            <response code="201">Pagamento criado com sucesso.</response>
         </member>
-        <member name="M:Hephaestus.Controllers.PaymentController.ProcessPayment(Hephaestus.Domain.DTOs.Request.PaymentRequest)">
-            ProcessPayment
-             <summary>
-             Processes a new payment for the authenticated tenant.
-             </summary>
-             <remarks>
-             This endpoint allows a tenant to initiate and process a payment transaction.
-             It requires authentication with the **Tenant** role.
-            
-             **Example Request:**
-             ```json
-             {
-               "orderId": "e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t",
-               "amount": 120.50,
-               "currency": "BRL",
-               "paymentMethod": "CreditCard",
-               "cardDetails": {
-                 "cardNumber": "4111222233334444",
-                 "expirationMonth": "12",
-                 "expirationYear": "2027",
-                 "cvv": "123",
-                 "cardHolderName": "JOAO DA SILVA"
-               },
-               "customerName": "João da Silva",
-               "customerEmail": "joao.silva@example.com"
-             }
-             ```
-            
-             **Example Success Response (Status 201 Created):**
-             ```json
-             {
-               "transactionId": "txn_abcdef1234567890",
-               "status": "Approved",
-               "amount": 120.50,
-               "currency": "BRL",
-               "orderId": "e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t",
-               "timestamp": "2024-07-14T13:00:00Z",
-               "message": "Pagamento aprovado com sucesso."
-             }
-             ```
-            
-             **Example Validation Error (Status 400 Bad Request):**
-             ```json
-             {
-               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
-               "title": "One or more validation errors occurred.",
-               "status": 400,
-               "errors": {
-                 "Amount": [
-                   "O valor do pagamento deve ser maior que zero."
-                 ],
-                 "CardDetails.CardNumber": [
-                   "Número do cartão inválido."
-                 ]
-               }
-             }
-             ```
-            
-             **Example Unauthorized (Status 401 Unauthorized):**
-             ```json
-             {
-               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
-               "title": "Unauthorized",
-               "status": 401,
-               "detail": "TenantId não encontrado no token."
-             }
-             ```
-            
-             **Example Not Found (Status 404 Not Found):**
-             ```json
-             {
-               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
-               "title": "Not Found",
-               "status": 404,
-               "detail": "Pedido com ID '99999999-9999-9999-9999-999999999999' não encontrado."
-             }
-             ```
-            
-             **Example Conflict (Status 409 Conflict):**
-             ```json
-             {
-               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
-               "title": "Conflict",
-               "status": 409,
-               "detail": "Este pedido já possui um pagamento registrado ou está em um status que impede novo pagamento."
-             }
-             ```
-            
-             **Example Internal Server Error (Status 500 Internal Server Error):**
-             ```json
-             {
-               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
-               "title": "Internal Server Error",
-               "status": 500,
-               "detail": "Ocorreu um erro inesperado ao processar o pagamento."
-             }
-             ```
-             </remarks>
-             <param name="request">The payment request details (<see cref="T:Hephaestus.Domain.DTOs.Request.PaymentRequest"/>).</param>
-             <returns>A <see cref="T:Microsoft.AspNetCore.Mvc.StatusCodeResult"/> with status 201 Created and the <see cref="T:Hephaestus.Domain.DTOs.Response.PaymentResponse"/>.</returns>
+        <member name="M:Hephaestus.Controllers.PaymentController.GetPayment(System.String)">
+            <summary>
+            Consulta o status e detalhes de uma transação de pagamento.
+            </summary>
+            <param name="payment_id">ID do pagamento.</param>
+            <returns>Dados do pagamento.</returns>
+            <response code="200">Pagamento encontrado.</response>
+            <response code="404">Pagamento não encontrado.</response>
+        </member>
+        <member name="M:Hephaestus.Controllers.PaymentController.RefundPayment(System.String,Hephaestus.Domain.DTOs.Request.RefundRequest)">
+            <summary>
+            Solicita o estorno total ou parcial de um pagamento.
+            </summary>
+            <param name="payment_id">ID do pagamento.</param>
+            <param name="request">Dados do reembolso (valor opcional).</param>
+            <returns>Dados do reembolso.</returns>
+            <response code="200">Reembolso solicitado com sucesso.</response>
+            <response code="404">Pagamento não encontrado.</response>
+        </member>
+        <member name="M:Hephaestus.Controllers.PaymentController.UpdatePaymentStatus(System.String,Hephaestus.Domain.DTOs.Request.UpdatePaymentStatusRequest)">
+            <summary>
+            Atualiza o status de um pagamento.
+            </summary>
+            <param name="payment_id">ID do pagamento.</param>
+            <param name="request">Novo status do pagamento.</param>
+            <returns>Pagamento atualizado.</returns>
+            <response code="200">Status atualizado com sucesso.</response>
+            <response code="400">Transição de status inválida.</response>
+            <response code="404">Pagamento não encontrado.</response>
+        </member>
+        <member name="M:Hephaestus.Controllers.PaymentController.GetReceipt(System.String)">
+            <summary>
+            Obtém o comprovante de pagamento (PDF ou JSON).
+            </summary>
+            <param name="payment_id">ID do pagamento.</param>
+            <returns>URL ou dados do comprovante.</returns>
+            <response code="200">Comprovante gerado com sucesso.</response>
+            <response code="404">Pagamento não encontrado.</response>
         </member>
         <member name="T:Hephaestus.Controllers.PromotionController">
             <summary>
@@ -2152,6 +2124,17 @@
              <param name="request">Dados atualizados da promoção (<see cref="T:Hephaestus.Application.DTOs.Request.UpdatePromotionRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotionStatus(System.String,Hephaestus.Domain.DTOs.Request.UpdatePromotionStatusRequest)">
+            <summary>
+            Atualiza o status de ativação de uma promoção (ativa/inativa).
+            </summary>
+            <param name="id">ID da promoção.</param>
+            <param name="request">Novo status de ativação.</param>
+            <returns>Promoção atualizada.</returns>
+            <response code="200">Status atualizado com sucesso.</response>
+            <response code="400">Regras de negócio violadas.</response>
+            <response code="404">Promoção não encontrada.</response>
+        </member>
         <member name="M:Hephaestus.Controllers.PromotionController.DeletePromotion(System.String)">
             DeletePromotion
              <summary>
@@ -2266,6 +2249,17 @@
              </remarks>
              <param name="request">Dados da notificação (<see cref="T:Hephaestus.Application.DTOs.Request.NotifyPromotionRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.PromotionController.UsePromotion(System.String,Hephaestus.Domain.DTOs.Request.UsePromotionRequest)">
+            <summary>
+            Registra o uso de uma promoção por um cliente em um pedido.
+            </summary>
+            <param name="id">ID da promoção.</param>
+            <param name="request">Dados do uso da promoção.</param>
+            <returns>Confirmação do uso.</returns>
+            <response code="200">Uso registrado com sucesso.</response>
+            <response code="400">Regras de negócio violadas.</response>
+            <response code="404">Promoção não encontrada.</response>
         </member>
         <member name="T:Hephaestus.Controllers.TagController">
             <summary>
@@ -2684,6 +2678,28 @@
             <remarks>
             Envie apenas os campos que deseja alterar. Campos não enviados permanecem inalterados.
             </remarks>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.UpdateOrderStatus(System.String,Hephaestus.Domain.DTOs.Request.UpdateOrderStatusRequest)">
+            <summary>
+            Atualiza o status de um pedido.
+            </summary>
+            <param name="id">ID do pedido.</param>
+            <param name="request">Novo status do pedido.</param>
+            <returns>Pedido atualizado.</returns>
+            <response code="200">Status atualizado com sucesso.</response>
+            <response code="400">Transição de status inválida.</response>
+            <response code="404">Pedido não encontrado.</response>
+        </member>
+        <member name="M:Hephaestus.Api.Controllers.OrderController.UpdateOrderPaymentStatus(System.String,Hephaestus.Domain.DTOs.Request.UpdateOrderPaymentStatusRequest)">
+            <summary>
+            Atualiza o status de pagamento de um pedido.
+            </summary>
+            <param name="id">ID do pedido.</param>
+            <param name="request">Novo status de pagamento.</param>
+            <returns>Pedido atualizado.</returns>
+            <response code="200">Status de pagamento atualizado com sucesso.</response>
+            <response code="400">Transição de status inválida.</response>
+            <response code="404">Pedido não encontrado.</response>
         </member>
         <member name="M:Hephaestus.Api.Controllers.OrderController.GetCustomerOrderStatus(System.String)">
             ### GetCustomerOrderStatus

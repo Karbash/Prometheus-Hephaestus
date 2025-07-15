@@ -2692,6 +2692,191 @@
         }
       }
     },
+    "/api/Coupon/{id}/status": {
+      "patch": {
+        "tags": [
+          "Coupon"
+        ],
+        "summary": "Atualiza o status de ativação de um cupom (ativo/inativo).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do cupom.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Novo status de ativação.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCouponStatusRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCouponStatusRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCouponStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Regras de negócio violadas.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cupom não encontrado.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Coupon/{id}/use": {
+      "post": {
+        "tags": [
+          "Coupon"
+        ],
+        "summary": "Registra o uso de um cupom por um cliente em um pedido.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do cupom.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados do uso do cupom.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UseCouponRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UseCouponRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UseCouponRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Uso registrado com sucesso."
+          },
+          "400": {
+            "description": "Regras de negócio violadas.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cupom não encontrado.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Customer": {
       "put": {
         "tags": [
@@ -4238,6 +4423,208 @@
         }
       }
     },
+    "/api/order/{id}/status": {
+      "patch": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Atualiza o status de um pedido.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do pedido.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Novo status do pedido.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Transição de status inválida.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pedido não encontrado.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/{id}/payment-status": {
+      "patch": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Atualiza o status de pagamento de um pedido.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do pedido.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Novo status de pagamento.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderPaymentStatusRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderPaymentStatusRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderPaymentStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status de pagamento atualizado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Transição de status inválida.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pedido não encontrado.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/order/customer/status": {
       "get": {
         "tags": [
@@ -4342,15 +4729,15 @@
         }
       }
     },
-    "/api/payment": {
+    "/api/payments": {
       "post": {
         "tags": [
           "Payment"
         ],
-        "summary": "Processes a new payment for the authenticated tenant.",
-        "description": "This endpoint allows a tenant to initiate and process a payment transaction.\r\nIt requires authentication with the **Tenant** role.\r\n            \r\n**Example Request:**\r\n```json\r\n{\r\n  \"orderId\": \"e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t\",\r\n  \"amount\": 120.50,\r\n  \"currency\": \"BRL\",\r\n  \"paymentMethod\": \"CreditCard\",\r\n  \"cardDetails\": {\r\n    \"cardNumber\": \"4111222233334444\",\r\n    \"expirationMonth\": \"12\",\r\n    \"expirationYear\": \"2027\",\r\n    \"cvv\": \"123\",\r\n    \"cardHolderName\": \"JOAO DA SILVA\"\r\n  },\r\n  \"customerName\": \"João da Silva\",\r\n  \"customerEmail\": \"joao.silva@example.com\"\r\n}\r\n```\r\n            \r\n**Example Success Response (Status 201 Created):**\r\n```json\r\n{\r\n  \"transactionId\": \"txn_abcdef1234567890\",\r\n  \"status\": \"Approved\",\r\n  \"amount\": 120.50,\r\n  \"currency\": \"BRL\",\r\n  \"orderId\": \"e4f5g6h7-i8j9-0k1l-2m3n-4o5p6q7r8s9t\",\r\n  \"timestamp\": \"2024-07-14T13:00:00Z\",\r\n  \"message\": \"Pagamento aprovado com sucesso.\"\r\n}\r\n```\r\n            \r\n**Example Validation Error (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Amount\": [\r\n      \"O valor do pagamento deve ser maior que zero.\"\r\n    ],\r\n    \"CardDetails.CardNumber\": [\r\n      \"Número do cartão inválido.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Example Unauthorized (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Example Not Found (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Pedido com ID '99999999-9999-9999-9999-999999999999' não encontrado.\"\r\n}\r\n```\r\n            \r\n**Example Conflict (Status 409 Conflict):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"Este pedido já possui um pagamento registrado ou está em um status que impede novo pagamento.\"\r\n}\r\n```\r\n            \r\n**Example Internal Server Error (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao processar o pagamento.\"\r\n}\r\n```",
+        "summary": "Cria uma nova transação de pagamento.",
+        "description": "Exemplo de requisição:\r\n{\r\n  \"amount\": 100.00,\r\n  \"currency\": \"BRL\",\r\n  \"paymentMethod\": \"pix\",\r\n  \"customerId\": \"cliente123\",\r\n  \"orderId\": \"abc123\"\r\n}",
         "requestBody": {
-          "description": "The payment request details (Hephaestus.Domain.DTOs.Request.PaymentRequest).",
+          "description": "Dados do pagamento.",
           "content": {
             "application/json": {
               "schema": {
@@ -4371,7 +4758,210 @@
         },
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "Pagamento criado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/{payment_id}": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Consulta o status e detalhes de uma transação de pagamento.",
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "path",
+            "description": "ID do pagamento.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pagamento encontrado.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pagamento não encontrado.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/{payment_id}/refund": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Solicita o estorno total ou parcial de um pagamento.",
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "path",
+            "description": "ID do pagamento.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados do reembolso (valor opcional).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reembolso solicitado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pagamento não encontrado.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/{payment_id}/status": {
+      "patch": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Atualiza o status de um pagamento.",
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "path",
+            "description": "ID do pagamento.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Novo status do pagamento.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentStatusRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentStatusRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -4391,27 +4981,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
+            "description": "Transição de status inválida.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -4431,7 +5001,7 @@
             }
           },
           "404": {
-            "description": "Not Found",
+            "description": "Pagamento não encontrado.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -4449,29 +5019,50 @@
                 }
               }
             }
-          },
-          "409": {
-            "description": "Conflict",
+          }
+        }
+      }
+    },
+    "/api/payments/{payment_id}/receipt": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Obtém o comprovante de pagamento (PDF ou JSON).",
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "path",
+            "description": "ID do pagamento.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comprovante gerado com sucesso.",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ReceiptResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ReceiptResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ReceiptResponse"
                 }
               }
             }
           },
-          "500": {
-            "description": "Internal Server Error",
+          "404": {
+            "description": "Pagamento não encontrado.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -5058,6 +5649,107 @@
         }
       }
     },
+    "/api/Promotion/{id}/status": {
+      "patch": {
+        "tags": [
+          "Promotion"
+        ],
+        "summary": "Atualiza o status de ativação de uma promoção (ativa/inativa).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da promoção.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Novo status de ativação.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePromotionStatusRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePromotionStatusRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePromotionStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Regras de negócio violadas.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Promoção não encontrada.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Promotion/notify": {
       "post": {
         "tags": [
@@ -5151,6 +5843,90 @@
           },
           "500": {
             "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Promotion/{id}/use": {
+      "post": {
+        "tags": [
+          "Promotion"
+        ],
+        "summary": "Registra o uso de uma promoção por um cliente em um pedido.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da promoção.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados do uso da promoção.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsePromotionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsePromotionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsePromotionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Uso registrado com sucesso."
+          },
+          "400": {
+            "description": "Regras de negócio violadas.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Promoção não encontrada.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -6712,6 +7488,22 @@
       "PaymentRequest": {
         "type": "object",
         "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
           "orderId": {
             "type": "string",
             "nullable": true
@@ -6722,20 +7514,42 @@
       "PaymentResponse": {
         "type": "object",
         "properties": {
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
           "orderId": {
             "type": "string",
             "nullable": true
           },
-          "totalAmount": {
-            "type": "number",
-            "format": "double"
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
           },
-          "platformFee": {
-            "type": "number",
-            "format": "double"
-          },
-          "paymentStatus": {
-            "$ref": "#/components/schemas/PaymentStatus"
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -6744,7 +7558,9 @@
         "enum": [
           0,
           1,
-          2
+          2,
+          3,
+          4
         ],
         "type": "integer",
         "format": "int32"
@@ -6867,6 +7683,53 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceiptResponse": {
+        "type": "object",
+        "properties": {
+          "receiptUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefundRequest": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefundResponse": {
+        "type": "object",
+        "properties": {
+          "refundId": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -7212,6 +8075,18 @@
         },
         "additionalProperties": false
       },
+      "UpdateCouponStatusRequest": {
+        "required": [
+          "isActive"
+        ],
+        "type": "object",
+        "properties": {
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateMenuItemRequest": {
         "type": "object",
         "properties": {
@@ -7257,6 +8132,18 @@
         },
         "additionalProperties": false
       },
+      "UpdateOrderPaymentStatusRequest": {
+        "required": [
+          "paymentStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "paymentStatus": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateOrderRequest": {
         "type": "object",
         "properties": {
@@ -7288,6 +8175,30 @@
               "$ref": "#/components/schemas/OrderItemRequest"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateOrderStatusRequest": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePaymentStatusRequest": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/PaymentStatus"
           }
         },
         "additionalProperties": false
@@ -7350,6 +8261,54 @@
           "imageUrl": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePromotionStatusRequest": {
+        "required": [
+          "isActive"
+        ],
+        "type": "object",
+        "properties": {
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UseCouponRequest": {
+        "required": [
+          "customerPhoneNumber",
+          "orderId"
+        ],
+        "type": "object",
+        "properties": {
+          "customerPhoneNumber": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "orderId": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UsePromotionRequest": {
+        "required": [
+          "customerPhoneNumber",
+          "orderId"
+        ],
+        "type": "object",
+        "properties": {
+          "customerPhoneNumber": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "orderId": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -7453,7 +8412,7 @@
     },
     {
       "name": "Payment",
-      "description": "Controller for processing payments for a specific tenant."
+      "description": "Controlador responsável pelo gerenciamento de pagamentos, reembolsos e comprovantes."
     },
     {
       "name": "Promotion",

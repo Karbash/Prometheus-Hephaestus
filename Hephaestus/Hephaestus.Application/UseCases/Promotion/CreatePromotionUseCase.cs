@@ -123,7 +123,7 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
             DiscountValue = request.DiscountValue,
             MenuItemId = request.MenuItemId,
             MinOrderValue = request.MinOrderValue,
-            MaxUsesPerCustomer = request.MaxUsagePerCustomer,
+            MaxUsesPerCustomer = request.MaxUsesPerCustomer,
             MaxTotalUses = request.MaxTotalUses,
             ApplicableTags = request.ApplicableToTags ?? new List<string>(),
             StartDate = request.StartDate,

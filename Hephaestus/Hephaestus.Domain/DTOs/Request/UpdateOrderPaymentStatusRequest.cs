@@ -1,5 +1,5 @@
-using Hephaestus.Domain.Enum;
 using System.ComponentModel.DataAnnotations;
+using Hephaestus.Domain.Enum;
 
 namespace Hephaestus.Domain.DTOs.Request;
 
@@ -8,9 +8,6 @@ namespace Hephaestus.Domain.DTOs.Request;
 /// </summary>
 public class UpdateOrderPaymentStatusRequest
 {
-    /// <summary>
-    /// Novo status de pagamento do pedido. Valores possíveis: Pending, Paid, Failed, Refunded, Processed.
-    /// </summary>
     [Required]
-    public PaymentStatus PaymentStatus { get; set; }
+    public PaymentStatus Status { get; set; }
 } 

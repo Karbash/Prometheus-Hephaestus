@@ -77,4 +77,20 @@ public class PromotionRepository : IPromotionRepository
             await _dbContext.SaveChangesAsync();
         }
     }
+
+    public async Task AddUsageAsync(PromotionUsage usage)
+    {
+        await _dbContext.PromotionUsages.AddAsync(usage);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<int> GetUsageCountAsync(string promotionId, string tenantId)
+    {
+        return await _dbContext.PromotionUsages.CountAsync(u => u.PromotionId == promotionId && u.TenantId == tenantId);
+    }
+
+    public async Task<int> GetUsageCountByCustomerAsync(string promotionId, string tenantId, string customerPhoneNumber)
+    {
+        return await _dbContext.PromotionUsages.CountAsync(u => u.PromotionId == promotionId && u.TenantId == tenantId && u.CustomerPhoneNumber == customerPhoneNumber);
+    }
 }

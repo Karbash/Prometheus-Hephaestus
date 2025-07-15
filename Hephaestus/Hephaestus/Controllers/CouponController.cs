@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims; // Necessário para ClaimTypes
+using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Repositories;
+using Hephaestus.Application.Exceptions;
 
 namespace Hephaestus.Controllers;
 
@@ -23,6 +26,7 @@ public class CouponController : ControllerBase
     private readonly IUpdateCouponUseCase _updateCouponUseCase;
     private readonly IDeleteCouponUseCase _deleteCouponUseCase;
     private readonly ILogger<CouponController> _logger;
+    private readonly ICouponRepository _couponRepository;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="CouponController"/>.
@@ -33,13 +37,15 @@ public class CouponController : ControllerBase
     /// <param name="updateCouponUseCase">Caso de uso para atualizar um cupom.</param>
     /// <param name="deleteCouponUseCase">Caso de uso para deletar um cupom.</param>
     /// <param name="logger">Logger para registro de eventos e erros.</param>
+    /// <param name="couponRepository">Repositório para operações de cupom.</param>
     public CouponController(
         ICreateCouponUseCase createCouponUseCase,
         IGetCouponsUseCase getCouponsUseCase,
         IGetCouponByIdUseCase getCouponByIdUseCase,
         IUpdateCouponUseCase updateCouponUseCase,
         IDeleteCouponUseCase deleteCouponUseCase,
-        ILogger<CouponController> logger)
+        ILogger<CouponController> logger,
+        ICouponRepository couponRepository)
     {
         _createCouponUseCase = createCouponUseCase;
         _getCouponsUseCase = getCouponsUseCase;
@@ -47,6 +53,7 @@ public class CouponController : ControllerBase
         _updateCouponUseCase = updateCouponUseCase;
         _deleteCouponUseCase = deleteCouponUseCase;
         _logger = logger;
+        _couponRepository = couponRepository;
     }
 
     /// <summary>
@@ -351,39 +358,40 @@ public class CouponController : ControllerBase
     /// Registra o uso de um cupom por um cliente em um pedido.
     /// </summary>
     /// <param name="id">ID do cupom.</param>
-    /// <param name="request">Dados do uso do cupom.</param>
+    /// <param name="request">Dados do uso (cliente, pedido).</param>
     /// <returns>Confirmação do uso.</returns>
     /// <response code="200">Uso registrado com sucesso.</response>
-    /// <response code="400">Regras de negócio violadas.</response>
-    /// <response code="404">Cupom não encontrado.</response>
+    /// <response code="400">Limite de uso atingido ou cupom inválido.</response>
     [HttpPost("{id}/use")]
-    [SwaggerOperation(Summary = "Registrar uso de cupom", Description = "Registra o uso de um cupom por um cliente em um pedido, validando regras de negócio.")]
+    [SwaggerOperation(Summary = "Registrar uso de cupom", Description = "Registra o uso de um cupom por um cliente em um pedido, validando limites de uso.")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UseCoupon(string id, [FromBody] UseCouponRequest request)
     {
+        // Buscar cupom
+        var tenantId = User.FindFirst("tenant_id")?.Value;
+        if (string.IsNullOrEmpty(tenantId))
+            return BadRequest("TenantId não encontrado no token.");
         var coupon = await _getCouponByIdUseCase.ExecuteAsync(id, User);
-        if (coupon == null)
-            return NotFound();
-
-        if (!coupon.IsActive)
-            return BadRequest("Cupom inativo.");
-        if (coupon.EndDate < DateTime.UtcNow)
-            return BadRequest("Cupom expirado.");
-        // Exemplo de limite de uso (mock):
-        // int maxUsos = 1; // Substitua pela lógica real
-        // int usosCliente = 0; // Buscar na base real
-        // if (usosCliente >= maxUsos)
-        //     return BadRequest("Limite de uso por cliente atingido.");
-        // int usosTotais = 0; // Buscar na base real
-        // if (usosTotais >= 10)
-        //     return BadRequest("Limite total de uso do cupom atingido.");
-
-        // Aqui faria a atualização dos contadores de uso
-        // await _couponRepository.RegisterUseAsync(id, request.CustomerPhoneNumber, request.OrderId);
-
-        return Ok(new { message = "Uso do cupom registrado com sucesso." });
+        if (coupon == null || !coupon.IsActive)
+            return BadRequest("Cupom inválido ou inativo.");
+        // Validar limites
+        var totalUses = await _couponRepository.GetUsageCountAsync(id, tenantId);
+        var usesByCustomer = await _couponRepository.GetUsageCountByCustomerAsync(id, tenantId, request.CustomerPhoneNumber);
+        if (coupon.MaxTotalUses.HasValue && totalUses >= coupon.MaxTotalUses.Value)
+            return BadRequest("Limite máximo de usos do cupom atingido.");
+        if (coupon.MaxUsesPerCustomer.HasValue && usesByCustomer >= coupon.MaxUsesPerCustomer.Value)
+            return BadRequest("Limite máximo de usos do cupom por cliente atingido.");
+        // Registrar uso
+        await _couponRepository.AddUsageAsync(new CouponUsage
+        {
+            TenantId = tenantId,
+            CouponId = id,
+            CustomerPhoneNumber = request.CustomerPhoneNumber,
+            OrderId = request.OrderId,
+            UsedAt = DateTime.UtcNow
+        });
+        return Ok();
     }
 
     /// <summary>

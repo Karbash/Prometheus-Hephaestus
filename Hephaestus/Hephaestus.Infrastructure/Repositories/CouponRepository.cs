@@ -86,4 +86,20 @@ public class CouponRepository : ICouponRepository
             .AsNoTracking()
             .AnyAsync(c => c.Code == code && c.TenantId == tenantId);
     }
+
+    public async Task AddUsageAsync(CouponUsage usage)
+    {
+        await _context.CouponUsages.AddAsync(usage);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<int> GetUsageCountAsync(string couponId, string tenantId)
+    {
+        return await _context.CouponUsages.CountAsync(u => u.CouponId == couponId && u.TenantId == tenantId);
+    }
+
+    public async Task<int> GetUsageCountByCustomerAsync(string couponId, string tenantId, string customerPhoneNumber)
+    {
+        return await _context.CouponUsages.CountAsync(u => u.CouponId == couponId && u.TenantId == tenantId && u.CustomerPhoneNumber == customerPhoneNumber);
+    }
 }

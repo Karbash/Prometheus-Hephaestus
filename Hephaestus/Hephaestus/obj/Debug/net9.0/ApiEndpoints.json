@@ -1610,15 +1610,6 @@
           "text/json"
         ],
         "StatusCode": 400
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 404
       }
     ]
   },
@@ -2498,7 +2489,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Domain.DTOs.Response.OrderResponse",
+        "Type": "System.Object",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -3195,15 +3186,6 @@
           "text/json"
         ],
         "StatusCode": 400
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 404
       }
     ]
   },

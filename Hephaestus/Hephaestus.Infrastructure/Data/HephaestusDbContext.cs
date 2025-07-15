@@ -27,6 +27,8 @@ public class HephaestusDbContext : DbContext
     public DbSet<CompanySocialMedia> CompanySocialMedia { get; set; }
     public DbSet<MenuItemImage> MenuItemImages { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<CouponUsage> CouponUsages { get; set; }
+    public DbSet<PromotionUsage> PromotionUsages { get; set; }
 
     public HephaestusDbContext(DbContextOptions<HephaestusDbContext> options) : base(options) { }
 

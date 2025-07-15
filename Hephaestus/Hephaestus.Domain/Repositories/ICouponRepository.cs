@@ -13,4 +13,7 @@ public interface ICouponRepository
     Task UpdateAsync(Coupon coupon);
     Task DeleteAsync(string id, string tenantId);
     Task<bool> CodeExistsAsync(string code, string tenantId);
+    Task AddUsageAsync(CouponUsage usage);
+    Task<int> GetUsageCountAsync(string couponId, string tenantId);
+    Task<int> GetUsageCountByCustomerAsync(string couponId, string tenantId, string customerPhoneNumber);
 }

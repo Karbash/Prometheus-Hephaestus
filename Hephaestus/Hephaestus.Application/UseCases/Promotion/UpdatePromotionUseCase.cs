@@ -127,7 +127,7 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
         promotion.DiscountValue = request.DiscountValue;
         promotion.MenuItemId = request.MenuItemId;
         promotion.MinOrderValue = request.MinOrderValue;
-        promotion.MaxUsesPerCustomer = request.MaxUsagePerCustomer;
+        promotion.MaxUsesPerCustomer = request.MaxUsesPerCustomer;
         promotion.MaxTotalUses = request.MaxTotalUses;
         promotion.ApplicableTags = request.ApplicableToTags ?? new List<string>();
         promotion.StartDate = request.StartDate;

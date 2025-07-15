@@ -10,4 +10,7 @@ public interface IPromotionRepository
     Task<Promotion?> GetByIdAsync(string id, string tenantId);
     Task UpdateAsync(Promotion promotion);
     Task DeleteAsync(string id, string tenantId);
+    Task AddUsageAsync(PromotionUsage usage);
+    Task<int> GetUsageCountAsync(string promotionId, string tenantId);
+    Task<int> GetUsageCountByCustomerAsync(string promotionId, string tenantId, string customerPhoneNumber);
 }

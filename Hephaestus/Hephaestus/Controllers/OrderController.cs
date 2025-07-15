@@ -441,38 +441,18 @@ public class OrderController : ControllerBase
     /// <response code="400">Transição de status inválida.</response>
     /// <response code="404">Pedido não encontrado.</response>
     [HttpPatch("{id}/payment-status")]
-    [SwaggerOperation(Summary = "Atualizar status de pagamento do pedido", Description = "Atualiza o status de pagamento de um pedido. Só permite transições válidas.")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderResponse))]
+    [SwaggerOperation(Summary = "Atualizar status de pagamento do pedido", Description = "Atualiza o status de pagamento de um pedido. Só permite transições válidas. Ao aprovar pagamento, o status do pedido muda automaticamente para InProduction.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateOrderPaymentStatus(string id, [FromBody] UpdateOrderPaymentStatusRequest request)
     {
-        var order = await _getOrderByIdUseCase.ExecuteAsync(id, User);
-        if (order == null)
-            return NotFound();
-
-        var currentStatus = order.PaymentStatus.ToString();
-        var newStatus = request.PaymentStatus.ToString();
-
-        // Regras de transição (exemplo: só pode marcar como pago se não estiver pago, etc)
-        if (currentStatus == "Paid" && newStatus != "Refunded")
-            return BadRequest("O pedido já está pago. Só é permitido reembolsar.");
-        if (currentStatus == "Refunded")
-            return BadRequest("O pedido já foi reembolsado.");
-        if (currentStatus == "Failed" && newStatus != "Pending")
-            return BadRequest("Só é permitido retornar para pendente após falha.");
-        // Aqui pode-se integrar com gateway para validar pagamento real
-
-        // Atualiza status
-        var updateRequest = new UpdateOrderRequest
-        {
-            OrderId = order.Id,
-            PaymentStatus = request.PaymentStatus
-        };
-        await _updateOrderUseCase.ExecuteAsync(updateRequest, User);
-        // Retorna o pedido atualizado
-        var updated = await _getOrderByIdUseCase.ExecuteAsync(id, User);
-        return Ok(updated);
+        var patchRequest = new UpdateOrderRequest { OrderId = id, PaymentStatus = request.Status };
+        // Regra: se status for Paid, também mover pedido para InProduction
+        if (request.Status == Hephaestus.Domain.Enum.PaymentStatus.Paid)
+            patchRequest.Status = Hephaestus.Domain.Enum.OrderStatus.InProduction;
+        await _patchOrderUseCase.ExecuteAsync(patchRequest, User);
+        return Ok();
     }
 
     ///### GetCustomerOrderStatus

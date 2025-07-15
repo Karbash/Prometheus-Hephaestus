@@ -31,9 +31,13 @@ public class GetOrdersUseCase : BaseUseCase, IGetOrdersUseCase
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             var pagedOrders = await _orderRepository.GetByTenantIdAsync(tenantId, customerPhoneNumber, status, pageNumber, pageSize, sortBy, sortOrder);
+            // Filtro extra: se status não for informado, só retorna pedidos não pendentes
+            var filteredItems = string.IsNullOrEmpty(status)
+                ? pagedOrders.Items.Where(o => o.Status != Hephaestus.Domain.Enum.OrderStatus.Pending).ToList()
+                : pagedOrders.Items.ToList();
             return new PagedResult<OrderResponse>
             {
-                Items = pagedOrders.Items.Select(o => new OrderResponse
+                Items = filteredItems.Select(o => new OrderResponse
                 {
                     Id = o.Id,
                     CustomerPhoneNumber = o.CustomerPhoneNumber,
@@ -46,7 +50,7 @@ public class GetOrdersUseCase : BaseUseCase, IGetOrdersUseCase
                     CreatedAt = o.CreatedAt,
                     UpdatedAt = o.UpdatedAt
                 }).ToList(),
-                TotalCount = pagedOrders.TotalCount,
+                TotalCount = filteredItems.Count,
                 PageNumber = pagedOrders.PageNumber,
                 PageSize = pagedOrders.PageSize
             };

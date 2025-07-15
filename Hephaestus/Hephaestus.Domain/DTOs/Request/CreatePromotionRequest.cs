@@ -10,8 +10,8 @@ public class CreatePromotionRequest
     public decimal DiscountValue { get; set; }
     public string? MenuItemId { get; set; }
     public decimal? MinOrderValue { get; set; }
-    public int? MaxUsagePerCustomer { get; set; }
     public int? MaxTotalUses { get; set; }
+    public int? MaxUsesPerCustomer { get; set; }
     public List<string>? ApplicableToTags { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

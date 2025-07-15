@@ -17,4 +17,6 @@ public class CouponResponse
     public string TenantId { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public int? MaxTotalUses { get; set; }
+    public int? MaxUsesPerCustomer { get; set; }
 }

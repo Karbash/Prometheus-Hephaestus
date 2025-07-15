@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Enum;
+using Hephaestus.Application.Exceptions;
 
 namespace Hephaestus.Application.UseCases.Order
 {
@@ -51,8 +52,42 @@ namespace Hephaestus.Application.UseCases.Order
                     order.PromotionId = request.PromotionId;
                 if (request.CouponId != null)
                     order.CouponId = request.CouponId;
-                if (request.Status.HasValue)
-                    order.Status = request.Status.Value;
+                // Regras de transição de status
+                if (request.Status.HasValue && request.Status.Value != order.Status)
+                {
+                    var currentStatus = order.Status;
+                    var newStatus = request.Status.Value;
+                    var paymentStatus = order.PaymentStatus;
+
+                    // Não permitir cancelar pedido já pago
+                    if (newStatus == OrderStatus.Cancelled && paymentStatus == PaymentStatus.Paid)
+                        throw new BusinessRuleException("Não é possível cancelar um pedido já pago.", "ORDER_CANCEL_PAID");
+
+                    // Não permitir finalizar pedido que não está em produção
+                    if (newStatus == OrderStatus.Completed && currentStatus != OrderStatus.InProduction)
+                        throw new BusinessRuleException("Só é possível finalizar pedidos que estão em produção.", "ORDER_FINALIZE_NOT_IN_PRODUCTION");
+
+                    // Não permitir pular etapas (ex: Pending → Finalized)
+                    if (currentStatus == OrderStatus.Pending && newStatus == OrderStatus.Completed)
+                        throw new BusinessRuleException("Não é possível finalizar um pedido pendente.", "ORDER_FINALIZE_PENDING");
+                    if (currentStatus == OrderStatus.Pending && newStatus == OrderStatus.InProduction)
+                        throw new BusinessRuleException("Não é possível mover pedido pendente direto para produção.", "ORDER_PRODUCTION_PENDING");
+                    if (currentStatus == OrderStatus.InProduction && newStatus == OrderStatus.Completed)
+                        throw new BusinessRuleException("Pedido deve estar em produção antes de ser finalizado.", "ORDER_FINALIZE_NOT_IN_PRODUCTION");
+
+                    // Permitir apenas transições válidas
+                    var validTransitions = new Dictionary<OrderStatus, List<OrderStatus>>
+                    {
+                        { OrderStatus.Pending, new List<OrderStatus> { OrderStatus.InProduction, OrderStatus.Cancelled } },
+                        { OrderStatus.InProduction, new List<OrderStatus> { OrderStatus.Completed, OrderStatus.Cancelled } },
+                        { OrderStatus.Completed, new List<OrderStatus>() },
+                        { OrderStatus.Cancelled, new List<OrderStatus>() }
+                    };
+                    if (!validTransitions[currentStatus].Contains(newStatus))
+                        throw new BusinessRuleException($"Transição de status inválida: {currentStatus} → {newStatus}.", "ORDER_INVALID_STATUS_TRANSITION");
+
+                    order.Status = newStatus;
+                }
                 if (request.PaymentStatus.HasValue)
                     order.PaymentStatus = request.PaymentStatus.Value;
                 if (request.Items != null)

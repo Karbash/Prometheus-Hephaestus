@@ -134,4 +134,21 @@ public class OrderRepository : IOrderRepository
 
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<Order>> GetPendingOrdersOlderThanAsync(DateTime cutoffUtc)
+    {
+        return await _context.Orders
+            .Where(o => o.Status == Hephaestus.Domain.Enum.OrderStatus.Pending && o.CreatedAt < cutoffUtc)
+            .ToListAsync();
+    }
+
+    public async Task DeleteAsync(string id, string tenantId)
+    {
+        var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id && o.TenantId == tenantId);
+        if (order != null)
+        {
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+        }
+    }
 }

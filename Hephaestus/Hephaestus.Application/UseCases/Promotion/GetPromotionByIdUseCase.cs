@@ -105,7 +105,7 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
             DiscountValue = promotion.DiscountValue,
             MenuItemId = promotion.MenuItemId,
             MinOrderValue = promotion.MinOrderValue,
-            MaxUsagePerCustomer = promotion.MaxUsesPerCustomer,
+            MaxUsesPerCustomer = promotion.MaxUsesPerCustomer,
             MaxTotalUses = promotion.MaxTotalUses,
             ApplicableToTags = promotion.ApplicableTags,
             StartDate = promotion.StartDate,

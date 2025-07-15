@@ -12,8 +12,8 @@ public class Promotion
     public decimal DiscountValue { get; set; }
     public string? MenuItemId { get; set; }
     public decimal? MinOrderValue { get; set; }
-    public int? MaxUsesPerCustomer { get; set; }
     public int? MaxTotalUses { get; set; }
+    public int? MaxUsesPerCustomer { get; set; }
     public List<string> ApplicableTags { get; set; } = new List<string>();
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

@@ -98,7 +98,7 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
             DiscountValue = p.DiscountValue,
             MenuItemId = p.MenuItemId,
             MinOrderValue = p.MinOrderValue,
-            MaxUsagePerCustomer = p.MaxUsesPerCustomer,
+            MaxUsesPerCustomer = p.MaxUsesPerCustomer,
             MaxTotalUses = p.MaxTotalUses,
             ApplicableToTags = p.ApplicableTags,
             StartDate = p.StartDate,

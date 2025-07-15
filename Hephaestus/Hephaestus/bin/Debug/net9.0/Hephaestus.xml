@@ -4,6 +4,11 @@
         <name>Hephaestus</name>
     </assembly>
     <members>
+        <member name="T:Hephaestus.Application.PendingOrderCleanupService">
+            <summary>
+            Serviço em background para exclusão automática de pedidos Pending não pagos após X minutos.
+            </summary>
+        </member>
         <member name="T:Hephaestus.Controllers.AdditionalController">
             <summary>
             Controller para gerenciamento de adicionais (itens extras) para um tenant.
@@ -876,7 +881,7 @@
             Controller para gerenciamento de cupons, permitindo operações como criação, listagem, obtenção, atualização e exclusão de cupons.
             </summary>
         </member>
-        <member name="M:Hephaestus.Controllers.CouponController.#ctor(Hephaestus.Application.Interfaces.Coupon.ICreateCouponUseCase,Hephaestus.Application.Interfaces.Coupon.IGetCouponsUseCase,Hephaestus.Application.Interfaces.Coupon.IGetCouponByIdUseCase,Hephaestus.Application.Interfaces.Coupon.IUpdateCouponUseCase,Hephaestus.Application.Interfaces.Coupon.IDeleteCouponUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.CouponController})">
+        <member name="M:Hephaestus.Controllers.CouponController.#ctor(Hephaestus.Application.Interfaces.Coupon.ICreateCouponUseCase,Hephaestus.Application.Interfaces.Coupon.IGetCouponsUseCase,Hephaestus.Application.Interfaces.Coupon.IGetCouponByIdUseCase,Hephaestus.Application.Interfaces.Coupon.IUpdateCouponUseCase,Hephaestus.Application.Interfaces.Coupon.IDeleteCouponUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.CouponController},Hephaestus.Domain.Repositories.ICouponRepository)">
             <summary>
             Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.CouponController"/>.
             </summary>
@@ -886,6 +891,7 @@
             <param name="updateCouponUseCase">Caso de uso para atualizar um cupom.</param>
             <param name="deleteCouponUseCase">Caso de uso para deletar um cupom.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
+            <param name="couponRepository">Repositório para operações de cupom.</param>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.CreateCoupon(Hephaestus.Domain.DTOs.Request.CreateCouponRequest)">
             <summary>
@@ -1103,11 +1109,10 @@
             Registra o uso de um cupom por um cliente em um pedido.
             </summary>
             <param name="id">ID do cupom.</param>
-            <param name="request">Dados do uso do cupom.</param>
+            <param name="request">Dados do uso (cliente, pedido).</param>
             <returns>Confirmação do uso.</returns>
             <response code="200">Uso registrado com sucesso.</response>
-            <response code="400">Regras de negócio violadas.</response>
-            <response code="404">Cupom não encontrado.</response>
+            <response code="400">Limite de uso atingido ou cupom inválido.</response>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.DeleteCoupon(System.String)">
             <summary>
@@ -1816,7 +1821,7 @@
             obtenção por ID, atualização, exclusão e notificação de promoções.
             </summary>
         </member>
-        <member name="M:Hephaestus.Controllers.PromotionController.#ctor(Hephaestus.Application.Interfaces.Promotion.ICreatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionsUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionByIdUseCase,Hephaestus.Application.Interfaces.Promotion.IUpdatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IDeletePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.INotifyPromotionUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.PromotionController})">
+        <member name="M:Hephaestus.Controllers.PromotionController.#ctor(Hephaestus.Application.Interfaces.Promotion.ICreatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionsUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionByIdUseCase,Hephaestus.Application.Interfaces.Promotion.IUpdatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IDeletePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.INotifyPromotionUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.PromotionController},Hephaestus.Domain.Repositories.IPromotionRepository)">
             <summary>
             Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.PromotionController"/>.
             </summary>
@@ -1827,6 +1832,7 @@
             <param name="deletePromotionUseCase">Caso de uso para remover promoções.</param>
             <param name="notifyPromotionUseCase">Caso de uso para notificar promoções.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
+            <param name="promotionRepository">Repositório para operações de promoção.</param>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.CreatePromotion(Hephaestus.Application.DTOs.Request.CreatePromotionRequest)">
             CreatePromotion
@@ -1846,7 +1852,7 @@
                "discountValue": 10.00,
                "menuItemId": null,
                "minOrderValue": 50.00,
-               "maxUsagePerCustomer": 1,
+               "maxUsesPerCustomer": 1,
                "maxTotalUses": 100,
                "applicableToTags": ["pizza", "lanche"],
                "startDate": "2025-07-12T00:00:00Z",
@@ -1930,7 +1936,7 @@
                  "discountValue": 10.00,
                  "menuItemId": null,
                  "minOrderValue": 50.00,
-                 "maxUsagePerCustomer": 1,
+                 "maxUsesPerCustomer": 1,
                  "maxTotalUses": 100,
                  "applicableToTags": ["pizza", "lanche"],
                  "startDate": "2025-07-12T00:00:00Z",
@@ -1947,7 +1953,7 @@
                  "discountValue": 0.00,
                  "menuItemId": null,
                  "minOrderValue": 30.00,
-                 "maxUsagePerCustomer": 1,
+                 "maxUsesPerCustomer": 1,
                  "maxTotalUses": 50,
                  "applicableToTags": [],
                  "startDate": "2025-07-01T00:00:00Z",
@@ -2006,7 +2012,7 @@
                "discountValue": 10.00,
                "menuItemId": null,
                "minOrderValue": 50.00,
-               "maxUsagePerCustomer": 1,
+               "maxUsesPerCustomer": 1,
                "maxTotalUses": 100,
                "applicableToTags": ["pizza", "lanche"],
                "startDate": "2025-07-12T00:00:00Z",
@@ -2068,7 +2074,7 @@
                "discountValue": 15.00,
                "menuItemId": null,
                "minOrderValue": 60.00,
-               "maxUsagePerCustomer": 2,
+               "maxUsesPerCustomer": 2,
                "maxTotalUses": 150,
                "applicableToTags": ["pizza", "lanche", "bebidas"],
                "startDate": "2025-07-12T00:00:00Z",
@@ -2255,11 +2261,10 @@
             Registra o uso de uma promoção por um cliente em um pedido.
             </summary>
             <param name="id">ID da promoção.</param>
-            <param name="request">Dados do uso da promoção.</param>
+            <param name="request">Dados do uso (cliente, pedido).</param>
             <returns>Confirmação do uso.</returns>
             <response code="200">Uso registrado com sucesso.</response>
-            <response code="400">Regras de negócio violadas.</response>
-            <response code="404">Promoção não encontrada.</response>
+            <response code="400">Limite de uso atingido ou promoção inválida.</response>
         </member>
         <member name="T:Hephaestus.Controllers.TagController">
             <summary>

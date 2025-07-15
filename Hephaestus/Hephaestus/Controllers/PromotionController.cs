@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims; // Necessary for ClaimTypes
+using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Repositories;
+using Hephaestus.Application.Exceptions;
 
 namespace Hephaestus.Controllers;
 
@@ -26,6 +29,7 @@ public class PromotionController : ControllerBase
     private readonly IDeletePromotionUseCase _deletePromotionUseCase;
     private readonly INotifyPromotionUseCase _notifyPromotionUseCase;
     private readonly ILogger<PromotionController> _logger;
+    private readonly IPromotionRepository _promotionRepository;
 
     /// <summary>
     /// Inicializa uma nova instância do <see cref="PromotionController"/>.
@@ -37,6 +41,7 @@ public class PromotionController : ControllerBase
     /// <param name="deletePromotionUseCase">Caso de uso para remover promoções.</param>
     /// <param name="notifyPromotionUseCase">Caso de uso para notificar promoções.</param>
     /// <param name="logger">Logger para registro de eventos e erros.</param>
+    /// <param name="promotionRepository">Repositório para operações de promoção.</param>
     public PromotionController(
         ICreatePromotionUseCase createPromotionUseCase,
         IGetPromotionsUseCase getPromotionsUseCase,
@@ -44,7 +49,8 @@ public class PromotionController : ControllerBase
         IUpdatePromotionUseCase updatePromotionUseCase,
         IDeletePromotionUseCase deletePromotionUseCase,
         INotifyPromotionUseCase notifyPromotionUseCase,
-        ILogger<PromotionController> logger)
+        ILogger<PromotionController> logger,
+        IPromotionRepository promotionRepository)
     {
         _createPromotionUseCase = createPromotionUseCase;
         _getPromotionsUseCase = getPromotionsUseCase;
@@ -53,6 +59,7 @@ public class PromotionController : ControllerBase
         _deletePromotionUseCase = deletePromotionUseCase;
         _notifyPromotionUseCase = notifyPromotionUseCase;
         _logger = logger;
+        _promotionRepository = promotionRepository;
     }
 
     /// CreatePromotion
@@ -73,7 +80,7 @@ public class PromotionController : ControllerBase
     ///   "discountValue": 10.00,
     ///   "menuItemId": null,
     ///   "minOrderValue": 50.00,
-    ///   "maxUsagePerCustomer": 1,
+    ///   "maxUsesPerCustomer": 1,
     ///   "maxTotalUses": 100,
     ///   "applicableToTags": ["pizza", "lanche"],
     ///   "startDate": "2025-07-12T00:00:00Z",
@@ -168,7 +175,7 @@ public class PromotionController : ControllerBase
     ///     "discountValue": 10.00,
     ///     "menuItemId": null,
     ///     "minOrderValue": 50.00,
-    ///     "maxUsagePerCustomer": 1,
+    ///     "maxUsesPerCustomer": 1,
     ///     "maxTotalUses": 100,
     ///     "applicableToTags": ["pizza", "lanche"],
     ///     "startDate": "2025-07-12T00:00:00Z",
@@ -185,7 +192,7 @@ public class PromotionController : ControllerBase
     ///     "discountValue": 0.00,
     ///     "menuItemId": null,
     ///     "minOrderValue": 30.00,
-    ///     "maxUsagePerCustomer": 1,
+    ///     "maxUsesPerCustomer": 1,
     ///     "maxTotalUses": 50,
     ///     "applicableToTags": [],
     ///     "startDate": "2025-07-01T00:00:00Z",
@@ -259,7 +266,7 @@ public class PromotionController : ControllerBase
     ///   "discountValue": 10.00,
     ///   "menuItemId": null,
     ///   "minOrderValue": 50.00,
-    ///   "maxUsagePerCustomer": 1,
+    ///   "maxUsesPerCustomer": 1,
     ///   "maxTotalUses": 100,
     ///   "applicableToTags": ["pizza", "lanche"],
     ///   "startDate": "2025-07-12T00:00:00Z",
@@ -333,7 +340,7 @@ public class PromotionController : ControllerBase
     ///   "discountValue": 15.00,
     ///   "menuItemId": null,
     ///   "minOrderValue": 60.00,
-    ///   "maxUsagePerCustomer": 2,
+    ///   "maxUsesPerCustomer": 2,
     ///   "maxTotalUses": 150,
     ///   "applicableToTags": ["pizza", "lanche", "bebidas"],
     ///   "startDate": "2025-07-12T00:00:00Z",
@@ -440,7 +447,7 @@ public class PromotionController : ControllerBase
             DiscountValue = promotion.DiscountValue,
             MenuItemId = promotion.MenuItemId,
             MinOrderValue = promotion.MinOrderValue,
-            MaxUsagePerCustomer = promotion.MaxUsagePerCustomer,
+            MaxUsesPerCustomer = promotion.MaxUsesPerCustomer,
             MaxTotalUses = promotion.MaxTotalUses,
             ApplicableToTags = promotion.ApplicableToTags,
             StartDate = promotion.StartDate,
@@ -597,38 +604,39 @@ public class PromotionController : ControllerBase
     /// Registra o uso de uma promoção por um cliente em um pedido.
     /// </summary>
     /// <param name="id">ID da promoção.</param>
-    /// <param name="request">Dados do uso da promoção.</param>
+    /// <param name="request">Dados do uso (cliente, pedido).</param>
     /// <returns>Confirmação do uso.</returns>
     /// <response code="200">Uso registrado com sucesso.</response>
-    /// <response code="400">Regras de negócio violadas.</response>
-    /// <response code="404">Promoção não encontrada.</response>
+    /// <response code="400">Limite de uso atingido ou promoção inválida.</response>
     [HttpPost("{id}/use")]
-    [SwaggerOperation(Summary = "Registrar uso de promoção", Description = "Registra o uso de uma promoção por um cliente em um pedido, validando regras de negócio.")]
+    [SwaggerOperation(Summary = "Registrar uso de promoção", Description = "Registra o uso de uma promoção por um cliente em um pedido, validando limites de uso.")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UsePromotion(string id, [FromBody] UsePromotionRequest request)
     {
+        // Buscar promoção
+        var tenantId = User.FindFirst("tenant_id")?.Value;
+        if (string.IsNullOrEmpty(tenantId))
+            return BadRequest("TenantId não encontrado no token.");
         var promotion = await _getPromotionByIdUseCase.ExecuteAsync(id, User);
-        if (promotion == null)
-            return NotFound();
-
-        if (!promotion.IsActive)
-            return BadRequest("Promoção inativa.");
-        if (promotion.EndDate < DateTime.UtcNow)
-            return BadRequest("Promoção expirada.");
-        // Exemplo de limite de uso (mock):
-        // int maxUsos = promotion.MaxTotalUses ?? 1;
-        // int usosCliente = 0; // Buscar na base real
-        // if (usosCliente >= (promotion.MaxUsesPerCustomer ?? 1))
-        //     return BadRequest("Limite de uso por cliente atingido.");
-        // int usosTotais = 0; // Buscar na base real
-        // if (usosTotais >= maxUsos)
-        //     return BadRequest("Limite total de uso da promoção atingido.");
-
-        // Aqui faria a atualização dos contadores de uso
-        // await _promotionRepository.RegisterUseAsync(id, request.CustomerPhoneNumber, request.OrderId);
-
-        return Ok(new { message = "Uso da promoção registrado com sucesso." });
+        if (promotion == null || !promotion.IsActive)
+            return BadRequest("Promoção inválida ou inativa.");
+        // Validar limites
+        var totalUses = await _promotionRepository.GetUsageCountAsync(id, tenantId);
+        var usesByCustomer = await _promotionRepository.GetUsageCountByCustomerAsync(id, tenantId, request.CustomerPhoneNumber);
+        if (promotion.MaxTotalUses.HasValue && totalUses >= promotion.MaxTotalUses.Value)
+            return BadRequest("Limite máximo de usos da promoção atingido.");
+        if (promotion.MaxUsesPerCustomer.HasValue && usesByCustomer >= promotion.MaxUsesPerCustomer.Value)
+            return BadRequest("Limite máximo de usos da promoção por cliente atingido.");
+        // Registrar uso
+        await _promotionRepository.AddUsageAsync(new PromotionUsage
+        {
+            TenantId = tenantId,
+            PromotionId = id,
+            CustomerPhoneNumber = request.CustomerPhoneNumber,
+            OrderId = request.OrderId,
+            UsedAt = DateTime.UtcNow
+        });
+        return Ok();
     }
 }

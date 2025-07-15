@@ -33,9 +33,9 @@ public class UpdatePromotionRequestValidator : AbstractValidator<UpdatePromotion
             .When(x => x.MinOrderValue.HasValue)
             .WithMessage("Valor mínimo do pedido deve ser maior ou igual a zero.");
 
-        RuleFor(x => x.MaxUsagePerCustomer)
+        RuleFor(x => x.MaxUsesPerCustomer)
             .GreaterThan(0)
-            .When(x => x.MaxUsagePerCustomer.HasValue)
+            .When(x => x.MaxUsesPerCustomer.HasValue)
             .WithMessage("Uso máximo por cliente deve ser maior que zero.");
 
         RuleFor(x => x.MaxTotalUses)

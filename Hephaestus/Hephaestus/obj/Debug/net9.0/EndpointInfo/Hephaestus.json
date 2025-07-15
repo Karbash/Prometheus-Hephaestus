@@ -2811,7 +2811,7 @@
           }
         ],
         "requestBody": {
-          "description": "Dados do uso do cupom.",
+          "description": "Dados do uso (cliente, pedido).",
           "content": {
             "application/json": {
               "schema": {
@@ -2835,27 +2835,7 @@
             "description": "Uso registrado com sucesso."
           },
           "400": {
-            "description": "Regras de negócio violadas.",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Cupom não encontrado.",
+            "description": "Limite de uso atingido ou cupom inválido.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -4566,19 +4546,13 @@
             "description": "Status de pagamento atualizado com sucesso.",
             "content": {
               "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderResponse"
-                }
+                "schema": { }
               },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderResponse"
-                }
+                "schema": { }
               },
               "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderResponse"
-                }
+                "schema": { }
               }
             }
           },
@@ -5090,7 +5064,7 @@
           "Promotion"
         ],
         "summary": "Cria uma nova promoção para o tenant autenticado.",
-        "description": "Este endpoint permite que um tenant registre uma nova promoção em seu catálogo.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"name\": \"Desconto de 10% no Verão\",\r\n  \"description\": \"10% de desconto em todos os pedidos acima de R$50 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsagePerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 201 Created):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório.\"\r\n    ],\r\n    \"DiscountValue\": [\r\n      \"O valor do desconto deve ser positivo.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar a promoção.\"\r\n}\r\n```",
+        "description": "Este endpoint permite que um tenant registre uma nova promoção em seu catálogo.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"name\": \"Desconto de 10% no Verão\",\r\n  \"description\": \"10% de desconto em todos os pedidos acima de R$50 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsesPerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 201 Created):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório.\"\r\n    ],\r\n    \"DiscountValue\": [\r\n      \"O valor do desconto deve ser positivo.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar a promoção.\"\r\n}\r\n```",
         "requestBody": {
           "description": "Dados da promoção a ser criada (Hephaestus.Application.DTOs.Request.CreatePromotionRequest).",
           "content": {
@@ -5193,7 +5167,7 @@
           "Promotion"
         ],
         "summary": "Lista as promoções do tenant autenticado.",
-        "description": "Este endpoint retorna uma lista de promoções registradas para o tenant.\r\nÉ possível filtrar as promoções por status de ativação (`isActive`).\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Requisição:**\r\n```http\r\nGET /api/Promotion?isActive=true\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Desconto de 10% no Verão\",\r\n    \"description\": \"10% de desconto em todos os pedidos.\",\r\n    \"discountType\": \"Percentage\",\r\n    \"discountValue\": 10.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 50.00,\r\n    \"maxUsagePerCustomer\": 1,\r\n    \"maxTotalUses\": 100,\r\n    \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n    \"startDate\": \"2025-07-12T00:00:00Z\",\r\n    \"endDate\": \"2025-12-31T23:59:59Z\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n  },\r\n  {\r\n    \"id\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Frete Grátis para Novos Clientes\",\r\n    \"description\": \"Frete grátis na primeira compra.\",\r\n    \"discountType\": \"FreeShipping\",\r\n    \"discountValue\": 0.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 30.00,\r\n    \"maxUsagePerCustomer\": 1,\r\n    \"maxTotalUses\": 50,\r\n    \"applicableToTags\": [],\r\n    \"startDate\": \"2025-07-01T00:00:00Z\",\r\n    \"endDate\": \"2025-08-31T23:59:59Z\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": null\r\n  }\r\n]\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao listar as promoções.\"\r\n}\r\n```",
+        "description": "Este endpoint retorna uma lista de promoções registradas para o tenant.\r\nÉ possível filtrar as promoções por status de ativação (`isActive`).\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Requisição:**\r\n```http\r\nGET /api/Promotion?isActive=true\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Desconto de 10% no Verão\",\r\n    \"description\": \"10% de desconto em todos os pedidos.\",\r\n    \"discountType\": \"Percentage\",\r\n    \"discountValue\": 10.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 50.00,\r\n    \"maxUsesPerCustomer\": 1,\r\n    \"maxTotalUses\": 100,\r\n    \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n    \"startDate\": \"2025-07-12T00:00:00Z\",\r\n    \"endDate\": \"2025-12-31T23:59:59Z\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n  },\r\n  {\r\n    \"id\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Frete Grátis para Novos Clientes\",\r\n    \"description\": \"Frete grátis na primeira compra.\",\r\n    \"discountType\": \"FreeShipping\",\r\n    \"discountValue\": 0.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 30.00,\r\n    \"maxUsesPerCustomer\": 1,\r\n    \"maxTotalUses\": 50,\r\n    \"applicableToTags\": [],\r\n    \"startDate\": \"2025-07-01T00:00:00Z\",\r\n    \"endDate\": \"2025-08-31T23:59:59Z\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": null\r\n  }\r\n]\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao listar as promoções.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "isActive",
@@ -5307,7 +5281,7 @@
           "Promotion"
         ],
         "summary": "Obtém os detalhes de uma promoção específica por ID.",
-        "description": "Este endpoint retorna todas as informações de uma promoção, desde que a promoção pertença ao tenant autenticado.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Requisição:**\r\n```http\r\nGET /api/Promotion/123e4567-e89b-12d3-a456-426614174001\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Desconto de 10% no Verão\",\r\n  \"description\": \"10% de desconto em todos os pedidos acima de R$50 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsagePerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID da promoção 'invalido-id' não é um GUID válido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
+        "description": "Este endpoint retorna todas as informações de uma promoção, desde que a promoção pertença ao tenant autenticado.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Requisição:**\r\n```http\r\nGET /api/Promotion/123e4567-e89b-12d3-a456-426614174001\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Desconto de 10% no Verão\",\r\n  \"description\": \"10% de desconto em todos os pedidos acima de R$50 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsesPerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID da promoção 'invalido-id' não é um GUID válido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -5427,7 +5401,7 @@
           "Promotion"
         ],
         "summary": "Atualiza uma promoção existente para o tenant autenticado.",
-        "description": "Este endpoint permite que um tenant atualize os dados de uma promoção existente.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Desconto de 15% no Verão\",\r\n  \"description\": \"15% de desconto em todos os pedidos acima de R$60 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 15.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 60.00,\r\n  \"maxUsagePerCustomer\": 2,\r\n  \"maxTotalUses\": 150,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\", \"bebidas\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao-atualizada.jpg](https://exemplo.com/promocao-verao-atualizada.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório.\"\r\n    ],\r\n    \"DiscountValue\": [\r\n      \"O valor do desconto deve ser positivo.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
+        "description": "Este endpoint permite que um tenant atualize os dados de uma promoção existente.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Desconto de 15% no Verão\",\r\n  \"description\": \"15% de desconto em todos os pedidos acima de R$60 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 15.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 60.00,\r\n  \"maxUsesPerCustomer\": 2,\r\n  \"maxTotalUses\": 150,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\", \"bebidas\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao-atualizada.jpg](https://exemplo.com/promocao-verao-atualizada.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório.\"\r\n    ],\r\n    \"DiscountValue\": [\r\n      \"O valor do desconto deve ser positivo.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -5882,7 +5856,7 @@
           }
         ],
         "requestBody": {
-          "description": "Dados do uso da promoção.",
+          "description": "Dados do uso (cliente, pedido).",
           "content": {
             "application/json": {
               "schema": {
@@ -5906,27 +5880,7 @@
             "description": "Uso registrado com sucesso."
           },
           "400": {
-            "description": "Regras de negócio violadas.",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Promoção não encontrada.",
+            "description": "Limite de uso atingido ou promoção inválida.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -6725,6 +6679,16 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "maxTotalUses": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "maxUsesPerCustomer": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -6892,12 +6856,12 @@
             "format": "double",
             "nullable": true
           },
-          "maxUsagePerCustomer": {
+          "maxTotalUses": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
-          "maxTotalUses": {
+          "maxUsesPerCustomer": {
             "type": "integer",
             "format": "int32",
             "nullable": true
@@ -7627,12 +7591,12 @@
             "format": "double",
             "nullable": true
           },
-          "maxUsagePerCustomer": {
+          "maxTotalUses": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
-          "maxTotalUses": {
+          "maxUsesPerCustomer": {
             "type": "integer",
             "format": "int32",
             "nullable": true
@@ -8134,11 +8098,11 @@
       },
       "UpdateOrderPaymentStatusRequest": {
         "required": [
-          "paymentStatus"
+          "status"
         ],
         "type": "object",
         "properties": {
-          "paymentStatus": {
+          "status": {
             "$ref": "#/components/schemas/PaymentStatus"
           }
         },
@@ -8230,12 +8194,12 @@
             "format": "double",
             "nullable": true
           },
-          "maxUsagePerCustomer": {
+          "maxTotalUses": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
-          "maxTotalUses": {
+          "maxUsesPerCustomer": {
             "type": "integer",
             "format": "int32",
             "nullable": true

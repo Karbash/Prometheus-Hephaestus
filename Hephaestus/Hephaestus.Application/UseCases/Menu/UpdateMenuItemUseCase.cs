@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Menu;
 
 /// <summary>
-/// Caso de uso para atualização de itens do cardápio.
+/// Caso de uso para atualizaï¿½ï¿½o de itens do cardï¿½pio.
 /// </summary>
 public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
 {
@@ -23,14 +23,14 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="UpdateMenuItemUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="UpdateMenuItemUseCase"/>.
     /// </summary>
-    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
-    /// <param name="tagRepository">Repositório de tags.</param>
-    /// <param name="validator">Validador para a requisição.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="menuItemRepository">Repositï¿½rio de itens do cardï¿½pio.</param>
+    /// <param name="tagRepository">Repositï¿½rio de tags.</param>
+    /// <param name="validator">Validador para a requisiï¿½ï¿½o.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public UpdateMenuItemUseCase(
         IMenuItemRepository menuItemRepository,
         ITagRepository tagRepository,
@@ -47,36 +47,36 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     }
 
     /// <summary>
-    /// Executa a atualização de um item do cardápio.
+    /// Executa a atualizaï¿½ï¿½o de um item do cardï¿½pio.
     /// </summary>
-    /// <param name="id">ID do item do cardápio.</param>
-    /// <param name="request">Dados atualizados do item do cardápio.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="id">ID do item do cardï¿½pio.</param>
+    /// <param name="request">Dados atualizados do item do cardï¿½pio.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     public async Task ExecuteAsync(string id, UpdateMenuItemRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos dados de entrada
+            // Validaï¿½ï¿½o dos dados de entrada
             await _validator.ValidateAndThrowAsync(request);
 
-            // Validação das regras de negócio
+            // Validaï¿½ï¿½o das regras de negï¿½cio
             await ValidateBusinessRulesAsync(request, tenantId);
 
-            // Busca e validação do item
+            // Busca e validaï¿½ï¿½o do item
             var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
             EnsureResourceExists(menuItem, "MenuItem", id);
 
-            // Atualização dos dados
+            // Atualizaï¿½ï¿½o dos dados
             await UpdateMenuItemEntityAsync(menuItem!, request);
         });
     }
 
     /// <summary>
-    /// Valida as regras de negócio.
+    /// Valida as regras de negï¿½cio.
     /// </summary>
-    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="request">Requisiï¿½ï¿½o com os dados.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(UpdateMenuItemRequest request, string tenantId)
     {
@@ -85,17 +85,17 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
             var isValid = await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, tenantId);
             if (!isValid)
             {
-                throw new BusinessRuleException("Um ou mais TagIds são inválidos para este tenant.", "TAG_VALIDATION_RULE");
+                throw new BusinessRuleException("Um ou mais TagIds sï¿½o invï¿½lidos para este tenant.", "TAG_VALIDATION_RULE");
             }
         }
     }
 
     /// <summary>
-    /// Atualiza o item do cardápio com os novos dados.
+    /// Atualiza o item do cardï¿½pio com os novos dados.
     /// </summary>
-    /// <param name="menuItem">Item do cardápio a ser atualizado.</param>
+    /// <param name="menuItem">Item do cardï¿½pio a ser atualizado.</param>
     /// <param name="request">Dados atualizados.</param>
-    /// <param name="id">ID do item do cardápio.</param>
+    /// <param name="id">ID do item do cardï¿½pio.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task UpdateMenuItemEntityAsync(Domain.Entities.MenuItem menuItem, UpdateMenuItemRequest request)
     {
@@ -105,7 +105,7 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
         menuItem.CategoryId = request.CategoryId ?? menuItem.CategoryId;
         menuItem.Price = request.Price ?? menuItem.Price;
         menuItem.IsAvailable = request.IsAvailable ?? menuItem.IsAvailable;
-        menuItem.AvailableAdditionalIds = request.AvailableAdditionalIds ?? menuItem.AvailableAdditionalIds;
+        // AvailableAdditionalIds foi removido da entidade
         menuItem.ImageUrl = request.ImageUrl ?? menuItem.ImageUrl;
 
         // Atualiza as tags se especificadas
@@ -114,7 +114,7 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
             await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, menuItem.TenantId);
         }
 
-        // Persiste as alterações
+        // Persiste as alteraï¿½ï¿½es
         await _menuItemRepository.UpdateAsync(menuItem);
     }
 }

@@ -29,7 +29,7 @@ public class PromotionRepository : IPromotionRepository
         if (isActive.HasValue)
             query = query.Where(p => p.IsActive == isActive.Value);
 
-        // OrdenaÁ„o din‚mica
+        // Ordena√ß√£o din√¢mica
         if (!string.IsNullOrEmpty(sortBy))
         {
             query = sortOrder?.ToLower() == "desc"
@@ -91,6 +91,6 @@ public class PromotionRepository : IPromotionRepository
 
     public async Task<int> GetUsageCountByCustomerAsync(string promotionId, string tenantId, string customerPhoneNumber)
     {
-        return await _dbContext.PromotionUsages.CountAsync(u => u.PromotionId == promotionId && u.TenantId == tenantId && u.CustomerPhoneNumber == customerPhoneNumber);
+        return await _dbContext.PromotionUsages.CountAsync(u => u.PromotionId == promotionId && u.TenantId == tenantId && u.CustomerId == customerPhoneNumber);
     }
 }

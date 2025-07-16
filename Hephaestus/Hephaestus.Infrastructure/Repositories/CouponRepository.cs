@@ -34,13 +34,13 @@ public class CouponRepository : ICouponRepository
     public async Task<PagedResult<Coupon>> GetByTenantIdAsync(string tenantId, bool? isActive = null, string? customerPhoneNumber = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new ArgumentException("TenantId é obrigatório.");
+            throw new ArgumentException("TenantId Ã© obrigatÃ³rio.");
 
         var query = _context.Coupons.AsNoTracking().Where(c => c.TenantId == tenantId);
         if (isActive.HasValue)
             query = query.Where(c => c.IsActive == isActive.Value);
         if (!string.IsNullOrEmpty(customerPhoneNumber))
-            query = query.Where(c => c.CustomerPhoneNumber == customerPhoneNumber);
+            query = query.Where(c => c.CustomerId == customerPhoneNumber);
 
         if (!string.IsNullOrEmpty(sortBy))
         {
@@ -100,6 +100,6 @@ public class CouponRepository : ICouponRepository
 
     public async Task<int> GetUsageCountByCustomerAsync(string couponId, string tenantId, string customerPhoneNumber)
     {
-        return await _context.CouponUsages.CountAsync(u => u.CouponId == couponId && u.TenantId == tenantId && u.CustomerPhoneNumber == customerPhoneNumber);
+        return await _context.CouponUsages.CountAsync(u => u.CouponId == couponId && u.TenantId == tenantId && u.CustomerId == customerPhoneNumber);
     }
 }

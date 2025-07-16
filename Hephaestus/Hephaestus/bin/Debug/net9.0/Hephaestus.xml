@@ -878,12 +878,12 @@
         </member>
         <member name="T:Hephaestus.Controllers.CouponController">
             <summary>
-            Controller para gerenciamento de cupons, permitindo operações como criação, listagem, obtenção, atualização e exclusão de cupons.
+            Controller para gerenciamento de cupons, permitindo opera��es como cria��o, listagem, obten��o, atualiza��o e exclus�o de cupons.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.#ctor(Hephaestus.Application.Interfaces.Coupon.ICreateCouponUseCase,Hephaestus.Application.Interfaces.Coupon.IGetCouponsUseCase,Hephaestus.Application.Interfaces.Coupon.IGetCouponByIdUseCase,Hephaestus.Application.Interfaces.Coupon.IUpdateCouponUseCase,Hephaestus.Application.Interfaces.Coupon.IDeleteCouponUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.CouponController},Hephaestus.Domain.Repositories.ICouponRepository)">
             <summary>
-            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.CouponController"/>.
+            Inicializa uma nova inst�ncia do <see cref="T:Hephaestus.Controllers.CouponController"/>.
             </summary>
             <param name="createCouponUseCase">Caso de uso para criar cupons.</param>
             <param name="getCouponsUseCase">Caso de uso para listar cupons.</param>
@@ -891,7 +891,7 @@
             <param name="updateCouponUseCase">Caso de uso para atualizar um cupom.</param>
             <param name="deleteCouponUseCase">Caso de uso para deletar um cupom.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
-            <param name="couponRepository">Repositório para operações de cupom.</param>
+            <param name="couponRepository">Reposit�rio para opera��es de cupom.</param>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.CreateCoupon(Hephaestus.Domain.DTOs.Request.CreateCouponRequest)">
             <summary>
@@ -899,13 +899,13 @@
             </summary>
             <remarks>
             Este endpoint permite que um administrador ou um tenant crie um novo cupom de desconto.
-            Requer autenticação com as roles **Admin** ou **Tenant**.
+            Requer autentica��o com as roles **Admin** ou **Tenant**.
             
-            Exemplo de requisição:
+            Exemplo de requisi��o:
             ```json
             {
               "code": "VERAO2025",
-              "description": "Desconto especial de verão",
+              "description": "Desconto especial de ver�o",
               "discountValue": 15.00,
               "isActive": true,
               "startDate": "2025-07-15T00:00:00Z",
@@ -920,7 +920,7 @@
             }
             ```
             
-            Exemplo de erro de validação (Status 400 Bad Request):
+            Exemplo de erro de valida��o (Status 400 Bad Request):
             ```json
             {
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -928,7 +928,7 @@
               "status": 400,
               "errors": {
                 "Code": [
-                  "O código do cupom é obrigatório."
+                  "O c�digo do cupom � obrigat�rio."
                 ]
               }
             }
@@ -939,7 +939,7 @@
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
               "title": "Conflict",
               "status": 409,
-              "detail": "O código 'VERAO2025' já existe para este tenant."
+              "detail": "O c�digo 'VERAO2025' j� existe para este tenant."
             }
             ```
             </remarks>
@@ -948,11 +948,11 @@
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.GetCoupons(System.Nullable{System.Boolean},System.String,System.Int32,System.Int32,System.String,System.String)">
             <summary>
-            Lista os cupons disponíveis para o tenant autenticado, com filtros opcionais.
+            Lista os cupons dispon�veis para o tenant autenticado, com filtros opcionais.
             </summary>
             <remarks>
-            Este endpoint permite filtrar cupons por status de ativação (`isActive`) e pelo número de telefone de um cliente associado (`customerPhoneNumber`).
-            Requer autenticação com as roles **Admin** ou **Tenant**.
+            Este endpoint permite filtrar cupons por status de ativa��o (`isActive`) e pelo n�mero de telefone de um cliente associado (`customerPhoneNumber`).
+            Requer autentica��o com as roles **Admin** ou **Tenant**.
             
             Exemplo de resposta de sucesso (Status 200 OK):
             ```json
@@ -971,7 +971,7 @@
                 "id": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6",
                 "tenantId": "456e7890-e89b-12d3-a456-426614174002",
                 "code": "FRETEGRATIS",
-                "description": "Frete Grátis na primeira compra",
+                "description": "Frete Gr�tis na primeira compra",
                 "discountValue": 0.00,
                 "isActive": false,
                 "startDate": "2025-06-01T00:00:00Z",
@@ -979,22 +979,22 @@
               }
             ]
             ```
-            Exemplo de erro de autenticação (Status 401 Unauthorized):
+            Exemplo de erro de autentica��o (Status 401 Unauthorized):
             ```
             (Nenhum corpo de resposta, apenas status 401)
             ```
             </remarks>
             <param name="isActive">Filtro opcional para listar apenas cupons ativos ou inativos.</param>
-            <param name="customerPhoneNumber">Filtro opcional para listar cupons associados a um número de telefone de cliente específico.</param>
+            <param name="customerPhoneNumber">Filtro opcional para listar cupons associados a um n�mero de telefone de cliente espec�fico.</param>
             <returns>Uma `OkResult` contendo uma lista de `CouponResponse`.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.GetCouponById(System.String)">
             <summary>
-            Obtém os detalhes de um cupom específico por seu ID.
+            Obt�m os detalhes de um cupom espec�fico por seu ID.
             </summary>
             <remarks>
-            Este endpoint retorna todas as informações de um cupom, desde que pertença ao tenant autenticado.
-            Requer autenticação com as roles **Admin** ou **Tenant**.
+            Este endpoint retorna todas as informa��es de um cupom, desde que perten�a ao tenant autenticado.
+            Requer autentica��o com as roles **Admin** ou **Tenant**.
             
             Exemplo de resposta de sucesso (Status 200 OK):
             ```json
@@ -1016,7 +1016,7 @@
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
               "title": "Bad Request",
               "status": 400,
-              "detail": "O ID do cupom 'invalido-id' não é um GUID válido."
+              "detail": "O ID do cupom 'invalido-id' n�o � um GUID v�lido."
             }
             ```
             Exemplo de erro (Status 404 Not Found):
@@ -1025,22 +1025,22 @@
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
               "title": "Not Found",
               "status": 404,
-              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant."
+              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' n�o encontrado para o tenant."
             }
             ```
             </remarks>
             <param name="id">O **ID (GUID)** do cupom a ser consultado.</param>
-            <returns>Um `OkResult` contendo o `CouponResponse` ou um `NotFoundResult` se o cupom não for encontrado.</returns>
+            <returns>Um `OkResult` contendo o `CouponResponse` ou um `NotFoundResult` se o cupom n�o for encontrado.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.UpdateCoupon(System.String,Hephaestus.Domain.DTOs.Request.UpdateCouponRequest)">
             <summary>
             Atualiza um cupom existente para o tenant autenticado.
             </summary>
             <remarks>
-            Permite a modificação das propriedades de um cupom existente.
-            Requer autenticação com as roles **Admin** ou **Tenant**.
+            Permite a modifica��o das propriedades de um cupom existente.
+            Requer autentica��o com as roles **Admin** ou **Tenant**.
             
-            Exemplo de requisição:
+            Exemplo de requisi��o:
             ```json
             {
               "code": "SUPERDESCONTO20",
@@ -1057,7 +1057,7 @@
             (Nenhum corpo de resposta, apenas status 204)
             ```
             
-            Exemplo de erro de validação (Status 400 Bad Request):
+            Exemplo de erro de valida��o (Status 400 Bad Request):
             ```json
             {
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -1076,7 +1076,7 @@
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
               "title": "Not Found",
               "status": 404,
-              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para atualização."
+              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' n�o encontrado para atualiza��o."
             }
             ```
             Exemplo de erro de conflito (Status 409 Conflict):
@@ -1085,24 +1085,24 @@
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
               "title": "Conflict",
               "status": 409,
-              "detail": "O código de cupom 'SUPERDESCONTO20' já está em uso por outro cupom."
+              "detail": "O c�digo de cupom 'SUPERDESCONTO20' j� est� em uso por outro cupom."
             }
             ```
             </remarks>
             <param name="id">O **ID (GUID)** do cupom a ser atualizado.</param>
             <param name="request">Dados atualizados do cupom.</param>
-            <returns>Um `NoContentResult` em caso de sucesso na atualização.</returns>
+            <returns>Um `NoContentResult` em caso de sucesso na atualiza��o.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.UpdateCouponStatus(System.String,Hephaestus.Domain.DTOs.Request.UpdateCouponStatusRequest)">
             <summary>
-            Atualiza o status de ativação de um cupom (ativo/inativo).
+            Atualiza o status de ativa��o de um cupom (ativo/inativo).
             </summary>
             <param name="id">ID do cupom.</param>
-            <param name="request">Novo status de ativação.</param>
+            <param name="request">Novo status de ativa��o.</param>
             <returns>Cupom atualizado.</returns>
             <response code="200">Status atualizado com sucesso.</response>
-            <response code="400">Regras de negócio violadas.</response>
-            <response code="404">Cupom não encontrado.</response>
+            <response code="400">Regras de neg�cio violadas.</response>
+            <response code="404">Cupom n�o encontrado.</response>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.UseCoupon(System.String,Hephaestus.Domain.DTOs.Request.UseCouponRequest)">
             <summary>
@@ -1110,9 +1110,9 @@
             </summary>
             <param name="id">ID do cupom.</param>
             <param name="request">Dados do uso (cliente, pedido).</param>
-            <returns>Confirmação do uso.</returns>
+            <returns>Confirma��o do uso.</returns>
             <response code="200">Uso registrado com sucesso.</response>
-            <response code="400">Limite de uso atingido ou cupom inválido.</response>
+            <response code="400">Limite de uso atingido ou cupom inv�lido.</response>
         </member>
         <member name="M:Hephaestus.Controllers.CouponController.DeleteCoupon(System.String)">
             <summary>
@@ -1120,7 +1120,7 @@
             </summary>
             <remarks>
             Este endpoint permite que um administrador ou um tenant remova um cupom existente.
-            Requer autenticação com as roles **Admin** ou **Tenant**.
+            Requer autentica��o com as roles **Admin** ou **Tenant**.
             
             Exemplo de resposta de sucesso (Status 204 No Content):
             ```
@@ -1133,7 +1133,7 @@
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
               "title": "Bad Request",
               "status": 400,
-              "detail": "O ID do cupom 'invalido-id' não é um GUID válido."
+              "detail": "O ID do cupom 'invalido-id' n�o � um GUID v�lido."
             }
             ```
             
@@ -1143,7 +1143,7 @@
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
               "title": "Not Found",
               "status": 404,
-              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant."
+              "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' n�o encontrado para o tenant."
             }
             ```
             
@@ -1153,7 +1153,7 @@
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
               "title": "Conflict",
               "status": 409,
-              "detail": "Não é possível remover um cupom que está sendo usado em pedidos ativos."
+              "detail": "N�o � poss�vel remover um cupom que est� sendo usado em pedidos ativos."
             }
             ```
             </remarks>
@@ -1817,37 +1817,37 @@
         </member>
         <member name="T:Hephaestus.Controllers.PromotionController">
             <summary>
-            Controller para gerenciamento completo de promoções de um tenant, incluindo criação, listagem,
-            obtenção por ID, atualização, exclusão e notificação de promoções.
+            Controller para gerenciamento completo de promo��es de um tenant, incluindo cria��o, listagem,
+            obten��o por ID, atualiza��o, exclus�o e notifica��o de promo��es.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.#ctor(Hephaestus.Application.Interfaces.Promotion.ICreatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionsUseCase,Hephaestus.Application.Interfaces.Promotion.IGetPromotionByIdUseCase,Hephaestus.Application.Interfaces.Promotion.IUpdatePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.IDeletePromotionUseCase,Hephaestus.Application.Interfaces.Promotion.INotifyPromotionUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.PromotionController},Hephaestus.Domain.Repositories.IPromotionRepository)">
             <summary>
-            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.PromotionController"/>.
+            Inicializa uma nova inst�ncia do <see cref="T:Hephaestus.Controllers.PromotionController"/>.
             </summary>
-            <param name="createPromotionUseCase">Caso de uso para criar promoções.</param>
-            <param name="getPromotionsUseCase">Caso de uso para listar promoções.</param>
-            <param name="getPromotionByIdUseCase">Caso de uso para obter promoção por ID.</param>
-            <param name="updatePromotionUseCase">Caso de uso para atualizar promoções.</param>
-            <param name="deletePromotionUseCase">Caso de uso para remover promoções.</param>
-            <param name="notifyPromotionUseCase">Caso de uso para notificar promoções.</param>
+            <param name="createPromotionUseCase">Caso de uso para criar promo��es.</param>
+            <param name="getPromotionsUseCase">Caso de uso para listar promo��es.</param>
+            <param name="getPromotionByIdUseCase">Caso de uso para obter promo��o por ID.</param>
+            <param name="updatePromotionUseCase">Caso de uso para atualizar promo��es.</param>
+            <param name="deletePromotionUseCase">Caso de uso para remover promo��es.</param>
+            <param name="notifyPromotionUseCase">Caso de uso para notificar promo��es.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
-            <param name="promotionRepository">Repositório para operações de promoção.</param>
+            <param name="promotionRepository">Reposit�rio para opera��es de promo��o.</param>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.CreatePromotion(Hephaestus.Domain.DTOs.Request.CreatePromotionRequest)">
             CreatePromotion
              <summary>
-             Cria uma nova promoção para o tenant autenticado.
+             Cria uma nova promo��o para o tenant autenticado.
              </summary>
              <remarks>
-             Este endpoint permite que um tenant registre uma nova promoção em seu catálogo.
-             Requer autenticação com a role **Tenant**.
+             Este endpoint permite que um tenant registre uma nova promo��o em seu cat�logo.
+             Requer autentica��o com a role **Tenant**.
             
-             **Exemplo de Corpo da Requisição:**
+             **Exemplo de Corpo da Requisi��o:**
              ```json
              {
-               "name": "Desconto de 10% no Verão",
-               "description": "10% de desconto em todos os pedidos acima de R$50 durante o verão.",
+               "name": "Desconto de 10% no Ver�o",
+               "description": "10% de desconto em todos os pedidos acima de R$50 durante o ver�o.",
                "discountType": "Percentage",
                "discountValue": 10.00,
                "menuItemId": null,
@@ -1869,7 +1869,7 @@
              }
              ```
             
-             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             **Exemplo de Erro de Valida��o (Status 400 Bad Request):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -1877,7 +1877,7 @@
                "status": 400,
                "errors": {
                  "Name": [
-                   "O campo 'Name' é obrigatório."
+                   "O campo 'Name' � obrigat�rio."
                  ],
                  "DiscountValue": [
                    "O valor do desconto deve ser positivo."
@@ -1886,13 +1886,13 @@
              }
              ```
             
-             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId não encontrado no token."
+               "detail": "TenantId n�o encontrado no token."
              }
              ```
             
@@ -1902,24 +1902,24 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
                "title": "Internal Server Error",
                "status": 500,
-               "detail": "Ocorreu um erro inesperado ao criar a promoção."
+               "detail": "Ocorreu um erro inesperado ao criar a promo��o."
              }
              ```
              </remarks>
-             <param name="request">Dados da promoção a ser criada (<see cref="T:Hephaestus.Domain.DTOs.Request.CreatePromotionRequest"/>).</param>
-             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> contendo o ID da promoção criada.</returns>
+             <param name="request">Dados da promo��o a ser criada (<see cref="T:Hephaestus.Domain.DTOs.Request.CreatePromotionRequest"/>).</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> contendo o ID da promo��o criada.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.GetPromotions(System.Nullable{System.Boolean},System.Int32,System.Int32,System.String,System.String)">
             GetPromotions
              <summary>
-             Lista as promoções do tenant autenticado.
+             Lista as promo��es do tenant autenticado.
              </summary>
              <remarks>
-             Este endpoint retorna uma lista de promoções registradas para o tenant.
-             É possível filtrar as promoções por status de ativação (`isActive`).
-             Requer autenticação com a role **Tenant**.
+             Este endpoint retorna uma lista de promo��es registradas para o tenant.
+             � poss�vel filtrar as promo��es por status de ativa��o (`isActive`).
+             Requer autentica��o com a role **Tenant**.
             
-             **Exemplo de Requisição:**
+             **Exemplo de Requisi��o:**
              ```http
              GET /api/Promotion?isActive=true
              ```
@@ -1930,7 +1930,7 @@
                {
                  "id": "123e4567-e89b-12d3-a456-426614174001",
                  "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                 "name": "Desconto de 10% no Verão",
+                 "name": "Desconto de 10% no Ver�o",
                  "description": "10% de desconto em todos os pedidos.",
                  "discountType": "Percentage",
                  "discountValue": 10.00,
@@ -1947,8 +1947,8 @@
                {
                  "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                  "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                 "name": "Frete Grátis para Novos Clientes",
-                 "description": "Frete grátis na primeira compra.",
+                 "name": "Frete Gr�tis para Novos Clientes",
+                 "description": "Frete gr�tis na primeira compra.",
                  "discountType": "FreeShipping",
                  "discountValue": 0.00,
                  "menuItemId": null,
@@ -1964,13 +1964,13 @@
              ]
              ```
             
-             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId não encontrado no token."
+               "detail": "TenantId n�o encontrado no token."
              }
              ```
             
@@ -1980,23 +1980,23 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
                "title": "Internal Server Error",
                "status": 500,
-               "detail": "Ocorreu um erro inesperado ao listar as promoções."
+               "detail": "Ocorreu um erro inesperado ao listar as promo��es."
              }
              ```
              </remarks>
-             <param name="isActive">Filtro opcional: `true` para promoções ativas, `false` para inativas. Se omitido, retorna todas as promoções.</param>
+             <param name="isActive">Filtro opcional: `true` para promo��es ativas, `false` para inativas. Se omitido, retorna todas as promo��es.</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo uma lista de objetos <see cref="T:Hephaestus.Domain.DTOs.Response.PromotionResponse"/>.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.GetPromotionById(System.String)">
             GetPromotionById
              <summary>
-             Obtém os detalhes de uma promoção específica por ID.
+             Obt�m os detalhes de uma promo��o espec�fica por ID.
              </summary>
              <remarks>
-             Este endpoint retorna todas as informações de uma promoção, desde que a promoção pertença ao tenant autenticado.
-             Requer autenticação com a role **Tenant**.
+             Este endpoint retorna todas as informa��es de uma promo��o, desde que a promo��o perten�a ao tenant autenticado.
+             Requer autentica��o com a role **Tenant**.
             
-             **Exemplo de Requisição:**
+             **Exemplo de Requisi��o:**
              ```http
              GET /api/Promotion/123e4567-e89b-12d3-a456-426614174001
              ```
@@ -2006,8 +2006,8 @@
              {
                "id": "123e4567-e89b-12d3-a456-426614174001",
                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-               "name": "Desconto de 10% no Verão",
-               "description": "10% de desconto em todos os pedidos acima de R$50 durante o verão.",
+               "name": "Desconto de 10% no Ver�o",
+               "description": "10% de desconto em todos os pedidos acima de R$50 durante o ver�o.",
                "discountType": "Percentage",
                "discountValue": 10.00,
                "menuItemId": null,
@@ -2028,7 +2028,7 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
                "title": "Bad Request",
                "status": 400,
-               "detail": "O ID da promoção 'invalido-id' não é um GUID válido."
+               "detail": "O ID da promo��o 'invalido-id' n�o � um GUID v�lido."
              }
              ```
             
@@ -2038,38 +2038,38 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
                "title": "Not Found",
                "status": 404,
-               "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+               "detail": "Promo��o com ID '99999999-9999-9999-9999-999999999999' n�o encontrada para o tenant."
              }
              ```
             
-             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId não encontrado no token."
+               "detail": "TenantId n�o encontrado no token."
              }
              ```
              </remarks>
-             <param name="id">O **ID (GUID)** da promoção a ser consultada.</param>
-             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o <see cref="T:Hephaestus.Domain.DTOs.Response.PromotionResponse"/> ou um <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> se a promoção não for encontrada.</returns>
+             <param name="id">O **ID (GUID)** da promo��o a ser consultada.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o <see cref="T:Hephaestus.Domain.DTOs.Response.PromotionResponse"/> ou um <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> se a promo��o n�o for encontrada.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotion(System.String,Hephaestus.Domain.DTOs.Request.UpdatePromotionRequest)">
             UpdatePromotion
              <summary>
-             Atualiza uma promoção existente para o tenant autenticado.
+             Atualiza uma promo��o existente para o tenant autenticado.
              </summary>
              <remarks>
-             Este endpoint permite que um tenant atualize os dados de uma promoção existente.
-             Requer autenticação com a role **Tenant**.
+             Este endpoint permite que um tenant atualize os dados de uma promo��o existente.
+             Requer autentica��o com a role **Tenant**.
             
-             **Exemplo de Corpo da Requisição:**
+             **Exemplo de Corpo da Requisi��o:**
              ```json
              {
                "id": "123e4567-e89b-12d3-a456-426614174001",
-               "name": "Desconto de 15% no Verão",
-               "description": "15% de desconto em todos os pedidos acima de R$60 durante o verão.",
+               "name": "Desconto de 15% no Ver�o",
+               "description": "15% de desconto em todos os pedidos acima de R$60 durante o ver�o.",
                "discountType": "Percentage",
                "discountValue": 15.00,
                "menuItemId": null,
@@ -2089,7 +2089,7 @@
              (Nenhum corpo de resposta, apenas status 204)
              ```
             
-             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             **Exemplo de Erro de Valida��o (Status 400 Bad Request):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -2097,7 +2097,7 @@
                "status": 400,
                "errors": {
                  "Name": [
-                   "O campo 'Name' é obrigatório."
+                   "O campo 'Name' � obrigat�rio."
                  ],
                  "DiscountValue": [
                    "O valor do desconto deve ser positivo."
@@ -2112,45 +2112,45 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
                "title": "Not Found",
                "status": 404,
-               "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+               "detail": "Promo��o com ID '99999999-9999-9999-9999-999999999999' n�o encontrada para o tenant."
              }
              ```
             
-             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId não encontrado no token."
+               "detail": "TenantId n�o encontrado no token."
              }
              ```
              </remarks>
-             <param name="id">O **ID (GUID)** da promoção a ser atualizada.</param>
-             <param name="request">Dados atualizados da promoção (<see cref="T:Hephaestus.Domain.DTOs.Request.UpdatePromotionRequest"/>).</param>
+             <param name="id">O **ID (GUID)** da promo��o a ser atualizada.</param>
+             <param name="request">Dados atualizados da promo��o (<see cref="T:Hephaestus.Domain.DTOs.Request.UpdatePromotionRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotionStatus(System.String,Hephaestus.Domain.DTOs.Request.UpdatePromotionStatusRequest)">
             <summary>
-            Atualiza o status de ativação de uma promoção (ativa/inativa).
+            Atualiza o status de ativa��o de uma promo��o (ativa/inativa).
             </summary>
-            <param name="id">ID da promoção.</param>
-            <param name="request">Novo status de ativação.</param>
-            <returns>Promoção atualizada.</returns>
+            <param name="id">ID da promo��o.</param>
+            <param name="request">Novo status de ativa��o.</param>
+            <returns>Promo��o atualizada.</returns>
             <response code="200">Status atualizado com sucesso.</response>
-            <response code="400">Regras de negócio violadas.</response>
-            <response code="404">Promoção não encontrada.</response>
+            <response code="400">Regras de neg�cio violadas.</response>
+            <response code="404">Promo��o n�o encontrada.</response>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.DeletePromotion(System.String)">
             DeletePromotion
              <summary>
-             Remove uma promoção do tenant autenticado.
+             Remove uma promo��o do tenant autenticado.
              </summary>
              <remarks>
-             Este endpoint permite que um tenant remova uma promoção existente.
-             Requer autenticação com a role **Tenant**.
+             Este endpoint permite que um tenant remova uma promo��o existente.
+             Requer autentica��o com a role **Tenant**.
             
-             **Exemplo de Requisição:**
+             **Exemplo de Requisi��o:**
              ```http
              DELETE /api/Promotion/123e4567-e89b-12d3-a456-426614174001
              ```
@@ -2166,7 +2166,7 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
                "title": "Bad Request",
                "status": 400,
-               "detail": "O ID da promoção 'invalido-id' não é um GUID válido."
+               "detail": "O ID da promo��o 'invalido-id' n�o � um GUID v�lido."
              }
              ```
             
@@ -2176,37 +2176,37 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
                "title": "Not Found",
                "status": 404,
-               "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+               "detail": "Promo��o com ID '99999999-9999-9999-9999-999999999999' n�o encontrada para o tenant."
              }
              ```
             
-             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId não encontrado no token."
+               "detail": "TenantId n�o encontrado no token."
              }
              ```
              </remarks>
-             <param name="id">O **ID (GUID)** da promoção a ser removida.</param>
+             <param name="id">O **ID (GUID)** da promo��o a ser removida.</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.NotifyPromotion(Hephaestus.Domain.DTOs.Request.NotifyPromotionRequest)">
             NotifyPromotion
              <summary>
-             Envia notificação de uma promoção via WhatsApp.
+             Envia notifica��o de uma promo��o via WhatsApp.
              </summary>
              <remarks>
-             Este endpoint permite que um tenant envie notificações de promoções para seus clientes via WhatsApp.
-             Requer autenticação com a role **Tenant**.
+             Este endpoint permite que um tenant envie notifica��es de promo��es para seus clientes via WhatsApp.
+             Requer autentica��o com a role **Tenant**.
             
-             **Exemplo de Corpo da Requisição:**
+             **Exemplo de Corpo da Requisi��o:**
              ```json
              {
                "promotionId": "123e4567-e89b-12d3-a456-426614174001",
-               "messageTemplate": "?? Promoção especial! {promotionName} - {promotionDescription} Válida até {endDate}. Aproveite!",
+               "messageTemplate": "?? Promo��o especial! {promotionName} - {promotionDescription} V�lida at� {endDate}. Aproveite!",
                "customerPhoneNumbers": ["11987654321", "21987654321"]
              }
              ```
@@ -2216,7 +2216,7 @@
              (Nenhum corpo de resposta, apenas status 204)
              ```
             
-             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             **Exemplo de Erro de Valida��o (Status 400 Bad Request):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -2224,10 +2224,10 @@
                "status": 400,
                "errors": {
                  "PromotionId": [
-                   "O ID da promoção é obrigatório."
+                   "O ID da promo��o � obrigat�rio."
                  ],
                  "MessageTemplate": [
-                   "O template da mensagem é obrigatório."
+                   "O template da mensagem � obrigat�rio."
                  ]
                }
              }
@@ -2239,32 +2239,32 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
                "title": "Not Found",
                "status": 404,
-               "detail": "Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant."
+               "detail": "Promo��o com ID '99999999-9999-9999-9999-999999999999' n�o encontrada para o tenant."
              }
              ```
             
-             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId não encontrado no token."
+               "detail": "TenantId n�o encontrado no token."
              }
              ```
              </remarks>
-             <param name="request">Dados da notificação (<see cref="T:Hephaestus.Domain.DTOs.Request.NotifyPromotionRequest"/>).</param>
+             <param name="request">Dados da notifica��o (<see cref="T:Hephaestus.Domain.DTOs.Request.NotifyPromotionRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.UsePromotion(System.String,Hephaestus.Domain.DTOs.Request.UsePromotionRequest)">
             <summary>
-            Registra o uso de uma promoção por um cliente em um pedido.
+            Registra o uso de uma promo��o por um cliente em um pedido.
             </summary>
-            <param name="id">ID da promoção.</param>
+            <param name="id">ID da promo��o.</param>
             <param name="request">Dados do uso (cliente, pedido).</param>
-            <returns>Confirmação do uso.</returns>
+            <returns>Confirma��o do uso.</returns>
             <response code="200">Uso registrado com sucesso.</response>
-            <response code="400">Limite de uso atingido ou promoção inválida.</response>
+            <response code="400">Limite de uso atingido ou promo��o inv�lida.</response>
         </member>
         <member name="T:Hephaestus.Controllers.TagController">
             <summary>

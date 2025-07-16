@@ -1,8 +1,6 @@
-using Hephaestus.Domain.Entities;
+﻿using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Text.Json;
 
 namespace Hephaestus.Infrastructure.Configurations;
 
@@ -10,61 +8,54 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 {
     public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
-        builder.ToTable("OrderItems");
+        builder.ToTable("order_items");
 
         builder.HasKey(oi => oi.Id);
 
+        builder.Property(oi => oi.Id)
+            .HasColumnName("id")
+            .HasMaxLength(36)
+            .IsRequired();
+
         builder.Property(oi => oi.TenantId)
-            .IsRequired()
-            .HasMaxLength(36);
+            .HasColumnName("tenant_id")
+            .HasMaxLength(36)
+            .IsRequired();
 
         builder.Property(oi => oi.OrderId)
-            .IsRequired()
-            .HasMaxLength(36);
+            .HasColumnName("order_id")
+            .HasMaxLength(36)
+            .IsRequired();
 
         builder.Property(oi => oi.MenuItemId)
-            .IsRequired()
-            .HasMaxLength(36);
+            .HasColumnName("menu_item_id")
+            .HasMaxLength(36)
+            .IsRequired();
 
         builder.Property(oi => oi.Quantity)
+            .HasColumnName("quantity")
             .IsRequired();
 
         builder.Property(oi => oi.UnitPrice)
-            .IsRequired()
-            .HasPrecision(18, 2);
+            .HasColumnName("unit_price")
+            .HasColumnType("decimal(10,2)")
+            .IsRequired();
 
         builder.Property(oi => oi.Notes)
+            .HasColumnName("notes")
             .HasMaxLength(500);
 
-        builder.OwnsMany(o => o.Customizations, cb =>
-        {
-            cb.Property(c => c.Type)
-              .HasConversion<string>();
-        });
+        builder.Property(oi => oi.CreatedAt)
+            .HasColumnName("created_at")
+            .IsRequired();
 
-        builder.Property(oi => oi.AdditionalIds)
-            .IsRequired(false)
-            .HasConversion(
-                v => v == null || v.Count == 0 ? null : JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => string.IsNullOrEmpty(v) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>(),
-                new ValueComparer<List<string>>(
-                    (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
-                    c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
-                    c => c != null ? c.ToList() : new List<string>()));
-
-        builder.Property(oi => oi.Tags)
-            .IsRequired(false)
-            .HasConversion(
-                v => v == null || v.Count == 0 ? null : JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => string.IsNullOrEmpty(v) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>(),
-                new ValueComparer<List<string>>(
-                    (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
-                    c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
-                    c => c != null ? c.ToList() : new List<string>()));
+        builder.Property(oi => oi.UpdatedAt)
+            .HasColumnName("updated_at")
+            .IsRequired();
 
         // Relacionamentos
         builder.HasOne<Order>()
-            .WithMany(o => o.OrderItems)
+            .WithMany()
             .HasForeignKey(oi => oi.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -72,5 +63,10 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .WithMany()
             .HasForeignKey(oi => oi.MenuItemId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Índices
+        builder.HasIndex(oi => oi.TenantId);
+        builder.HasIndex(oi => oi.OrderId);
+        builder.HasIndex(oi => oi.MenuItemId);
     }
 }

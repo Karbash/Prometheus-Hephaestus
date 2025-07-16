@@ -52,8 +52,8 @@ public class GetOrderByIdUseCase : BaseUseCase, IGetOrderByIdUseCase
                     Quantity = oi.Quantity,
                     UnitPrice = oi.UnitPrice,
                     Notes = oi.Notes,
-                    Tags = oi.Tags,
-                    AdditionalIds = oi.AdditionalIds,
+                    Tags = !string.IsNullOrEmpty(oi.Tags) ? oi.Tags.Split(',').ToList() : new List<string>(),
+                    AdditionalIds = !string.IsNullOrEmpty(oi.AdditionalIds) ? oi.AdditionalIds.Split(',').ToList() : new List<string>(),
                     Customizations = oi.Customizations?.Select(c => new CustomizationResponse
                     {
                         Type = c.Type,

@@ -1,4 +1,4 @@
-using Hephaestus.Domain.Enum;
+﻿using Hephaestus.Domain.Enum;
 
 namespace Hephaestus.Domain.Entities;
 
@@ -15,13 +15,11 @@ public class Company
     public FeeType FeeType { get; set; }
     public decimal FeeValue { get; set; }
     public string? MfaSecret { get; set; }
-    public string State { get; set; } = string.Empty;
-    public string? City { get; set; }
-    public string? Neighborhood { get; set; } // Novo campo
-    public string? Street { get; set; }
-    public string? Number { get; set; }
-    public double? Latitude { get; set; }
-    public double? Longitude { get; set; }
     public string? Slogan { get; set; }
     public string? Description { get; set; }
+    public string AddressId { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string? CreatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
 }

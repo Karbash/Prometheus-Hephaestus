@@ -1,5 +1,4 @@
-using Hephaestus.Domain.Entities;
-using Hephaestus.Domain.Enum;
+﻿using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,51 +8,80 @@ public class CouponConfiguration : IEntityTypeConfiguration<Coupon>
 {
     public void Configure(EntityTypeBuilder<Coupon> builder)
     {
-        builder.ToTable("Coupons");
+        builder.ToTable("coupons");
 
         builder.HasKey(c => c.Id);
 
+        builder.Property(c => c.Id)
+            .HasColumnName("id")
+            .HasMaxLength(36)
+            .IsRequired();
+
         builder.Property(c => c.TenantId)
-            .IsRequired()
+            .HasColumnName("tenant_id")
+            .HasMaxLength(36)
+            .IsRequired();
+
+        builder.Property(c => c.CustomerId)
+            .HasColumnName("customer_id")
             .HasMaxLength(36);
 
         builder.Property(c => c.Code)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        builder.Property(c => c.CustomerPhoneNumber)
-            .HasMaxLength(20);
+            .HasColumnName("code")
+            .HasMaxLength(50)
+            .IsRequired();
 
         builder.Property(c => c.DiscountType)
-            .IsRequired()
-            .HasConversion<string>();
+            .HasColumnName("discount_type")
+            .HasConversion<string>()
+            .IsRequired();
 
         builder.Property(c => c.DiscountValue)
-            .IsRequired()
-            .HasColumnType("decimal(18,2)");
+            .HasColumnName("discount_value")
+            .HasColumnType("decimal(10,2)")
+            .IsRequired();
 
         builder.Property(c => c.MenuItemId)
+            .HasColumnName("menu_item_id")
             .HasMaxLength(36);
 
         builder.Property(c => c.MinOrderValue)
-            .HasColumnType("decimal(18,2)");
+            .HasColumnName("min_order_value")
+            .HasColumnType("decimal(10,2)");
 
         builder.Property(c => c.StartDate)
+            .HasColumnName("start_date")
             .IsRequired();
 
         builder.Property(c => c.EndDate)
+            .HasColumnName("end_date")
             .IsRequired();
 
         builder.Property(c => c.IsActive)
+            .HasColumnName("is_active")
+            .HasDefaultValue(true);
+
+        builder.Property(c => c.CreatedAt)
+            .HasColumnName("created_at")
             .IsRequired();
 
-        builder.HasIndex(c => new { c.TenantId, c.Code })
-            .IsUnique();
+        builder.Property(c => c.UpdatedAt)
+            .HasColumnName("updated_at")
+            .IsRequired();
 
-        // Relacionamento opcional com MenuItem
-        builder.HasOne<MenuItem>()
-            .WithMany()
-            .HasForeignKey(c => c.MenuItemId)
-            .OnDelete(DeleteBehavior.SetNull);
+        builder.Property(c => c.MaxTotalUses)
+            .HasColumnName("max_total_uses");
+
+        builder.Property(c => c.MaxUsesPerCustomer)
+            .HasColumnName("max_uses_per_customer");
+
+        // Índices
+        builder.HasIndex(c => c.TenantId);
+        builder.HasIndex(c => c.Code);
+        builder.HasIndex(c => c.CustomerId);
+        builder.HasIndex(c => c.MenuItemId);
+        builder.HasIndex(c => c.IsActive);
+        builder.HasIndex(c => c.StartDate);
+        builder.HasIndex(c => c.EndDate);
     }
 }

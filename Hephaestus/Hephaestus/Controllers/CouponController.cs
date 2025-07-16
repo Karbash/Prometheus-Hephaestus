@@ -5,7 +5,7 @@ using Hephaestus.Application.Interfaces.Coupon;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Security.Claims; // Necessário para ClaimTypes
+using System.Security.Claims; // Necessï¿½rio para ClaimTypes
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -13,7 +13,7 @@ using Hephaestus.Application.Exceptions;
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controller para gerenciamento de cupons, permitindo operações como criação, listagem, obtenção, atualização e exclusão de cupons.
+/// Controller para gerenciamento de cupons, permitindo operaï¿½ï¿½es como criaï¿½ï¿½o, listagem, obtenï¿½ï¿½o, atualizaï¿½ï¿½o e exclusï¿½o de cupons.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -29,7 +29,7 @@ public class CouponController : ControllerBase
     private readonly ICouponRepository _couponRepository;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="CouponController"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="CouponController"/>.
     /// </summary>
     /// <param name="createCouponUseCase">Caso de uso para criar cupons.</param>
     /// <param name="getCouponsUseCase">Caso de uso para listar cupons.</param>
@@ -37,7 +37,7 @@ public class CouponController : ControllerBase
     /// <param name="updateCouponUseCase">Caso de uso para atualizar um cupom.</param>
     /// <param name="deleteCouponUseCase">Caso de uso para deletar um cupom.</param>
     /// <param name="logger">Logger para registro de eventos e erros.</param>
-    /// <param name="couponRepository">Repositório para operações de cupom.</param>
+    /// <param name="couponRepository">Repositï¿½rio para operaï¿½ï¿½es de cupom.</param>
     public CouponController(
         ICreateCouponUseCase createCouponUseCase,
         IGetCouponsUseCase getCouponsUseCase,
@@ -61,13 +61,13 @@ public class CouponController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Este endpoint permite que um administrador ou um tenant crie um novo cupom de desconto.
-    /// Requer autenticação com as roles **Admin** ou **Tenant**.
+    /// Requer autenticaï¿½ï¿½o com as roles **Admin** ou **Tenant**.
     /// 
-    /// Exemplo de requisição:
+    /// Exemplo de requisiï¿½ï¿½o:
     /// ```json
     /// {
     ///   "code": "VERAO2025",
-    ///   "description": "Desconto especial de verão",
+    ///   "description": "Desconto especial de verï¿½o",
     ///   "discountValue": 15.00,
     ///   "isActive": true,
     ///   "startDate": "2025-07-15T00:00:00Z",
@@ -82,7 +82,7 @@ public class CouponController : ControllerBase
     /// }
     /// ```
     /// 
-    /// Exemplo de erro de validação (Status 400 Bad Request):
+    /// Exemplo de erro de validaï¿½ï¿½o (Status 400 Bad Request):
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -90,7 +90,7 @@ public class CouponController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "Code": [
-    ///       "O código do cupom é obrigatório."
+    ///       "O cï¿½digo do cupom ï¿½ obrigatï¿½rio."
     ///     ]
     ///   }
     /// }
@@ -101,14 +101,14 @@ public class CouponController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
     ///   "title": "Conflict",
     ///   "status": 409,
-    ///   "detail": "O código 'VERAO2025' já existe para este tenant."
+    ///   "detail": "O cï¿½digo 'VERAO2025' jï¿½ existe para este tenant."
     /// }
     /// ```
     /// </remarks>
     /// <param name="request">Dados do cupom a ser criado.</param>
     /// <returns>Um `CreatedAtActionResult` contendo o ID do cupom criado.</returns>
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria um novo cupom", Description = "Cria um cupom para o tenant autenticado. Requer autenticação com Role=Admin ou Tenant.")]
+    [SwaggerOperation(Summary = "Cria um novo cupom", Description = "Cria um cupom para o tenant autenticado. Requer autenticaï¿½ï¿½o com Role=Admin ou Tenant.")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -121,11 +121,11 @@ public class CouponController : ControllerBase
     }
 
     /// <summary>
-    /// Lista os cupons disponíveis para o tenant autenticado, com filtros opcionais.
+    /// Lista os cupons disponï¿½veis para o tenant autenticado, com filtros opcionais.
     /// </summary>
     /// <remarks>
-    /// Este endpoint permite filtrar cupons por status de ativação (`isActive`) e pelo número de telefone de um cliente associado (`customerPhoneNumber`).
-    /// Requer autenticação com as roles **Admin** ou **Tenant**.
+    /// Este endpoint permite filtrar cupons por status de ativaï¿½ï¿½o (`isActive`) e pelo nï¿½mero de telefone de um cliente associado (`customerPhoneNumber`).
+    /// Requer autenticaï¿½ï¿½o com as roles **Admin** ou **Tenant**.
     /// 
     /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
@@ -144,7 +144,7 @@ public class CouponController : ControllerBase
     ///     "id": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6",
     ///     "tenantId": "456e7890-e89b-12d3-a456-426614174002",
     ///     "code": "FRETEGRATIS",
-    ///     "description": "Frete Grátis na primeira compra",
+    ///     "description": "Frete Grï¿½tis na primeira compra",
     ///     "discountValue": 0.00,
     ///     "isActive": false,
     ///     "startDate": "2025-06-01T00:00:00Z",
@@ -152,16 +152,16 @@ public class CouponController : ControllerBase
     ///   }
     /// ]
     /// ```
-    /// Exemplo de erro de autenticação (Status 401 Unauthorized):
+    /// Exemplo de erro de autenticaï¿½ï¿½o (Status 401 Unauthorized):
     /// ```
     /// (Nenhum corpo de resposta, apenas status 401)
     /// ```
     /// </remarks>
     /// <param name="isActive">Filtro opcional para listar apenas cupons ativos ou inativos.</param>
-    /// <param name="customerPhoneNumber">Filtro opcional para listar cupons associados a um número de telefone de cliente específico.</param>
+    /// <param name="customerPhoneNumber">Filtro opcional para listar cupons associados a um nï¿½mero de telefone de cliente especï¿½fico.</param>
     /// <returns>Uma `OkResult` contendo uma lista de `CouponResponse`.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista cupons do tenant", Description = "Retorna a lista de cupons do tenant autenticado com filtros opcionais. Requer autenticação com Role=Admin ou Tenant.")]
+    [SwaggerOperation(Summary = "Lista cupons do tenant", Description = "Retorna a lista de cupons do tenant autenticado com filtros opcionais. Requer autenticaï¿½ï¿½o com Role=Admin ou Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CouponResponse>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -178,11 +178,11 @@ public class CouponController : ControllerBase
     }
 
     /// <summary>
-    /// Obtém os detalhes de um cupom específico por seu ID.
+    /// Obtï¿½m os detalhes de um cupom especï¿½fico por seu ID.
     /// </summary>
     /// <remarks>
-    /// Este endpoint retorna todas as informações de um cupom, desde que pertença ao tenant autenticado.
-    /// Requer autenticação com as roles **Admin** ou **Tenant**.
+    /// Este endpoint retorna todas as informaï¿½ï¿½es de um cupom, desde que pertenï¿½a ao tenant autenticado.
+    /// Requer autenticaï¿½ï¿½o com as roles **Admin** ou **Tenant**.
     /// 
     /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
@@ -204,7 +204,7 @@ public class CouponController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "O ID do cupom 'invalido-id' não é um GUID válido."
+    ///   "detail": "O ID do cupom 'invalido-id' nï¿½o ï¿½ um GUID vï¿½lido."
     /// }
     /// ```
     /// Exemplo de erro (Status 404 Not Found):
@@ -213,16 +213,16 @@ public class CouponController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant."
+    ///   "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' nï¿½o encontrado para o tenant."
     /// }
     /// ```
     /// </remarks>
     /// <param name="id">O **ID (GUID)** do cupom a ser consultado.</param>
-    /// <returns>Um `OkResult` contendo o `CouponResponse` ou um `NotFoundResult` se o cupom não for encontrado.</returns>
+    /// <returns>Um `OkResult` contendo o `CouponResponse` ou um `NotFoundResult` se o cupom nï¿½o for encontrado.</returns>
     [HttpGet("{id}")]
-    [SwaggerOperation(Summary = "Obtém cupom por ID", Description = "Retorna detalhes de um cupom do tenant. Requer autenticação com Role=Admin ou Tenant.")]
+    [SwaggerOperation(Summary = "Obtï¿½m cupom por ID", Description = "Retorna detalhes de um cupom do tenant. Requer autenticaï¿½ï¿½o com Role=Admin ou Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CouponResponse))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Adicionado para ID inválido
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Adicionado para ID invï¿½lido
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -236,10 +236,10 @@ public class CouponController : ControllerBase
     /// Atualiza um cupom existente para o tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Permite a modificação das propriedades de um cupom existente.
-    /// Requer autenticação com as roles **Admin** ou **Tenant**.
+    /// Permite a modificaï¿½ï¿½o das propriedades de um cupom existente.
+    /// Requer autenticaï¿½ï¿½o com as roles **Admin** ou **Tenant**.
     /// 
-    /// Exemplo de requisição:
+    /// Exemplo de requisiï¿½ï¿½o:
     /// ```json
     /// {
     ///   "code": "SUPERDESCONTO20",
@@ -256,7 +256,7 @@ public class CouponController : ControllerBase
     /// (Nenhum corpo de resposta, apenas status 204)
     /// ```
     /// 
-    /// Exemplo de erro de validação (Status 400 Bad Request):
+    /// Exemplo de erro de validaï¿½ï¿½o (Status 400 Bad Request):
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -275,7 +275,7 @@ public class CouponController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para atualização."
+    ///   "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' nï¿½o encontrado para atualizaï¿½ï¿½o."
     /// }
     /// ```
     /// Exemplo de erro de conflito (Status 409 Conflict):
@@ -284,15 +284,15 @@ public class CouponController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
     ///   "title": "Conflict",
     ///   "status": 409,
-    ///   "detail": "O código de cupom 'SUPERDESCONTO20' já está em uso por outro cupom."
+    ///   "detail": "O cï¿½digo de cupom 'SUPERDESCONTO20' jï¿½ estï¿½ em uso por outro cupom."
     /// }
     /// ```
     /// </remarks>
     /// <param name="id">O **ID (GUID)** do cupom a ser atualizado.</param>
     /// <param name="request">Dados atualizados do cupom.</param>
-    /// <returns>Um `NoContentResult` em caso de sucesso na atualização.</returns>
+    /// <returns>Um `NoContentResult` em caso de sucesso na atualizaï¿½ï¿½o.</returns>
     [HttpPut("{id}")]
-    [SwaggerOperation(Summary = "Atualiza um cupom", Description = "Atualiza um cupom do tenant autenticado. Requer autenticação com Role=Admin ou Tenant.")]
+    [SwaggerOperation(Summary = "Atualiza um cupom", Description = "Atualiza um cupom do tenant autenticado. Requer autenticaï¿½ï¿½o com Role=Admin ou Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -306,16 +306,16 @@ public class CouponController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza o status de ativação de um cupom (ativo/inativo).
+    /// Atualiza o status de ativaï¿½ï¿½o de um cupom (ativo/inativo).
     /// </summary>
     /// <param name="id">ID do cupom.</param>
-    /// <param name="request">Novo status de ativação.</param>
+    /// <param name="request">Novo status de ativaï¿½ï¿½o.</param>
     /// <returns>Cupom atualizado.</returns>
     /// <response code="200">Status atualizado com sucesso.</response>
-    /// <response code="400">Regras de negócio violadas.</response>
-    /// <response code="404">Cupom não encontrado.</response>
+    /// <response code="400">Regras de negï¿½cio violadas.</response>
+    /// <response code="404">Cupom nï¿½o encontrado.</response>
     [HttpPatch("{id}/status")]
-    [SwaggerOperation(Summary = "Ativar/Desativar cupom", Description = "Ativa ou desativa um cupom, respeitando regras de negócio.")]
+    [SwaggerOperation(Summary = "Ativar/Desativar cupom", Description = "Ativa ou desativa um cupom, respeitando regras de negï¿½cio.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CouponResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -325,15 +325,15 @@ public class CouponController : ControllerBase
         if (coupon == null)
             return NotFound();
 
-        // Regra: não pode ativar cupom expirado
+        // Regra: nï¿½o pode ativar cupom expirado
         if (request.IsActive && coupon.EndDate < DateTime.UtcNow)
-            return BadRequest("Não é possível ativar um cupom expirado.");
+            return BadRequest("Nï¿½o ï¿½ possï¿½vel ativar um cupom expirado.");
 
-        // Regra: não pode desativar cupom em uso ativo (exemplo: cupom vinculado a pedido aberto)
-        // Aqui seria necessário consultar pedidos, mas como exemplo:
+        // Regra: nï¿½o pode desativar cupom em uso ativo (exemplo: cupom vinculado a pedido aberto)
+        // Aqui seria necessï¿½rio consultar pedidos, mas como exemplo:
         // bool emUso = await _orderRepository.ExistsOrderWithCouponActive(id);
         // if (!request.IsActive && emUso)
-        //     return BadRequest("Não é possível desativar um cupom em uso ativo.");
+        //     return BadRequest("Nï¿½o ï¿½ possï¿½vel desativar um cupom em uso ativo.");
 
         // Atualiza status
         var updateRequest = new UpdateCouponRequest
@@ -359,9 +359,9 @@ public class CouponController : ControllerBase
     /// </summary>
     /// <param name="id">ID do cupom.</param>
     /// <param name="request">Dados do uso (cliente, pedido).</param>
-    /// <returns>Confirmação do uso.</returns>
+    /// <returns>Confirmaï¿½ï¿½o do uso.</returns>
     /// <response code="200">Uso registrado com sucesso.</response>
-    /// <response code="400">Limite de uso atingido ou cupom inválido.</response>
+    /// <response code="400">Limite de uso atingido ou cupom invï¿½lido.</response>
     [HttpPost("{id}/use")]
     [SwaggerOperation(Summary = "Registrar uso de cupom", Description = "Registra o uso de um cupom por um cliente em um pedido, validando limites de uso.")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -371,23 +371,23 @@ public class CouponController : ControllerBase
         // Buscar cupom
         var tenantId = User.FindFirst("tenant_id")?.Value;
         if (string.IsNullOrEmpty(tenantId))
-            return BadRequest("TenantId não encontrado no token.");
+            return BadRequest("TenantId nï¿½o encontrado no token.");
         var coupon = await _getCouponByIdUseCase.ExecuteAsync(id, User);
         if (coupon == null || !coupon.IsActive)
-            return BadRequest("Cupom inválido ou inativo.");
+            return BadRequest("Cupom invï¿½lido ou inativo.");
         // Validar limites
         var totalUses = await _couponRepository.GetUsageCountAsync(id, tenantId);
         var usesByCustomer = await _couponRepository.GetUsageCountByCustomerAsync(id, tenantId, request.CustomerPhoneNumber);
         if (coupon.MaxTotalUses.HasValue && totalUses >= coupon.MaxTotalUses.Value)
-            return BadRequest("Limite máximo de usos do cupom atingido.");
+            return BadRequest("Limite mï¿½ximo de usos do cupom atingido.");
         if (coupon.MaxUsesPerCustomer.HasValue && usesByCustomer >= coupon.MaxUsesPerCustomer.Value)
-            return BadRequest("Limite máximo de usos do cupom por cliente atingido.");
+            return BadRequest("Limite mï¿½ximo de usos do cupom por cliente atingido.");
         // Registrar uso
         await _couponRepository.AddUsageAsync(new CouponUsage
         {
             TenantId = tenantId,
             CouponId = id,
-            CustomerPhoneNumber = request.CustomerPhoneNumber,
+            CustomerId = request.CustomerPhoneNumber, // Usando CustomerPhoneNumber como CustomerId temporariamente
             OrderId = request.OrderId,
             UsedAt = DateTime.UtcNow
         });
@@ -399,7 +399,7 @@ public class CouponController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Este endpoint permite que um administrador ou um tenant remova um cupom existente.
-    /// Requer autenticação com as roles **Admin** ou **Tenant**.
+    /// Requer autenticaï¿½ï¿½o com as roles **Admin** ou **Tenant**.
     /// 
     /// Exemplo de resposta de sucesso (Status 204 No Content):
     /// ```
@@ -412,7 +412,7 @@ public class CouponController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "O ID do cupom 'invalido-id' não é um GUID válido."
+    ///   "detail": "O ID do cupom 'invalido-id' nï¿½o ï¿½ um GUID vï¿½lido."
     /// }
     /// ```
     /// 
@@ -422,7 +422,7 @@ public class CouponController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant."
+    ///   "detail": "Cupom com ID '99999999-9999-9999-9999-999999999999' nï¿½o encontrado para o tenant."
     /// }
     /// ```
     /// 
@@ -432,16 +432,16 @@ public class CouponController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
     ///   "title": "Conflict",
     ///   "status": 409,
-    ///   "detail": "Não é possível remover um cupom que está sendo usado em pedidos ativos."
+    ///   "detail": "Nï¿½o ï¿½ possï¿½vel remover um cupom que estï¿½ sendo usado em pedidos ativos."
     /// }
     /// ```
     /// </remarks>
     /// <param name="id">O **ID (GUID)** do cupom a ser removido.</param>
     /// <returns>Um `NoContentResult` em caso de sucesso.</returns>
     [HttpDelete("{id}")]
-    [SwaggerOperation(Summary = "Remove um cupom", Description = "Remove um cupom do tenant autenticado. Requer autenticação com Role=Admin ou Tenant.")]
+    [SwaggerOperation(Summary = "Remove um cupom", Description = "Remove um cupom do tenant autenticado. Requer autenticaï¿½ï¿½o com Role=Admin ou Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Adicionado para ID inválido
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Adicionado para ID invï¿½lido
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))]

@@ -1,4 +1,4 @@
-using Hephaestus.Domain.Entities;
+﻿using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,19 +8,39 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
 {
     public void Configure(EntityTypeBuilder<Tag> builder)
     {
-        builder.ToTable("Tags");
+        builder.ToTable("tags");
 
         builder.HasKey(t => t.Id);
 
+        builder.Property(t => t.Id)
+            .HasColumnName("id")
+            .HasMaxLength(36)
+            .IsRequired();
+
         builder.Property(t => t.TenantId)
-            .IsRequired()
-            .HasMaxLength(36); // GUID como string
+            .HasColumnName("tenant_id")
+            .HasMaxLength(36)
+            .IsRequired();
 
         builder.Property(t => t.Name)
-            .IsRequired()
-            .HasMaxLength(50);
+            .HasColumnName("name")
+            .HasMaxLength(100)
+            .IsRequired();
 
-        builder.HasIndex(t => new { t.TenantId, t.Name })
-            .IsUnique(); // Garante que nomes de tags sejam �nicos por tenant
+        builder.Property(t => t.Description)
+            .HasColumnName("description")
+            .HasMaxLength(500);
+
+        builder.Property(t => t.CreatedAt)
+            .HasColumnName("created_at")
+            .IsRequired();
+
+        builder.Property(t => t.UpdatedAt)
+            .HasColumnName("updated_at")
+            .IsRequired();
+
+        // Índices
+        builder.HasIndex(t => t.TenantId);
+        builder.HasIndex(t => t.Name);
     }
 }

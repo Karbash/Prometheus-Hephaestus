@@ -67,9 +67,9 @@ public class CompanyRepository : ICompanyRepository
             _context.Companies.Add(company);
             _logger.LogDebug("Estado da entidade antes de salvar: {State}", _context.Entry(company).State);
             var changes = await _context.SaveChangesAsync();
-            _logger.LogInformation("Alterações salvas: {Changes}", changes);
+            _logger.LogInformation("AlteraÃ§Ãµes salvas: {Changes}", changes);
             if (changes == 0)
-                _logger.LogWarning("Nenhuma alteração foi salva no banco de dados.");
+                _logger.LogWarning("Nenhuma alteraÃ§Ã£o foi salva no banco de dados.");
             else
                 _logger.LogInformation("Empresa salva com sucesso.");
         }
@@ -88,9 +88,9 @@ public class CompanyRepository : ICompanyRepository
             _context.Companies.Update(company);
             _logger.LogDebug("Estado da entidade antes de salvar: {State}", _context.Entry(company).State);
             var changes = await _context.SaveChangesAsync();
-            _logger.LogInformation("Alterações salvas: {Changes}", changes);
+            _logger.LogInformation("AlteraÃ§Ãµes salvas: {Changes}", changes);
             if (changes == 0)
-                _logger.LogWarning("Nenhuma alteração foi salva no banco de dados.");
+                _logger.LogWarning("Nenhuma alteraÃ§Ã£o foi salva no banco de dados.");
             else
                 _logger.LogInformation("Empresa atualizada com sucesso.");
         }
@@ -107,22 +107,28 @@ public class CompanyRepository : ICompanyRepository
         try
         {
             const double earthRadius = 6371; // Raio da Terra em km
-            var query = _context.Companies
-                .Where(c => c.Latitude != null && c.Longitude != null);
+            
+            // Query com join para Address
+            var query = from company in _context.Companies
+                       join address in _context.Addresses on company.AddressId equals address.Id
+                       where address.Latitude != 0 && address.Longitude != 0
+                       select new { Company = company, Address = address };
 
             if (!string.IsNullOrWhiteSpace(city))
-                query = query.Where(c => c.City != null && c.City.ToLower() == city.ToLower());
+                query = query.Where(x => x.Address.City.ToLower() == city.ToLower());
 
             if (!string.IsNullOrWhiteSpace(neighborhood))
-                query = query.Where(c => c.Neighborhood != null && c.Neighborhood.ToLower() == neighborhood.ToLower());
+                query = query.Where(x => x.Address.Neighborhood.ToLower() == neighborhood.ToLower());
 
-            var companies = await query
-                .Where(c => earthRadius * 2 * Math.Asin(Math.Sqrt(
-                    Math.Pow(Math.Sin((c.Latitude.Value - centerLat) * Math.PI / 180 / 2), 2) +
-                    Math.Cos(centerLat * Math.PI / 180) * Math.Cos(c.Latitude.Value * Math.PI / 180) *
-                    Math.Pow(Math.Sin((c.Longitude.Value - centerLon) * Math.PI / 180 / 2), 2)
+            var companiesWithAddresses = await query
+                .Where(x => earthRadius * 2 * Math.Asin(Math.Sqrt(
+                    Math.Pow(Math.Sin((x.Address.Latitude - centerLat) * Math.PI / 180 / 2), 2) +
+                    Math.Cos(centerLat * Math.PI / 180) * Math.Cos(x.Address.Latitude * Math.PI / 180) *
+                    Math.Pow(Math.Sin((x.Address.Longitude - centerLon) * Math.PI / 180 / 2), 2)
                 )) <= radiusKm)
                 .ToListAsync();
+
+            var companies = companiesWithAddresses.Select(x => x.Company).ToList();
 
             _logger.LogInformation("Empresas encontradas no raio: {@Companies}", companies);
             return companies;

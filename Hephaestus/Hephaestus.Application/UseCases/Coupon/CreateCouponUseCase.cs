@@ -14,7 +14,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Coupon;
 
 /// <summary>
-/// Caso de uso para criação de cupons.
+/// Caso de uso para criaï¿½ï¿½o de cupons.
 /// </summary>
 public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
 {
@@ -53,7 +53,6 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
                 Id = Guid.NewGuid().ToString(),
                 TenantId = tenantId,
                 Code = request.Code,
-                CustomerPhoneNumber = request.CustomerPhoneNumber,
                 DiscountType = request.DiscountType,
                 DiscountValue = request.DiscountValue,
                 MenuItemId = request.MenuItemId,
@@ -71,7 +70,7 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
     private async Task ValidateBusinessRulesAsync(CreateCouponRequest request, string tenantId)
     {
         EnsureNoConflict(!await _couponRepository.CodeExistsAsync(request.Code, tenantId),
-            "Código de cupom já existe.", "Coupon", "Code", request.Code);
+            "Cï¿½digo de cupom jï¿½ existe.", "Coupon", "Code", request.Code);
 
         if (!string.IsNullOrEmpty(request.MenuItemId))
         {
@@ -80,7 +79,7 @@ public class CreateCouponUseCase : BaseUseCase, ICreateCouponUseCase
         }
 
         EnsureBusinessRule(request.StartDate < request.EndDate,
-            "Data de início deve ser anterior à data de término.", "DATE_RANGE_RULE");
+            "Data de inï¿½cio deve ser anterior ï¿½ data de tï¿½rmino.", "DATE_RANGE_RULE");
 
         EnsureBusinessRule(request.DiscountValue > 0,
             "Valor do desconto deve ser maior que zero.", "DISCOUNT_VALUE_RULE");

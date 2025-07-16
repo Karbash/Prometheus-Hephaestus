@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Promotion;
 
 /// <summary>
-/// Caso de uso para obter todas as promoções de um tenant.
+/// Caso de uso para obter todas as promoï¿½ï¿½es de um tenant.
 /// </summary>
 public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
 {
@@ -20,12 +20,12 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetPromotionsUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="GetPromotionsUseCase"/>.
     /// </summary>
-    /// <param name="promotionRepository">Repositório de promoções.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="promotionRepository">Repositï¿½rio de promoï¿½ï¿½es.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public GetPromotionsUseCase(
         IPromotionRepository promotionRepository,
         ILoggedUserService loggedUserService,
@@ -38,11 +38,11 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     }
 
     /// <summary>
-    /// Executa a busca de todas as promoções de um tenant.
+    /// Executa a busca de todas as promoï¿½ï¿½es de um tenant.
     /// </summary>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <param name="isActive">Filtro opcional para promoções ativas.</param>
-    /// <returns>Lista de promoções.</returns>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
+    /// <param name="isActive">Filtro opcional para promoï¿½ï¿½es ativas.</param>
+    /// <returns>Lista de promoï¿½ï¿½es.</returns>
     public async Task<PagedResult<PromotionResponse>> ExecuteAsync(ClaimsPrincipal user, bool? isActive, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
@@ -61,21 +61,21 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parï¿½metros de entrada.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant ï¿½ obrigatï¿½rio.", new ValidationResult());
     }
 
     /// <summary>
-    /// Busca as promoções.
+    /// Busca as promoï¿½ï¿½es.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
-    /// <param name="isActive">Filtro opcional para promoções ativas.</param>
-    /// <returns>Lista de promoções.</returns>
+    /// <param name="isActive">Filtro opcional para promoï¿½ï¿½es ativas.</param>
+    /// <returns>Lista de promoï¿½ï¿½es.</returns>
     private async Task<PagedResult<Domain.Entities.Promotion>> GetPromotionsAsync(string tenantId, bool? isActive, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await _promotionRepository.GetByTenantIdAsync(tenantId, isActive, pageNumber, pageSize, sortBy, sortOrder);
@@ -84,7 +84,7 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     /// <summary>
     /// Converte as entidades para DTOs de resposta.
     /// </summary>
-    /// <param name="promotions">Lista de promoções.</param>
+    /// <param name="promotions">Lista de promoï¿½ï¿½es.</param>
     /// <returns>Lista de DTOs de resposta.</returns>
     private IEnumerable<PromotionResponse> ConvertToResponseDtos(IEnumerable<Domain.Entities.Promotion> promotions)
     {
@@ -100,7 +100,7 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
             MinOrderValue = p.MinOrderValue,
             MaxUsesPerCustomer = p.MaxUsesPerCustomer,
             MaxTotalUses = p.MaxTotalUses,
-            ApplicableToTags = p.ApplicableTags,
+            // ApplicableToTags foi removido da entidade
             StartDate = p.StartDate,
             EndDate = p.EndDate,
             IsActive = p.IsActive,

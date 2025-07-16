@@ -14,7 +14,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Promotion;
 
 /// <summary>
-/// Caso de uso para atualização de promoções.
+/// Caso de uso para atualizaï¿½ï¿½o de promoï¿½ï¿½es.
 /// </summary>
 public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
 {
@@ -24,14 +24,14 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="UpdatePromotionUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="UpdatePromotionUseCase"/>.
     /// </summary>
-    /// <param name="promotionRepository">Repositório de promoções.</param>
-    /// <param name="validator">Validador para a requisição.</param>
-    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="promotionRepository">Repositï¿½rio de promoï¿½ï¿½es.</param>
+    /// <param name="validator">Validador para a requisiï¿½ï¿½o.</param>
+    /// <param name="menuItemRepository">Repositï¿½rio de itens do cardï¿½pio.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public UpdatePromotionUseCase(
         IPromotionRepository promotionRepository,
         IValidator<UpdatePromotionRequest> validator,
@@ -48,62 +48,62 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     }
 
     /// <summary>
-    /// Executa a atualização de uma promoção.
+    /// Executa a atualizaï¿½ï¿½o de uma promoï¿½ï¿½o.
     /// </summary>
-    /// <param name="id">ID da promoção.</param>
-    /// <param name="request">Dados atualizados da promoção.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="id">ID da promoï¿½ï¿½o.</param>
+    /// <param name="request">Dados atualizados da promoï¿½ï¿½o.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     public async Task ExecuteAsync(string id, UpdatePromotionRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos dados de entrada
+            // Validaï¿½ï¿½o dos dados de entrada
             await ValidateRequestAsync(request, id);
 
-            // Busca e validação da promoção
+            // Busca e validaï¿½ï¿½o da promoï¿½ï¿½o
             var promotion = await GetAndValidatePromotionAsync(id, tenantId);
 
-            // Validação das regras de negócio
+            // Validaï¿½ï¿½o das regras de negï¿½cio
             await ValidateBusinessRulesAsync(request, tenantId);
 
-            // Atualização da promoção
+            // Atualizaï¿½ï¿½o da promoï¿½ï¿½o
             await UpdatePromotionAsync(promotion, request);
         });
     }
 
     /// <summary>
-    /// Valida os dados da requisição.
+    /// Valida os dados da requisiï¿½ï¿½o.
     /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
-    /// <param name="id">ID da promoção.</param>
+    /// <param name="request">Requisiï¿½ï¿½o a ser validada.</param>
+    /// <param name="id">ID da promoï¿½ï¿½o.</param>
     private async Task ValidateRequestAsync(UpdatePromotionRequest request, string id)
     {
         var validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da promoção inválidos", validationResult);
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da promoï¿½ï¿½o invï¿½lidos", validationResult);
         }
     }
 
     /// <summary>
-    /// Busca e valida a promoção.
+    /// Busca e valida a promoï¿½ï¿½o.
     /// </summary>
-    /// <param name="id">ID da promoção.</param>
+    /// <param name="id">ID da promoï¿½ï¿½o.</param>
     /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Promoção encontrada.</returns>
+    /// <returns>Promoï¿½ï¿½o encontrada.</returns>
     private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string id, string tenantId)
     {
         var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(promotion, "Promotion", id);
-        return promotion!; // Garantido que não é null após EnsureEntityExists
+        return promotion!; // Garantido que nï¿½o ï¿½ null apï¿½s EnsureEntityExists
     }
 
     /// <summary>
-    /// Valida as regras de negócio.
+    /// Valida as regras de negï¿½cio.
     /// </summary>
-    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="request">Requisiï¿½ï¿½o com os dados.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(UpdatePromotionRequest request, string tenantId)
     {
@@ -115,9 +115,9 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     }
 
     /// <summary>
-    /// Atualiza a promoção com os novos dados.
+    /// Atualiza a promoï¿½ï¿½o com os novos dados.
     /// </summary>
-    /// <param name="promotion">Promoção a ser atualizada.</param>
+    /// <param name="promotion">Promoï¿½ï¿½o a ser atualizada.</param>
     /// <param name="request">Dados atualizados.</param>
     private async Task UpdatePromotionAsync(Domain.Entities.Promotion promotion, UpdatePromotionRequest request)
     {
@@ -129,7 +129,7 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
         promotion.MinOrderValue = request.MinOrderValue;
         promotion.MaxUsesPerCustomer = request.MaxUsesPerCustomer;
         promotion.MaxTotalUses = request.MaxTotalUses;
-        promotion.ApplicableTags = request.ApplicableToTags ?? new List<string>();
+        // ApplicableTags foi removido da entidade
         promotion.StartDate = request.StartDate;
         promotion.EndDate = request.EndDate;
         promotion.IsActive = request.IsActive;

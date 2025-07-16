@@ -23,13 +23,13 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="RegisterCompanyUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="RegisterCompanyUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Repositório de empresas.</param>
-    /// <param name="auditLogRepository">Repositório de logs de auditoria.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="companyRepository">Repositï¿½rio de empresas.</param>
+    /// <param name="auditLogRepository">Repositï¿½rio de logs de auditoria.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public RegisterCompanyUseCase(
         ICompanyRepository companyRepository,
         IAuditLogRepository auditLogRepository,
@@ -47,22 +47,22 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     /// Executa o registro de uma nova empresa.
     /// </summary>
     /// <param name="request">Dados da empresa a ser registrada.</param>
-    /// <param name="claimsPrincipal">Usuário autenticado.</param>
+    /// <param name="claimsPrincipal">Usuï¿½rio autenticado.</param>
     /// <returns>ID da empresa registrada.</returns>
     public async Task<string> ExecuteAsync(RegisterCompanyRequest request, ClaimsPrincipal? claimsPrincipal)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Validação dos dados de entrada
+            // Validaï¿½ï¿½o dos dados de entrada
             // Remover todas as linhas que usam _validator
 
-            // Validação de autorização
+            // Validaï¿½ï¿½o de autorizaï¿½ï¿½o
             ValidateAuthorization(claimsPrincipal);
 
-            // Validação das regras de negócio
+            // Validaï¿½ï¿½o das regras de negï¿½cio
             await ValidateBusinessRulesAsync(request);
 
-            // Criação da empresa
+            // Criaï¿½ï¿½o da empresa
             var company = await CreateCompanyEntityAsync(request);
 
             // Registro de auditoria
@@ -73,13 +73,13 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     }
 
     /// <summary>
-    /// Valida a autorização do usuário.
+    /// Valida a autorizaï¿½ï¿½o do usuï¿½rio.
     /// </summary>
-    /// <param name="claimsPrincipal">Usuário autenticado.</param>
+    /// <param name="claimsPrincipal">Usuï¿½rio autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal? claimsPrincipal)
     {
         if (claimsPrincipal == null)
-            throw new UnauthorizedException("Usuário não autenticado.", "REGISTER_COMPANY", "Company");
+            throw new UnauthorizedException("Usuï¿½rio nï¿½o autenticado.", "REGISTER_COMPANY", "Company");
 
         var userRole = claimsPrincipal.FindFirst(ClaimTypes.Role)?.Value;
         if (userRole != "Admin")
@@ -87,22 +87,22 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     }
 
     /// <summary>
-    /// Valida as regras de negócio.
+    /// Valida as regras de negï¿½cio.
     /// </summary>
-    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="request">Requisiï¿½ï¿½o com os dados.</param>
     private async Task ValidateBusinessRulesAsync(RegisterCompanyRequest request)
     {
-        // Verifica se o e-mail já está registrado
+        // Verifica se o e-mail jï¿½ estï¿½ registrado
         var existingByEmail = await _companyRepository.GetByEmailAsync(request.Email);
         if (existingByEmail != null)
-            throw new ConflictException("E-mail já registrado.", "Company", "Email", request.Email);
+            throw new ConflictException("E-mail jï¿½ registrado.", "Company", "Email", request.Email);
 
-        // Verifica se o telefone já está registrado
+        // Verifica se o telefone jï¿½ estï¿½ registrado
         if (!string.IsNullOrEmpty(request.PhoneNumber))
         {
             var existingByPhone = await _companyRepository.GetByPhoneNumberAsync(request.PhoneNumber);
             if (existingByPhone != null)
-                throw new ConflictException("Telefone já registrado.", "Company", "PhoneNumber", request.PhoneNumber);
+                throw new ConflictException("Telefone jï¿½ registrado.", "Company", "PhoneNumber", request.PhoneNumber);
         }
     }
 
@@ -124,13 +124,6 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
             IsEnabled = request.IsEnabled,
             FeeType = request.FeeType,
             FeeValue = (decimal)request.FeeValue,
-            State = request.State,
-            City = request.City,
-            Neighborhood = request.Neighborhood,
-            Street = request.Street,
-            Number = request.Number,
-            Latitude = request.Latitude,
-            Longitude = request.Longitude,
             Slogan = request.Slogan,
             Description = request.Description
         };
@@ -143,7 +136,7 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     /// Cria o log de auditoria.
     /// </summary>
     /// <param name="company">Empresa criada.</param>
-    /// <param name="claimsPrincipal">Usuário autenticado.</param>
+    /// <param name="claimsPrincipal">Usuï¿½rio autenticado.</param>
     private async Task CreateAuditLogAsync(Domain.Entities.Company company, ClaimsPrincipal? claimsPrincipal)
     {
         var loggedUser = await _loggedUserService.GetLoggedUserAsync(claimsPrincipal!);
@@ -152,7 +145,7 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
             UserId = loggedUser.Id,
             Action = "Registro de Empresa",
             EntityId = company.Id,
-            Details = $"Empresa {company.Name} registrada com e-mail {company.Email} no estado {company.State}.",
+            Details = $"Empresa {company.Name} registrada com e-mail {company.Email}.",
             CreatedAt = DateTime.UtcNow
         });
     }

@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Menu;
 
 /// <summary>
-/// Caso de uso para obtenção de item do cardápio por ID.
+/// Caso de uso para obtenï¿½ï¿½o de item do cardï¿½pio por ID.
 /// </summary>
 public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
 {
@@ -20,12 +20,12 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetMenuItemByIdUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="GetMenuItemByIdUseCase"/>.
     /// </summary>
-    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="menuItemRepository">Repositï¿½rio de itens do cardï¿½pio.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public GetMenuItemByIdUseCase(
         IMenuItemRepository menuItemRepository,
         ILoggedUserService loggedUserService,
@@ -38,21 +38,21 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
     }
 
     /// <summary>
-    /// Executa a obtenção de um item do cardápio por ID.
+    /// Executa a obtenï¿½ï¿½o de um item do cardï¿½pio por ID.
     /// </summary>
-    /// <param name="id">ID do item do cardápio.</param>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <returns>Item do cardápio encontrado.</returns>
+    /// <param name="id">ID do item do cardï¿½pio.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
+    /// <returns>Item do cardï¿½pio encontrado.</returns>
     public async Task<MenuItemResponse> ExecuteAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos parâmetros de entrada
+            // Validaï¿½ï¿½o dos parï¿½metros de entrada
             ValidateInputParameters(id, tenantId);
 
-            // Busca o item do cardápio
+            // Busca o item do cardï¿½pio
             var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
             
             // Verifica se o item existe
@@ -69,23 +69,23 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
                 Price = menuItem.Price,
                 IsAvailable = menuItem.IsAvailable,
                 TagIds = menuItem.MenuItemTags?.Select(mt => mt.TagId).ToList() ?? new List<string>(),
-                AvailableAdditionalIds = menuItem.AvailableAdditionalIds,
+                // AvailableAdditionalIds foi removido da entidade
                 ImageUrl = menuItem.ImageUrl
             };
         });
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parï¿½metros de entrada.
     /// </summary>
-    /// <param name="id">ID do item do cardápio.</param>
+    /// <param name="id">ID do item do cardï¿½pio.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string id, string tenantId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do cardápio é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do cardï¿½pio ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant ï¿½ obrigatï¿½rio.", new ValidationResult());
     }
 }

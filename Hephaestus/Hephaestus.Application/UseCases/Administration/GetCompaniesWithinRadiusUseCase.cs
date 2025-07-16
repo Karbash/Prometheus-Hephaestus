@@ -11,18 +11,18 @@ using Microsoft.Extensions.Logging;
 namespace Hephaestus.Application.UseCases.Administration;
 
 /// <summary>
-/// Caso de uso para obter empresas dentro de um raio especÌfico.
+/// Caso de uso para obter empresas dentro de um raio espec√≠fico.
 /// </summary>
 public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinRadiusUseCase
 {
     private readonly ICompanyRepository _companyRepository;
 
     /// <summary>
-    /// Inicializa uma nova inst‚ncia do <see cref="GetCompaniesWithinRadiusUseCase"/>.
+    /// Inicializa uma nova inst√¢ncia do <see cref="GetCompaniesWithinRadiusUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">RepositÛrio de empresas.</param>
+    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
+    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
     public GetCompaniesWithinRadiusUseCase(
         ICompanyRepository companyRepository,
         ILogger<GetCompaniesWithinRadiusUseCase> logger,
@@ -33,11 +33,11 @@ public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinR
     }
 
     /// <summary>
-    /// Executa a busca de empresas dentro de um raio especÌfico.
+    /// Executa a busca de empresas dentro de um raio espec√≠fico.
     /// </summary>
     /// <param name="centerLat">Latitude do centro.</param>
     /// <param name="centerLon">Longitude do centro.</param>
-    /// <param name="radiusKm">Raio em quilÙmetros.</param>
+    /// <param name="radiusKm">Raio em quil√¥metros.</param>
     /// <param name="city">Filtro opcional por cidade.</param>
     /// <param name="neighborhood">Filtro opcional por bairro.</param>
     /// <returns>Lista de empresas dentro do raio.</returns>
@@ -45,23 +45,23 @@ public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinR
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // ValidaÁ„o dos par‚metros de entrada
+            // Valida√ß√£o dos par√¢metros de entrada
             ValidateInputParameters(centerLat, centerLon, radiusKm, city, neighborhood);
 
             // Busca das empresas
             var companies = await GetCompaniesAsync(centerLat, centerLon, radiusKm, city, neighborhood);
 
-            // Convers„o para DTOs de resposta
+            // Convers√£o para DTOs de resposta
             return ConvertToResponseDtos(companies);
         });
     }
 
     /// <summary>
-    /// Valida os par‚metros de entrada.
+    /// Valida os par√¢metros de entrada.
     /// </summary>
     /// <param name="centerLat">Latitude do centro.</param>
     /// <param name="centerLon">Longitude do centro.</param>
-    /// <param name="radiusKm">Raio em quilÙmetros.</param>
+    /// <param name="radiusKm">Raio em quil√¥metros.</param>
     /// <param name="city">Filtro opcional por cidade.</param>
     /// <param name="neighborhood">Filtro opcional por bairro.</param>
     private void ValidateInputParameters(double centerLat, double centerLon, double radiusKm, string? city, string? neighborhood)
@@ -76,10 +76,10 @@ public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinR
             throw new Hephaestus.Application.Exceptions.ValidationException("Raio deve ser maior que zero.", new ValidationResult());
 
         if (city != null && string.IsNullOrWhiteSpace(city))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Cidade n„o pode ser vazia.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Cidade n√£o pode ser vazia.", new ValidationResult());
 
         if (neighborhood != null && string.IsNullOrWhiteSpace(neighborhood))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Bairro n„o pode ser vazio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Bairro n√£o pode ser vazio.", new ValidationResult());
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinR
     /// </summary>
     /// <param name="centerLat">Latitude do centro.</param>
     /// <param name="centerLon">Longitude do centro.</param>
-    /// <param name="radiusKm">Raio em quilÙmetros.</param>
+    /// <param name="radiusKm">Raio em quil√¥metros.</param>
     /// <param name="city">Filtro opcional por cidade.</param>
     /// <param name="neighborhood">Filtro opcional por bairro.</param>
     /// <returns>Lista de empresas.</returns>
@@ -112,13 +112,14 @@ public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinR
             IsEnabled = c.IsEnabled,
             FeeType = c.FeeType,
             FeeValue = (double)c.FeeValue,
-            State = c.State,
-            City = c.City,
-            Neighborhood = c.Neighborhood,
-            Street = c.Street,
-            Number = c.Number,
-            Latitude = c.Latitude,
-            Longitude = c.Longitude,
+            // Nota: Os dados de endere√ßo agora precisam ser obtidos atrav√©s do relacionamento com Address
+            // State = c.State,
+            // City = c.City,
+            // Neighborhood = c.Neighborhood,
+            // Street = c.Street,
+            // Number = c.Number,
+            // Latitude = c.Latitude,
+            // Longitude = c.Longitude,
             Slogan = c.Slogan,
             Description = c.Description
         });

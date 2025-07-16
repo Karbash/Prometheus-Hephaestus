@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Promotion;
 
 /// <summary>
-/// Caso de uso para obter uma promoção específica por ID.
+/// Caso de uso para obter uma promoï¿½ï¿½o especï¿½fica por ID.
 /// </summary>
 public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
 {
@@ -21,12 +21,12 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetPromotionByIdUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="GetPromotionByIdUseCase"/>.
     /// </summary>
-    /// <param name="promotionRepository">Repositório de promoções.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="promotionRepository">Repositï¿½rio de promoï¿½ï¿½es.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public GetPromotionByIdUseCase(
         IPromotionRepository promotionRepository,
         ILoggedUserService loggedUserService,
@@ -39,59 +39,59 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
     }
 
     /// <summary>
-    /// Executa a busca de uma promoção específica.
+    /// Executa a busca de uma promoï¿½ï¿½o especï¿½fica.
     /// </summary>
-    /// <param name="id">ID da promoção.</param>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <returns>Promoção encontrada.</returns>
+    /// <param name="id">ID da promoï¿½ï¿½o.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
+    /// <returns>Promoï¿½ï¿½o encontrada.</returns>
     public async Task<PromotionResponse> ExecuteAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos parâmetros de entrada
+            // Validaï¿½ï¿½o dos parï¿½metros de entrada
             ValidateInputParameters(id, tenantId);
 
-            // Busca e validação da promoção
+            // Busca e validaï¿½ï¿½o da promoï¿½ï¿½o
             var promotion = await GetAndValidatePromotionAsync(id, tenantId);
 
-            // Conversão para DTO de resposta
+            // Conversï¿½o para DTO de resposta
             return ConvertToResponseDto(promotion);
         });
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parï¿½metros de entrada.
     /// </summary>
-    /// <param name="id">ID da promoção.</param>
+    /// <param name="id">ID da promoï¿½ï¿½o.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string id, string tenantId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da promoção é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da promoï¿½ï¿½o ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant ï¿½ obrigatï¿½rio.", new ValidationResult());
     }
 
     /// <summary>
-    /// Busca e valida a promoção.
+    /// Busca e valida a promoï¿½ï¿½o.
     /// </summary>
-    /// <param name="id">ID da promoção.</param>
+    /// <param name="id">ID da promoï¿½ï¿½o.</param>
     /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Promoção encontrada.</returns>
+    /// <returns>Promoï¿½ï¿½o encontrada.</returns>
     private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string id, string tenantId)
     {
         var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(promotion, "Promotion", id);
-        return promotion!; // Garantido que não é null após EnsureEntityExists
+        return promotion!; // Garantido que nï¿½o ï¿½ null apï¿½s EnsureEntityExists
     }
 
     /// <summary>
     /// Converte a entidade para DTO de resposta.
     /// </summary>
-    /// <param name="promotion">Promoção encontrada.</param>
+    /// <param name="promotion">Promoï¿½ï¿½o encontrada.</param>
     /// <returns>DTO de resposta.</returns>
     private PromotionResponse ConvertToResponseDto(Domain.Entities.Promotion promotion)
     {
@@ -107,7 +107,7 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
             MinOrderValue = promotion.MinOrderValue,
             MaxUsesPerCustomer = promotion.MaxUsesPerCustomer,
             MaxTotalUses = promotion.MaxTotalUses,
-            ApplicableToTags = promotion.ApplicableTags,
+            // ApplicableToTags foi removido da entidade
             StartDate = promotion.StartDate,
             EndDate = promotion.EndDate,
             IsActive = promotion.IsActive,

@@ -45,7 +45,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
             await ValidateAsync(_validator, request);
             var tenantId = _loggedUserService.GetTenantId(user);
 
-            // Buscar a Order com seus itens via repositório
+            // Buscar a Order com seus itens via repositï¿½rio
             var order = await _orderRepository.GetByIdWithItemsAsync(request.OrderId, tenantId);
             EnsureResourceExists(order, "Order", request.OrderId);
 
@@ -74,8 +74,8 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                     existingItem.Quantity = item.Quantity;
                     existingItem.UnitPrice = menuItem.Price;
                     existingItem.Notes = item.Notes ?? string.Empty;
-                    existingItem.Tags = item.Tags ?? new List<string>();
-                    existingItem.AdditionalIds = item.AdditionalIds ?? new List<string>();
+                    existingItem.Tags = string.Join(",", item.Tags ?? new List<string>());
+                    existingItem.AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>());
                     existingItem.Customizations = item.Customizations?
                         .Select(c => new Customization
                         {
@@ -96,8 +96,8 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                         Quantity = item.Quantity,
                         UnitPrice = menuItem.Price,
                         Notes = item.Notes ?? string.Empty,
-                        Tags = item.Tags ?? new List<string>(),
-                        AdditionalIds = item.AdditionalIds ?? new List<string>(),
+                        Tags = string.Join(",", item.Tags ?? new List<string>()),
+                        AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>()),
                         Customizations = item.Customizations?
                             .Select(c => new Customization
                             {
@@ -108,13 +108,13 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                 }
                 totalAmount += item.Quantity * menuItem.Price;
             }
-            // Remove itens que não estão mais presentes
+            // Remove itens que nï¿½o estï¿½o mais presentes
             var itemsToRemove = order.OrderItems.Where(oi => !updatedItems.Any(ui => ui.Id == oi.Id)).ToList();
             foreach (var item in itemsToRemove)
             {
                 order.OrderItems.Remove(item);
             }
-            // Atualiza a coleção
+            // Atualiza a coleï¿½ï¿½o
             order.OrderItems = updatedItems;
             order.TotalAmount = totalAmount;
 
@@ -123,7 +123,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
             EnsureResourceExists(company, "Company", tenantId);
             order.PlatformFee = company.FeeType == FeeType.Percentage ? totalAmount * (company.FeeValue / 100) : company.FeeValue;
 
-            // Persistir alterações via repositório
+            // Persistir alteraï¿½ï¿½es via repositï¿½rio
             await _orderRepository.UpdateAsync(order);
         }, "UpdateOrder");
     }
@@ -161,8 +161,8 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                         existingItem.Quantity = item.Quantity;
                         existingItem.UnitPrice = menuItem.Price;
                         existingItem.Notes = item.Notes ?? string.Empty;
-                        existingItem.Tags = item.Tags ?? new List<string>();
-                        existingItem.AdditionalIds = item.AdditionalIds ?? new List<string>();
+                        existingItem.Tags = string.Join(",", item.Tags ?? new List<string>());
+                        existingItem.AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>());
                         existingItem.Customizations = item.Customizations?
                             .Select(c => new Customization
                             {
@@ -182,8 +182,8 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                             Quantity = item.Quantity,
                             UnitPrice = menuItem.Price,
                             Notes = item.Notes ?? string.Empty,
-                            Tags = item.Tags ?? new List<string>(),
-                            AdditionalIds = item.AdditionalIds ?? new List<string>(),
+                            Tags = string.Join(",", item.Tags ?? new List<string>()),
+                            AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>()),
                             Customizations = item.Customizations?
                                 .Select(c => new Customization
                                 {

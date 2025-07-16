@@ -42,7 +42,6 @@ public class GetCouponsUseCase : BaseUseCase, IGetCouponsUseCase
                     Id = c.Id,
                     TenantId = c.TenantId,
                     Code = c.Code,
-                    CustomerPhoneNumber = c.CustomerPhoneNumber,
                     DiscountType = c.DiscountType,
                     DiscountValue = c.DiscountValue,
                     MenuItemId = c.MenuItemId,

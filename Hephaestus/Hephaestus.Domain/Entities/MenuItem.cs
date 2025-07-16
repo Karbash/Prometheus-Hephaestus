@@ -1,4 +1,4 @@
-namespace Hephaestus.Domain.Entities;
+﻿namespace Hephaestus.Domain.Entities;
 
 public class MenuItem
 {
@@ -9,7 +9,11 @@ public class MenuItem
     public string CategoryId { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public bool IsAvailable { get; set; }
-    public List<string> AvailableAdditionalIds { get; set; } = new List<string>();
     public string? ImageUrl { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string? CreatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
     public List<MenuItemTag> MenuItemTags { get; set; } = new List<MenuItemTag>();
+    public List<MenuItemAdditional> MenuItemAdditionals { get; set; } = new List<MenuItemAdditional>();
 }

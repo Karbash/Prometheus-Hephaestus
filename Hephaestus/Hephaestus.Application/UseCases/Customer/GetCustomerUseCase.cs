@@ -22,13 +22,13 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetCustomerUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="GetCustomerUseCase"/>.
     /// </summary>
-    /// <param name="customerRepository">Repositório de clientes.</param>
-    /// <param name="companyRepository">Repositório de empresas.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="customerRepository">Repositï¿½rio de clientes.</param>
+    /// <param name="companyRepository">Repositï¿½rio de empresas.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public GetCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
@@ -45,10 +45,10 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     /// <summary>
     /// Executa a busca de clientes de um tenant.
     /// </summary>
-    /// <param name="phoneNumber">Número de telefone para filtrar (opcional).</param>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <param name="pageNumber">Número da página.</param>
-    /// <param name="pageSize">Tamanho da página.</param>
+    /// <param name="phoneNumber">Nï¿½mero de telefone para filtrar (opcional).</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
+    /// <param name="pageNumber">Nï¿½mero da pï¿½gina.</param>
+    /// <param name="pageSize">Tamanho da pï¿½gina.</param>
     /// <returns>Lista de clientes.</returns>
     public async Task<PagedResult<CustomerResponse>> ExecuteAsync(string? phoneNumber, ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
@@ -64,12 +64,6 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
                     TenantId = c.TenantId,
                     PhoneNumber = c.PhoneNumber,
                     Name = c.Name,
-                    State = c.State,
-                    City = c.City,
-                    Street = c.Street,
-                    Number = c.Number,
-                    Latitude = c.Latitude,
-                    Longitude = c.Longitude,
                     CreatedAt = c.CreatedAt
                 }).ToList(),
                 TotalCount = pagedCustomers.TotalCount,
@@ -80,21 +74,21 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parï¿½metros de entrada.
     /// </summary>
-    /// <param name="phoneNumber">Número de telefone.</param>
+    /// <param name="phoneNumber">Nï¿½mero de telefone.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string? phoneNumber, string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (!string.IsNullOrEmpty(phoneNumber) && phoneNumber.Length < 10)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Número de telefone deve ter pelo menos 10 dígitos.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Nï¿½mero de telefone deve ter pelo menos 10 dï¿½gitos.", new ValidationResult());
     }
 
     /// <summary>
-    /// Valida se o tenant existe e é válido.
+    /// Valida se o tenant existe e ï¿½ vï¿½lido.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateTenantAsync(string tenantId)
@@ -108,9 +102,9 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     }
 
     /// <summary>
-    /// Busca os clientes no repositório.
+    /// Busca os clientes no repositï¿½rio.
     /// </summary>
-    /// <param name="phoneNumber">Número de telefone para filtrar.</param>
+    /// <param name="phoneNumber">Nï¿½mero de telefone para filtrar.</param>
     /// <param name="tenantId">ID do tenant.</param>
     /// <returns>Lista de clientes.</returns>
     private async Task<IEnumerable<Domain.Entities.Customer>> GetCustomersAsync(string? phoneNumber, string tenantId)
@@ -132,12 +126,6 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
             TenantId = c.TenantId,
             PhoneNumber = c.PhoneNumber,
             Name = c.Name,
-            State = c.State,
-            City = c.City,
-            Street = c.Street,
-            Number = c.Number,
-            Latitude = c.Latitude,
-            Longitude = c.Longitude,
             CreatedAt = c.CreatedAt
         });
     }

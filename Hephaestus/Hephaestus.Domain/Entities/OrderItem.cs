@@ -1,4 +1,4 @@
-namespace Hephaestus.Domain.Entities;
+﻿namespace Hephaestus.Domain.Entities;
 
 public class OrderItem
 {
@@ -9,7 +9,9 @@ public class OrderItem
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public string Notes { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public List<Customization> Customizations { get; set; } = new List<Customization>();
-    public List<string> AdditionalIds { get; set; } = new List<string>();
-    public List<string> Tags { get; set; } = new List<string>();
+    public string AdditionalIds { get; set; } = string.Empty;
+    public string Tags { get; set; } = string.Empty;
 }

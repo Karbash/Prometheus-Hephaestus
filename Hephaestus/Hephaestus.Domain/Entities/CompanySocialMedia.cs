@@ -1,4 +1,4 @@
-namespace Hephaestus.Domain.Entities;
+﻿namespace Hephaestus.Domain.Entities;
 
 public class CompanySocialMedia
 {

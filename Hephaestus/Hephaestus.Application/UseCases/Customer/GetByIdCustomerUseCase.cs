@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Customer;
 
 /// <summary>
-/// Caso de uso para obter um cliente específico por ID.
+/// Caso de uso para obter um cliente especï¿½fico por ID.
 /// </summary>
 public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
 {
@@ -21,13 +21,13 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetByIdCustomerUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="GetByIdCustomerUseCase"/>.
     /// </summary>
-    /// <param name="customerRepository">Repositório de clientes.</param>
-    /// <param name="companyRepository">Repositório de empresas.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="customerRepository">Repositï¿½rio de clientes.</param>
+    /// <param name="companyRepository">Repositï¿½rio de empresas.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public GetByIdCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
@@ -42,46 +42,46 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
     }
 
     /// <summary>
-    /// Executa a busca de um cliente específico por ID.
+    /// Executa a busca de um cliente especï¿½fico por ID.
     /// </summary>
     /// <param name="id">ID do cliente.</param>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <returns>Cliente encontrado ou null se não existir.</returns>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
+    /// <returns>Cliente encontrado ou null se nï¿½o existir.</returns>
     public async Task<CustomerResponse?> GetByIdAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos parâmetros de entrada
+            // Validaï¿½ï¿½o dos parï¿½metros de entrada
             ValidateInputParameters(id, tenantId);
 
-            // Validação do tenant
+            // Validaï¿½ï¿½o do tenant
             await ValidateTenantAsync(tenantId);
 
             // Busca do cliente
             var customer = await GetAndValidateCustomerAsync(id, tenantId);
 
-            // Conversão para DTO de resposta
+            // Conversï¿½o para DTO de resposta
             return customer != null ? ConvertToResponseDto(customer) : null;
         });
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parï¿½metros de entrada.
     /// </summary>
     /// <param name="id">ID do cliente.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string id, string tenantId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do cliente é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do cliente ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (!Guid.TryParse(id, out _))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do cliente deve ser um GUID válido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do cliente deve ser um GUID vï¿½lido.", new ValidationResult());
     }
 
     /// <summary>
@@ -126,12 +126,6 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
             TenantId = customer.TenantId,
             PhoneNumber = customer.PhoneNumber,
             Name = customer.Name,
-            State = customer.State,
-            City = customer.City,
-            Street = customer.Street,
-            Number = customer.Number,
-            Latitude = customer.Latitude,
-            Longitude = customer.Longitude,
             CreatedAt = customer.CreatedAt
         };
     }

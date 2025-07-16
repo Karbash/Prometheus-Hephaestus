@@ -11,7 +11,7 @@ using Hephaestus.Domain.DTOs.Response;
 namespace Hephaestus.Application.UseCases.Menu;
 
 /// <summary>
-/// Caso de uso para obter todos os itens do cardápio de um tenant.
+/// Caso de uso para obter todos os itens do cardï¿½pio de um tenant.
 /// </summary>
 public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
 {
@@ -19,12 +19,12 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetMenuItemsUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="GetMenuItemsUseCase"/>.
     /// </summary>
-    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="menuItemRepository">Repositï¿½rio de itens do cardï¿½pio.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public GetMenuItemsUseCase(
         IMenuItemRepository menuItemRepository,
         ILoggedUserService loggedUserService,
@@ -37,12 +37,12 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
     }
 
     /// <summary>
-    /// Executa a busca de todos os itens do cardápio de um tenant.
+    /// Executa a busca de todos os itens do cardï¿½pio de um tenant.
     /// </summary>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <param name="pageNumber">Número da página (padrão: 1).</param>
-    /// <param name="pageSize">Tamanho da página (padrão: 20).</param>
-    /// <returns>Lista paginada de itens do cardápio.</returns>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
+    /// <param name="pageNumber">Nï¿½mero da pï¿½gina (padrï¿½o: 1).</param>
+    /// <param name="pageSize">Tamanho da pï¿½gina (padrï¿½o: 20).</param>
+    /// <returns>Lista paginada de itens do cardï¿½pio.</returns>
     public async Task<PagedResult<MenuItemResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
@@ -61,19 +61,19 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parï¿½metros de entrada.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant ï¿½ obrigatï¿½rio.", new ValidationResult());
     }
 
     /// <summary>
     /// Converte as entidades para DTOs de resposta.
     /// </summary>
-    /// <param name="menuItems">Lista de itens do cardápio.</param>
+    /// <param name="menuItems">Lista de itens do cardï¿½pio.</param>
     /// <returns>Lista de DTOs de resposta.</returns>
     private IEnumerable<MenuItemResponse> ConvertToResponseDtos(IEnumerable<Domain.Entities.MenuItem> menuItems)
     {
@@ -87,7 +87,7 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
             Price = m.Price,
             IsAvailable = m.IsAvailable,
             TagIds = m.MenuItemTags.Select(mt => mt.TagId).ToList(),
-            AvailableAdditionalIds = m.AvailableAdditionalIds,
+            // AvailableAdditionalIds foi removido da entidade
             ImageUrl = m.ImageUrl,
             Tags = m.MenuItemTags.Select(mt => mt.Tag.Name).ToList()
         }).ToList();

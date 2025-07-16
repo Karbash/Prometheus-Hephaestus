@@ -1,4 +1,4 @@
-using Hephaestus.Domain.Enum;
+﻿using Hephaestus.Domain.Enum;
 
 namespace Hephaestus.Domain.Entities;
 
@@ -14,10 +14,15 @@ public class Promotion
     public decimal? MinOrderValue { get; set; }
     public int? MaxTotalUses { get; set; }
     public int? MaxUsesPerCustomer { get; set; }
-    public List<string> ApplicableTags { get; set; } = new List<string>();
+    public string DaysOfWeek { get; set; } = string.Empty; // Ex: "Mon,Tue,Wed"
+    public string Hours { get; set; } = string.Empty; // Ex: "11:00-15:00"
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public bool IsActive { get; set; } = true;
     public string? ImageUrl { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string? CreatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
 }
 

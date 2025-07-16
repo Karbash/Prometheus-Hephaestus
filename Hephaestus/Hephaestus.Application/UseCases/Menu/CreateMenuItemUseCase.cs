@@ -14,7 +14,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Menu;
 
 /// <summary>
-/// Caso de uso para criação de itens do cardápio.
+/// Caso de uso para criaÃ§Ã£o de itens do cardÃ¡pio.
 /// </summary>
 public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
 {
@@ -24,14 +24,14 @@ public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="CreateMenuItemUseCase"/>.
+    /// Inicializa uma nova instÃ¢ncia do <see cref="CreateMenuItemUseCase"/>.
     /// </summary>
-    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
-    /// <param name="tagRepository">Repositório de tags.</param>
-    /// <param name="validator">Validador para a requisição.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="menuItemRepository">RepositÃ³rio de itens do cardÃ¡pio.</param>
+    /// <param name="tagRepository">RepositÃ³rio de tags.</param>
+    /// <param name="validator">Validador para a requisiÃ§Ã£o.</param>
+    /// <param name="loggedUserService">ServiÃ§o para obter informaÃ§Ãµes do usuÃ¡rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">ServiÃ§o de tratamento de exceÃ§Ãµes.</param>
     public CreateMenuItemUseCase(
         IMenuItemRepository menuItemRepository,
         ITagRepository tagRepository,
@@ -48,10 +48,10 @@ public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
     }
 
     /// <summary>
-    /// Executa a criação de um item do cardápio.
+    /// Executa a criaÃ§Ã£o de um item do cardÃ¡pio.
     /// </summary>
-    /// <param name="request">Dados do item do cardápio a ser criado.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="request">Dados do item do cardÃ¡pio a ser criado.</param>
+    /// <param name="user">UsuÃ¡rio autenticado.</param>
     /// <returns>ID do item criado.</returns>
     public async Task<string> ExecuteAsync(CreateMenuItemRequest request, ClaimsPrincipal user)
     {
@@ -59,13 +59,13 @@ public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos dados de entrada
+            // ValidaÃ§Ã£o dos dados de entrada
             await _validator.ValidateAndThrowAsync(request);
 
-            // Validação das regras de negócio
+            // ValidaÃ§Ã£o das regras de negÃ³cio
             await ValidateBusinessRulesAsync(request, tenantId);
 
-            // Criação do item do cardápio
+            // CriaÃ§Ã£o do item do cardÃ¡pio
             var menuItem = new MenuItem
             {
                 Id = Guid.NewGuid().ToString(),
@@ -75,7 +75,6 @@ public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
                 CategoryId = request.CategoryId,
                 Price = request.Price,
                 IsAvailable = request.IsAvailable,
-                AvailableAdditionalIds = request.AvailableAdditionalIds,
                 ImageUrl = request.ImageUrl
             };
 
@@ -87,21 +86,23 @@ public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
                 await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, tenantId);
             }
 
+            // Adicionais foram removidos da entidade
+
             return menuItem.Id;
         });
     }
 
     /// <summary>
-    /// Valida as regras de negócio.
+    /// Valida as regras de negÃ³cio.
     /// </summary>
-    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="request">RequisiÃ§Ã£o com os dados.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(CreateMenuItemRequest request, string tenantId)
     {
         // Valida se as tags pertencem ao tenant
         if (request.TagIds.Any() && !await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, tenantId))
         {
-            throw new BusinessRuleException("Um ou mais TagIds são inválidos para este tenant.", "TAG_VALIDATION_RULE");
+            throw new BusinessRuleException("Um ou mais TagIds sÃ£o invÃ¡lidos para este tenant.", "TAG_VALIDATION_RULE");
         }
     }
 }

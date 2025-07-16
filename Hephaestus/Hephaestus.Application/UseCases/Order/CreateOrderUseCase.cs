@@ -69,8 +69,8 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                     Quantity = item.Quantity,
                     UnitPrice = menuItem.Price,
                     Notes = item.Notes ?? string.Empty,
-                    Tags = item.Tags ?? new List<string>(),
-                    AdditionalIds = item.AdditionalIds ?? new List<string>(),
+                    Tags = string.Join(",", item.Tags ?? new List<string>()),
+                    AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>()),
                     Customizations = item.Customizations?
                         .Select(c => new Customization
                         {
@@ -86,21 +86,21 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
             bool usedCoupon = false;
             bool usedPromotion = false;
 
-            // ValidaÁ„o e aplicaÁ„o de cupom
+            // Valida√ß√£o e aplica√ß√£o de cupom
             if (!string.IsNullOrEmpty(request.CouponId))
             {
                 var coupon = await _couponRepository.GetByIdAsync(request.CouponId, tenantId);
                 EnsureResourceExists(coupon, "Coupon", request.CouponId);
                 EnsureBusinessRule(coupon.IsActive && coupon.StartDate <= DateTime.UtcNow && coupon.EndDate >= DateTime.UtcNow,
-                    "Cupom inv·lido ou expirado.", "COUPON_INVALID");
+                    "Cupom inv√°lido ou expirado.", "COUPON_INVALID");
 
                 // Limites de uso
                 var totalUses = await _couponRepository.GetUsageCountAsync(coupon.Id, tenantId);
                 var usesByCustomer = await _couponRepository.GetUsageCountByCustomerAsync(coupon.Id, tenantId, request.CustomerPhoneNumber);
                 if (coupon.MaxTotalUses.HasValue && totalUses >= coupon.MaxTotalUses.Value)
-                    throw new BusinessRuleException("Limite m·ximo de usos do cupom atingido.", "COUPON_MAX_TOTAL_USES");
+                    throw new BusinessRuleException("Limite m√°ximo de usos do cupom atingido.", "COUPON_MAX_TOTAL_USES");
                 if (coupon.MaxUsesPerCustomer.HasValue && usesByCustomer >= coupon.MaxUsesPerCustomer.Value)
-                    throw new BusinessRuleException("Limite m·ximo de usos do cupom por cliente atingido.", "COUPON_MAX_USES_PER_CUSTOMER");
+                    throw new BusinessRuleException("Limite m√°ximo de usos do cupom por cliente atingido.", "COUPON_MAX_USES_PER_CUSTOMER");
 
                 // Aplica desconto
                 if (coupon.DiscountType == Domain.Enum.DiscountType.Percentage)
@@ -109,21 +109,21 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                     discount = coupon.DiscountValue;
                 usedCoupon = true;
             }
-            // Se n„o usou cupom, tenta promoÁ„o
+            // Se n√£o usou cupom, tenta promo√ß√£o
             else if (!string.IsNullOrEmpty(request.PromotionId))
             {
                 var promotion = await _promotionRepository.GetByIdAsync(request.PromotionId, tenantId);
                 EnsureResourceExists(promotion, "Promotion", request.PromotionId);
                 EnsureBusinessRule(promotion.IsActive && promotion.StartDate <= DateTime.UtcNow && promotion.EndDate >= DateTime.UtcNow,
-                    "PromoÁ„o inv·lida ou expirada.", "PROMOTION_INVALID");
+                    "Promo√ß√£o inv√°lida ou expirada.", "PROMOTION_INVALID");
 
                 // Limites de uso
                 var totalUses = await _promotionRepository.GetUsageCountAsync(promotion.Id, tenantId);
                 var usesByCustomer = await _promotionRepository.GetUsageCountByCustomerAsync(promotion.Id, tenantId, request.CustomerPhoneNumber);
                 if (promotion.MaxTotalUses.HasValue && totalUses >= promotion.MaxTotalUses.Value)
-                    throw new BusinessRuleException("Limite m·ximo de usos da promoÁ„o atingido.", "PROMOTION_MAX_TOTAL_USES");
+                    throw new BusinessRuleException("Limite m√°ximo de usos da promo√ß√£o atingido.", "PROMOTION_MAX_TOTAL_USES");
                 if (promotion.MaxUsesPerCustomer.HasValue && usesByCustomer >= promotion.MaxUsesPerCustomer.Value)
-                    throw new BusinessRuleException("Limite m·ximo de usos da promoÁ„o por cliente atingido.", "PROMOTION_MAX_USES_PER_CUSTOMER");
+                    throw new BusinessRuleException("Limite m√°ximo de usos da promo√ß√£o por cliente atingido.", "PROMOTION_MAX_USES_PER_CUSTOMER");
 
                 // Aplica desconto
                 if (promotion.DiscountType == Domain.Enum.DiscountType.Percentage)
@@ -146,11 +146,15 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
             {
                 Id = orderId,
                 TenantId = tenantId,
+                CustomerId = request.CustomerPhoneNumber, // Assumindo que CustomerPhoneNumber √© o CustomerId
                 CustomerPhoneNumber = request.CustomerPhoneNumber,
+                CompanyId = tenantId, // Assumindo que CompanyId √© o mesmo que TenantId
+                AddressId = string.Empty, // Ser√° preenchido posteriormente se necess√°rio
                 TotalAmount = finalAmount,
                 PlatformFee = platformFee,
                 PromotionId = usedPromotion ? request.PromotionId : null,
                 CouponId = usedCoupon ? request.CouponId : null,
+                DeliveryType = "Delivery", // Valor padr√£o
                 Status = OrderStatus.Pending,
                 PaymentStatus = PaymentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
@@ -160,14 +164,14 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
 
             await _orderRepository.AddAsync(order);
 
-            // Registrar uso de cupom/promoÁ„o
+            // Registrar uso de cupom/promo√ß√£o
             if (usedCoupon)
             {
                 await _couponRepository.AddUsageAsync(new CouponUsage
                 {
                     TenantId = tenantId,
                     CouponId = request.CouponId!,
-                    CustomerPhoneNumber = request.CustomerPhoneNumber,
+                    CustomerId = request.CustomerPhoneNumber,
                     OrderId = orderId,
                     UsedAt = DateTime.UtcNow
                 });
@@ -178,7 +182,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                 {
                     TenantId = tenantId,
                     PromotionId = request.PromotionId!,
-                    CustomerPhoneNumber = request.CustomerPhoneNumber,
+                    CustomerId = request.CustomerPhoneNumber,
                     OrderId = orderId,
                     UsedAt = DateTime.UtcNow
                 });

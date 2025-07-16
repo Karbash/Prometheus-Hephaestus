@@ -21,14 +21,14 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
     private readonly ICompanySocialMediaRepository _companySocialMediaRepository;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetCompanyProfileUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="GetCompanyProfileUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Repositório de empresas.</param>
-    /// <param name="companyImageRepository">Repositório de imagens da empresa.</param>
-    /// <param name="companyOperatingHourRepository">Repositório de horários de funcionamento.</param>
-    /// <param name="companySocialMediaRepository">Repositório de redes sociais.</param>
+    /// <param name="companyRepository">Repositï¿½rio de empresas.</param>
+    /// <param name="companyImageRepository">Repositï¿½rio de imagens da empresa.</param>
+    /// <param name="companyOperatingHourRepository">Repositï¿½rio de horï¿½rios de funcionamento.</param>
+    /// <param name="companySocialMediaRepository">Repositï¿½rio de redes sociais.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public GetCompanyProfileUseCase(
         ICompanyRepository companyRepository,
         ICompanyImageRepository companyImageRepository,
@@ -53,10 +53,10 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Validação dos parâmetros de entrada
+            // Validaï¿½ï¿½o dos parï¿½metros de entrada
             ValidateInputParameters(companyId);
 
-            // Busca e validação da empresa
+            // Busca e validaï¿½ï¿½o da empresa
             var company = await GetAndValidateCompanyAsync(companyId);
 
             // Busca dos dados relacionados
@@ -68,16 +68,16 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parï¿½metros de entrada.
     /// </summary>
     /// <param name="companyId">ID da empresa.</param>
     private void ValidateInputParameters(string companyId)
     {
         if (string.IsNullOrEmpty(companyId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (!Guid.TryParse(companyId, out _))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa deve ser um GUID válido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa deve ser um GUID vï¿½lido.", new ValidationResult());
     }
 
     /// <summary>
@@ -122,20 +122,13 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
          IEnumerable<Domain.Entities.CompanyOperatingHour> operatingHours, 
          IEnumerable<Domain.Entities.CompanySocialMedia> socialMedia) relatedData)
     {
-        // Nunca expor PasswordHash, ApiKey ou MfaSecret em DTOs de resposta. Se adicionar novos campos sensíveis, garantir que não sejam expostos aqui.
+        // Nunca expor PasswordHash, ApiKey ou MfaSecret em DTOs de resposta. Se adicionar novos campos sensï¿½veis, garantir que nï¿½o sejam expostos aqui.
         return new CompanyProfileResponse
         {
             Id = company.Id,
             Name = company.Name,
             Email = company.Email,
             PhoneNumber = company.PhoneNumber,
-            State = company.State,
-            City = company.City,
-            Neighborhood = company.Neighborhood,
-            Street = company.Street,
-            Number = company.Number,
-            Latitude = company.Latitude,
-            Longitude = company.Longitude,
             Slogan = company.Slogan,
             Description = company.Description,
             Images = relatedData.images.Select(i => new CompanyImageResponse

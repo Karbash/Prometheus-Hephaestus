@@ -13,7 +13,7 @@ using FluentValidation.Results;
 namespace Hephaestus.Application.UseCases.Administration;
 
 /// <summary>
-/// Caso de uso para atualização de empresas.
+/// Caso de uso para atualizaï¿½ï¿½o de empresas.
 /// </summary>
 public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
 {
@@ -21,12 +21,12 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     private readonly IAuditLogRepository _auditLogRepository;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="UpdateCompanyUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="UpdateCompanyUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Repositório de empresas.</param>
-    /// <param name="auditLogRepository">Repositório de logs de auditoria.</param>
+    /// <param name="companyRepository">Repositï¿½rio de empresas.</param>
+    /// <param name="auditLogRepository">Repositï¿½rio de logs de auditoria.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public UpdateCompanyUseCase(
         ICompanyRepository companyRepository, 
         IAuditLogRepository auditLogRepository,
@@ -39,39 +39,39 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     }
 
     /// <summary>
-    /// Executa a atualização de uma empresa.
+    /// Executa a atualizaï¿½ï¿½o de uma empresa.
     /// </summary>
     /// <param name="id">ID da empresa.</param>
     /// <param name="request">Dados atualizados da empresa.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     public async Task ExecuteAsync(string id, UpdateCompanyRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Validação dos dados de entrada
+            // Validaï¿½ï¿½o dos dados de entrada
             // Remover todas as linhas que usam _validator
 
-            // Validação de autorização
+            // Validaï¿½ï¿½o de autorizaï¿½ï¿½o
             ValidateAuthorization(user);
 
-            // Busca e validação da empresa
+            // Busca e validaï¿½ï¿½o da empresa
             var company = await GetAndValidateCompanyAsync(id);
 
-            // Validação das regras de negócio
+            // Validaï¿½ï¿½o das regras de negï¿½cio
             await ValidateBusinessRulesAsync(request, id);
 
-            // Atualização da empresa
+            // Atualizaï¿½ï¿½o da empresa
             await UpdateCompanyAsync(company, request);
 
             // Registro de auditoria
             await CreateAuditLogAsync(company, user);
-        }, "Atualização de Empresa");
+        }, "Atualizaï¿½ï¿½o de Empresa");
     }
 
     /// <summary>
-    /// Valida a autorização do usuário.
+    /// Valida a autorizaï¿½ï¿½o do usuï¿½rio.
     /// </summary>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal user)
     {
         var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
@@ -87,25 +87,25 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     {
         var company = await _companyRepository.GetByIdAsync(id);
         EnsureEntityExists(company, "Empresa", id);
-        return company!; // Garantido que não é null após EnsureEntityExists
+        return company!; // Garantido que nï¿½o ï¿½ null apï¿½s EnsureEntityExists
     }
 
     /// <summary>
-    /// Valida as regras de negócio.
+    /// Valida as regras de negï¿½cio.
     /// </summary>
-    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="request">Requisiï¿½ï¿½o com os dados.</param>
     /// <param name="id">ID da empresa.</param>
     private async Task ValidateBusinessRulesAsync(UpdateCompanyRequest request, string id)
     {
         var existingByEmail = await _companyRepository.GetByEmailAsync(request.Email);
         if (existingByEmail != null && existingByEmail.Id != id)
-            throw new ConflictException("E-mail já registrado.", "Empresa", "Email", request.Email);
+            throw new ConflictException("E-mail jï¿½ registrado.", "Empresa", "Email", request.Email);
 
         if (!string.IsNullOrEmpty(request.PhoneNumber))
         {
             var existingByPhone = await _companyRepository.GetByPhoneNumberAsync(request.PhoneNumber);
             if (existingByPhone != null && existingByPhone.Id != id)
-                throw new ConflictException("Telefone já registrado.", "Empresa", "PhoneNumber", request.PhoneNumber);
+                throw new ConflictException("Telefone jï¿½ registrado.", "Empresa", "PhoneNumber", request.PhoneNumber);
         }
     }
 
@@ -122,13 +122,6 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
         company.FeeType = request.FeeType;
         company.FeeValue = (decimal)request.FeeValue;
         company.IsEnabled = request.IsEnabled;
-        company.State = request.State;
-        company.City = request.City;
-        company.Neighborhood = request.Neighborhood;
-        company.Street = request.Street;
-        company.Number = request.Number;
-        company.Latitude = request.Latitude;
-        company.Longitude = request.Longitude;
         company.Slogan = request.Slogan;
         company.Description = request.Description;
         await _companyRepository.UpdateAsync(company);
@@ -138,19 +131,19 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     /// Cria o log de auditoria.
     /// </summary>
     /// <param name="company">Empresa atualizada.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     private async Task CreateAuditLogAsync(Domain.Entities.Company company, ClaimsPrincipal user)
     {
         var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedException("Usuário não autenticado.", "Atualizar", "Empresa");
+            throw new UnauthorizedException("Usuï¿½rio nï¿½o autenticado.", "Atualizar", "Empresa");
 
         await _auditLogRepository.AddAsync(new AuditLog
         {
             UserId = userId,
-            Action = "Atualização de Empresa",
+            Action = "Atualizaï¿½ï¿½o de Empresa",
             EntityId = company.Id,
-            Details = $"Empresa {company.Name} atualizada com e-mail {company.Email} no estado {company.State}.",
+            Details = $"Empresa {company.Name} atualizada com e-mail {company.Email}.",
             CreatedAt = DateTime.UtcNow
         });
     }

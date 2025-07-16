@@ -1,7 +1,6 @@
-using Hephaestus.Domain.Entities;
+﻿using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Hephaestus.Infrastructure.Configurations;
 
@@ -9,50 +8,64 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
 {
     public void Configure(EntityTypeBuilder<MenuItem> builder)
     {
-        builder.ToTable("MenuItems");
+        builder.ToTable("menu_items");
 
-        builder.HasKey(m => m.Id);
+        builder.HasKey(mi => mi.Id);
 
-        builder.Property(m => m.TenantId)
-            .IsRequired()
-            .HasMaxLength(36); // GUID como string
+        builder.Property(mi => mi.Id)
+            .HasColumnName("id")
+            .ValueGeneratedOnAdd();
 
-        builder.Property(m => m.Name)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(m => m.Description)
-            .HasMaxLength(500);
-
-        builder.Property(m => m.Price)
-            .IsRequired()
-            .HasPrecision(18, 2);
-
-        builder.Property(m => m.CategoryId)
-            .IsRequired()
-            .HasMaxLength(36); // GUID como string
-
-        builder.Property(m => m.IsAvailable)
+        builder.Property(mi => mi.TenantId)
+            .HasColumnName("tenant_id")
             .IsRequired();
 
-        builder.Property(m => m.ImageUrl)
+        builder.Property(mi => mi.Name)
+            .HasColumnName("name")
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.Property(mi => mi.Description)
+            .HasColumnName("description")
             .HasMaxLength(500);
 
-        var listComparer = new ValueComparer<List<string>>(
-            (c1, c2) => (c1 == null && c2 == null) || (c1 != null && c2 != null && c1.SequenceEqual(c2)),
-            c => c == null ? 0 : c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-            c => c == null ? new List<string>() : c.ToList());
+        builder.Property(mi => mi.CategoryId)
+            .HasColumnName("category_id")
+            .IsRequired();
 
-        builder.Property(m => m.AvailableAdditionalIds)
-            .HasConversion(v => string.Join(',', v), v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList())
-            .Metadata.SetValueComparer(listComparer);
+        builder.Property(mi => mi.Price)
+            .HasColumnName("price")
+            .HasColumnType("decimal(10,2)")
+            .IsRequired();
 
-        builder.HasIndex(m => new { m.TenantId, m.CategoryId });
+        builder.Property(mi => mi.IsAvailable)
+            .HasColumnName("is_available")
+            .IsRequired();
 
-        // Relacionamento com Category
-        builder.HasOne<Category>()
-            .WithMany()
-            .HasForeignKey(m => m.CategoryId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Property(mi => mi.ImageUrl)
+            .HasColumnName("image_url")
+            .HasMaxLength(500);
+
+        builder.Property(mi => mi.CreatedAt)
+            .HasColumnName("created_at")
+            .IsRequired();
+
+        builder.Property(mi => mi.UpdatedAt)
+            .HasColumnName("updated_at")
+            .IsRequired();
+
+        builder.HasMany(mi => mi.MenuItemTags)
+            .WithOne()
+            .HasForeignKey(mt => mt.MenuItemId);
+
+        builder.HasMany(mi => mi.MenuItemAdditionals)
+            .WithOne()
+            .HasForeignKey(ma => ma.MenuItemId);
+
+        // Índices
+        builder.HasIndex(mi => mi.TenantId);
+        builder.HasIndex(mi => mi.CategoryId);
+        builder.HasIndex(mi => mi.IsAvailable);
+        builder.HasIndex(mi => mi.CreatedAt);
     }
 }

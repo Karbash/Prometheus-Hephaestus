@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Customer;
 
 /// <summary>
-/// Caso de uso para atualização de clientes.
+/// Caso de uso para atualizaï¿½ï¿½o de clientes.
 /// </summary>
 public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
 {
@@ -22,13 +22,13 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="UpdateCustomerUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="UpdateCustomerUseCase"/>.
     /// </summary>
-    /// <param name="customerRepository">Repositório de clientes.</param>
-    /// <param name="companyRepository">Repositório de empresas.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="customerRepository">Repositï¿½rio de clientes.</param>
+    /// <param name="companyRepository">Repositï¿½rio de empresas.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public UpdateCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
@@ -43,33 +43,33 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
     }
 
     /// <summary>
-    /// Executa a atualização de um cliente.
+    /// Executa a atualizaï¿½ï¿½o de um cliente.
     /// </summary>
     /// <param name="request">Dados do cliente a ser atualizado.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     public async Task UpdateAsync(CustomerRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos dados de entrada
+            // Validaï¿½ï¿½o dos dados de entrada
             // Remover todas as linhas que usam _validator
 
-            // Validação do tenant
+            // Validaï¿½ï¿½o do tenant
             await ValidateTenantAsync(tenantId);
 
             // Busca do cliente
             var customer = await _customerRepository.GetByIdAsync(request.Id!, tenantId);
             EnsureResourceExists(customer, "Cliente", request.Id!);
 
-            // Atualização dos dados
+            // Atualizaï¿½ï¿½o dos dados
             await CreateOrUpdateCustomerAsync(request, tenantId, customer);
         });
     }
 
     /// <summary>
-    /// Valida se o tenant existe e é válido.
+    /// Valida se o tenant existe e ï¿½ vï¿½lido.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateTenantAsync(string tenantId)
@@ -83,16 +83,16 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
     }
 
     /// <summary>
-    /// Valida as regras de negócio.
+    /// Valida as regras de negï¿½cio.
     /// </summary>
     /// <param name="request">Dados do cliente.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(CustomerRequest request, string tenantId)
     {
-        // Verifica se já existe um cliente com o mesmo número de telefone
+        // Verifica se jï¿½ existe um cliente com o mesmo nï¿½mero de telefone
         var existingCustomer = await _customerRepository.GetByPhoneNumberAsync(request.PhoneNumber, tenantId);
         if (existingCustomer != null)
-            throw new ConflictException("Já existe um cliente com este número de telefone.", "Customer", "PhoneNumber", request.PhoneNumber);
+            throw new ConflictException("Jï¿½ existe um cliente com este nï¿½mero de telefone.", "Customer", "PhoneNumber", request.PhoneNumber);
     }
 
     /// <summary>
@@ -120,12 +120,6 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
             TenantId = tenantId,
             PhoneNumber = request.PhoneNumber,
             Name = request.Name,
-            State = request.State,
-            City = request.City,
-            Street = request.Street,
-            Number = request.Number,
-            Latitude = request.Latitude,
-            Longitude = request.Longitude,
             CreatedAt = existingCustomer?.CreatedAt ?? DateTime.UtcNow
         };
 

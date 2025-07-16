@@ -17,11 +17,11 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
     private readonly ICompanyRepository _companyRepository;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="GetCompaniesUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="GetCompaniesUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Repositório de empresas.</param>
+    /// <param name="companyRepository">Repositï¿½rio de empresas.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public GetCompaniesUseCase(
         ICompanyRepository companyRepository,
         ILogger<GetCompaniesUseCase> logger,
@@ -42,7 +42,7 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
         {
             // Busca das empresas paginadas
             var pagedCompanies = await GetCompaniesAsync(isEnabled, pageNumber, pageSize);
-            // Conversão para DTOs de resposta
+            // Conversï¿½o para DTOs de resposta
             return new PagedResult<CompanyResponse>
             {
                 Items = ConvertToResponseDtos(pagedCompanies.Items).ToList(),
@@ -79,13 +79,6 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
             IsEnabled = c.IsEnabled,
             FeeType = c.FeeType,
             FeeValue = (double)c.FeeValue,
-            State = c.State,
-            City = c.City,
-            Neighborhood = c.Neighborhood,
-            Street = c.Street,
-            Number = c.Number,
-            Latitude = c.Latitude,
-            Longitude = c.Longitude,
             Slogan = c.Slogan,
             Description = c.Description
         });

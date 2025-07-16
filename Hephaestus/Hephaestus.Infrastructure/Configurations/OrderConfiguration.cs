@@ -1,4 +1,4 @@
-using Hephaestus.Domain.Entities;
+﻿using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,57 +8,77 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
-        builder.ToTable("Orders");
+        builder.ToTable("orders");
 
         builder.HasKey(o => o.Id);
 
-        builder.Property(o => o.TenantId)
-            .IsRequired()
-            .HasMaxLength(36);
+        builder.Property(o => o.Id)
+            .HasColumnName("id")
+            .ValueGeneratedOnAdd();
 
-        builder.Property(o => o.CustomerPhoneNumber)
-            .IsRequired()
-            .HasMaxLength(20);
+        builder.Property(o => o.TenantId)
+            .HasColumnName("tenant_id")
+            .IsRequired();
+
+        builder.Property(o => o.CustomerId)
+            .HasColumnName("customer_id")
+            .IsRequired();
+
+        builder.Property(o => o.CompanyId)
+            .HasColumnName("company_id")
+            .IsRequired();
+
+        builder.Property(o => o.AddressId)
+            .HasColumnName("address_id")
+            .IsRequired();
 
         builder.Property(o => o.TotalAmount)
-            .IsRequired()
-            .HasPrecision(18, 2);
+            .HasColumnName("total_amount")
+            .HasColumnType("decimal(10,2)")
+            .IsRequired();
 
         builder.Property(o => o.PlatformFee)
-            .IsRequired()
-            .HasPrecision(18, 2);
+            .HasColumnName("platform_fee")
+            .HasColumnType("decimal(10,2)")
+            .IsRequired();
 
         builder.Property(o => o.PromotionId)
-            .HasMaxLength(36);
+            .HasColumnName("promotion_id");
 
         builder.Property(o => o.CouponId)
-            .HasMaxLength(36);
+            .HasColumnName("coupon_id");
+
+        builder.Property(o => o.DeliveryType)
+            .HasColumnName("delivery_type")
+            .HasMaxLength(20)
+            .IsRequired();
 
         builder.Property(o => o.Status)
-            .IsRequired()
-            .HasConversion<string>();
+            .HasColumnName("status")
+            .IsRequired();
 
         builder.Property(o => o.PaymentStatus)
-            .IsRequired()
-            .HasConversion<string>();
+            .HasColumnName("payment_status")
+            .IsRequired();
 
         builder.Property(o => o.CreatedAt)
+            .HasColumnName("created_at")
             .IsRequired();
 
         builder.Property(o => o.UpdatedAt)
+            .HasColumnName("updated_at")
             .IsRequired();
 
-        builder.HasIndex(o => new { o.TenantId, o.CustomerPhoneNumber });
+        builder.HasMany(o => o.OrderItems)
+            .WithOne()
+            .HasForeignKey(oi => oi.OrderId);
 
-        // Relacionamentos opcionais com Promotion e Coupon
-        builder.HasOne<Promotion>()
-            .WithMany()
-            .HasForeignKey(o => o.PromotionId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        builder.HasOne<Coupon>()
-            .WithMany()
-            .HasForeignKey(o => o.CouponId)
-            .OnDelete(DeleteBehavior.SetNull);
+        // Índices
+        builder.HasIndex(o => o.TenantId);
+        builder.HasIndex(o => o.CustomerId);
+        builder.HasIndex(o => o.CompanyId);
+        builder.HasIndex(o => o.Status);
+        builder.HasIndex(o => o.PaymentStatus);
+        builder.HasIndex(o => o.CreatedAt);
     }
 }

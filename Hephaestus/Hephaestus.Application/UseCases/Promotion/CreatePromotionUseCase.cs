@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Promotion;
 
 /// <summary>
-/// Caso de uso para criação de promoções.
+/// Caso de uso para criaï¿½ï¿½o de promoï¿½ï¿½es.
 /// </summary>
 public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
 {
@@ -23,14 +23,14 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="CreatePromotionUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="CreatePromotionUseCase"/>.
     /// </summary>
-    /// <param name="promotionRepository">Repositório de promoções.</param>
-    /// <param name="validator">Validador para a requisição.</param>
-    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="promotionRepository">Repositï¿½rio de promoï¿½ï¿½es.</param>
+    /// <param name="validator">Validador para a requisiï¿½ï¿½o.</param>
+    /// <param name="menuItemRepository">Repositï¿½rio de itens do cardï¿½pio.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public CreatePromotionUseCase(
         IPromotionRepository promotionRepository,
         IValidator<CreatePromotionRequest> validator,
@@ -47,27 +47,27 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     }
 
     /// <summary>
-    /// Executa a criação de uma promoção.
+    /// Executa a criaï¿½ï¿½o de uma promoï¿½ï¿½o.
     /// </summary>
-    /// <param name="request">Dados da promoção a ser criada.</param>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <returns>ID da promoção criada.</returns>
+    /// <param name="request">Dados da promoï¿½ï¿½o a ser criada.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
+    /// <returns>ID da promoï¿½ï¿½o criada.</returns>
     public async Task<string> ExecuteAsync(CreatePromotionRequest request, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos dados de entrada
+            // Validaï¿½ï¿½o dos dados de entrada
             await ValidateRequestAsync(request);
 
-            // Validação das regras de negócio
+            // Validaï¿½ï¿½o das regras de negï¿½cio
             await ValidateBusinessRulesAsync(request, tenantId);
 
-            // Criação da promoção
+            // Criaï¿½ï¿½o da promoï¿½ï¿½o
             var promotion = await CreatePromotionEntityAsync(request, tenantId);
 
-            // Persistência no repositório
+            // Persistï¿½ncia no repositï¿½rio
             await _promotionRepository.AddAsync(promotion);
 
             return promotion.Id;
@@ -75,26 +75,26 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     }
 
     /// <summary>
-    /// Valida os dados da requisição.
+    /// Valida os dados da requisiï¿½ï¿½o.
     /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
+    /// <param name="request">Requisiï¿½ï¿½o a ser validada.</param>
     private async Task ValidateRequestAsync(CreatePromotionRequest request)
     {
         var validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da promoção inválidos", validationResult);
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da promoï¿½ï¿½o invï¿½lidos", validationResult);
         }
     }
 
     /// <summary>
-    /// Valida as regras de negócio.
+    /// Valida as regras de negï¿½cio.
     /// </summary>
-    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="request">Requisiï¿½ï¿½o com os dados.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(CreatePromotionRequest request, string tenantId)
     {
-        // Valida se o item do cardápio existe para promoções FreeItem
+        // Valida se o item do cardï¿½pio existe para promoï¿½ï¿½es FreeItem
         if (request.DiscountType == DiscountType.FreeItem && !string.IsNullOrEmpty(request.MenuItemId))
         {
             var menuItem = await _menuItemRepository.GetByIdAsync(request.MenuItemId, tenantId);
@@ -106,11 +106,11 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     }
 
     /// <summary>
-    /// Cria a entidade de promoção.
+    /// Cria a entidade de promoï¿½ï¿½o.
     /// </summary>
-    /// <param name="request">Dados da promoção.</param>
+    /// <param name="request">Dados da promoï¿½ï¿½o.</param>
     /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Entidade de promoção criada.</returns>
+    /// <returns>Entidade de promoï¿½ï¿½o criada.</returns>
     private Task<Domain.Entities.Promotion> CreatePromotionEntityAsync(CreatePromotionRequest request, string tenantId)
     {
         return Task.FromResult(new Domain.Entities.Promotion
@@ -125,7 +125,7 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
             MinOrderValue = request.MinOrderValue,
             MaxUsesPerCustomer = request.MaxUsesPerCustomer,
             MaxTotalUses = request.MaxTotalUses,
-            ApplicableTags = request.ApplicableToTags ?? new List<string>(),
+            // ApplicableTags foi removido da entidade
             StartDate = request.StartDate,
             EndDate = request.EndDate,
             IsActive = request.IsActive,

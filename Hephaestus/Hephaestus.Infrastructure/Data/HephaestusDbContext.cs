@@ -29,6 +29,9 @@ public class HephaestusDbContext : DbContext
     public DbSet<Category> Categories { get; set; }
     public DbSet<CouponUsage> CouponUsages { get; set; }
     public DbSet<PromotionUsage> PromotionUsages { get; set; }
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Customization> Customizations { get; set; }
+    public DbSet<MenuItemAdditional> MenuItemAdditionals { get; set; }
 
     public HephaestusDbContext(DbContextOptions<HephaestusDbContext> options) : base(options) { }
 
@@ -54,5 +57,10 @@ public class HephaestusDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CompanySocialMediaConfiguration());
         modelBuilder.ApplyConfiguration(new MenuItemImageConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new CouponUsageConfiguration());
+        modelBuilder.ApplyConfiguration(new PromotionUsageConfiguration());
+        modelBuilder.ApplyConfiguration(new AddressConfiguration());
+        modelBuilder.ApplyConfiguration(new CustomizationConfiguration());
+        modelBuilder.ApplyConfiguration(new MenuItemAdditionalConfiguration());
     }
 }

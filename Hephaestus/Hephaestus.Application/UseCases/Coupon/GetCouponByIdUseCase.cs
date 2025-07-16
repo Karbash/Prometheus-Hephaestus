@@ -13,7 +13,7 @@ using Hephaestus.Domain.Enum;
 namespace Hephaestus.Application.UseCases.Coupon;
 
 /// <summary>
-/// Caso de uso para obtenção de cupom por ID.
+/// Caso de uso para obtenï¿½ï¿½o de cupom por ID.
 /// </summary>
 public class GetCouponByIdUseCase : BaseUseCase, IGetCouponByIdUseCase
 {
@@ -44,7 +44,6 @@ public class GetCouponByIdUseCase : BaseUseCase, IGetCouponByIdUseCase
             {
                 Id = coupon.Id,
                 Code = coupon.Code,
-                CustomerPhoneNumber = coupon.CustomerPhoneNumber,
                 DiscountType = coupon.DiscountType,
                 DiscountValue = coupon.DiscountValue,
                 MenuItemId = coupon.MenuItemId,

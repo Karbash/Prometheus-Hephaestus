@@ -1,5 +1,5 @@
-﻿using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Application.Base;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Order;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Repositories;

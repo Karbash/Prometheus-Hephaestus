@@ -1,4 +1,4 @@
-ï»¿using FluentValidation;
+using FluentValidation;
 using Hephaestus.Application.Base;
 using Hephaestus.Application.Interfaces.Order;
 using Hephaestus.Application.Services;
@@ -45,7 +45,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
             await ValidateAsync(_validator, request);
             var tenantId = _loggedUserService.GetTenantId(user);
 
-            // Buscar a Order com seus itens via repositÃ³rio
+            // Buscar a Order com seus itens via repositório
             var order = await _orderRepository.GetByIdWithItemsAsync(request.OrderId, tenantId);
             EnsureResourceExists(order, "Order", request.OrderId);
 
@@ -108,13 +108,13 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                 }
                 totalAmount += item.Quantity * menuItem.Price;
             }
-            // Remove itens que nÃ£o estÃ£o mais presentes
+            // Remove itens que não estão mais presentes
             var itemsToRemove = order.OrderItems.Where(oi => !updatedItems.Any(ui => ui.Id == oi.Id)).ToList();
             foreach (var item in itemsToRemove)
             {
                 order.OrderItems.Remove(item);
             }
-            // Atualiza a coleÃ§Ã£o
+            // Atualiza a coleção
             order.OrderItems = updatedItems;
             order.TotalAmount = totalAmount;
 
@@ -123,7 +123,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
             EnsureResourceExists(company, "Company", tenantId);
             order.PlatformFee = company.FeeType == FeeType.Percentage ? totalAmount * (company.FeeValue / 100) : company.FeeValue;
 
-            // Persistir alteraÃ§Ãµes via repositÃ³rio
+            // Persistir alterações via repositório
             await _orderRepository.UpdateAsync(order);
         }, "UpdateOrder");
     }

@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.Interfaces.Menu;
+using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Menu;
 
 /// <summary>
-/// Caso de uso para remo√ß√£o de itens do card√°pio.
+/// Caso de uso para remoÁ„o de itens do card·pio.
 /// </summary>
 public class DeleteMenuItemUseCase : BaseUseCase, IDeleteMenuItemUseCase
 {
@@ -19,12 +19,12 @@ public class DeleteMenuItemUseCase : BaseUseCase, IDeleteMenuItemUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="DeleteMenuItemUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="DeleteMenuItemUseCase"/>.
     /// </summary>
-    /// <param name="menuItemRepository">Reposit√≥rio de itens do card√°pio.</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
+    /// <param name="menuItemRepository">RepositÛrio de itens do card·pio.</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public DeleteMenuItemUseCase(
         IMenuItemRepository menuItemRepository,
         ILoggedUserService loggedUserService,
@@ -37,45 +37,45 @@ public class DeleteMenuItemUseCase : BaseUseCase, IDeleteMenuItemUseCase
     }
 
     /// <summary>
-    /// Executa a remo√ß√£o de um item do card√°pio.
+    /// Executa a remoÁ„o de um item do card·pio.
     /// </summary>
-    /// <param name="id">ID do item do card√°pio.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="id">ID do item do card·pio.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     public async Task ExecuteAsync(string id, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Valida√ß√£o dos par√¢metros de entrada
+            // ValidaÁ„o dos par‚metros de entrada
             ValidateInputParameters(id, tenantId);
 
-            // Verifica se o item existe antes de tentar remov√™-lo
+            // Verifica se o item existe antes de tentar removÍ-lo
             await ValidateMenuItemExistsAsync(id, tenantId);
 
-            // Remove o item do card√°pio
+            // Remove o item do card·pio
             await _menuItemRepository.DeleteAsync(id, tenantId);
         });
     }
 
     /// <summary>
-    /// Valida os par√¢metros de entrada.
+    /// Valida os par‚metros de entrada.
     /// </summary>
-    /// <param name="id">ID do item do card√°pio.</param>
+    /// <param name="id">ID do item do card·pio.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string id, string tenantId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do card√°pio √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do card·pio È obrigatÛrio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant È obrigatÛrio.", new ValidationResult());
     }
 
     /// <summary>
-    /// Verifica se o item do card√°pio existe.
+    /// Verifica se o item do card·pio existe.
     /// </summary>
-    /// <param name="id">ID do item do card√°pio.</param>
+    /// <param name="id">ID do item do card·pio.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateMenuItemExistsAsync(string id, string tenantId)
     {

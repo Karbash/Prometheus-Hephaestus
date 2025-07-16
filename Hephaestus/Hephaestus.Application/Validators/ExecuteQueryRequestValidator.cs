@@ -1,5 +1,5 @@
-ï»¿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 
@@ -8,8 +8,8 @@ public class ExecuteQueryRequestValidator : AbstractValidator<ExecuteQueryReques
     public ExecuteQueryRequestValidator()
     {
         RuleFor(x => x.Query)
-            .NotEmpty().WithMessage("Query Ã© obrigatÃ³ria.")
-            .MaximumLength(1000).WithMessage("Query deve ter no mÃ¡ximo 1000 caracteres.")
-            .Must(q => q.Trim().ToLower().StartsWith("select")).WithMessage("Apenas consultas SELECT sÃ£o permitidas.");
+            .NotEmpty().WithMessage("Query é obrigatória.")
+            .MaximumLength(1000).WithMessage("Query deve ter no máximo 1000 caracteres.")
+            .Must(q => q.Trim().ToLower().StartsWith("select")).WithMessage("Apenas consultas SELECT são permitidas.");
     }
 }

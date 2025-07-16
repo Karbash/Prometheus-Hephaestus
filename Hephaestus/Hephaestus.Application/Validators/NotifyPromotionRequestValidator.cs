@@ -1,5 +1,5 @@
-Ôªøusing FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 
@@ -8,11 +8,11 @@ public class NotifyPromotionRequestValidator : AbstractValidator<NotifyPromotion
     public NotifyPromotionRequestValidator()
     {
         RuleFor(x => x.PromotionId)
-            .NotEmpty().WithMessage("ID da promo√ß√£o √© obrigat√≥rio.")
-            .MaximumLength(36).WithMessage("ID da promo√ß√£o deve ter no m√°ximo 36 caracteres.");
+            .NotEmpty().WithMessage("ID da promoÁ„o È obrigatÛrio.")
+            .MaximumLength(36).WithMessage("ID da promoÁ„o deve ter no m·ximo 36 caracteres.");
 
         RuleFor(x => x.MessageTemplate)
-            .NotEmpty().WithMessage("Modelo de mensagem √© obrigat√≥rio.")
-            .MaximumLength(1000).WithMessage("Modelo de mensagem n√£o pode exceder 1000 caracteres.");
+            .NotEmpty().WithMessage("Modelo de mensagem È obrigatÛrio.")
+            .MaximumLength(1000).WithMessage("Modelo de mensagem n„o pode exceder 1000 caracteres.");
     }
 }

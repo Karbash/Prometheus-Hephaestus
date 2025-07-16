@@ -1,5 +1,5 @@
-using Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Category;
 using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;

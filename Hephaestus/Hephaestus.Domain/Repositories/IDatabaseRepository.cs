@@ -1,4 +1,4 @@
-﻿namespace Hephaestus.Domain.Repositories
+namespace Hephaestus.Domain.Repositories
 {
     public interface IDatabaseRepository
     {

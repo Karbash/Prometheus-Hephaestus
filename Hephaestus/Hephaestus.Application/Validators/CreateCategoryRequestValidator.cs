@@ -1,5 +1,5 @@
 using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 

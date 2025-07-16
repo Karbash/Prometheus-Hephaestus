@@ -1,5 +1,5 @@
-Ôªøusing FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Additional;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -13,7 +13,7 @@ using FluentValidation.Results;
 namespace Hephaestus.Application.UseCases.Additional;
 
 /// <summary>
-/// Caso de uso para atualiza√ß√£o de adicionais.
+/// Caso de uso para atualizaÁ„o de adicionais.
 /// </summary>
 public class UpdateAdditionalUseCase : BaseUseCase, IUpdateAdditionalUseCase
 {
@@ -22,13 +22,13 @@ public class UpdateAdditionalUseCase : BaseUseCase, IUpdateAdditionalUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="UpdateAdditionalUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="UpdateAdditionalUseCase"/>.
     /// </summary>
-    /// <param name="additionalRepository">Reposit√≥rio de adicionais.</param>
-    /// <param name="validator">Validador para a requisi√ß√£o.</param>
+    /// <param name="additionalRepository">RepositÛrio de adicionais.</param>
+    /// <param name="validator">Validador para a requisiÁ„o.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
-    /// <param name="loggedUserService">Servi√ßo do usu√°rio logado.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
+    /// <param name="loggedUserService">ServiÁo do usu·rio logado.</param>
     public UpdateAdditionalUseCase(
         IAdditionalRepository additionalRepository,
         IValidator<UpdateAdditionalRequest> validator,
@@ -43,40 +43,40 @@ public class UpdateAdditionalUseCase : BaseUseCase, IUpdateAdditionalUseCase
     }
 
     /// <summary>
-    /// Executa a atualiza√ß√£o de um adicional.
+    /// Executa a atualizaÁ„o de um adicional.
     /// </summary>
     /// <param name="id">ID do adicional.</param>
     /// <param name="request">Dados atualizados do adicional.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     public async Task ExecuteAsync(string id, UpdateAdditionalRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Obter tenantId do usu√°rio logado
+            // Obter tenantId do usu·rio logado
             var tenantId = _loggedUserService.GetTenantId(user);
 
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             await ValidateRequestAsync(request, id);
 
-            // Busca e valida√ß√£o do adicional
+            // Busca e validaÁ„o do adicional
             var additional = await GetAndValidateAdditionalAsync(id, tenantId);
 
-            // Atualiza√ß√£o do adicional
+            // AtualizaÁ„o do adicional
             await UpdateAdditionalAsync(additional, request);
         });
     }
 
     /// <summary>
-    /// Valida os dados da requisi√ß√£o.
+    /// Valida os dados da requisiÁ„o.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o a ser validada.</param>
+    /// <param name="request">RequisiÁ„o a ser validada.</param>
     /// <param name="id">ID do adicional.</param>
     private async Task ValidateRequestAsync(UpdateAdditionalRequest request, string id)
     {
         var validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados do adicional inv√°lidos", validationResult);
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados do adicional inv·lidos", validationResult);
         }
     }
 
@@ -90,7 +90,7 @@ public class UpdateAdditionalUseCase : BaseUseCase, IUpdateAdditionalUseCase
     {
         var additional = await _additionalRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(additional, "Adicional", id);
-        return additional!; // Garantido que n√£o √© null ap√≥s EnsureEntityExists
+        return additional!; // Garantido que n„o È null apÛs EnsureEntityExists
     }
 
     /// <summary>

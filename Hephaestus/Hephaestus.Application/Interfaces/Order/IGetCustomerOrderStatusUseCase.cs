@@ -1,4 +1,4 @@
-﻿using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;

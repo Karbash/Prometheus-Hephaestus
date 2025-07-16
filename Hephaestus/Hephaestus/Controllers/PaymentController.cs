@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,22 +7,22 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controlador respons√°vel pelo gerenciamento de pagamentos, reembolsos e comprovantes.
+/// Controlador respons·vel pelo gerenciamento de pagamentos, reembolsos e comprovantes.
 /// </summary>
 [ApiController]
 [Route("api/payments")]
 [Authorize(Roles = "Tenant")]
 public class PaymentController : ControllerBase
 {
-    // Mock store para exemplo (substitua por servi√ßo/reposit√≥rio real)
+    // Mock store para exemplo (substitua por serviÁo/repositÛrio real)
     private static readonly Dictionary<string, PaymentResponse> Payments = new();
     private static readonly Dictionary<string, RefundResponse> Refunds = new();
 
     /// <summary>
-    /// Cria uma nova transa√ß√£o de pagamento.
+    /// Cria uma nova transaÁ„o de pagamento.
     /// </summary>
     /// <remarks>
-    /// Exemplo de requisi√ß√£o:
+    /// Exemplo de requisiÁ„o:
     /// {
     ///   "amount": 100.00,
     ///   "currency": "BRL",
@@ -35,7 +35,7 @@ public class PaymentController : ControllerBase
     /// <returns>Dados do pagamento criado.</returns>
     /// <response code="201">Pagamento criado com sucesso.</response>
     [HttpPost]
-    [SwaggerOperation(Summary = "Criar Pagamento", Description = "Cria uma nova transa√ß√£o de pagamento.")]
+    [SwaggerOperation(Summary = "Criar Pagamento", Description = "Cria uma nova transaÁ„o de pagamento.")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PaymentResponse))]
     public IActionResult CreatePayment([FromBody] PaymentRequest request)
     {
@@ -58,14 +58,14 @@ public class PaymentController : ControllerBase
     }
 
     /// <summary>
-    /// Consulta o status e detalhes de uma transa√ß√£o de pagamento.
+    /// Consulta o status e detalhes de uma transaÁ„o de pagamento.
     /// </summary>
     /// <param name="payment_id">ID do pagamento.</param>
     /// <returns>Dados do pagamento.</returns>
     /// <response code="200">Pagamento encontrado.</response>
-    /// <response code="404">Pagamento n√£o encontrado.</response>
+    /// <response code="404">Pagamento n„o encontrado.</response>
     [HttpGet("{payment_id}")]
-    [SwaggerOperation(Summary = "Consultar Pagamento", Description = "Consulta o status e detalhes de uma transa√ß√£o de pagamento.")]
+    [SwaggerOperation(Summary = "Consultar Pagamento", Description = "Consulta o status e detalhes de uma transaÁ„o de pagamento.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaymentResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult GetPayment([FromRoute] string payment_id)
@@ -82,7 +82,7 @@ public class PaymentController : ControllerBase
     /// <param name="request">Dados do reembolso (valor opcional).</param>
     /// <returns>Dados do reembolso.</returns>
     /// <response code="200">Reembolso solicitado com sucesso.</response>
-    /// <response code="404">Pagamento n√£o encontrado.</response>
+    /// <response code="404">Pagamento n„o encontrado.</response>
     [HttpPost("{payment_id}/refund")]
     [SwaggerOperation(Summary = "Reembolso", Description = "Solicita o estorno total ou parcial de um pagamento.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RefundResponse))]
@@ -116,10 +116,10 @@ public class PaymentController : ControllerBase
     /// <param name="request">Novo status do pagamento.</param>
     /// <returns>Pagamento atualizado.</returns>
     /// <response code="200">Status atualizado com sucesso.</response>
-    /// <response code="400">Transi√ß√£o de status inv√°lida.</response>
-    /// <response code="404">Pagamento n√£o encontrado.</response>
+    /// <response code="400">TransiÁ„o de status inv·lida.</response>
+    /// <response code="404">Pagamento n„o encontrado.</response>
     [HttpPatch("{payment_id}/status")]
-    [SwaggerOperation(Summary = "Atualizar status do pagamento", Description = "Atualiza o status de um pagamento. S√≥ permite transi√ß√µes v√°lidas.")]
+    [SwaggerOperation(Summary = "Atualizar status do pagamento", Description = "Atualiza o status de um pagamento. SÛ permite transiÁıes v·lidas.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaymentResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -131,22 +131,22 @@ public class PaymentController : ControllerBase
         var currentStatus = payment.Status.ToLower();
         var newStatus = request.Status.ToString().ToLower();
 
-        // Regras de transi√ß√£o
+        // Regras de transiÁ„o
         if (currentStatus == "pending")
         {
             if (newStatus != "paid" && newStatus != "failed" && newStatus != "refunded" && newStatus != "processed")
-                return BadRequest("Transi√ß√£o de status inv√°lida para pagamento pendente.");
+                return BadRequest("TransiÁ„o de status inv·lida para pagamento pendente.");
         }
         else if (currentStatus == "paid")
         {
             if (newStatus != "refunded" && newStatus != "processed")
-                return BadRequest("S√≥ √© permitido reembolsar ou processar um pagamento j√° pago.");
+                return BadRequest("SÛ È permitido reembolsar ou processar um pagamento j· pago.");
         }
         else if (currentStatus == "failed" || currentStatus == "refunded")
         {
-            return BadRequest("N√£o √© permitido alterar o status de um pagamento j√° falhado ou reembolsado.");
+            return BadRequest("N„o È permitido alterar o status de um pagamento j· falhado ou reembolsado.");
         }
-        // processed pode ser terminal ou permitir outras regras, ajuste conforme necess√°rio
+        // processed pode ser terminal ou permitir outras regras, ajuste conforme necess·rio
 
         payment.Status = newStatus;
         payment.UpdatedAt = DateTime.UtcNow;
@@ -155,14 +155,14 @@ public class PaymentController : ControllerBase
     }
 
     /// <summary>
-    /// Obt√©m o comprovante de pagamento (PDF ou JSON).
+    /// ObtÈm o comprovante de pagamento (PDF ou JSON).
     /// </summary>
     /// <param name="payment_id">ID do pagamento.</param>
     /// <returns>URL ou dados do comprovante.</returns>
     /// <response code="200">Comprovante gerado com sucesso.</response>
-    /// <response code="404">Pagamento n√£o encontrado.</response>
+    /// <response code="404">Pagamento n„o encontrado.</response>
     [HttpGet("{payment_id}/receipt")]
-    [SwaggerOperation(Summary = "Gerar Comprovante", Description = "Obt√©m o comprovante de pagamento.")]
+    [SwaggerOperation(Summary = "Gerar Comprovante", Description = "ObtÈm o comprovante de pagamento.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReceiptResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult GetReceipt([FromRoute] string payment_id)

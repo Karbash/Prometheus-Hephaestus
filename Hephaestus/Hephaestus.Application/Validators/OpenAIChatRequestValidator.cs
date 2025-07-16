@@ -1,5 +1,5 @@
-ï»¿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 using System.Collections.Generic;
 
 namespace Hephaestus.Application.Validators;
@@ -9,12 +9,12 @@ public class OpenAIChatRequestValidator : AbstractValidator<OpenAIRequest>
     public OpenAIChatRequestValidator()
     {
         RuleFor(x => x.Prompt)
-            .NotEmpty().WithMessage("Prompt Ã© obrigatÃ³rio.")
-            .MaximumLength(1000).WithMessage("Prompt deve ter no mÃ¡ximo 1000 caracteres.");
+            .NotEmpty().WithMessage("Prompt é obrigatório.")
+            .MaximumLength(1000).WithMessage("Prompt deve ter no máximo 1000 caracteres.");
 
         RuleFor(x => x.Data)
             .MaximumLength(5000).When(x => !string.IsNullOrEmpty(x.Data))
-            .WithMessage("Dados devem ter no mÃ¡ximo 5000 caracteres.");
+            .WithMessage("Dados devem ter no máximo 5000 caracteres.");
 
         RuleFor(x => x.ResponseFormat)
             .Must(BeValidResponseFormat)

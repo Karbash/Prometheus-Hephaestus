@@ -1,5 +1,5 @@
-﻿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Menu;
 
 /// <summary>
-/// Caso de uso para atualização de itens do cardápio.
+/// Caso de uso para atualiza��o de itens do card�pio.
 /// </summary>
 public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
 {
@@ -23,14 +23,14 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="UpdateMenuItemUseCase"/>.
+    /// Inicializa uma nova inst�ncia do <see cref="UpdateMenuItemUseCase"/>.
     /// </summary>
-    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
-    /// <param name="tagRepository">Repositório de tags.</param>
-    /// <param name="validator">Validador para a requisição.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="menuItemRepository">Reposit�rio de itens do card�pio.</param>
+    /// <param name="tagRepository">Reposit�rio de tags.</param>
+    /// <param name="validator">Validador para a requisi��o.</param>
+    /// <param name="loggedUserService">Servi�o para obter informa��es do usu�rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Servi�o de tratamento de exce��es.</param>
     public UpdateMenuItemUseCase(
         IMenuItemRepository menuItemRepository,
         ITagRepository tagRepository,
@@ -47,36 +47,36 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     }
 
     /// <summary>
-    /// Executa a atualização de um item do cardápio.
+    /// Executa a atualiza��o de um item do card�pio.
     /// </summary>
-    /// <param name="id">ID do item do cardápio.</param>
-    /// <param name="request">Dados atualizados do item do cardápio.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="id">ID do item do card�pio.</param>
+    /// <param name="request">Dados atualizados do item do card�pio.</param>
+    /// <param name="user">Usu�rio autenticado.</param>
     public async Task ExecuteAsync(string id, UpdateMenuItemRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Validação dos dados de entrada
+            // Valida��o dos dados de entrada
             await _validator.ValidateAndThrowAsync(request);
 
-            // Validação das regras de negócio
+            // Valida��o das regras de neg�cio
             await ValidateBusinessRulesAsync(request, tenantId);
 
-            // Busca e validação do item
+            // Busca e valida��o do item
             var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
             EnsureResourceExists(menuItem, "MenuItem", id);
 
-            // Atualização dos dados
+            // Atualiza��o dos dados
             await UpdateMenuItemEntityAsync(menuItem!, request);
         });
     }
 
     /// <summary>
-    /// Valida as regras de negócio.
+    /// Valida as regras de neg�cio.
     /// </summary>
-    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="request">Requisi��o com os dados.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(UpdateMenuItemRequest request, string tenantId)
     {
@@ -85,17 +85,17 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
             var isValid = await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, tenantId);
             if (!isValid)
             {
-                throw new BusinessRuleException("Um ou mais TagIds são inválidos para este tenant.", "TAG_VALIDATION_RULE");
+                throw new BusinessRuleException("Um ou mais TagIds s�o inv�lidos para este tenant.", "TAG_VALIDATION_RULE");
             }
         }
     }
 
     /// <summary>
-    /// Atualiza o item do cardápio com os novos dados.
+    /// Atualiza o item do card�pio com os novos dados.
     /// </summary>
-    /// <param name="menuItem">Item do cardápio a ser atualizado.</param>
+    /// <param name="menuItem">Item do card�pio a ser atualizado.</param>
     /// <param name="request">Dados atualizados.</param>
-    /// <param name="id">ID do item do cardápio.</param>
+    /// <param name="id">ID do item do card�pio.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task UpdateMenuItemEntityAsync(Domain.Entities.MenuItem menuItem, UpdateMenuItemRequest request)
     {
@@ -114,7 +114,7 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
             await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, menuItem.TenantId);
         }
 
-        // Persiste as alterações
+        // Persiste as altera��es
         await _menuItemRepository.UpdateAsync(menuItem);
     }
 }

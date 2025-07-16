@@ -1,5 +1,5 @@
-Ôªøusing FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Domain.Enum;
 using Hephaestus.Domain.Repositories;
@@ -14,7 +14,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Promotion;
 
 /// <summary>
-/// Caso de uso para atualiza√ß√£o de promo√ß√µes.
+/// Caso de uso para atualizaÁ„o de promoÁıes.
 /// </summary>
 public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
 {
@@ -24,14 +24,14 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="UpdatePromotionUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="UpdatePromotionUseCase"/>.
     /// </summary>
-    /// <param name="promotionRepository">Reposit√≥rio de promo√ß√µes.</param>
-    /// <param name="validator">Validador para a requisi√ß√£o.</param>
-    /// <param name="menuItemRepository">Reposit√≥rio de itens do card√°pio.</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
+    /// <param name="promotionRepository">RepositÛrio de promoÁıes.</param>
+    /// <param name="validator">Validador para a requisiÁ„o.</param>
+    /// <param name="menuItemRepository">RepositÛrio de itens do card·pio.</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public UpdatePromotionUseCase(
         IPromotionRepository promotionRepository,
         IValidator<UpdatePromotionRequest> validator,
@@ -48,62 +48,62 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     }
 
     /// <summary>
-    /// Executa a atualiza√ß√£o de uma promo√ß√£o.
+    /// Executa a atualizaÁ„o de uma promoÁ„o.
     /// </summary>
-    /// <param name="id">ID da promo√ß√£o.</param>
-    /// <param name="request">Dados atualizados da promo√ß√£o.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="id">ID da promoÁ„o.</param>
+    /// <param name="request">Dados atualizados da promoÁ„o.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     public async Task ExecuteAsync(string id, UpdatePromotionRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             await ValidateRequestAsync(request, id);
 
-            // Busca e valida√ß√£o da promo√ß√£o
+            // Busca e validaÁ„o da promoÁ„o
             var promotion = await GetAndValidatePromotionAsync(id, tenantId);
 
-            // Valida√ß√£o das regras de neg√≥cio
+            // ValidaÁ„o das regras de negÛcio
             await ValidateBusinessRulesAsync(request, tenantId);
 
-            // Atualiza√ß√£o da promo√ß√£o
+            // AtualizaÁ„o da promoÁ„o
             await UpdatePromotionAsync(promotion, request);
         });
     }
 
     /// <summary>
-    /// Valida os dados da requisi√ß√£o.
+    /// Valida os dados da requisiÁ„o.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o a ser validada.</param>
-    /// <param name="id">ID da promo√ß√£o.</param>
+    /// <param name="request">RequisiÁ„o a ser validada.</param>
+    /// <param name="id">ID da promoÁ„o.</param>
     private async Task ValidateRequestAsync(UpdatePromotionRequest request, string id)
     {
         var validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da promo√ß√£o inv√°lidos", validationResult);
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da promoÁ„o inv·lidos", validationResult);
         }
     }
 
     /// <summary>
-    /// Busca e valida a promo√ß√£o.
+    /// Busca e valida a promoÁ„o.
     /// </summary>
-    /// <param name="id">ID da promo√ß√£o.</param>
+    /// <param name="id">ID da promoÁ„o.</param>
     /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Promo√ß√£o encontrada.</returns>
+    /// <returns>PromoÁ„o encontrada.</returns>
     private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string id, string tenantId)
     {
         var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(promotion, "Promotion", id);
-        return promotion!; // Garantido que n√£o √© null ap√≥s EnsureEntityExists
+        return promotion!; // Garantido que n„o È null apÛs EnsureEntityExists
     }
 
     /// <summary>
-    /// Valida as regras de neg√≥cio.
+    /// Valida as regras de negÛcio.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o com os dados.</param>
+    /// <param name="request">RequisiÁ„o com os dados.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(UpdatePromotionRequest request, string tenantId)
     {
@@ -115,9 +115,9 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     }
 
     /// <summary>
-    /// Atualiza a promo√ß√£o com os novos dados.
+    /// Atualiza a promoÁ„o com os novos dados.
     /// </summary>
-    /// <param name="promotion">Promo√ß√£o a ser atualizada.</param>
+    /// <param name="promotion">PromoÁ„o a ser atualizada.</param>
     /// <param name="request">Dados atualizados.</param>
     private async Task UpdatePromotionAsync(Domain.Entities.Promotion promotion, UpdatePromotionRequest request)
     {

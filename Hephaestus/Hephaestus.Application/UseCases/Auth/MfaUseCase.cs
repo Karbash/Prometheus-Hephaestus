@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Auth;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Enum;
@@ -18,7 +18,7 @@ using FluentValidation.Results;
 namespace Hephaestus.Application.UseCases.Auth;
 
 /// <summary>
-/// Caso de uso para autentica√ß√£o multifator (MFA).
+/// Caso de uso para autenticaÁ„o multifator (MFA).
 /// </summary>
 public class MfaUseCase : BaseUseCase, IMfaUseCase
 {
@@ -28,14 +28,14 @@ public class MfaUseCase : BaseUseCase, IMfaUseCase
     private readonly IAuditLogRepository _auditLogRepository;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="MfaUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="MfaUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
-    /// <param name="configuration">Configura√ß√£o da aplica√ß√£o.</param>
-    /// <param name="mfaService">Servi√ßo de autentica√ß√£o multifator.</param>
-    /// <param name="auditLogRepository">Reposit√≥rio de logs de auditoria.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
+    /// <param name="configuration">ConfiguraÁ„o da aplicaÁ„o.</param>
+    /// <param name="mfaService">ServiÁo de autenticaÁ„o multifator.</param>
+    /// <param name="auditLogRepository">RepositÛrio de logs de auditoria.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public MfaUseCase(
         ICompanyRepository companyRepository,
         IConfiguration configuration,
@@ -52,70 +52,70 @@ public class MfaUseCase : BaseUseCase, IMfaUseCase
     }
 
     /// <summary>
-    /// Valida um c√≥digo MFA e retorna um novo token JWT com a claim MfaValidated.
+    /// Valida um cÛdigo MFA e retorna um novo token JWT com a claim MfaValidated.
     /// </summary>
-    /// <param name="request">E-mail e c√≥digo MFA.</param>
+    /// <param name="request">E-mail e cÛdigo MFA.</param>
     /// <returns>Token JWT com MFA validado.</returns>
     public async Task<string> ExecuteAsync(MfaRequest request)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             ValidateRequest(request);
 
-            // Busca e valida√ß√£o da empresa
+            // Busca e validaÁ„o da empresa
             var company = await GetAndValidateCompanyAsync(request.Email);
 
-            // Valida√ß√£o do c√≥digo MFA
+            // ValidaÁ„o do cÛdigo MFA
             await ValidateMfaCodeAsync(request.Email, request.MfaCode);
 
             // Registro de auditoria
-            await CreateAuditLogAsync(company, "Valida√ß√£o MFA", $"MFA validado para {company.Email}.");
+            await CreateAuditLogAsync(company, "ValidaÁ„o MFA", $"MFA validado para {company.Email}.");
 
-            // Gera√ß√£o do token JWT
+            // GeraÁ„o do token JWT
             return await GenerateMfaTokenAsync(company);
-        }, "Valida√ß√£o MFA");
+        }, "ValidaÁ„o MFA");
     }
 
     /// <summary>
     /// Configura o MFA para um administrador, gerando um segredo TOTP.
     /// </summary>
     /// <param name="email">E-mail do administrador.</param>
-    /// <returns>Segredo TOTP para configura√ß√£o no aplicativo autenticador.</returns>
+    /// <returns>Segredo TOTP para configuraÁ„o no aplicativo autenticador.</returns>
     public async Task<string> SetupMfaAsync(string email)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             ValidateEmail(email);
 
-            // Busca e valida√ß√£o da empresa
+            // Busca e validaÁ„o da empresa
             var company = await GetAndValidateCompanyAsync(email);
 
-            // Gera√ß√£o do segredo MFA
+            // GeraÁ„o do segredo MFA
             var secret = await _mfaService.GenerateMfaSecretAsync(email);
 
             // Registro de auditoria
-            await CreateAuditLogAsync(company, "Configura√ß√£o MFA", $"MFA configurado para {company.Email}.");
+            await CreateAuditLogAsync(company, "ConfiguraÁ„o MFA", $"MFA configurado para {company.Email}.");
 
             return secret;
-        }, "Configura√ß√£o MFA");
+        }, "ConfiguraÁ„o MFA");
     }
 
     /// <summary>
-    /// Valida os dados da requisi√ß√£o MFA.
+    /// Valida os dados da requisiÁ„o MFA.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o a ser validada.</param>
+    /// <param name="request">RequisiÁ„o a ser validada.</param>
     private void ValidateRequest(MfaRequest request)
     {
         if (request == null)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados de MFA s√£o obrigat√≥rios.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados de MFA s„o obrigatÛrios.", new ValidationResult());
 
         if (string.IsNullOrEmpty(request.Email))
-            throw new Hephaestus.Application.Exceptions.ValidationException("E-mail √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("E-mail È obrigatÛrio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(request.MfaCode))
-            throw new Hephaestus.Application.Exceptions.ValidationException("C√≥digo MFA √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("CÛdigo MFA È obrigatÛrio.", new ValidationResult());
     }
 
     /// <summary>
@@ -125,7 +125,7 @@ public class MfaUseCase : BaseUseCase, IMfaUseCase
     private void ValidateEmail(string email)
     {
         if (string.IsNullOrEmpty(email))
-            throw new Hephaestus.Application.Exceptions.ValidationException("E-mail √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("E-mail È obrigatÛrio.", new ValidationResult());
     }
 
     /// <summary>
@@ -144,22 +144,22 @@ public class MfaUseCase : BaseUseCase, IMfaUseCase
     }
 
     /// <summary>
-    /// Valida o c√≥digo MFA.
+    /// Valida o cÛdigo MFA.
     /// </summary>
     /// <param name="email">E-mail da empresa.</param>
-    /// <param name="mfaCode">C√≥digo MFA a ser validado.</param>
+    /// <param name="mfaCode">CÛdigo MFA a ser validado.</param>
     private async Task ValidateMfaCodeAsync(string email, string mfaCode)
     {
         var isValid = await _mfaService.ValidateMfaCodeAsync(email, mfaCode);
-        ValidateBusinessRule(isValid, "C√≥digo MFA inv√°lido.", "MFA_VALIDATION");
+        ValidateBusinessRule(isValid, "CÛdigo MFA inv·lido.", "MFA_VALIDATION");
     }
 
     /// <summary>
     /// Cria o log de auditoria.
     /// </summary>
     /// <param name="company">Empresa.</param>
-    /// <param name="action">A√ß√£o realizada.</param>
-    /// <param name="details">Detalhes da a√ß√£o.</param>
+    /// <param name="action">AÁ„o realizada.</param>
+    /// <param name="details">Detalhes da aÁ„o.</param>
     private async Task CreateAuditLogAsync(Domain.Entities.Company company, string action, string details)
     {
         await _auditLogRepository.AddAsync(new AuditLog

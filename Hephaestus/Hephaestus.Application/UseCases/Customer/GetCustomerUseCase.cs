@@ -1,6 +1,6 @@
-ï»¿using FluentValidation.Results;
+using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Customer;
 using Hephaestus.Application.Services;
@@ -22,13 +22,13 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instÃ¢ncia do <see cref="GetCustomerUseCase"/>.
+    /// Inicializa uma nova instância do <see cref="GetCustomerUseCase"/>.
     /// </summary>
-    /// <param name="customerRepository">RepositÃ³rio de clientes.</param>
-    /// <param name="companyRepository">RepositÃ³rio de empresas.</param>
-    /// <param name="loggedUserService">ServiÃ§o para obter informaÃ§Ãµes do usuÃ¡rio logado.</param>
+    /// <param name="customerRepository">Repositório de clientes.</param>
+    /// <param name="companyRepository">Repositório de empresas.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">ServiÃ§o de tratamento de exceÃ§Ãµes.</param>
+    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public GetCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
@@ -45,10 +45,10 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     /// <summary>
     /// Executa a busca de clientes de um tenant.
     /// </summary>
-    /// <param name="phoneNumber">NÃºmero de telefone para filtrar (opcional).</param>
-    /// <param name="user">UsuÃ¡rio autenticado.</param>
-    /// <param name="pageNumber">NÃºmero da pÃ¡gina.</param>
-    /// <param name="pageSize">Tamanho da pÃ¡gina.</param>
+    /// <param name="phoneNumber">Número de telefone para filtrar (opcional).</param>
+    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="pageNumber">Número da página.</param>
+    /// <param name="pageSize">Tamanho da página.</param>
     /// <returns>Lista de clientes.</returns>
     public async Task<PagedResult<CustomerResponse>> ExecuteAsync(string? phoneNumber, ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
@@ -80,21 +80,21 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     }
 
     /// <summary>
-    /// Valida os parÃ¢metros de entrada.
+    /// Valida os parâmetros de entrada.
     /// </summary>
-    /// <param name="phoneNumber">NÃºmero de telefone.</param>
+    /// <param name="phoneNumber">Número de telefone.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string? phoneNumber, string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant Ã© obrigatÃ³rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
 
         if (!string.IsNullOrEmpty(phoneNumber) && phoneNumber.Length < 10)
-            throw new Hephaestus.Application.Exceptions.ValidationException("NÃºmero de telefone deve ter pelo menos 10 dÃ­gitos.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Número de telefone deve ter pelo menos 10 dígitos.", new ValidationResult());
     }
 
     /// <summary>
-    /// Valida se o tenant existe e Ã© vÃ¡lido.
+    /// Valida se o tenant existe e é válido.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateTenantAsync(string tenantId)
@@ -108,9 +108,9 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     }
 
     /// <summary>
-    /// Busca os clientes no repositÃ³rio.
+    /// Busca os clientes no repositório.
     /// </summary>
-    /// <param name="phoneNumber">NÃºmero de telefone para filtrar.</param>
+    /// <param name="phoneNumber">Número de telefone para filtrar.</param>
     /// <param name="tenantId">ID do tenant.</param>
     /// <returns>Lista de clientes.</returns>
     private async Task<IEnumerable<Domain.Entities.Customer>> GetCustomersAsync(string? phoneNumber, string tenantId)

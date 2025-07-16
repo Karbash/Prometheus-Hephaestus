@@ -1,4 +1,4 @@
-﻿namespace Hephaestus.Domain.DTOs.Response
+namespace Hephaestus.Domain.DTOs.Response
 {
     public class OrderItemResponse
     {

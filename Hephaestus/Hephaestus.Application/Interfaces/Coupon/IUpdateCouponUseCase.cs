@@ -1,10 +1,10 @@
-Ôªøusing Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Coupon;
 
 /// <summary>
-/// Interface para o caso de uso de atualiza√ß√£o de cupons.
+/// Interface para o caso de uso de atualizaÁ„o de cupons.
 /// </summary>
 public interface IUpdateCouponUseCase
 {
@@ -13,6 +13,6 @@ public interface IUpdateCouponUseCase
     /// </summary>
     /// <param name="id">ID do cupom a ser atualizado.</param>
     /// <param name="request">Dados atualizados do cupom.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     Task ExecuteAsync(string id, UpdateCouponRequest request, ClaimsPrincipal user);
 }

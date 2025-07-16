@@ -1,5 +1,5 @@
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Auth;
 using Hephaestus.Application.Services;

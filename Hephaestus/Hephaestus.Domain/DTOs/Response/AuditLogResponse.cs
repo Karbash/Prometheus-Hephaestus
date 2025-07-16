@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Hephaestus.Application.DTOs.Response;
+namespace Hephaestus.Domain.DTOs.Response;
 
 public class AuditLogResponse
 {

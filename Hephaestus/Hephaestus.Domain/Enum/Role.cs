@@ -1,4 +1,4 @@
-﻿namespace Hephaestus.Domain.Enum
+namespace Hephaestus.Domain.Enum
 {
     public enum Role
     {

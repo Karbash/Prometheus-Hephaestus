@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Hephaestus.Application.Base;
 using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Order;
@@ -86,21 +86,21 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
             bool usedCoupon = false;
             bool usedPromotion = false;
 
-            // Validação e aplicação de cupom
+            // Valida��o e aplica��o de cupom
             if (!string.IsNullOrEmpty(request.CouponId))
             {
                 var coupon = await _couponRepository.GetByIdAsync(request.CouponId, tenantId);
                 EnsureResourceExists(coupon, "Coupon", request.CouponId);
                 EnsureBusinessRule(coupon.IsActive && coupon.StartDate <= DateTime.UtcNow && coupon.EndDate >= DateTime.UtcNow,
-                    "Cupom inválido ou expirado.", "COUPON_INVALID");
+                    "Cupom inv�lido ou expirado.", "COUPON_INVALID");
 
                 // Limites de uso
                 var totalUses = await _couponRepository.GetUsageCountAsync(coupon.Id, tenantId);
                 var usesByCustomer = await _couponRepository.GetUsageCountByCustomerAsync(coupon.Id, tenantId, request.CustomerPhoneNumber);
                 if (coupon.MaxTotalUses.HasValue && totalUses >= coupon.MaxTotalUses.Value)
-                    throw new BusinessRuleException("Limite máximo de usos do cupom atingido.", "COUPON_MAX_TOTAL_USES");
+                    throw new BusinessRuleException("Limite m�ximo de usos do cupom atingido.", "COUPON_MAX_TOTAL_USES");
                 if (coupon.MaxUsesPerCustomer.HasValue && usesByCustomer >= coupon.MaxUsesPerCustomer.Value)
-                    throw new BusinessRuleException("Limite máximo de usos do cupom por cliente atingido.", "COUPON_MAX_USES_PER_CUSTOMER");
+                    throw new BusinessRuleException("Limite m�ximo de usos do cupom por cliente atingido.", "COUPON_MAX_USES_PER_CUSTOMER");
 
                 // Aplica desconto
                 if (coupon.DiscountType == Domain.Enum.DiscountType.Percentage)
@@ -109,21 +109,21 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                     discount = coupon.DiscountValue;
                 usedCoupon = true;
             }
-            // Se não usou cupom, tenta promoção
+            // Se n�o usou cupom, tenta promo��o
             else if (!string.IsNullOrEmpty(request.PromotionId))
             {
                 var promotion = await _promotionRepository.GetByIdAsync(request.PromotionId, tenantId);
                 EnsureResourceExists(promotion, "Promotion", request.PromotionId);
                 EnsureBusinessRule(promotion.IsActive && promotion.StartDate <= DateTime.UtcNow && promotion.EndDate >= DateTime.UtcNow,
-                    "Promoção inválida ou expirada.", "PROMOTION_INVALID");
+                    "Promo��o inv�lida ou expirada.", "PROMOTION_INVALID");
 
                 // Limites de uso
                 var totalUses = await _promotionRepository.GetUsageCountAsync(promotion.Id, tenantId);
                 var usesByCustomer = await _promotionRepository.GetUsageCountByCustomerAsync(promotion.Id, tenantId, request.CustomerPhoneNumber);
                 if (promotion.MaxTotalUses.HasValue && totalUses >= promotion.MaxTotalUses.Value)
-                    throw new BusinessRuleException("Limite máximo de usos da promoção atingido.", "PROMOTION_MAX_TOTAL_USES");
+                    throw new BusinessRuleException("Limite m�ximo de usos da promo��o atingido.", "PROMOTION_MAX_TOTAL_USES");
                 if (promotion.MaxUsesPerCustomer.HasValue && usesByCustomer >= promotion.MaxUsesPerCustomer.Value)
-                    throw new BusinessRuleException("Limite máximo de usos da promoção por cliente atingido.", "PROMOTION_MAX_USES_PER_CUSTOMER");
+                    throw new BusinessRuleException("Limite m�ximo de usos da promo��o por cliente atingido.", "PROMOTION_MAX_USES_PER_CUSTOMER");
 
                 // Aplica desconto
                 if (promotion.DiscountType == Domain.Enum.DiscountType.Percentage)
@@ -160,7 +160,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
 
             await _orderRepository.AddAsync(order);
 
-            // Registrar uso de cupom/promoção
+            // Registrar uso de cupom/promo��o
             if (usedCoupon)
             {
                 await _couponRepository.AddUsageAsync(new CouponUsage

@@ -1,6 +1,6 @@
-Ôªøusing FluentValidation;
+using FluentValidation;
 using FluentValidation.Results;
-using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Additional;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -14,7 +14,7 @@ using ValidationException = Hephaestus.Application.Exceptions.ValidationExceptio
 namespace Hephaestus.Application.UseCases.Additional;
 
 /// <summary>
-/// Caso de uso para cria√ß√£o de adicionais.
+/// Caso de uso para criaÁ„o de adicionais.
 /// </summary>
 public class CreateAdditionalUseCase : BaseUseCase, ICreateAdditionalUseCase
 {
@@ -23,13 +23,13 @@ public class CreateAdditionalUseCase : BaseUseCase, ICreateAdditionalUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="CreateAdditionalUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="CreateAdditionalUseCase"/>.
     /// </summary>
-    /// <param name="additionalRepository">Reposit√≥rio de adicionais.</param>
-    /// <param name="validator">Validador para a requisi√ß√£o.</param>
+    /// <param name="additionalRepository">RepositÛrio de adicionais.</param>
+    /// <param name="validator">Validador para a requisiÁ„o.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
-    /// <param name="loggedUserService">Servi√ßo do usu√°rio logado.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
+    /// <param name="loggedUserService">ServiÁo do usu·rio logado.</param>
     public CreateAdditionalUseCase(
         IAdditionalRepository additionalRepository,
         IValidator<CreateAdditionalRequest> validator,
@@ -44,22 +44,22 @@ public class CreateAdditionalUseCase : BaseUseCase, ICreateAdditionalUseCase
     }
 
     /// <summary>
-    /// Executa a cria√ß√£o de um adicional.
+    /// Executa a criaÁ„o de um adicional.
     /// </summary>
     /// <param name="request">Dados do adicional.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     /// <returns>ID do adicional criado.</returns>
     public async Task<string> ExecuteAsync(CreateAdditionalRequest request, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             await ValidateRequestAsync(request);
 
-            // Obter tenantId do usu√°rio logado
+            // Obter tenantId do usu·rio logado
             var tenantId = _loggedUserService.GetTenantId(user);
 
-            // Cria√ß√£o do adicional
+            // CriaÁ„o do adicional
             var additional = await CreateAdditionalEntityAsync(request, tenantId);
 
             return additional.Id;
@@ -67,9 +67,9 @@ public class CreateAdditionalUseCase : BaseUseCase, ICreateAdditionalUseCase
     }
 
     /// <summary>
-    /// Valida os dados da requisi√ß√£o.
+    /// Valida os dados da requisiÁ„o.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o a ser validada.</param>
+    /// <param name="request">RequisiÁ„o a ser validada.</param>
     private async Task ValidateRequestAsync(CreateAdditionalRequest request)
     {
         var validationResult = await _validator.ValidateAsync(request);

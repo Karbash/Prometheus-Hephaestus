@@ -1,6 +1,6 @@
-Ôªøusing FluentValidation;
+using FluentValidation;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Coupon;
 using Hephaestus.Application.Services;
@@ -15,7 +15,7 @@ using Hephaestus.Domain.DTOs.Request;
 namespace Hephaestus.Application.UseCases.Coupon;
 
 /// <summary>
-/// Caso de uso para atualiza√ß√£o de cupons.
+/// Caso de uso para atualizaÁ„o de cupons.
 /// </summary>
 public class UpdateCouponUseCase : BaseUseCase, IUpdateCouponUseCase
 {
@@ -66,7 +66,7 @@ public class UpdateCouponUseCase : BaseUseCase, IUpdateCouponUseCase
             if (request.Code != coupon.Code)
             {
                 EnsureNoConflict(!await _couponRepository.CodeExistsAsync(request.Code, tenantId),
-                    "C√≥digo de cupom j√° existe.", "Coupon", "Code", request.Code);
+                    "CÛdigo de cupom j· existe.", "Coupon", "Code", request.Code);
             }
 
             if (!string.IsNullOrEmpty(request.MenuItemId))
@@ -76,7 +76,7 @@ public class UpdateCouponUseCase : BaseUseCase, IUpdateCouponUseCase
             }
 
             EnsureBusinessRule(request.StartDate < request.EndDate,
-                "Data de in√≠cio deve ser anterior √† data de t√©rmino.", "DATE_RANGE_RULE");
+                "Data de inÌcio deve ser anterior ‡ data de tÈrmino.", "DATE_RANGE_RULE");
 
             EnsureBusinessRule(request.DiscountValue > 0,
                 "Valor do desconto deve ser maior que zero.", "DISCOUNT_VALUE_RULE");

@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Company;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -16,7 +16,7 @@ public class CompanyController : ControllerBase
     private readonly ILogger<CompanyController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="CompanyController"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="CompanyController"/>.
     /// </summary>
     /// <param name="getCompanyProfileUseCase">Caso de uso para obter o perfil da empresa.</param>
     /// <param name="logger">Logger para registro de eventos e erros.</param>
@@ -27,10 +27,10 @@ public class CompanyController : ControllerBase
     }
 
     /// <summary>
-    /// Obt√©m o perfil completo de uma empresa espec√≠fica.
+    /// ObtÈm o perfil completo de uma empresa especÌfica.
     /// </summary>
     /// <remarks>
-    /// Este endpoint retorna todas as informa√ß√µes detalhadas de uma empresa, incluindo seus dados de contato, endere√ßo, slogan, descri√ß√£o, imagens, hor√°rios de funcionamento e links de m√≠dias sociais.
+    /// Este endpoint retorna todas as informaÁıes detalhadas de uma empresa, incluindo seus dados de contato, endereÁo, slogan, descriÁ„o, imagens, hor·rios de funcionamento e links de mÌdias sociais.
     /// 
     /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
@@ -43,7 +43,7 @@ public class CompanyController : ControllerBase
     ///   "feeType": "Percentage",
     ///   "feeValue": 5.0,
     ///   "state": "SP",
-    ///   "city": "S√£o Paulo",
+    ///   "city": "S„o Paulo",
     ///   "neighborhood": "Centro",
     ///   "street": "Rua das Flores",
     ///   "number": "123",
@@ -81,7 +81,7 @@ public class CompanyController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "Empresa com ID '99999999-9999-9999-9999-999999999999' n√£o encontrada."
+    ///   "detail": "Empresa com ID '99999999-9999-9999-9999-999999999999' n„o encontrada."
     /// }
     /// ```
     /// Exemplo de erro (Status 400 Bad Request):
@@ -90,18 +90,18 @@ public class CompanyController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "O ID fornecido 'abc-123' n√£o √© um GUID v√°lido."
+    ///   "detail": "O ID fornecido 'abc-123' n„o È um GUID v·lido."
     /// }
     /// ```
     /// </remarks>
     /// <param name="id">O **ID (GUID)** da empresa a ser consultada.</param>
-    /// <returns>Um `OkResult` contendo o `CompanyProfileResponse` ou um `NotFoundResult` se a empresa n√£o for encontrada.</returns>
+    /// <returns>Um `OkResult` contendo o `CompanyProfileResponse` ou um `NotFoundResult` se a empresa n„o for encontrada.</returns>
     [HttpGet("{id}/profile")]
-    [SwaggerOperation(Summary = "Obt√©m o perfil completo de uma empresa", Description = "Retorna todas as informa√ß√µes detalhadas do perfil de uma empresa, incluindo seus dados de contato, endere√ßo, m√≠dias sociais e mais.")]
+    [SwaggerOperation(Summary = "ObtÈm o perfil completo de uma empresa", Description = "Retorna todas as informaÁıes detalhadas do perfil de uma empresa, incluindo seus dados de contato, endereÁo, mÌdias sociais e mais.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CompanyProfileResponse))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Adicionado para ID inv√°lido
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))] // Tipo de erro mais espec√≠fico
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)] // Removido Type = typeof(object) para padr√£o ProblemDetails
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Adicionado para ID inv·lido
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))] // Tipo de erro mais especÌfico
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)] // Removido Type = typeof(object) para padr„o ProblemDetails
     public async Task<IActionResult> GetCompanyProfile(string id)
     {
         var profile = await _getCompanyProfileUseCase.ExecuteAsync(id);

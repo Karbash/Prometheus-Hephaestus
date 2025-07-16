@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Menu;
 
 /// <summary>
-/// Caso de uso para obten√ß√£o de item do card√°pio por ID.
+/// Caso de uso para obtenÁ„o de item do card·pio por ID.
 /// </summary>
 public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
 {
@@ -20,12 +20,12 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="GetMenuItemByIdUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="GetMenuItemByIdUseCase"/>.
     /// </summary>
-    /// <param name="menuItemRepository">Reposit√≥rio de itens do card√°pio.</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
+    /// <param name="menuItemRepository">RepositÛrio de itens do card·pio.</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public GetMenuItemByIdUseCase(
         IMenuItemRepository menuItemRepository,
         ILoggedUserService loggedUserService,
@@ -38,21 +38,21 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
     }
 
     /// <summary>
-    /// Executa a obten√ß√£o de um item do card√°pio por ID.
+    /// Executa a obtenÁ„o de um item do card·pio por ID.
     /// </summary>
-    /// <param name="id">ID do item do card√°pio.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
-    /// <returns>Item do card√°pio encontrado.</returns>
+    /// <param name="id">ID do item do card·pio.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
+    /// <returns>Item do card·pio encontrado.</returns>
     public async Task<MenuItemResponse> ExecuteAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Valida√ß√£o dos par√¢metros de entrada
+            // ValidaÁ„o dos par‚metros de entrada
             ValidateInputParameters(id, tenantId);
 
-            // Busca o item do card√°pio
+            // Busca o item do card·pio
             var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
             
             // Verifica se o item existe
@@ -76,16 +76,16 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
     }
 
     /// <summary>
-    /// Valida os par√¢metros de entrada.
+    /// Valida os par‚metros de entrada.
     /// </summary>
-    /// <param name="id">ID do item do card√°pio.</param>
+    /// <param name="id">ID do item do card·pio.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string id, string tenantId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do card√°pio √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do card·pio È obrigatÛrio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant È obrigatÛrio.", new ValidationResult());
     }
 }

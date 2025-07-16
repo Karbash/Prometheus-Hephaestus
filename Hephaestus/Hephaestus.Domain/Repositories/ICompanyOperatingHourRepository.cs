@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 
 namespace Hephaestus.Domain.Repositories;
 

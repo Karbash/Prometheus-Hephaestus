@@ -1,6 +1,6 @@
-Ôªøusing FluentValidation.Results;
+using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Entities;
@@ -21,13 +21,13 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
     private readonly ICompanyRepository _companyRepository;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="AuditLogUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="AuditLogUseCase"/>.
     /// </summary>
-    /// <param name="auditLogRepository">Reposit√≥rio de logs de auditoria.</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
+    /// <param name="auditLogRepository">RepositÛrio de logs de auditoria.</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public AuditLogUseCase(
         IAuditLogRepository auditLogRepository, 
         ILoggedUserService loggedUserService, 
@@ -46,25 +46,25 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
     /// </summary>
     /// <param name="startDate">Data inicial (opcional).</param>
     /// <param name="endDate">Data final (opcional).</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     /// <returns>Lista de logs de auditoria.</returns>
     public async Task<IEnumerable<AuditLogResponse>> ExecuteAsync(DateTime? startDate, DateTime? endDate, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o de autoriza√ß√£o
+            // ValidaÁ„o de autorizaÁ„o
             ValidateAuthorization(user);
 
-            // Obter adminId do usu√°rio logado (se aplic√°vel)
+            // Obter adminId do usu·rio logado (se aplic·vel)
             var adminId = GetAdminIdIfApplicable(user);
 
-            // Valida√ß√£o dos par√¢metros
+            // ValidaÁ„o dos par‚metros
             await ValidateParametersAsync(adminId, startDate, endDate);
 
             // Busca dos logs
             var logs = await GetLogsAsync(adminId, startDate, endDate);
 
-            // Convers√£o para DTOs de resposta
+            // Convers„o para DTOs de resposta
             return ConvertToResponseDtos(logs);
         });
     }
@@ -72,29 +72,29 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
     /// <summary>
     /// Executa o registro de um log de auditoria.
     /// </summary>
-    /// <param name="action">A√ß√£o realizada.</param>
+    /// <param name="action">AÁ„o realizada.</param>
     /// <param name="entityId">ID da entidade.</param>
-    /// <param name="details">Detalhes da a√ß√£o.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="details">Detalhes da aÁ„o.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     public async Task ExecuteAsync(string action, string entityId, string details, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o de autoriza√ß√£o
+            // ValidaÁ„o de autorizaÁ„o
             ValidateAuthorizationForLogging(user);
 
-            // Valida√ß√£o dos dados
+            // ValidaÁ„o dos dados
             ValidateLogData(action, entityId, details);
 
-            // Cria√ß√£o e registro do log
+            // CriaÁ„o e registro do log
             await CreateAndSaveLogAsync(action, entityId, details, user);
         });
     }
 
     /// <summary>
-    /// Valida a autoriza√ß√£o para busca de logs.
+    /// Valida a autorizaÁ„o para busca de logs.
     /// </summary>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal user)
     {
         var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
@@ -102,9 +102,9 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
     }
 
     /// <summary>
-    /// Valida a autoriza√ß√£o para registro de logs.
+    /// Valida a autorizaÁ„o para registro de logs.
     /// </summary>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     private void ValidateAuthorizationForLogging(ClaimsPrincipal user)
     {
         var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
@@ -112,9 +112,9 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
     }
 
     /// <summary>
-    /// Valida os par√¢metros de busca.
+    /// Valida os par‚metros de busca.
     /// </summary>
-    /// <param name="userId">ID do usu√°rio.</param>
+    /// <param name="userId">ID do usu·rio.</param>
     /// <param name="startDate">Data inicial.</param>
     /// <param name="endDate">Data final.</param>
     private async Task ValidateParametersAsync(string? userId, DateTime? startDate, DateTime? endDate)
@@ -126,31 +126,31 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
         }
 
         if (startDate.HasValue && endDate.HasValue && startDate > endDate)
-            throw new Hephaestus.Application.Exceptions.ValidationException("A data inicial n√£o pode ser posterior √† data final.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("A data inicial n„o pode ser posterior ‡ data final.", new ValidationResult());
     }
 
     /// <summary>
     /// Valida os dados do log.
     /// </summary>
-    /// <param name="action">A√ß√£o realizada.</param>
+    /// <param name="action">AÁ„o realizada.</param>
     /// <param name="entityId">ID da entidade.</param>
-    /// <param name="details">Detalhes da a√ß√£o.</param>
+    /// <param name="details">Detalhes da aÁ„o.</param>
     private void ValidateLogData(string action, string entityId, string details)
     {
         if (string.IsNullOrEmpty(action))
-            throw new Hephaestus.Application.Exceptions.ValidationException("A√ß√£o √© obrigat√≥ria.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("AÁ„o È obrigatÛria.", new ValidationResult());
 
         if (string.IsNullOrEmpty(entityId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da entidade √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da entidade È obrigatÛrio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(details))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Detalhes s√£o obrigat√≥rios.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Detalhes s„o obrigatÛrios.", new ValidationResult());
     }
 
     /// <summary>
     /// Busca os logs de auditoria.
     /// </summary>
-    /// <param name="userId">ID do usu√°rio.</param>
+    /// <param name="userId">ID do usu·rio.</param>
     /// <param name="startDate">Data inicial.</param>
     /// <param name="endDate">Data final.</param>
     /// <returns>Lista de logs.</returns>
@@ -183,10 +183,10 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
     /// <summary>
     /// Cria e salva o log de auditoria.
     /// </summary>
-    /// <param name="action">A√ß√£o realizada.</param>
+    /// <param name="action">AÁ„o realizada.</param>
     /// <param name="entityId">ID da entidade.</param>
-    /// <param name="details">Detalhes da a√ß√£o.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="details">Detalhes da aÁ„o.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     private async Task CreateAndSaveLogAsync(string action, string entityId, string details, ClaimsPrincipal user)
     {
         var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Unknown";
@@ -208,9 +208,9 @@ public class AuditLogUseCase : BaseUseCase, IAuditLogUseCase
     }
 
     /// <summary>
-    /// Obt√©m o adminId se o usu√°rio for um admin, caso contr√°rio retorna null.
+    /// ObtÈm o adminId se o usu·rio for um admin, caso contr·rio retorna null.
     /// </summary>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     /// <returns>AdminId ou null.</returns>
     private string? GetAdminIdIfApplicable(ClaimsPrincipal user)
     {

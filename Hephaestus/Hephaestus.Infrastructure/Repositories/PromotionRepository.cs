@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
@@ -29,7 +29,7 @@ public class PromotionRepository : IPromotionRepository
         if (isActive.HasValue)
             query = query.Where(p => p.IsActive == isActive.Value);
 
-        // Ordena√ß√£o din√¢mica
+        // OrdenaÁ„o din‚mica
         if (!string.IsNullOrEmpty(sortBy))
         {
             query = sortOrder?.ToLower() == "desc"

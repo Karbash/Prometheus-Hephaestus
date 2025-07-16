@@ -1,5 +1,5 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controller para opera√ß√µes seguras de banco de dados, permitindo a execu√ß√£o de queries SQL de consulta.
+/// Controller para operaÁıes seguras de banco de dados, permitindo a execuÁ„o de queries SQL de consulta.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -19,7 +19,7 @@ public class DatabaseController : ControllerBase
     private readonly ILogger<DatabaseController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="DatabaseController"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="DatabaseController"/>.
     /// </summary>
     /// <param name="executeQueryUseCase">Caso de uso para executar queries no banco de dados.</param>
     /// <param name="logger">Logger para registro de eventos e erros.</param>
@@ -33,10 +33,10 @@ public class DatabaseController : ControllerBase
     /// Executa uma query SQL de consulta (SELECT) no banco de dados.
     /// </summary>
     /// <remarks>
-    /// Este endpoint permite a execu√ß√£o de queries SQL do tipo **SELECT** para consulta de dados.
-    /// √â uma opera√ß√£o altamente privilegiada e requer que o usu√°rio autenticado possua a role **Admin** e tenha passado pela valida√ß√£o de **MFA (Autentica√ß√£o Multifator)**.
+    /// Este endpoint permite a execuÁ„o de queries SQL do tipo **SELECT** para consulta de dados.
+    /// … uma operaÁ„o altamente privilegiada e requer que o usu·rio autenticado possua a role **Admin** e tenha passado pela validaÁ„o de **MFA (AutenticaÁ„o Multifator)**.
     /// 
-    /// Exemplo de requisi√ß√£o:
+    /// Exemplo de requisiÁ„o:
     /// ```json
     /// {
     ///   "query": "SELECT Id, Name, Email FROM Companies WHERE IsEnabled = TRUE LIMIT 10"
@@ -55,16 +55,16 @@ public class DatabaseController : ControllerBase
     /// }
     /// ```
     /// 
-    /// Exemplo de erro de requisi√ß√£o inv√°lida (Status 400 Bad Request):
+    /// Exemplo de erro de requisiÁ„o inv·lida (Status 400 Bad Request):
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "Apenas comandos SELECT s√£o permitidos. Query recebida: 'DELETE FROM Users'."
+    ///   "detail": "Apenas comandos SELECT s„o permitidos. Query recebida: 'DELETE FROM Users'."
     /// }
     /// ```
-    /// Exemplo de erro de autentica√ß√£o (Status 401 Unauthorized):
+    /// Exemplo de erro de autenticaÁ„o (Status 401 Unauthorized):
     /// ```
     /// (Nenhum corpo de resposta, apenas status 401)
     /// ```
@@ -81,9 +81,9 @@ public class DatabaseController : ControllerBase
     /// <param name="request">Um objeto <see cref="ExecuteQueryRequest"/> contendo a query SQL a ser executada.</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo os resultados da query em um <see cref="ExecuteQueryResponse"/>.</returns>
     [HttpPost("execute-query")]
-    [SwaggerOperation(Summary = "Executa uma query SQL de consulta", Description = "Executa uma query SQL de consulta (SELECT) e retorna os resultados. **Requer autentica√ß√£o com Role='Admin' e valida√ß√£o MFA.**")]
+    [SwaggerOperation(Summary = "Executa uma query SQL de consulta", Description = "Executa uma query SQL de consulta (SELECT) e retorna os resultados. **Requer autenticaÁ„o com Role='Admin' e validaÁ„o MFA.**")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ExecuteQueryResponse))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para erros de query inv√°lida (n√£o SELECT)
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para erros de query inv·lida (n„o SELECT)
     [ProducesResponseType(StatusCodes.Status401Unauthorized)] // Removido Type=typeof(object)
     [ProducesResponseType(StatusCodes.Status500InternalServerError)] // Removido Type=typeof(object)
     public async Task<IActionResult> ExecuteQuery([FromBody] ExecuteQueryRequest request)

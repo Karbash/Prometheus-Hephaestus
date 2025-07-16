@@ -1,4 +1,4 @@
-ï»¿using Hephaestus.Application.Base;
+using Hephaestus.Application.Base;
 using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Order;
 using Hephaestus.Application.Services;
@@ -31,7 +31,7 @@ public class GetOrdersUseCase : BaseUseCase, IGetOrdersUseCase
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             var pagedOrders = await _orderRepository.GetByTenantIdAsync(tenantId, customerPhoneNumber, status, pageNumber, pageSize, sortBy, sortOrder);
-            // Filtro extra: se status nÃ£o for informado, sÃ³ retorna pedidos nÃ£o pendentes
+            // Filtro extra: se status não for informado, só retorna pedidos não pendentes
             var filteredItems = string.IsNullOrEmpty(status)
                 ? pagedOrders.Items.Where(o => o.Status != Hephaestus.Domain.Enum.OrderStatus.Pending).ToList()
                 : pagedOrders.Items.ToList();

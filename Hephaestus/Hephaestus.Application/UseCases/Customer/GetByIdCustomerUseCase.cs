@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Customer;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Customer;
 
 /// <summary>
-/// Caso de uso para obter um cliente espec√≠fico por ID.
+/// Caso de uso para obter um cliente especÌfico por ID.
 /// </summary>
 public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
 {
@@ -21,13 +21,13 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="GetByIdCustomerUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="GetByIdCustomerUseCase"/>.
     /// </summary>
-    /// <param name="customerRepository">Reposit√≥rio de clientes.</param>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
+    /// <param name="customerRepository">RepositÛrio de clientes.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public GetByIdCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
@@ -42,46 +42,46 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
     }
 
     /// <summary>
-    /// Executa a busca de um cliente espec√≠fico por ID.
+    /// Executa a busca de um cliente especÌfico por ID.
     /// </summary>
     /// <param name="id">ID do cliente.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
-    /// <returns>Cliente encontrado ou null se n√£o existir.</returns>
+    /// <param name="user">Usu·rio autenticado.</param>
+    /// <returns>Cliente encontrado ou null se n„o existir.</returns>
     public async Task<CustomerResponse?> GetByIdAsync(string id, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Valida√ß√£o dos par√¢metros de entrada
+            // ValidaÁ„o dos par‚metros de entrada
             ValidateInputParameters(id, tenantId);
 
-            // Valida√ß√£o do tenant
+            // ValidaÁ„o do tenant
             await ValidateTenantAsync(tenantId);
 
             // Busca do cliente
             var customer = await GetAndValidateCustomerAsync(id, tenantId);
 
-            // Convers√£o para DTO de resposta
+            // Convers„o para DTO de resposta
             return customer != null ? ConvertToResponseDto(customer) : null;
         });
     }
 
     /// <summary>
-    /// Valida os par√¢metros de entrada.
+    /// Valida os par‚metros de entrada.
     /// </summary>
     /// <param name="id">ID do cliente.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string id, string tenantId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do cliente √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do cliente È obrigatÛrio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant È obrigatÛrio.", new ValidationResult());
 
         if (!Guid.TryParse(id, out _))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do cliente deve ser um GUID v√°lido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do cliente deve ser um GUID v·lido.", new ValidationResult());
     }
 
     /// <summary>

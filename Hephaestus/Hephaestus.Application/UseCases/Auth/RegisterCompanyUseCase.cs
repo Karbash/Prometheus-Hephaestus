@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Auth;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Enum;
@@ -23,13 +23,13 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="RegisterCompanyUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="RegisterCompanyUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
-    /// <param name="auditLogRepository">Reposit√≥rio de logs de auditoria.</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
+    /// <param name="auditLogRepository">RepositÛrio de logs de auditoria.</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public RegisterCompanyUseCase(
         ICompanyRepository companyRepository,
         IAuditLogRepository auditLogRepository,
@@ -47,22 +47,22 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     /// Executa o registro de uma nova empresa.
     /// </summary>
     /// <param name="request">Dados da empresa a ser registrada.</param>
-    /// <param name="claimsPrincipal">Usu√°rio autenticado.</param>
+    /// <param name="claimsPrincipal">Usu·rio autenticado.</param>
     /// <returns>ID da empresa registrada.</returns>
     public async Task<string> ExecuteAsync(RegisterCompanyRequest request, ClaimsPrincipal? claimsPrincipal)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             // Remover todas as linhas que usam _validator
 
-            // Valida√ß√£o de autoriza√ß√£o
+            // ValidaÁ„o de autorizaÁ„o
             ValidateAuthorization(claimsPrincipal);
 
-            // Valida√ß√£o das regras de neg√≥cio
+            // ValidaÁ„o das regras de negÛcio
             await ValidateBusinessRulesAsync(request);
 
-            // Cria√ß√£o da empresa
+            // CriaÁ„o da empresa
             var company = await CreateCompanyEntityAsync(request);
 
             // Registro de auditoria
@@ -73,13 +73,13 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     }
 
     /// <summary>
-    /// Valida a autoriza√ß√£o do usu√°rio.
+    /// Valida a autorizaÁ„o do usu·rio.
     /// </summary>
-    /// <param name="claimsPrincipal">Usu√°rio autenticado.</param>
+    /// <param name="claimsPrincipal">Usu·rio autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal? claimsPrincipal)
     {
         if (claimsPrincipal == null)
-            throw new UnauthorizedException("Usu√°rio n√£o autenticado.", "REGISTER_COMPANY", "Company");
+            throw new UnauthorizedException("Usu·rio n„o autenticado.", "REGISTER_COMPANY", "Company");
 
         var userRole = claimsPrincipal.FindFirst(ClaimTypes.Role)?.Value;
         if (userRole != "Admin")
@@ -87,22 +87,22 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     }
 
     /// <summary>
-    /// Valida as regras de neg√≥cio.
+    /// Valida as regras de negÛcio.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o com os dados.</param>
+    /// <param name="request">RequisiÁ„o com os dados.</param>
     private async Task ValidateBusinessRulesAsync(RegisterCompanyRequest request)
     {
-        // Verifica se o e-mail j√° est√° registrado
+        // Verifica se o e-mail j· est· registrado
         var existingByEmail = await _companyRepository.GetByEmailAsync(request.Email);
         if (existingByEmail != null)
-            throw new ConflictException("E-mail j√° registrado.", "Company", "Email", request.Email);
+            throw new ConflictException("E-mail j· registrado.", "Company", "Email", request.Email);
 
-        // Verifica se o telefone j√° est√° registrado
+        // Verifica se o telefone j· est· registrado
         if (!string.IsNullOrEmpty(request.PhoneNumber))
         {
             var existingByPhone = await _companyRepository.GetByPhoneNumberAsync(request.PhoneNumber);
             if (existingByPhone != null)
-                throw new ConflictException("Telefone j√° registrado.", "Company", "PhoneNumber", request.PhoneNumber);
+                throw new ConflictException("Telefone j· registrado.", "Company", "PhoneNumber", request.PhoneNumber);
         }
     }
 
@@ -143,7 +143,7 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     /// Cria o log de auditoria.
     /// </summary>
     /// <param name="company">Empresa criada.</param>
-    /// <param name="claimsPrincipal">Usu√°rio autenticado.</param>
+    /// <param name="claimsPrincipal">Usu·rio autenticado.</param>
     private async Task CreateAuditLogAsync(Domain.Entities.Company company, ClaimsPrincipal? claimsPrincipal)
     {
         var loggedUser = await _loggedUserService.GetLoggedUserAsync(claimsPrincipal!);

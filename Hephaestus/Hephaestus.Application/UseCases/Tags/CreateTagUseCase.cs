@@ -1,6 +1,6 @@
-Ôªøusing FluentValidation.Results;
+using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Tag;
 using Hephaestus.Application.Services;
@@ -15,7 +15,7 @@ using Hephaestus.Domain.DTOs.Request;
 namespace Hephaestus.Application.UseCases.Tag;
 
 /// <summary>
-/// Caso de uso para cria√ß√£o de tags.
+/// Caso de uso para criaÁ„o de tags.
 /// </summary>
 public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
 {
@@ -24,13 +24,13 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="CreateTagUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="CreateTagUseCase"/>.
     /// </summary>
-    /// <param name="tagRepository">Reposit√≥rio de tags.</param>
-    /// <param name="auditLogRepository">Reposit√≥rio de logs de auditoria.</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
+    /// <param name="tagRepository">RepositÛrio de tags.</param>
+    /// <param name="auditLogRepository">RepositÛrio de logs de auditoria.</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public CreateTagUseCase(
         ITagRepository tagRepository,
         IAuditLogRepository auditLogRepository,
@@ -45,28 +45,28 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     }
 
     /// <summary>
-    /// Executa a cria√ß√£o de uma tag.
+    /// Executa a criaÁ„o de uma tag.
     /// </summary>
     /// <param name="request">Dados da tag a ser criada.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     /// <returns>Tag criada.</returns>
     public async Task<TagResponse> ExecuteAsync(TagRequest request, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             ValidateRequest(request);
 
-            // Valida√ß√£o de autoriza√ß√£o
+            // ValidaÁ„o de autorizaÁ„o
             ValidateAuthorization(user);
 
-            // Obten√ß√£o do tenant ID
+            // ObtenÁ„o do tenant ID
             var tenantId = _loggedUserService.GetTenantId(user);
 
-            // Valida√ß√£o das regras de neg√≥cio
+            // ValidaÁ„o das regras de negÛcio
             await ValidateBusinessRulesAsync(request, tenantId);
 
-            // Cria√ß√£o da tag
+            // CriaÁ„o da tag
             var tag = await CreateTagEntityAsync(request, tenantId);
 
             // Registro de auditoria
@@ -83,22 +83,22 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     }
 
     /// <summary>
-    /// Valida os dados da requisi√ß√£o.
+    /// Valida os dados da requisiÁ„o.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o a ser validada.</param>
+    /// <param name="request">RequisiÁ„o a ser validada.</param>
     private void ValidateRequest(TagRequest request)
     {
         if (request == null)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da tag s√£o obrigat√≥rios.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da tag s„o obrigatÛrios.", new ValidationResult());
 
         if (string.IsNullOrEmpty(request.Name))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Nome da tag √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Nome da tag È obrigatÛrio.", new ValidationResult());
     }
 
     /// <summary>
-    /// Valida a autoriza√ß√£o do usu√°rio.
+    /// Valida a autorizaÁ„o do usu·rio.
     /// </summary>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal user)
     {
         var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
@@ -109,16 +109,16 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     }
 
     /// <summary>
-    /// Valida as regras de neg√≥cio.
+    /// Valida as regras de negÛcio.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o com os dados.</param>
+    /// <param name="request">RequisiÁ„o com os dados.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(TagRequest request, string tenantId)
     {
         var existingTag = await _tagRepository.GetByNameAsync(request.Name, tenantId);
         if (existingTag != null)
         {
-            throw new ConflictException("Tag j√° registrada para este tenant.", "Tag", "Name", request.Name);
+            throw new ConflictException("Tag j· registrada para este tenant.", "Tag", "Name", request.Name);
         }
     }
 
@@ -145,14 +145,14 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     /// Cria o log de auditoria.
     /// </summary>
     /// <param name="tag">Tag criada.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     private async Task CreateAuditLogAsync(Domain.Entities.Tag tag, ClaimsPrincipal user)
     {
         var loggedUser = await _loggedUserService.GetLoggedUserAsync(user);
         await _auditLogRepository.AddAsync(new AuditLog
         {
             UserId = loggedUser.Id,
-            Action = "Cria√ß√£o de Tag",
+            Action = "CriaÁ„o de Tag",
             EntityId = tag.Id,
             Details = $"Tag {tag.Name} criada para tenant {tag.TenantId}.",
             CreatedAt = DateTime.UtcNow

@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.Interfaces.Additional;
+using Hephaestus.Application.Interfaces.Additional;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
@@ -11,7 +11,7 @@ using FluentValidation.Results;
 namespace Hephaestus.Application.UseCases.Additional;
 
 /// <summary>
-/// Caso de uso para exclus√£o de adicionais.
+/// Caso de uso para exclus„o de adicionais.
 /// </summary>
 public class DeleteAdditionalUseCase : BaseUseCase, IDeleteAdditionalUseCase
 {
@@ -19,12 +19,12 @@ public class DeleteAdditionalUseCase : BaseUseCase, IDeleteAdditionalUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="DeleteAdditionalUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="DeleteAdditionalUseCase"/>.
     /// </summary>
-    /// <param name="additionalRepository">Reposit√≥rio de adicionais.</param>
+    /// <param name="additionalRepository">RepositÛrio de adicionais.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
-    /// <param name="loggedUserService">Servi√ßo do usu√°rio logado.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
+    /// <param name="loggedUserService">ServiÁo do usu·rio logado.</param>
     public DeleteAdditionalUseCase(
         IAdditionalRepository additionalRepository,
         ILogger<DeleteAdditionalUseCase> logger,
@@ -37,43 +37,43 @@ public class DeleteAdditionalUseCase : BaseUseCase, IDeleteAdditionalUseCase
     }
 
     /// <summary>
-    /// Executa a exclus√£o de um adicional.
+    /// Executa a exclus„o de um adicional.
     /// </summary>
-    /// <param name="id">ID do adicional a ser exclu√≠do.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="id">ID do adicional a ser excluÌdo.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     public async Task ExecuteAsync(string id, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Obter tenantId do usu√°rio logado
+            // Obter tenantId do usu·rio logado
             var tenantId = _loggedUserService.GetTenantId(user);
 
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             ValidateInputParameters(id, tenantId);
 
-            // Busca e valida√ß√£o do adicional
+            // Busca e validaÁ„o do adicional
             var additional = await GetAndValidateAdditionalAsync(id, tenantId);
 
-            // Exclus√£o do adicional
+            // Exclus„o do adicional
             await DeleteAdditionalAsync(id, tenantId);
         });
     }
 
     /// <summary>
-    /// Valida os par√¢metros de entrada.
+    /// Valida os par‚metros de entrada.
     /// </summary>
     /// <param name="id">ID do adicional.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string id, string tenantId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do adicional √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do adicional È obrigatÛrio.", new ValidationResult());
 
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant È obrigatÛrio.", new ValidationResult());
 
         if (!Guid.TryParse(id, out _))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do adicional deve ser um GUID v√°lido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do adicional deve ser um GUID v·lido.", new ValidationResult());
     }
 
     /// <summary>
@@ -86,11 +86,11 @@ public class DeleteAdditionalUseCase : BaseUseCase, IDeleteAdditionalUseCase
     {
         var additional = await _additionalRepository.GetByIdAsync(id, tenantId);
         EnsureEntityExists(additional, "Adicional", id);
-        return additional!; // Garantido que n√£o √© null ap√≥s EnsureEntityExists
+        return additional!; // Garantido que n„o È null apÛs EnsureEntityExists
     }
 
     /// <summary>
-    /// Exclui o adicional do reposit√≥rio.
+    /// Exclui o adicional do repositÛrio.
     /// </summary>
     /// <param name="id">ID do adicional.</param>
     /// <param name="tenantId">ID do tenant.</param>

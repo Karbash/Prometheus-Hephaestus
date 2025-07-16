@@ -26,7 +26,7 @@
             <param name="deleteAdditionalUseCase">Caso de uso para remoção de adicionais.</param>
             <param name="logger">Logger para registro de eventos.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.AdditionalController.CreateAdditional(Hephaestus.Application.DTOs.Request.CreateAdditionalRequest)">
+        <member name="M:Hephaestus.Controllers.AdditionalController.CreateAdditional(Hephaestus.Domain.DTOs.Request.CreateAdditionalRequest)">
             <summary>
             Cria um novo adicional para o tenant autenticado.
             </summary>
@@ -127,7 +127,7 @@
             <param name="id">ID do adicional (GUID).</param>
             <returns>Um objeto `AdditionalResponse` contendo os detalhes do adicional.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AdditionalController.UpdateAdditional(System.String,Hephaestus.Application.DTOs.Request.UpdateAdditionalRequest)">
+        <member name="M:Hephaestus.Controllers.AdditionalController.UpdateAdditional(System.String,Hephaestus.Domain.DTOs.Request.UpdateAdditionalRequest)">
             <summary>
             Atualiza as informações de um adicional existente.
             </summary>
@@ -239,7 +239,7 @@
             <param name="pageSize">Número de itens por página (padrão: 20).</param>
             <returns>Uma lista paginada de objetos `CompanyResponse`.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AdministrationController.UpdateCompany(System.String,Hephaestus.Application.DTOs.Request.UpdateCompanyRequest)">
+        <member name="M:Hephaestus.Controllers.AdministrationController.UpdateCompany(System.String,Hephaestus.Domain.DTOs.Request.UpdateCompanyRequest)">
             <summary>
             Atualiza as informações de uma empresa específica.
             </summary>
@@ -413,7 +413,7 @@
             <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.AuthController.Login(Hephaestus.Application.DTOs.Request.LoginRequest,System.String)">
+        <member name="M:Hephaestus.Controllers.AuthController.Login(Hephaestus.Domain.DTOs.Request.LoginRequest,System.String)">
             <summary>
             Autentica um usuário e retorna um token JWT.
             </summary>
@@ -458,7 +458,7 @@
             <param name="mfaCode">Código MFA opcional, requerido para administradores com MFA ativo.</param>
             <returns>Um `OkResult` contendo o token JWT.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AuthController.Register(Hephaestus.Application.DTOs.Request.RegisterCompanyRequest)">
+        <member name="M:Hephaestus.Controllers.AuthController.Register(Hephaestus.Domain.DTOs.Request.RegisterCompanyRequest)">
             <summary>
             Registra uma nova empresa no sistema.
             </summary>
@@ -512,7 +512,7 @@
             <param name="request">Dados da empresa a ser registrada.</param>
             <returns>Um `OkResult` contendo o ID da empresa registrada.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AuthController.ResetPasswordRequest(Hephaestus.Application.DTOs.Request.ResetPasswordRequest)">
+        <member name="M:Hephaestus.Controllers.AuthController.ResetPasswordRequest(Hephaestus.Domain.DTOs.Request.ResetPasswordRequest)">
             <summary>
             Solicita um token para iniciar o processo de redefinição de senha.
             </summary>
@@ -546,7 +546,7 @@
             <param name="request">E-mail do usuário que deseja redefinir a senha.</param>
             <returns>Um `OkResult` indicando que o token foi enviado.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AuthController.ResetPassword(Hephaestus.Application.DTOs.Request.ResetPasswordConfirmRequest)">
+        <member name="M:Hephaestus.Controllers.AuthController.ResetPassword(Hephaestus.Domain.DTOs.Request.ResetPasswordConfirmRequest)">
             <summary>
             Confirma a redefinição de senha utilizando o token recebido.
             </summary>
@@ -604,7 +604,7 @@
             </remarks>
             <returns>Um `OkResult` contendo o segredo TOTP.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AuthController.ValidateMfa(Hephaestus.Application.DTOs.Request.MfaRequest)">
+        <member name="M:Hephaestus.Controllers.AuthController.ValidateMfa(Hephaestus.Domain.DTOs.Request.MfaRequest)">
             <summary>
             Valida um código MFA fornecido por um administrador e retorna um novo token JWT com a claim `MfaValidated`.
             </summary>
@@ -677,7 +677,7 @@
             Controller para gerenciamento de categorias de menu.
             </summary>
         </member>
-        <member name="M:Hephaestus.Controllers.CategoryController.CreateCategory(Hephaestus.Application.DTOs.Request.CreateCategoryRequest)">
+        <member name="M:Hephaestus.Controllers.CategoryController.CreateCategory(Hephaestus.Domain.DTOs.Request.CreateCategoryRequest)">
              <summary>
              Cria uma nova categoria para o tenant autenticado.
              </summary>
@@ -760,7 +760,7 @@
              <param name="id">ID da categoria a ser obtida.</param>
              <returns>Detalhes da categoria ou NotFound se não encontrada.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.CategoryController.UpdateCategory(System.String,Hephaestus.Application.DTOs.Request.UpdateCategoryRequest)">
+        <member name="M:Hephaestus.Controllers.CategoryController.UpdateCategory(System.String,Hephaestus.Domain.DTOs.Request.UpdateCategoryRequest)">
              <summary>
              Atualiza uma categoria existente.
              </summary>
@@ -1175,7 +1175,7 @@
             <param name="auditLogUseCase">Caso de uso para registrar logs de auditoria.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.CustomerController.UpdateCustomer(Hephaestus.Application.DTOs.Request.CustomerRequest)">
+        <member name="M:Hephaestus.Controllers.CustomerController.UpdateCustomer(Hephaestus.Domain.DTOs.Request.CustomerRequest)">
             <summary>
             Atualiza ou cadastra um cliente com base no número de telefone.
             </summary>
@@ -1336,7 +1336,7 @@
             <param name="executeQueryUseCase">Caso de uso para executar queries no banco de dados.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.DatabaseController.ExecuteQuery(Hephaestus.Application.DTOs.Request.ExecuteQueryRequest)">
+        <member name="M:Hephaestus.Controllers.DatabaseController.ExecuteQuery(Hephaestus.Domain.DTOs.Request.ExecuteQueryRequest)">
             <summary>
             Executa uma query SQL de consulta (SELECT) no banco de dados.
             </summary>
@@ -1386,8 +1386,8 @@
             }
             ```
             </remarks>
-            <param name="request">Um objeto <see cref="T:Hephaestus.Application.DTOs.Request.ExecuteQueryRequest"/> contendo a query SQL a ser executada.</param>
-            <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo os resultados da query em um <see cref="T:Hephaestus.Application.DTOs.Response.ExecuteQueryResponse"/>.</returns>
+            <param name="request">Um objeto <see cref="T:Hephaestus.Domain.DTOs.Request.ExecuteQueryRequest"/> contendo a query SQL a ser executada.</param>
+            <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo os resultados da query em um <see cref="T:Hephaestus.Domain.DTOs.Response.ExecuteQueryResponse"/>.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.MenuController">
             <summary>
@@ -1406,7 +1406,7 @@
             <param name="deleteMenuItemUseCase">Use case for deleting menu items.</param>
             <param name="logger">Logger for recording events and errors.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.MenuController.CreateMenuItem(Hephaestus.Application.DTOs.Request.CreateMenuItemRequest)">
+        <member name="M:Hephaestus.Controllers.MenuController.CreateMenuItem(Hephaestus.Domain.DTOs.Request.CreateMenuItemRequest)">
              <summary>
              Creates a new menu item for the authenticated tenant.
              </summary>
@@ -1567,7 +1567,7 @@
              <param name="id">The **ID (GUID)** of the menu item to retrieve.</param>
              <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing the <see cref="T:Hephaestus.Domain.DTOs.Response.MenuItemResponse"/> or a <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if the item is not found.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.MenuController.UpdateMenuItem(System.String,Hephaestus.Application.DTOs.Request.UpdateMenuItemRequest)">
+        <member name="M:Hephaestus.Controllers.MenuController.UpdateMenuItem(System.String,Hephaestus.Domain.DTOs.Request.UpdateMenuItemRequest)">
              <summary>
              Updates an existing menu item.
              </summary>
@@ -1670,7 +1670,7 @@
             <param name="chatWithOpenAIUseCase">Caso de uso para comunicação com a API de chat da OpenAI.</param>
             <param name="logger">Logger para registro de eventos e erros.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.OpenAIController.Chat(Hephaestus.Application.DTOs.Request.OpenAIRequest)">
+        <member name="M:Hephaestus.Controllers.OpenAIController.Chat(Hephaestus.Domain.DTOs.Request.OpenAIRequest)">
              <summary>
              Envia uma consulta (prompt) para o modelo de chat da OpenAI e retorna a resposta.
              </summary>
@@ -1750,7 +1750,7 @@
              }
              ```
              </remarks>
-             <param name="request">Um objeto <see cref="T:Hephaestus.Application.DTOs.Request.OpenAIRequest"/> contendo o prompt e configurações adicionais para a consulta.</param>
+             <param name="request">Um objeto <see cref="T:Hephaestus.Domain.DTOs.Request.OpenAIRequest"/> contendo o prompt e configurações adicionais para a consulta.</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo a resposta da OpenAI em um <see cref="T:OpenAIResponse"/>.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.PaymentController">
@@ -1834,7 +1834,7 @@
             <param name="logger">Logger para registro de eventos e erros.</param>
             <param name="promotionRepository">Repositório para operações de promoção.</param>
         </member>
-        <member name="M:Hephaestus.Controllers.PromotionController.CreatePromotion(Hephaestus.Application.DTOs.Request.CreatePromotionRequest)">
+        <member name="M:Hephaestus.Controllers.PromotionController.CreatePromotion(Hephaestus.Domain.DTOs.Request.CreatePromotionRequest)">
             CreatePromotion
              <summary>
              Cria uma nova promoção para o tenant autenticado.
@@ -1906,7 +1906,7 @@
              }
              ```
              </remarks>
-             <param name="request">Dados da promoção a ser criada (<see cref="T:Hephaestus.Application.DTOs.Request.CreatePromotionRequest"/>).</param>
+             <param name="request">Dados da promoção a ser criada (<see cref="T:Hephaestus.Domain.DTOs.Request.CreatePromotionRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> contendo o ID da promoção criada.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.GetPromotions(System.Nullable{System.Boolean},System.Int32,System.Int32,System.String,System.String)">
@@ -2055,7 +2055,7 @@
              <param name="id">O **ID (GUID)** da promoção a ser consultada.</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo o <see cref="T:Hephaestus.Domain.DTOs.Response.PromotionResponse"/> ou um <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> se a promoção não for encontrada.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotion(System.String,Hephaestus.Application.DTOs.Request.UpdatePromotionRequest)">
+        <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotion(System.String,Hephaestus.Domain.DTOs.Request.UpdatePromotionRequest)">
             UpdatePromotion
              <summary>
              Atualiza uma promoção existente para o tenant autenticado.
@@ -2127,7 +2127,7 @@
              ```
              </remarks>
              <param name="id">O **ID (GUID)** da promoção a ser atualizada.</param>
-             <param name="request">Dados atualizados da promoção (<see cref="T:Hephaestus.Application.DTOs.Request.UpdatePromotionRequest"/>).</param>
+             <param name="request">Dados atualizados da promoção (<see cref="T:Hephaestus.Domain.DTOs.Request.UpdatePromotionRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.UpdatePromotionStatus(System.String,Hephaestus.Domain.DTOs.Request.UpdatePromotionStatusRequest)">
@@ -2193,7 +2193,7 @@
              <param name="id">O **ID (GUID)** da promoção a ser removida.</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.PromotionController.NotifyPromotion(Hephaestus.Application.DTOs.Request.NotifyPromotionRequest)">
+        <member name="M:Hephaestus.Controllers.PromotionController.NotifyPromotion(Hephaestus.Domain.DTOs.Request.NotifyPromotionRequest)">
             NotifyPromotion
              <summary>
              Envia notificação de uma promoção via WhatsApp.
@@ -2206,7 +2206,7 @@
              ```json
              {
                "promotionId": "123e4567-e89b-12d3-a456-426614174001",
-               "messageTemplate": "🎉 Promoção especial! {promotionName} - {promotionDescription} Válida até {endDate}. Aproveite!",
+               "messageTemplate": "?? Promoção especial! {promotionName} - {promotionDescription} Válida até {endDate}. Aproveite!",
                "customerPhoneNumbers": ["11987654321", "21987654321"]
              }
              ```
@@ -2253,7 +2253,7 @@
              }
              ```
              </remarks>
-             <param name="request">Dados da notificação (<see cref="T:Hephaestus.Application.DTOs.Request.NotifyPromotionRequest"/>).</param>
+             <param name="request">Dados da notificação (<see cref="T:Hephaestus.Domain.DTOs.Request.NotifyPromotionRequest"/>).</param>
              <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> em caso de sucesso.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.PromotionController.UsePromotion(System.String,Hephaestus.Domain.DTOs.Request.UsePromotionRequest)">

@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.Base;
+using Hephaestus.Application.Base;
 using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Administration;
@@ -17,11 +17,11 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
     private readonly ICompanyRepository _companyRepository;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="GetCompaniesUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="GetCompaniesUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public GetCompaniesUseCase(
         ICompanyRepository companyRepository,
         ILogger<GetCompaniesUseCase> logger,
@@ -42,7 +42,7 @@ public class GetCompaniesUseCase : BaseUseCase, IGetCompaniesUseCase
         {
             // Busca das empresas paginadas
             var pagedCompanies = await GetCompaniesAsync(isEnabled, pageNumber, pageSize);
-            // Convers√£o para DTOs de resposta
+            // Convers„o para DTOs de resposta
             return new PagedResult<CompanyResponse>
             {
                 Items = ConvertToResponseDtos(pagedCompanies.Items).ToList(),

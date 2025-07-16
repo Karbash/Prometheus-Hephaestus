@@ -1,4 +1,4 @@
-ï»¿using FluentValidation;
+using FluentValidation;
 using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
@@ -12,15 +12,15 @@ public class PaymentRequestValidator : AbstractValidator<PaymentRequest>
             .WithMessage("O valor do pagamento deve ser maior que zero.");
         RuleFor(x => x.Currency)
             .NotEmpty()
-            .WithMessage("A moeda Ã© obrigatÃ³ria.");
+            .WithMessage("A moeda é obrigatória.");
         RuleFor(x => x.PaymentMethod)
             .NotEmpty()
-            .WithMessage("O mÃ©todo de pagamento Ã© obrigatÃ³rio.");
+            .WithMessage("O método de pagamento é obrigatório.");
         RuleFor(x => x.CustomerId)
             .NotEmpty()
-            .WithMessage("O identificador do cliente Ã© obrigatÃ³rio.");
+            .WithMessage("O identificador do cliente é obrigatório.");
         RuleFor(x => x.OrderId)
             .NotEmpty()
-            .WithMessage("O identificador do pedido Ã© obrigatÃ³rio.");
+            .WithMessage("O identificador do pedido é obrigatório.");
     }
 }

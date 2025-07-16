@@ -1,7 +1,8 @@
-Ôªøusing Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace Hephaestus.Infrastructure.Repositories;
 
@@ -19,14 +20,14 @@ public class DatabaseRepository : IDatabaseRepository
     public async Task<List<Dictionary<string, object>>> ExecuteQueryAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
-            throw new ArgumentException("Query √© obrigat√≥ria.", nameof(query));
+            throw new ArgumentException("Query È obrigatÛria.", nameof(query));
 
-        // Valida√ß√£o b√°sica para evitar comandos perigosos
+        // ValidaÁ„o b·sica para evitar comandos perigosos
         if (query.ToLower().Contains("delete") ||
             query.ToLower().Contains("update") ||
             query.ToLower().Contains("drop") ||
             query.ToLower().Contains("insert"))
-            throw new ArgumentException("Apenas consultas SELECT s√£o permitidas.");
+            throw new ArgumentException("Apenas consultas SELECT s„o permitidas.");
 
         var results = new List<Dictionary<string, object>>();
 
@@ -56,8 +57,8 @@ public class DatabaseRepository : IDatabaseRepository
         {
             var schemas = await GetAvailableSchemasAsync();
             var tableName = ExtractTableName(query);
-            _logger.LogError(ex, "Tabela '{TableName}' n√£o encontrada na query: {Query}. Schemas dispon√≠veis: {Schemas}. Tente usar aspas para nomes com mai√∫sculas (ex.: \"Tags\").", tableName, query, string.Join(", ", schemas));
-            throw new ArgumentException($"Tabela '{tableName}' n√£o existe. Schemas dispon√≠veis: {string.Join(", ", schemas)}. Tente usar aspas para nomes com mai√∫sculas (ex.: \"Tags\").", ex);
+            _logger.LogError(ex, "Tabela '{TableName}' n„o encontrada na query: {Query}. Schemas disponÌveis: {Schemas}. Tente usar aspas para nomes com mai˙sculas (ex.: \"Tags\").", tableName, query, string.Join(", ", schemas));
+            throw new ArgumentException($"Tabela '{tableName}' n„o existe. Schemas disponÌveis: {string.Join(", ", schemas)}. Tente usar aspas para nomes com mai˙sculas (ex.: \"Tags\").", ex);
         }
         catch (Exception ex)
         {
@@ -85,7 +86,7 @@ public class DatabaseRepository : IDatabaseRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter schemas dispon√≠veis.");
+            _logger.LogError(ex, "Erro ao obter schemas disponÌveis.");
         }
         return schemas;
     }

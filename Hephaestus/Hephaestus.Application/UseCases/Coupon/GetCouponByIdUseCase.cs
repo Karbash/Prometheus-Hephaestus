@@ -1,4 +1,4 @@
-ï»¿using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Interfaces.Coupon;
@@ -13,7 +13,7 @@ using Hephaestus.Domain.Enum;
 namespace Hephaestus.Application.UseCases.Coupon;
 
 /// <summary>
-/// Caso de uso para obtenÃ§Ã£o de cupom por ID.
+/// Caso de uso para obtenção de cupom por ID.
 /// </summary>
 public class GetCouponByIdUseCase : BaseUseCase, IGetCouponByIdUseCase
 {

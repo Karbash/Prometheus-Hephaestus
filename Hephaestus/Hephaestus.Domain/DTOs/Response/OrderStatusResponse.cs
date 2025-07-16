@@ -1,6 +1,6 @@
-﻿using Hephaestus.Domain.Enum;
+using Hephaestus.Domain.Enum;
 
-namespace Hephaestus.Application.DTOs.Response
+namespace Hephaestus.Domain.DTOs.Response
 {
     public class OrderStatusResponse
     {

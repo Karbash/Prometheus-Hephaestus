@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Customer;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Customer;
 
 /// <summary>
-/// Caso de uso para atualiza√ß√£o de clientes.
+/// Caso de uso para atualizaÁ„o de clientes.
 /// </summary>
 public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
 {
@@ -22,13 +22,13 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="UpdateCustomerUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="UpdateCustomerUseCase"/>.
     /// </summary>
-    /// <param name="customerRepository">Reposit√≥rio de clientes.</param>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
+    /// <param name="customerRepository">RepositÛrio de clientes.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public UpdateCustomerUseCase(
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
@@ -43,33 +43,33 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
     }
 
     /// <summary>
-    /// Executa a atualiza√ß√£o de um cliente.
+    /// Executa a atualizaÁ„o de um cliente.
     /// </summary>
     /// <param name="request">Dados do cliente a ser atualizado.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     public async Task UpdateAsync(CustomerRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             // Remover todas as linhas que usam _validator
 
-            // Valida√ß√£o do tenant
+            // ValidaÁ„o do tenant
             await ValidateTenantAsync(tenantId);
 
             // Busca do cliente
             var customer = await _customerRepository.GetByIdAsync(request.Id!, tenantId);
             EnsureResourceExists(customer, "Cliente", request.Id!);
 
-            // Atualiza√ß√£o dos dados
+            // AtualizaÁ„o dos dados
             await CreateOrUpdateCustomerAsync(request, tenantId, customer);
         });
     }
 
     /// <summary>
-    /// Valida se o tenant existe e √© v√°lido.
+    /// Valida se o tenant existe e È v·lido.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateTenantAsync(string tenantId)
@@ -83,16 +83,16 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
     }
 
     /// <summary>
-    /// Valida as regras de neg√≥cio.
+    /// Valida as regras de negÛcio.
     /// </summary>
     /// <param name="request">Dados do cliente.</param>
     /// <param name="tenantId">ID do tenant.</param>
     private async Task ValidateBusinessRulesAsync(CustomerRequest request, string tenantId)
     {
-        // Verifica se j√° existe um cliente com o mesmo n√∫mero de telefone
+        // Verifica se j· existe um cliente com o mesmo n˙mero de telefone
         var existingCustomer = await _customerRepository.GetByPhoneNumberAsync(request.PhoneNumber, tenantId);
         if (existingCustomer != null)
-            throw new ConflictException("J√° existe um cliente com este n√∫mero de telefone.", "Customer", "PhoneNumber", request.PhoneNumber);
+            throw new ConflictException("J· existe um cliente com este n˙mero de telefone.", "Customer", "PhoneNumber", request.PhoneNumber);
     }
 
     /// <summary>

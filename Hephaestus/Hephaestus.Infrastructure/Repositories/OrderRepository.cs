@@ -1,4 +1,4 @@
-ï»¿using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
@@ -56,7 +56,7 @@ public class OrderRepository : IOrderRepository
             query = query.Where(o => o.Status.ToString() == status);
         }
 
-        // OrdenaÃ§Ã£o dinÃ¢mica
+        // Ordenação dinâmica
         if (!string.IsNullOrEmpty(sortBy))
         {
             query = sortOrder?.ToLower() == "desc"
@@ -125,7 +125,7 @@ public class OrderRepository : IOrderRepository
                 existingOrder.OrderItems.Add(item);
             }
         }
-        // Remove itens que nÃ£o estÃ£o mais presentes
+        // Remove itens que não estão mais presentes
         var itemsToRemove = existingOrder.OrderItems.Where(oi => !updatedItems.Any(ui => ui.Id == oi.Id)).ToList();
         foreach (var item in itemsToRemove)
         {

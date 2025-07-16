@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
@@ -13,7 +13,7 @@ using FluentValidation.Results;
 namespace Hephaestus.Application.UseCases.Administration;
 
 /// <summary>
-/// Caso de uso para atualiza√ß√£o de empresas.
+/// Caso de uso para atualizaÁ„o de empresas.
 /// </summary>
 public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
 {
@@ -21,12 +21,12 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     private readonly IAuditLogRepository _auditLogRepository;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="UpdateCompanyUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="UpdateCompanyUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
-    /// <param name="auditLogRepository">Reposit√≥rio de logs de auditoria.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
+    /// <param name="auditLogRepository">RepositÛrio de logs de auditoria.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public UpdateCompanyUseCase(
         ICompanyRepository companyRepository, 
         IAuditLogRepository auditLogRepository,
@@ -39,39 +39,39 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     }
 
     /// <summary>
-    /// Executa a atualiza√ß√£o de uma empresa.
+    /// Executa a atualizaÁ„o de uma empresa.
     /// </summary>
     /// <param name="id">ID da empresa.</param>
     /// <param name="request">Dados atualizados da empresa.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     public async Task ExecuteAsync(string id, UpdateCompanyRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             // Remover todas as linhas que usam _validator
 
-            // Valida√ß√£o de autoriza√ß√£o
+            // ValidaÁ„o de autorizaÁ„o
             ValidateAuthorization(user);
 
-            // Busca e valida√ß√£o da empresa
+            // Busca e validaÁ„o da empresa
             var company = await GetAndValidateCompanyAsync(id);
 
-            // Valida√ß√£o das regras de neg√≥cio
+            // ValidaÁ„o das regras de negÛcio
             await ValidateBusinessRulesAsync(request, id);
 
-            // Atualiza√ß√£o da empresa
+            // AtualizaÁ„o da empresa
             await UpdateCompanyAsync(company, request);
 
             // Registro de auditoria
             await CreateAuditLogAsync(company, user);
-        }, "Atualiza√ß√£o de Empresa");
+        }, "AtualizaÁ„o de Empresa");
     }
 
     /// <summary>
-    /// Valida a autoriza√ß√£o do usu√°rio.
+    /// Valida a autorizaÁ„o do usu·rio.
     /// </summary>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal user)
     {
         var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
@@ -87,25 +87,25 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     {
         var company = await _companyRepository.GetByIdAsync(id);
         EnsureEntityExists(company, "Empresa", id);
-        return company!; // Garantido que n√£o √© null ap√≥s EnsureEntityExists
+        return company!; // Garantido que n„o È null apÛs EnsureEntityExists
     }
 
     /// <summary>
-    /// Valida as regras de neg√≥cio.
+    /// Valida as regras de negÛcio.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o com os dados.</param>
+    /// <param name="request">RequisiÁ„o com os dados.</param>
     /// <param name="id">ID da empresa.</param>
     private async Task ValidateBusinessRulesAsync(UpdateCompanyRequest request, string id)
     {
         var existingByEmail = await _companyRepository.GetByEmailAsync(request.Email);
         if (existingByEmail != null && existingByEmail.Id != id)
-            throw new ConflictException("E-mail j√° registrado.", "Empresa", "Email", request.Email);
+            throw new ConflictException("E-mail j· registrado.", "Empresa", "Email", request.Email);
 
         if (!string.IsNullOrEmpty(request.PhoneNumber))
         {
             var existingByPhone = await _companyRepository.GetByPhoneNumberAsync(request.PhoneNumber);
             if (existingByPhone != null && existingByPhone.Id != id)
-                throw new ConflictException("Telefone j√° registrado.", "Empresa", "PhoneNumber", request.PhoneNumber);
+                throw new ConflictException("Telefone j· registrado.", "Empresa", "PhoneNumber", request.PhoneNumber);
         }
     }
 
@@ -138,17 +138,17 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     /// Cria o log de auditoria.
     /// </summary>
     /// <param name="company">Empresa atualizada.</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     private async Task CreateAuditLogAsync(Domain.Entities.Company company, ClaimsPrincipal user)
     {
         var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
-            throw new UnauthorizedException("Usu√°rio n√£o autenticado.", "Atualizar", "Empresa");
+            throw new UnauthorizedException("Usu·rio n„o autenticado.", "Atualizar", "Empresa");
 
         await _auditLogRepository.AddAsync(new AuditLog
         {
             UserId = userId,
-            Action = "Atualiza√ß√£o de Empresa",
+            Action = "AtualizaÁ„o de Empresa",
             EntityId = company.Id,
             Details = $"Empresa {company.Name} atualizada com e-mail {company.Email} no estado {company.State}.",
             CreatedAt = DateTime.UtcNow

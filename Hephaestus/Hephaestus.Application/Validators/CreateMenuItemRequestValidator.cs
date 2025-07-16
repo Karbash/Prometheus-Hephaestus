@@ -1,5 +1,5 @@
-Ôªøusing FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 
@@ -8,24 +8,24 @@ public class CreateMenuItemRequestValidator : AbstractValidator<CreateMenuItemRe
     public CreateMenuItemRequestValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Nome √© obrigat√≥rio.")
-            .MaximumLength(100).WithMessage("Nome deve ter no m√°ximo 100 caracteres.");
+            .NotEmpty().WithMessage("Nome È obrigatÛrio.")
+            .MaximumLength(100).WithMessage("Nome deve ter no m·ximo 100 caracteres.");
 
         RuleFor(x => x.Description)
-            .MaximumLength(500).When(x => x.Description != null).WithMessage("Descri√ß√£o deve ter no m√°ximo 500 caracteres.");
+            .MaximumLength(500).When(x => x.Description != null).WithMessage("DescriÁ„o deve ter no m·ximo 500 caracteres.");
 
         RuleFor(x => x.CategoryId)
-            .NotEmpty().WithMessage("CategoryId √© obrigat√≥rio.")
-            .Must(BeValidGuid).WithMessage("CategoryId deve ser um GUID v√°lido.");
+            .NotEmpty().WithMessage("CategoryId È obrigatÛrio.")
+            .Must(BeValidGuid).WithMessage("CategoryId deve ser um GUID v·lido.");
 
         RuleFor(x => x.Price)
-            .GreaterThan(0).WithMessage("Pre√ßo deve ser maior que zero.");
+            .GreaterThan(0).WithMessage("PreÁo deve ser maior que zero.");
 
         RuleForEach(x => x.TagIds)
-            .Must(BeValidGuid).WithMessage("Cada TagId deve ser um GUID v√°lido.");
+            .Must(BeValidGuid).WithMessage("Cada TagId deve ser um GUID v·lido.");
 
         RuleForEach(x => x.AvailableAdditionalIds)
-            .Must(BeValidGuid).WithMessage("Cada AdditionalId deve ser um GUID v√°lido.");
+            .Must(BeValidGuid).WithMessage("Cada AdditionalId deve ser um GUID v·lido.");
     }
 
     private bool BeValidGuid(string? id)

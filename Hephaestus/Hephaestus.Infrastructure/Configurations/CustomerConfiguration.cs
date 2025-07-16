@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,7 +15,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(c => c.TenantId).IsRequired().HasMaxLength(36);
         builder.Property(c => c.PhoneNumber).IsRequired().HasMaxLength(15);
         builder.Property(c => c.Name).HasMaxLength(100);
-        builder.Property(c => c.State).IsRequired().HasMaxLength(50); // Novo campo obrigatório
+        builder.Property(c => c.State).IsRequired().HasMaxLength(50); // Novo campo obrigat�rio
         builder.Property(c => c.City).IsRequired(false).HasMaxLength(100);
         builder.Property(c => c.Street).IsRequired(false).HasMaxLength(200);
         builder.Property(c => c.Number).IsRequired(false).HasMaxLength(20);

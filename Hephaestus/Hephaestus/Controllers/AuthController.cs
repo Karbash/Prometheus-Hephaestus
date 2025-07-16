@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Auth;
 using Hephaestus.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controller para autentica√ß√£o de usu√°rios e gerenciamento de contas, incluindo login, registro de empresas, redefini√ß√£o de senha e MFA.
+/// Controller para autenticaÁ„o de usu·rios e gerenciamento de contas, incluindo login, registro de empresas, redefiniÁ„o de senha e MFA.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -23,13 +23,13 @@ public class AuthController : ControllerBase
     private readonly ILogger<AuthController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="AuthController"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="AuthController"/>.
     /// </summary>
-    /// <param name="loginUseCase">Caso de uso para login de usu√°rios.</param>
+    /// <param name="loginUseCase">Caso de uso para login de usu·rios.</param>
     /// <param name="registerCompanyUseCase">Caso de uso para registro de novas empresas.</param>
-    /// <param name="resetPasswordUseCase">Caso de uso para redefini√ß√£o de senha.</param>
-    /// <param name="mfaUseCase">Caso de uso para autentica√ß√£o multifator (MFA).</param>
-    /// <param name="loggedUserService">Servi√ßo para obter informa√ß√µes do usu√°rio logado.</param>
+    /// <param name="resetPasswordUseCase">Caso de uso para redefiniÁ„o de senha.</param>
+    /// <param name="mfaUseCase">Caso de uso para autenticaÁ„o multifator (MFA).</param>
+    /// <param name="loggedUserService">ServiÁo para obter informaÁıes do usu·rio logado.</param>
     /// <param name="logger">Logger para registro de eventos e erros.</param>
     public AuthController(
         ILoginUseCase loginUseCase,
@@ -48,12 +48,12 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Autentica um usu√°rio e retorna um token JWT.
+    /// Autentica um usu·rio e retorna um token JWT.
     /// </summary>
     /// <remarks>
-    /// Para administradores, um **c√≥digo MFA** pode ser necess√°rio se estiver configurado.
+    /// Para administradores, um **cÛdigo MFA** pode ser necess·rio se estiver configurado.
     /// 
-    /// Exemplo de requisi√ß√£o:
+    /// Exemplo de requisiÁ„o:
     /// ```json
     /// {
     ///   "email": "usuario@exemplo.com",
@@ -68,33 +68,33 @@ public class AuthController : ControllerBase
     /// }
     /// ```
     /// 
-    /// Exemplo de erro de credenciais inv√°lidas (Status 400 Bad Request):
+    /// Exemplo de erro de credenciais inv·lidas (Status 400 Bad Request):
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "Credenciais inv√°lidas."
+    ///   "detail": "Credenciais inv·lidas."
     /// }
     /// ```
-    /// Exemplo de erro MFA necess√°rio (Status 401 Unauthorized):
+    /// Exemplo de erro MFA necess·rio (Status 401 Unauthorized):
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
     ///   "title": "Unauthorized",
     ///   "status": 401,
-    ///   "detail": "C√≥digo MFA √© necess√°rio para este usu√°rio."
+    ///   "detail": "CÛdigo MFA È necess·rio para este usu·rio."
     /// }
     /// ```
     /// </remarks>
     /// <param name="request">Dados de login: e-mail e senha.</param>
-    /// <param name="mfaCode">C√≥digo MFA opcional, requerido para administradores com MFA ativo.</param>
+    /// <param name="mfaCode">CÛdigo MFA opcional, requerido para administradores com MFA ativo.</param>
     /// <returns>Um `OkResult` contendo o token JWT.</returns>
     [HttpPost("login")]
-    [SwaggerOperation(Summary = "Autentica um usu√°rio", Description = "Autentica um usu√°rio com e-mail e senha, retornando um token JWT. Administradores podem precisar fornecer um c√≥digo MFA.")]
+    [SwaggerOperation(Summary = "Autentica um usu·rio", Description = "Autentica um usu·rio com e-mail e senha, retornando um token JWT. Administradores podem precisar fornecer um cÛdigo MFA.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Use ProblemDetails para erros gen√©ricos
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))] // Espec√≠fico para MFA
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Use ProblemDetails para erros genÈricos
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))] // EspecÌfico para MFA
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, [FromQuery] string? mfaCode = null)
     {
@@ -108,14 +108,14 @@ public class AuthController : ControllerBase
     /// <remarks>
     /// Requer **Role: Admin** e **MFA validado**.
     /// 
-    /// Exemplo de requisi√ß√£o:
+    /// Exemplo de requisiÁ„o:
     /// ```json
     /// {
     ///   "companyName": "Nova Empresa SA",
     ///   "email": "contato@novaempresa.com",
     ///   "password": "SenhaForteEmpresa!",
     ///   "phoneNumber": "11987654321",
-    ///   "city": "S√£o Paulo",
+    ///   "city": "S„o Paulo",
     ///   "neighborhood": "Centro",
     ///   "street": "Rua das Flores",
     ///   "number": "100"
@@ -129,7 +129,7 @@ public class AuthController : ControllerBase
     /// }
     /// ```
     /// 
-    /// Exemplo de erro de valida√ß√£o (Status 400 Bad Request):
+    /// Exemplo de erro de validaÁ„o (Status 400 Bad Request):
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -137,7 +137,7 @@ public class AuthController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "Email": [
-    ///       "O formato do e-mail √© inv√°lido."
+    ///       "O formato do e-mail È inv·lido."
     ///     ]
     ///   }
     /// }
@@ -148,7 +148,7 @@ public class AuthController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
     ///   "title": "Conflict",
     ///   "status": 409,
-    ///   "detail": "E-mail 'contato@novaempresa.com' j√° registrado."
+    ///   "detail": "E-mail 'contato@novaempresa.com' j· registrado."
     /// }
     /// ```
     /// </remarks>
@@ -156,7 +156,7 @@ public class AuthController : ControllerBase
     /// <returns>Um `OkResult` contendo o ID da empresa registrada.</returns>
     [HttpPost("register")]
     [Authorize(Roles = "Admin", Policy = "RequireMfa")]
-    [SwaggerOperation(Summary = "Registra uma nova empresa", Description = "Registra uma nova empresa no sistema. Esta opera√ß√£o requer autentica√ß√£o de administrador com MFA validado.")]
+    [SwaggerOperation(Summary = "Registra uma nova empresa", Description = "Registra uma nova empresa no sistema. Esta operaÁ„o requer autenticaÁ„o de administrador com MFA validado.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -169,12 +169,12 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Solicita um token para iniciar o processo de redefini√ß√£o de senha.
+    /// Solicita um token para iniciar o processo de redefiniÁ„o de senha.
     /// </summary>
     /// <remarks>
-    /// Um token ser√° enviado para o **e-mail** ou **WhatsApp** do usu√°rio.
+    /// Um token ser· enviado para o **e-mail** ou **WhatsApp** do usu·rio.
     /// 
-    /// Exemplo de requisi√ß√£o:
+    /// Exemplo de requisiÁ„o:
     /// ```json
     /// {
     ///   "email": "usuario@exemplo.com"
@@ -184,7 +184,7 @@ public class AuthController : ControllerBase
     /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
     /// {
-    ///   "message": "Um token de redefini√ß√£o de senha foi enviado para seu e-mail/WhatsApp."
+    ///   "message": "Um token de redefiniÁ„o de senha foi enviado para seu e-mail/WhatsApp."
     /// }
     /// ```
     /// 
@@ -194,14 +194,14 @@ public class AuthController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "E-mail 'naoexistente@exemplo.com' n√£o encontrado."
+    ///   "detail": "E-mail 'naoexistente@exemplo.com' n„o encontrado."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="request">E-mail do usu√°rio que deseja redefinir a senha.</param>
+    /// <param name="request">E-mail do usu·rio que deseja redefinir a senha.</param>
     /// <returns>Um `OkResult` indicando que o token foi enviado.</returns>
     [HttpPost("reset-password-request")]
-    [SwaggerOperation(Summary = "Solicita redefini√ß√£o de senha", Description = "Inicia o processo de redefini√ß√£o de senha enviando um token para o e-mail ou WhatsApp do usu√°rio.")]
+    [SwaggerOperation(Summary = "Solicita redefiniÁ„o de senha", Description = "Inicia o processo de redefiniÁ„o de senha enviando um token para o e-mail ou WhatsApp do usu·rio.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))] // Para erros de formato de e-mail, por exemplo
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
@@ -213,10 +213,10 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Confirma a redefini√ß√£o de senha utilizando o token recebido.
+    /// Confirma a redefiniÁ„o de senha utilizando o token recebido.
     /// </summary>
     /// <remarks>
-    /// Exemplo de requisi√ß√£o:
+    /// Exemplo de requisiÁ„o:
     /// ```json
     /// {
     ///   "email": "usuario@exemplo.com",
@@ -236,17 +236,17 @@ public class AuthController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "Token inv√°lido ou expirado."
+    ///   "detail": "Token inv·lido ou expirado."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="request">E-mail do usu√°rio, token de redefini√ß√£o e a nova senha.</param>
-    /// <returns>Um `OkResult` em caso de sucesso na redefini√ß√£o.</returns>
+    /// <param name="request">E-mail do usu·rio, token de redefiniÁ„o e a nova senha.</param>
+    /// <returns>Um `OkResult` em caso de sucesso na redefiniÁ„o.</returns>
     [HttpPost("reset-password")]
-    [SwaggerOperation(Summary = "Confirma redefini√ß√£o de senha", Description = "Valida o token de redefini√ß√£o de senha e atualiza a senha do usu√°rio.")]
+    [SwaggerOperation(Summary = "Confirma redefiniÁ„o de senha", Description = "Valida o token de redefiniÁ„o de senha e atualiza a senha do usu·rio.")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para token inv√°lido/expirado ou senha fraca
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))] // Para email n√£o encontrado (embora o request inicial j√° evite isso)
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para token inv·lido/expirado ou senha fraca
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))] // Para email n„o encontrado (embora o request inicial j· evite isso)
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordConfirmRequest request)
     {
@@ -255,7 +255,7 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Configura a autentica√ß√£o multifator (MFA) para um usu√°rio administrador.
+    /// Configura a autenticaÁ„o multifator (MFA) para um usu·rio administrador.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Admin**. Retorna um segredo **TOTP** que deve ser configurado em um aplicativo autenticador (e.g., Google Authenticator).
@@ -273,14 +273,14 @@ public class AuthController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "MFA j√° configurado para este usu√°rio."
+    ///   "detail": "MFA j· configurado para este usu·rio."
     /// }
     /// ```
     /// </remarks>
     /// <returns>Um `OkResult` contendo o segredo TOTP.</returns>
     [HttpPost("mfa/setup")]
     [Authorize(Roles = "Admin")]
-    [SwaggerOperation(Summary = "Configura MFA", Description = "Gera um segredo TOTP para configura√ß√£o da autentica√ß√£o multifator para um administrador. Requer autentica√ß√£o de administrador.")]
+    [SwaggerOperation(Summary = "Configura MFA", Description = "Gera um segredo TOTP para configuraÁ„o da autenticaÁ„o multifator para um administrador. Requer autenticaÁ„o de administrador.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -293,12 +293,12 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Valida um c√≥digo MFA fornecido por um administrador e retorna um novo token JWT com a claim `MfaValidated`.
+    /// Valida um cÛdigo MFA fornecido por um administrador e retorna um novo token JWT com a claim `MfaValidated`.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Admin**.
     /// 
-    /// Exemplo de requisi√ß√£o:
+    /// Exemplo de requisiÁ„o:
     /// ```json
     /// {
     ///   "email": "admin@exemplo.com",
@@ -319,15 +319,15 @@ public class AuthController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "C√≥digo MFA inv√°lido."
+    ///   "detail": "CÛdigo MFA inv·lido."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="request">E-mail do administrador e o c√≥digo MFA gerado pelo aplicativo autenticador.</param>
+    /// <param name="request">E-mail do administrador e o cÛdigo MFA gerado pelo aplicativo autenticador.</param>
     /// <returns>Um `OkResult` contendo o novo token JWT.</returns>
     [HttpPost("mfa")]
     [Authorize(Roles = "Admin")]
-    [SwaggerOperation(Summary = "Valida c√≥digo MFA", Description = "Valida o c√≥digo MFA de um administrador e retorna um novo token JWT com a claim de MFA validado.")]
+    [SwaggerOperation(Summary = "Valida cÛdigo MFA", Description = "Valida o cÛdigo MFA de um administrador e retorna um novo token JWT com a claim de MFA validado.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -339,10 +339,10 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna os dados do usu√°rio atualmente logado.
+    /// Retorna os dados do usu·rio atualmente logado.
     /// </summary>
     /// <remarks>
-    /// Requer autentica√ß√£o (qualquer role).
+    /// Requer autenticaÁ„o (qualquer role).
     /// 
     /// Exemplo de resposta de sucesso (Status 200 OK):
     /// ```json
@@ -356,16 +356,16 @@ public class AuthController : ControllerBase
     /// }
     /// ```
     /// 
-    /// Exemplo de resposta para usu√°rio n√£o autenticado (Status 401 Unauthorized):
+    /// Exemplo de resposta para usu·rio n„o autenticado (Status 401 Unauthorized):
     /// ```
     /// (Nenhum corpo de resposta, apenas status 401)
     /// ```
     /// </remarks>
-    /// <returns>Um objeto `LoggedUserResponse` com as informa√ß√µes do usu√°rio.</returns>
+    /// <returns>Um objeto `LoggedUserResponse` com as informaÁıes do usu·rio.</returns>
     [HttpGet("me")]
     [Authorize]
-    [SwaggerOperation(Summary = "Obt√©m dados do usu√°rio logado", Description = "Retorna informa√ß√µes do usu√°rio autenticado com base no token JWT.")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoggedUser))] // Assumindo que LoggedUser √© LoggedUserResponse
+    [SwaggerOperation(Summary = "ObtÈm dados do usu·rio logado", Description = "Retorna informaÁıes do usu·rio autenticado com base no token JWT.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoggedUser))] // Assumindo que LoggedUser È LoggedUserResponse
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetLoggedUser()
@@ -375,18 +375,18 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Obt√©m o e-mail do usu√°rio do token de autentica√ß√£o.
+    /// ObtÈm o e-mail do usu·rio do token de autenticaÁ„o.
     /// </summary>
-    /// <returns>O e-mail do usu√°rio como string.</returns>
-    /// <exception cref="UnauthorizedAccessException">Lan√ßada se o e-mail n√£o for encontrado no token.</exception>
+    /// <returns>O e-mail do usu·rio como string.</returns>
+    /// <exception cref="UnauthorizedAccessException">LanÁada se o e-mail n„o for encontrado no token.</exception>
     private string GetUserEmail()
     {
         var email = User.FindFirst(ClaimTypes.Email)?.Value;
         if (string.IsNullOrEmpty(email))
         {
-            _logger.LogWarning("E-mail n√£o encontrado no token para o usu√°rio {UserId}",
+            _logger.LogWarning("E-mail n„o encontrado no token para o usu·rio {UserId}",
                 User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            throw new UnauthorizedAccessException("E-mail n√£o encontrado no token.");
+            throw new UnauthorizedAccessException("E-mail n„o encontrado no token.");
         }
         return email;
     }

@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -25,6 +25,6 @@ public class AdditionalConfiguration : IEntityTypeConfiguration<Additional>
             .HasColumnType("decimal(18,2)");
 
         builder.HasIndex(a => new { a.TenantId, a.Name })
-            .IsUnique(); // Garante que nomes de adicionais sejam únicos por tenant
+            .IsUnique(); // Garante que nomes de adicionais sejam �nicos por tenant
     }
 }

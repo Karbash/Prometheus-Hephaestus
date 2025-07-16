@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.DTOs.Response;
 
 namespace Hephaestus.Domain.Repositories;

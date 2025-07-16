@@ -1,5 +1,5 @@
-ï»¿using Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Menu;
 using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -128,7 +128,7 @@ public class MenuController : ControllerBase
     ///       "id": "123e4567-e89b-12d3-a456-426614174001",
     ///       "tenantId": "456e7890-e89b-12d3-a456-426614174002",
     ///       "name": "X-Burger",
-    ///       "description": "HambÃºrguer com queijo e salada",
+    ///       "description": "Hambúrguer com queijo e salada",
     ///       "categoryId": "789e0123-e89b-12d3-a456-426614174003",
     ///       "price": 25.90,
     ///       "isAvailable": true,
@@ -198,7 +198,7 @@ public class MenuController : ControllerBase
     ///   "id": "123e4567-e89b-12d3-a456-426614174001",
     ///   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
     ///   "name": "X-Burger",
-    ///   "description": "HambÃºrguer com queijo e salada",
+    ///   "description": "Hambúrguer com queijo e salada",
     ///   "categoryId": "789e0123-e89b-12d3-a456-426614174003",
     ///   "price": 25.90,
     ///   "isAvailable": true,
@@ -259,7 +259,7 @@ public class MenuController : ControllerBase
     /// ```json
     /// {
     ///   "name": "X-Burger Deluxe",
-    ///   "description": "HambÃºrguer premium com queijo, salada e bacon",
+    ///   "description": "Hambúrguer premium com queijo, salada e bacon",
     ///   "categoryId": "789e0123-e89b-12d3-a456-426614174003",
     ///   "price": 32.90,
     ///   "isAvailable": true,

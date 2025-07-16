@@ -1,4 +1,4 @@
-ï»¿using FluentValidation;
+using FluentValidation;
 using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
@@ -8,12 +8,12 @@ public class UpdateCouponRequestValidator : AbstractValidator<UpdateCouponReques
     public UpdateCouponRequestValidator()
     {
         RuleFor(x => x.Code)
-            .NotEmpty().WithMessage("CÃ³digo Ã© obrigatÃ³rio.")
-            .MaximumLength(50).WithMessage("CÃ³digo deve ter no mÃ¡ximo 50 caracteres.");
+            .NotEmpty().WithMessage("Código é obrigatório.")
+            .MaximumLength(50).WithMessage("Código deve ter no máximo 50 caracteres.");
 
         RuleFor(x => x.CustomerPhoneNumber)
             .MaximumLength(20).When(x => !string.IsNullOrEmpty(x.CustomerPhoneNumber))
-            .WithMessage("NÃºmero de telefone deve ter no mÃ¡ximo 20 caracteres.");
+            .WithMessage("Número de telefone deve ter no máximo 20 caracteres.");
 
         RuleFor(x => x.DiscountType)
             .IsInEnum()
@@ -24,17 +24,17 @@ public class UpdateCouponRequestValidator : AbstractValidator<UpdateCouponReques
 
         RuleFor(x => x.MenuItemId)
             .Must(BeValidGuid).When(x => !string.IsNullOrEmpty(x.MenuItemId))
-            .WithMessage("MenuItemId deve ser um GUID vÃ¡lido.");
+            .WithMessage("MenuItemId deve ser um GUID válido.");
 
         RuleFor(x => x.MinOrderValue)
-            .GreaterThanOrEqualTo(0).WithMessage("Valor mÃ­nimo do pedido deve ser maior ou igual a zero.");
+            .GreaterThanOrEqualTo(0).WithMessage("Valor mínimo do pedido deve ser maior ou igual a zero.");
 
         RuleFor(x => x.StartDate)
-            .NotEmpty().WithMessage("Data de inÃ­cio Ã© obrigatÃ³ria.");
+            .NotEmpty().WithMessage("Data de início é obrigatória.");
 
         RuleFor(x => x.EndDate)
-            .NotEmpty().WithMessage("Data de tÃ©rmino Ã© obrigatÃ³ria.")
-            .GreaterThan(x => x.StartDate).WithMessage("Data de tÃ©rmino deve ser posterior Ã  data de inÃ­cio.");
+            .NotEmpty().WithMessage("Data de término é obrigatória.")
+            .GreaterThan(x => x.StartDate).WithMessage("Data de término deve ser posterior à data de início.");
     }
 
     private bool BeValidGuid(string? id)

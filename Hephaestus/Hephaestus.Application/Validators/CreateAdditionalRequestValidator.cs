@@ -1,5 +1,5 @@
-ï»¿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 
@@ -8,10 +8,10 @@ public class CreateAdditionalRequestValidator : AbstractValidator<CreateAddition
     public CreateAdditionalRequestValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Nome Ã© obrigatÃ³rio.")
-            .MaximumLength(100).WithMessage("Nome deve ter no mÃ¡ximo 100 caracteres.");
+            .NotEmpty().WithMessage("Nome é obrigatório.")
+            .MaximumLength(100).WithMessage("Nome deve ter no máximo 100 caracteres.");
 
         RuleFor(x => x.Price)
-            .GreaterThan(0).WithMessage("PreÃ§o deve ser maior que zero.");
+            .GreaterThan(0).WithMessage("Preço deve ser maior que zero.");
     }
 }

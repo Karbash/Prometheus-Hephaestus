@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Enum;
+using Hephaestus.Domain.Enum;
 
 namespace Hephaestus.Domain.DTOs.Response;
 

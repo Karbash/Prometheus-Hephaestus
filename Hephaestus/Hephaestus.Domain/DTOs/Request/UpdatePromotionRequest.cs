@@ -1,6 +1,6 @@
-﻿using Hephaestus.Domain.Enum;
+using Hephaestus.Domain.Enum;
 
-namespace Hephaestus.Application.DTOs.Request;
+namespace Hephaestus.Domain.DTOs.Request;
 
 public class UpdatePromotionRequest
 {

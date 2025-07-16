@@ -1,5 +1,5 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response; // Certifique-se de que este DTO √© usado, se OpenAIResponse √© o tipo de retorno
+using Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Response; // Certifique-se de que este DTO È usado, se OpenAIResponse È o tipo de retorno
 using Hephaestus.Application.Interfaces.OpenAI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controller para integra√ß√£o segura com a API da OpenAI, permitindo a comunica√ß√£o com modelos de chat.
+/// Controller para integraÁ„o segura com a API da OpenAI, permitindo a comunicaÁ„o com modelos de chat.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -19,9 +19,9 @@ public class OpenAIController : ControllerBase
     private readonly ILogger<OpenAIController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="OpenAIController"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="OpenAIController"/>.
     /// </summary>
-    /// <param name="chatWithOpenAIUseCase">Caso de uso para comunica√ß√£o com a API de chat da OpenAI.</param>
+    /// <param name="chatWithOpenAIUseCase">Caso de uso para comunicaÁ„o com a API de chat da OpenAI.</param>
     /// <param name="logger">Logger para registro de eventos e erros.</param>
     public OpenAIController(IChatWithOpenAIUseCase chatWithOpenAIUseCase, ILogger<OpenAIController> logger)
     {
@@ -36,21 +36,21 @@ public class OpenAIController : ControllerBase
     /// Este endpoint permite interagir com a API de chat da OpenAI, enviando um prompt e, opcionalmente,
     /// especificando o formato de resposta desejado (texto ou JSON).
     /// <br/><br/>
-    /// **Requisitos de Autoriza√ß√£o:**
-    /// Para acessar este endpoint, o usu√°rio autenticado deve possuir a role **Admin**
-    /// e ter passado pela valida√ß√£o de **MFA (Autentica√ß√£o Multifator)**.
+    /// **Requisitos de AutorizaÁ„o:**
+    /// Para acessar este endpoint, o usu·rio autenticado deve possuir a role **Admin**
+    /// e ter passado pela validaÁ„o de **MFA (AutenticaÁ„o Multifator)**.
     /// <br/><br/>
-    /// **Exemplo de Requisi√ß√£o:**
+    /// **Exemplo de RequisiÁ„o:**
     /// ```json
     /// {
-    ///   "prompt": "Qual a capital da Fran√ßa?",
+    ///   "prompt": "Qual a capital da FranÁa?",
     ///   "responseFormat": "text"
     /// }
     /// ```
     /// ou
     /// ```json
     /// {
-    ///   "prompt": "Me forne√ßa informa√ß√µes sobre a Torre Eiffel em formato JSON com campos 'nome', 'cidade' e 'altura'.",
+    ///   "prompt": "Me forneÁa informaÁıes sobre a Torre Eiffel em formato JSON com campos 'nome', 'cidade' e 'altura'.",
     ///   "responseFormat": "json_object"
     /// }
     /// ```
@@ -58,7 +58,7 @@ public class OpenAIController : ControllerBase
     /// **Exemplo de Resposta de Sucesso (Status 200 OK - 'text' format):**
     /// ```json
     /// {
-    ///   "response": "A capital da Fran√ßa √© Paris.",
+    ///   "response": "A capital da FranÁa È Paris.",
     ///   "usage": {
     ///     "promptTokens": 8,
     ///     "completionTokens": 5,
@@ -79,7 +79,7 @@ public class OpenAIController : ControllerBase
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Valida√ß√£o (Status 400 Bad Request):**
+    /// **Exemplo de Erro de ValidaÁ„o (Status 400 Bad Request):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -87,13 +87,13 @@ public class OpenAIController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "Prompt": [
-    ///       "O campo 'Prompt' √© obrigat√≥rio e n√£o pode ser vazio."
+    ///       "O campo 'Prompt' È obrigatÛrio e n„o pode ser vazio."
     ///     ]
     ///   }
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Autoriza√ß√£o (Status 401 Unauthorized):**
+    /// **Exemplo de Erro de AutorizaÁ„o (Status 401 Unauthorized):**
     /// ```
     /// (Nenhum corpo de resposta, apenas status 401)
     /// ```
@@ -104,14 +104,14 @@ public class OpenAIController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
     ///   "title": "Internal Server Error",
     ///   "status": 500,
-    ///   "detail": "Ocorreu um erro inesperado ao se comunicar com a API da OpenAI. Detalhes: Servi√ßo indispon√≠vel."
+    ///   "detail": "Ocorreu um erro inesperado ao se comunicar com a API da OpenAI. Detalhes: ServiÁo indisponÌvel."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="request">Um objeto <see cref="OpenAIRequest"/> contendo o prompt e configura√ß√µes adicionais para a consulta.</param>
+    /// <param name="request">Um objeto <see cref="OpenAIRequest"/> contendo o prompt e configuraÁıes adicionais para a consulta.</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo a resposta da OpenAI em um <see cref="OpenAIResponse"/>.</returns>
     [HttpPost("chat")]
-    [SwaggerOperation(Summary = "Consulta o chat da OpenAI", Description = "Envia um prompt e dados √† API da OpenAI e retorna a resposta no formato especificado ('text' ou 'json_object'). Requer autentica√ß√£o com Role='Admin' e valida√ß√£o MFA.")]
+    [SwaggerOperation(Summary = "Consulta o chat da OpenAI", Description = "Envia um prompt e dados ‡ API da OpenAI e retorna a resposta no formato especificado ('text' ou 'json_object'). Requer autenticaÁ„o com Role='Admin' e validaÁ„o MFA.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OpenAIResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

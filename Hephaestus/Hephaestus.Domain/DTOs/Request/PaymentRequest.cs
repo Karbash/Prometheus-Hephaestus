@@ -1,4 +1,4 @@
-﻿namespace Hephaestus.Domain.DTOs.Request;
+namespace Hephaestus.Domain.DTOs.Request;
 
 public class PaymentRequest
 {

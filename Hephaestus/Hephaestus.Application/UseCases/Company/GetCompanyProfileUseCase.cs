@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Company;
 using Hephaestus.Domain.Repositories;
 using System.Threading.Tasks;
@@ -21,14 +21,14 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
     private readonly ICompanySocialMediaRepository _companySocialMediaRepository;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="GetCompanyProfileUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="GetCompanyProfileUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
-    /// <param name="companyImageRepository">Reposit√≥rio de imagens da empresa.</param>
-    /// <param name="companyOperatingHourRepository">Reposit√≥rio de hor√°rios de funcionamento.</param>
-    /// <param name="companySocialMediaRepository">Reposit√≥rio de redes sociais.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
+    /// <param name="companyImageRepository">RepositÛrio de imagens da empresa.</param>
+    /// <param name="companyOperatingHourRepository">RepositÛrio de hor·rios de funcionamento.</param>
+    /// <param name="companySocialMediaRepository">RepositÛrio de redes sociais.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public GetCompanyProfileUseCase(
         ICompanyRepository companyRepository,
         ICompanyImageRepository companyImageRepository,
@@ -53,10 +53,10 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos par√¢metros de entrada
+            // ValidaÁ„o dos par‚metros de entrada
             ValidateInputParameters(companyId);
 
-            // Busca e valida√ß√£o da empresa
+            // Busca e validaÁ„o da empresa
             var company = await GetAndValidateCompanyAsync(companyId);
 
             // Busca dos dados relacionados
@@ -68,16 +68,16 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
     }
 
     /// <summary>
-    /// Valida os par√¢metros de entrada.
+    /// Valida os par‚metros de entrada.
     /// </summary>
     /// <param name="companyId">ID da empresa.</param>
     private void ValidateInputParameters(string companyId)
     {
         if (string.IsNullOrEmpty(companyId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa È obrigatÛrio.", new ValidationResult());
 
         if (!Guid.TryParse(companyId, out _))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa deve ser um GUID v√°lido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa deve ser um GUID v·lido.", new ValidationResult());
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
          IEnumerable<Domain.Entities.CompanyOperatingHour> operatingHours, 
          IEnumerable<Domain.Entities.CompanySocialMedia> socialMedia) relatedData)
     {
-        // Nunca expor PasswordHash, ApiKey ou MfaSecret em DTOs de resposta. Se adicionar novos campos sens√≠veis, garantir que n√£o sejam expostos aqui.
+        // Nunca expor PasswordHash, ApiKey ou MfaSecret em DTOs de resposta. Se adicionar novos campos sensÌveis, garantir que n„o sejam expostos aqui.
         return new CompanyProfileResponse
         {
             Id = company.Id,

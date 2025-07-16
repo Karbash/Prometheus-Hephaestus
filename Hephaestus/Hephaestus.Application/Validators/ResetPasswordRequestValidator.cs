@@ -1,5 +1,5 @@
-Ôªøusing FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 
@@ -8,7 +8,7 @@ public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequ
     public ResetPasswordRequestValidator()
     {
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("E-mail √© obrigat√≥rio.")
-            .EmailAddress().WithMessage("E-mail inv√°lido.");
+            .NotEmpty().WithMessage("E-mail È obrigatÛrio.")
+            .EmailAddress().WithMessage("E-mail inv·lido.");
     }
 }

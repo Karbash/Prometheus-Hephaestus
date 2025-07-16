@@ -1,38 +1,38 @@
-Ôªøusing System.Security.Claims;
+using System.Security.Claims;
 
 namespace Hephaestus.Domain.Services;
 
 /// <summary>
-/// Interface para recuperar informa√ß√µes do usu√°rio logado.
+/// Interface para recuperar informaÁıes do usu·rio logado.
 /// </summary>
 public interface ILoggedUserService
 {
     /// <summary>
-    /// Obt√©m as informa√ß√µes do usu√°rio logado com base no token JWT.
+    /// ObtÈm as informaÁıes do usu·rio logado com base no token JWT.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usu√°rio autenticado.</param>
-    /// <returns>Dados do usu√°rio logado (ID, nome, e-mail, fun√ß√£o).</returns>
-    /// <exception cref="InvalidOperationException">Usu√°rio n√£o autenticado ou dados inv√°lidos.</exception>
+    /// <param name="claimsPrincipal">Claims do usu·rio autenticado.</param>
+    /// <returns>Dados do usu·rio logado (ID, nome, e-mail, funÁ„o).</returns>
+    /// <exception cref="InvalidOperationException">Usu·rio n„o autenticado ou dados inv·lidos.</exception>
     Task<LoggedUser> GetLoggedUserAsync(ClaimsPrincipal claimsPrincipal);
 
     /// <summary>
-    /// Obt√©m o ID do usu√°rio logado.
+    /// ObtÈm o ID do usu·rio logado.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usu√°rio autenticado.</param>
-    /// <returns>ID do usu√°rio.</returns>
-    /// <exception cref="InvalidOperationException">ID n√£o encontrado no token.</exception>
+    /// <param name="claimsPrincipal">Claims do usu·rio autenticado.</param>
+    /// <returns>ID do usu·rio.</returns>
+    /// <exception cref="InvalidOperationException">ID n„o encontrado no token.</exception>
     string GetUserId(ClaimsPrincipal claimsPrincipal);
 
     /// <summary>
-    /// Obt√©m o ID do tenant do usu√°rio logado.
+    /// ObtÈm o ID do tenant do usu·rio logado.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usu√°rio autenticado.</param>
+    /// <param name="claimsPrincipal">Claims do usu·rio autenticado.</param>
     /// <returns>ID do tenant.</returns>
-    /// <exception cref="InvalidOperationException">TenantId n√£o encontrado no token.</exception>
+    /// <exception cref="InvalidOperationException">TenantId n„o encontrado no token.</exception>
     string GetTenantId(ClaimsPrincipal claimsPrincipal);
 }
 
 /// <summary>
-/// Representa os dados do usu√°rio logado.
+/// Representa os dados do usu·rio logado.
 /// </summary>
 public record LoggedUser(string Id, string Name, string Email, string Role);

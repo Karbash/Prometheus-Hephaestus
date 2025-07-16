@@ -1,4 +1,4 @@
-ï»¿using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Interfaces.Coupon;
 using Hephaestus.Application.Base;
 using Hephaestus.Application.Exceptions;
@@ -12,7 +12,7 @@ using Hephaestus.Domain.Enum;
 namespace Hephaestus.Application.UseCases.Coupon;
 
 /// <summary>
-/// Caso de uso para remoÃ§Ã£o de cupons.
+/// Caso de uso para remoção de cupons.
 /// </summary>
 public class DeleteCouponUseCase : BaseUseCase, IDeleteCouponUseCase
 {

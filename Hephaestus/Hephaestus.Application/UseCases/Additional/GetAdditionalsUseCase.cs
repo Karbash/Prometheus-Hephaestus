@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Additional;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -20,12 +20,12 @@ public class GetAdditionalsUseCase : BaseUseCase, IGetAdditionalsUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="GetAdditionalsUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="GetAdditionalsUseCase"/>.
     /// </summary>
-    /// <param name="additionalRepository">Reposit√≥rio de adicionais.</param>
+    /// <param name="additionalRepository">RepositÛrio de adicionais.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
-    /// <param name="loggedUserService">Servi√ßo do usu√°rio logado.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
+    /// <param name="loggedUserService">ServiÁo do usu·rio logado.</param>
     public GetAdditionalsUseCase(
         IAdditionalRepository additionalRepository,
         ILogger<GetAdditionalsUseCase> logger,
@@ -40,7 +40,7 @@ public class GetAdditionalsUseCase : BaseUseCase, IGetAdditionalsUseCase
     /// <summary>
     /// Executa a busca de todos os adicionais de um tenant.
     /// </summary>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     /// <returns>Lista de adicionais.</returns>
     public async Task<PagedResult<AdditionalResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
@@ -60,13 +60,13 @@ public class GetAdditionalsUseCase : BaseUseCase, IGetAdditionalsUseCase
     }
 
     /// <summary>
-    /// Valida os par√¢metros de entrada.
+    /// Valida os par‚metros de entrada.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant È obrigatÛrio.", new ValidationResult());
     }
 
     /// <summary>

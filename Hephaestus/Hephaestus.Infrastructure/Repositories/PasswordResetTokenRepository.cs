@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;

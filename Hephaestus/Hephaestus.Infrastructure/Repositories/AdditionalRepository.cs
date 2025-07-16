@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
@@ -26,7 +26,7 @@ public class AdditionalRepository : IAdditionalRepository
         var query = _dbContext.Additionals
             .Where(a => a.TenantId == tenantId);
 
-        // Ordena√ß√£o din√¢mica
+        // OrdenaÁ„o din‚mica
         if (!string.IsNullOrEmpty(sortBy))
         {
             query = sortOrder?.ToLower() == "desc"

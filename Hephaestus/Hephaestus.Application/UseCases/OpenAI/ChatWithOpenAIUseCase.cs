@@ -1,5 +1,5 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.OpenAI;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
@@ -13,7 +13,7 @@ using System.Text.Json;
 namespace Hephaestus.Application.UseCases.OpenAI;
 
 /// <summary>
-/// Caso de uso para comunica√ß√£o com a API do OpenAI.
+/// Caso de uso para comunicaÁ„o com a API do OpenAI.
 /// </summary>
 public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
 {
@@ -21,12 +21,12 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="ChatWithOpenAIUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="ChatWithOpenAIUseCase"/>.
     /// </summary>
-    /// <param name="configuration">Configura√ß√£o da aplica√ß√£o.</param>
+    /// <param name="configuration">ConfiguraÁ„o da aplicaÁ„o.</param>
     /// <param name="httpClient">Cliente HTTP.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public ChatWithOpenAIUseCase(
         IConfiguration configuration, 
         HttpClient httpClient,
@@ -39,66 +39,66 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
     }
 
     /// <summary>
-    /// Executa a comunica√ß√£o com a API do OpenAI.
+    /// Executa a comunicaÁ„o com a API do OpenAI.
     /// </summary>
-    /// <param name="request">Dados da requisi√ß√£o para o OpenAI.</param>
+    /// <param name="request">Dados da requisiÁ„o para o OpenAI.</param>
     /// <returns>Resposta do OpenAI.</returns>
     public async Task<OpenAIResponse> ExecuteAsync(OpenAIRequest request)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             ValidateRequest(request);
 
-            // Valida√ß√£o da configura√ß√£o
+            // ValidaÁ„o da configuraÁ„o
             ValidateConfiguration();
 
-            // Prepara√ß√£o da requisi√ß√£o
+            // PreparaÁ„o da requisiÁ„o
             var httpRequest = await PrepareHttpRequestAsync(request);
 
-            // Execu√ß√£o da requisi√ß√£o
+            // ExecuÁ„o da requisiÁ„o
             var response = await ExecuteHttpRequestAsync(httpRequest);
 
             // Processamento da resposta
             return await ProcessResponseAsync(response);
-        }, "Comunica√ß√£o com OpenAI");
+        }, "ComunicaÁ„o com OpenAI");
     }
 
     /// <summary>
-    /// Valida os dados da requisi√ß√£o.
+    /// Valida os dados da requisiÁ„o.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o a ser validada.</param>
+    /// <param name="request">RequisiÁ„o a ser validada.</param>
     private void ValidateRequest(OpenAIRequest request)
     {
         if (request == null)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da requisi√ß√£o s√£o obrigat√≥rios.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da requisiÁ„o s„o obrigatÛrios.", new ValidationResult());
 
         if (string.IsNullOrEmpty(request.Prompt))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt √© obrigat√≥rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt È obrigatÛrio.", new ValidationResult());
 
         if (request.Prompt.Length > 4000)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt muito longo. M√°ximo de 4.000 caracteres permitido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt muito longo. M·ximo de 4.000 caracteres permitido.", new ValidationResult());
     }
 
     /// <summary>
-    /// Valida a configura√ß√£o necess√°ria.
+    /// Valida a configuraÁ„o necess·ria.
     /// </summary>
     private void ValidateConfiguration()
     {
         var apiKey = _configuration["OpenAI:ApiKey"];
         if (string.IsNullOrEmpty(apiKey))
-            throw new BusinessRuleException("Chave da API do OpenAI n√£o configurada.", "OPENAI_CONFIG");
+            throw new BusinessRuleException("Chave da API do OpenAI n„o configurada.", "OPENAI_CONFIG");
 
         var baseUrl = _configuration["OpenAI:BaseUrl"];
         if (string.IsNullOrEmpty(baseUrl))
-            throw new BusinessRuleException("URL base do OpenAI n√£o configurada.", "OPENAI_CONFIG");
+            throw new BusinessRuleException("URL base do OpenAI n„o configurada.", "OPENAI_CONFIG");
     }
 
     /// <summary>
-    /// Prepara a requisi√ß√£o HTTP.
+    /// Prepara a requisiÁ„o HTTP.
     /// </summary>
-    /// <param name="request">Dados da requisi√ß√£o.</param>
-    /// <returns>Requisi√ß√£o HTTP preparada.</returns>
+    /// <param name="request">Dados da requisiÁ„o.</param>
+    /// <returns>RequisiÁ„o HTTP preparada.</returns>
     private Task<HttpRequestMessage> PrepareHttpRequestAsync(OpenAIRequest request)
     {
         var apiKey = _configuration["OpenAI:ApiKey"];
@@ -125,9 +125,9 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
     }
 
     /// <summary>
-    /// Executa a requisi√ß√£o HTTP.
+    /// Executa a requisiÁ„o HTTP.
     /// </summary>
-    /// <param name="httpRequest">Requisi√ß√£o HTTP.</param>
+    /// <param name="httpRequest">RequisiÁ„o HTTP.</param>
     /// <returns>Resposta HTTP.</returns>
     private async Task<HttpResponseMessage> ExecuteHttpRequestAsync(HttpRequestMessage httpRequest)
     {
@@ -137,7 +137,7 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
         }
         catch (HttpRequestException ex)
         {
-            throw new BusinessRuleException($"Erro na comunica√ß√£o com a API do OpenAI: {ex.Message}", "OPENAI_COMMUNICATION");
+            throw new BusinessRuleException($"Erro na comunicaÁ„o com a API do OpenAI: {ex.Message}", "OPENAI_COMMUNICATION");
         }
     }
 
@@ -178,7 +178,7 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
         }
         catch
         {
-            throw new BusinessRuleException("Resposta inv√°lida da API do OpenAI.", "OPENAI_RESPONSE_INVALID");
+            throw new BusinessRuleException("Resposta inv·lida da API do OpenAI.", "OPENAI_RESPONSE_INVALID");
         }
 
         return new OpenAIResponse

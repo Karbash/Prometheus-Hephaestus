@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.Base;
+using Hephaestus.Application.Base;
 using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Services;
@@ -34,7 +34,7 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Obter tenantId do usu√°rio logado
+            // Obter tenantId do usu·rio logado
             var tenantId = _loggedUserService.GetTenantId(user);
 
             ValidateInputParameters(tenantId);
@@ -61,9 +61,9 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
     private void ValidateInputParameters(string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new ValidationException("ID do tenant √© obrigat√≥rio.", new ValidationResult());
+            throw new ValidationException("ID do tenant È obrigatÛrio.", new ValidationResult());
         if (!Guid.TryParse(tenantId, out _))
-            throw new ValidationException("ID do tenant deve ser um GUID v√°lido.", new ValidationResult());
+            throw new ValidationException("ID do tenant deve ser um GUID v·lido.", new ValidationResult());
     }
 
     private async Task<IEnumerable<Domain.Entities.Tag>> GetTagsAsync(string tenantId)

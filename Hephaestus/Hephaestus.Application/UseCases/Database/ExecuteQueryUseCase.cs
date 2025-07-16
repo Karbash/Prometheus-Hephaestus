@@ -1,106 +1,93 @@
-Ôªøusing Hephaestus.Application.Interfaces.Database;
-using Hephaestus.Application.DTOs.Request;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Application.Interfaces.Database;
+using Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Base;
 using Microsoft.Extensions.Logging;
 using Hephaestus.Application.Services;
 using FluentValidation.Results;
+using Hephaestus.Domain.Repositories;
 
 namespace Hephaestus.Application.UseCases.Database;
 
 /// <summary>
-/// Caso de uso para execu√ß√£o de consultas no banco de dados.
+/// Caso de uso para execuÁ„o de consultas no banco de dados.
 /// </summary>
 public class ExecuteQueryUseCase : BaseUseCase, IExecuteQueryUseCase
 {
+    private readonly IDatabaseRepository _databaseRepository;
+
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="ExecuteQueryUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="ExecuteQueryUseCase"/>.
     /// </summary>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
-    public ExecuteQueryUseCase(ILogger<ExecuteQueryUseCase> logger, IExceptionHandlerService exceptionHandler)
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
+    /// <param name="databaseRepository">RepositÛrio para execuÁ„o de queries no banco de dados.</param>
+    public ExecuteQueryUseCase(
+        ILogger<ExecuteQueryUseCase> logger, 
+        IExceptionHandlerService exceptionHandler,
+        IDatabaseRepository databaseRepository)
         : base(logger, exceptionHandler)
     {
+        _databaseRepository = databaseRepository;
     }
 
     /// <summary>
     /// Executa uma consulta no banco de dados.
     /// </summary>
-    /// <param name="request">Requisi√ß√£o com a consulta SQL.</param>
+    /// <param name="request">RequisiÁ„o com a consulta SQL.</param>
     /// <returns>Resultado da consulta.</returns>
     public async Task<ExecuteQueryResponse> ExecuteAsync(ExecuteQueryRequest request)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos par√¢metros de entrada
+            // ValidaÁ„o dos par‚metros de entrada
             ValidateInputParameters(request.Query);
 
-            // Valida√ß√£o da seguran√ßa da consulta
+            // ValidaÁ„o da seguranÁa da consulta
             ValidateQuerySecurity(request.Query);
 
-            // Execu√ß√£o da consulta
-            return await ExecuteQueryAsync(request.Query);
-        }, "Execu√ß√£o de Consulta SQL");
+            // ExecuÁ„o da consulta usando o repositÛrio real
+            var results = await _databaseRepository.ExecuteQueryAsync(request.Query);
+
+            return new ExecuteQueryResponse
+            {
+                Results = results
+            };
+        }, "ExecuÁ„o de Consulta SQL");
     }
 
     /// <summary>
-    /// Valida os par√¢metros de entrada.
+    /// Valida os par‚metros de entrada.
     /// </summary>
     /// <param name="query">Consulta SQL.</param>
     private void ValidateInputParameters(string query)
     {
         if (string.IsNullOrEmpty(query))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Consulta SQL √© obrigat√≥ria.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Consulta SQL È obrigatÛria.", new ValidationResult());
 
         if (query.Length > 10000)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Consulta SQL muito longa. M√°ximo de 10.000 caracteres permitido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Consulta SQL muito longa. M·ximo de 10.000 caracteres permitido.", new ValidationResult());
     }
 
     /// <summary>
-    /// Valida a seguran√ßa da consulta.
+    /// Valida a seguranÁa da consulta.
     /// </summary>
     /// <param name="query">Consulta SQL.</param>
     private void ValidateQuerySecurity(string query)
     {
         var upperQuery = query.ToUpperInvariant();
 
-        // Verifica se cont√©m comandos perigosos
+        // Verifica se contÈm comandos perigosos
         var dangerousCommands = new[] { "DROP", "DELETE", "TRUNCATE", "ALTER", "CREATE", "INSERT", "UPDATE" };
         foreach (var command in dangerousCommands)
         {
             if (upperQuery.Contains(command))
-                throw new BusinessRuleException($"Comando '{command}' n√£o √© permitido por quest√µes de seguran√ßa.", "QUERY_SECURITY");
+                throw new BusinessRuleException($"Comando '{command}' n„o È permitido por questıes de seguranÁa.", "QUERY_SECURITY");
         }
 
-        // Verifica se √© apenas uma consulta SELECT
+        // Verifica se È apenas uma consulta SELECT
         if (!upperQuery.TrimStart().StartsWith("SELECT"))
-            throw new BusinessRuleException("Apenas consultas SELECT s√£o permitidas por quest√µes de seguran√ßa.", "QUERY_SECURITY");
-    }
-
-    /// <summary>
-    /// Executa a consulta no banco de dados.
-    /// </summary>
-    /// <param name="query">Consulta SQL.</param>
-    /// <returns>Resultado da consulta.</returns>
-    private async Task<ExecuteQueryResponse> ExecuteQueryAsync(string query)
-    {
-        // Implementa√ß√£o da execu√ß√£o da consulta
-        // Esta √© uma implementa√ß√£o de exemplo - em um caso real, voc√™ conectaria ao banco de dados
-        await Task.Delay(100); // Simula processamento ass√≠ncrono
-
-        return new ExecuteQueryResponse
-        {
-            Results = new List<Dictionary<string, object>>
-            {
-                new Dictionary<string, object>
-                {
-                    ["Query"] = query,
-                    ["Result"] = "Resultado da consulta seria retornado aqui",
-                    ["ExecutedAt"] = DateTime.UtcNow,
-                    ["Status"] = "Success"
-                }
-            }
-        };
+            throw new BusinessRuleException("Apenas consultas SELECT s„o permitidas por questıes de seguranÁa.", "QUERY_SECURITY");
     }
 }

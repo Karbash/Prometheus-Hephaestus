@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Repositories;
+using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Hephaestus.Infrastructure.Data;
 using Hephaestus.Infrastructure.Repositories;

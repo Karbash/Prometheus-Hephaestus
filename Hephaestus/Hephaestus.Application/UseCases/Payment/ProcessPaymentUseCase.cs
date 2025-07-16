@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Hephaestus.Application.Base;
 using Hephaestus.Application.Interfaces.Payment;
 using Hephaestus.Domain.DTOs.Request;

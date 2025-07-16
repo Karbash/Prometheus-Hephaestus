@@ -1,4 +1,4 @@
-﻿namespace Hephaestus.Domain.Services;
+namespace Hephaestus.Domain.Services;
 
 public interface IMfaService
 {

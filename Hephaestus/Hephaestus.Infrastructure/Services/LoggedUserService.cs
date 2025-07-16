@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using System;
@@ -8,36 +8,36 @@ using System.Threading.Tasks;
 namespace Hephaestus.Infrastructure.Services;
 
 /// <summary>
-/// Servi√ßo para recuperar informa√ß√µes do usu√°rio logado.
+/// ServiÁo para recuperar informaÁıes do usu·rio logado.
 /// </summary>
 public class LoggedUserService : ILoggedUserService
 {
     private readonly ICompanyRepository _companyRepository;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="LoggedUserService"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="LoggedUserService"/>.
     /// </summary>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
     public LoggedUserService(ICompanyRepository companyRepository)
     {
         _companyRepository = companyRepository;
     }
 
     /// <summary>
-    /// Obt√©m as informa√ß√µes do usu√°rio logado com base no token JWT.
+    /// ObtÈm as informaÁıes do usu·rio logado com base no token JWT.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usu√°rio autenticado.</param>
-    /// <returns>Dados do usu√°rio logado (ID, nome, e-mail, fun√ß√£o).</returns>
-    /// <exception cref="InvalidOperationException">E-mail n√£o encontrado no token ou usu√°rio n√£o existe.</exception>
+    /// <param name="claimsPrincipal">Claims do usu·rio autenticado.</param>
+    /// <returns>Dados do usu·rio logado (ID, nome, e-mail, funÁ„o).</returns>
+    /// <exception cref="InvalidOperationException">E-mail n„o encontrado no token ou usu·rio n„o existe.</exception>
     public async Task<LoggedUser> GetLoggedUserAsync(ClaimsPrincipal claimsPrincipal)
     {
         var email = claimsPrincipal.FindFirst(ClaimTypes.Email)?.Value;
         if (string.IsNullOrEmpty(email))
-            throw new InvalidOperationException("E-mail n√£o encontrado no token.");
+            throw new InvalidOperationException("E-mail n„o encontrado no token.");
 
         var company = await _companyRepository.GetByEmailAsync(email);
         if (company == null)
-            throw new InvalidOperationException("Usu√°rio n√£o encontrado.");
+            throw new InvalidOperationException("Usu·rio n„o encontrado.");
 
         return new LoggedUser(
             Id: company.Id,
@@ -48,11 +48,11 @@ public class LoggedUserService : ILoggedUserService
     }
 
     /// <summary>
-    /// Obt√©m o ID do usu√°rio logado.
+    /// ObtÈm o ID do usu·rio logado.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usu√°rio autenticado.</param>
-    /// <returns>ID do usu√°rio.</returns>
-    /// <exception cref="InvalidOperationException">ID n√£o encontrado no token.</exception>
+    /// <param name="claimsPrincipal">Claims do usu·rio autenticado.</param>
+    /// <returns>ID do usu·rio.</returns>
+    /// <exception cref="InvalidOperationException">ID n„o encontrado no token.</exception>
     public string GetUserId(ClaimsPrincipal claimsPrincipal)
     {
         var userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value
@@ -60,23 +60,23 @@ public class LoggedUserService : ILoggedUserService
             ?? claimsPrincipal.FindFirst("UserId")?.Value;
 
         if (string.IsNullOrEmpty(userId))
-            throw new InvalidOperationException("ID do usu√°rio n√£o encontrado no token.");
+            throw new InvalidOperationException("ID do usu·rio n„o encontrado no token.");
 
         return userId;
     }
 
     /// <summary>
-    /// Obt√©m o ID do tenant do usu√°rio logado.
+    /// ObtÈm o ID do tenant do usu·rio logado.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usu√°rio autenticado.</param>
+    /// <param name="claimsPrincipal">Claims do usu·rio autenticado.</param>
     /// <returns>ID do tenant.</returns>
-    /// <exception cref="InvalidOperationException">TenantId n√£o encontrado no token.</exception>
+    /// <exception cref="InvalidOperationException">TenantId n„o encontrado no token.</exception>
     public string GetTenantId(ClaimsPrincipal claimsPrincipal)
     {
         var tenantId = claimsPrincipal.FindFirst("TenantId")?.Value;
 
         if (string.IsNullOrEmpty(tenantId))
-            throw new InvalidOperationException("TenantId n√£o encontrado no token.");
+            throw new InvalidOperationException("TenantId n„o encontrado no token.");
 
         return tenantId;
     }

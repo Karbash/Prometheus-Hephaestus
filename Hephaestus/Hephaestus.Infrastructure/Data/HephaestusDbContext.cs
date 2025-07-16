@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Infrastructure.Configuration;
 using Hephaestus.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;

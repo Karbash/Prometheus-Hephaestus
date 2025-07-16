@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 
 namespace Hephaestus.Application.Interfaces.Administration;
 

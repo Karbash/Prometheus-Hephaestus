@@ -1,4 +1,4 @@
-ï»¿using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Application.Exceptions;
@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Promotion;
 
 /// <summary>
-/// Caso de uso para obter todas as promoÃ§Ãµes de um tenant.
+/// Caso de uso para obter todas as promoções de um tenant.
 /// </summary>
 public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
 {
@@ -20,12 +20,12 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instÃ¢ncia do <see cref="GetPromotionsUseCase"/>.
+    /// Inicializa uma nova instância do <see cref="GetPromotionsUseCase"/>.
     /// </summary>
-    /// <param name="promotionRepository">RepositÃ³rio de promoÃ§Ãµes.</param>
-    /// <param name="loggedUserService">ServiÃ§o para obter informaÃ§Ãµes do usuÃ¡rio logado.</param>
+    /// <param name="promotionRepository">Repositório de promoções.</param>
+    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">ServiÃ§o de tratamento de exceÃ§Ãµes.</param>
+    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
     public GetPromotionsUseCase(
         IPromotionRepository promotionRepository,
         ILoggedUserService loggedUserService,
@@ -38,11 +38,11 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     }
 
     /// <summary>
-    /// Executa a busca de todas as promoÃ§Ãµes de um tenant.
+    /// Executa a busca de todas as promoções de um tenant.
     /// </summary>
-    /// <param name="user">UsuÃ¡rio autenticado.</param>
-    /// <param name="isActive">Filtro opcional para promoÃ§Ãµes ativas.</param>
-    /// <returns>Lista de promoÃ§Ãµes.</returns>
+    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="isActive">Filtro opcional para promoções ativas.</param>
+    /// <returns>Lista de promoções.</returns>
     public async Task<PagedResult<PromotionResponse>> ExecuteAsync(ClaimsPrincipal user, bool? isActive, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
@@ -61,21 +61,21 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     }
 
     /// <summary>
-    /// Valida os parÃ¢metros de entrada.
+    /// Valida os parâmetros de entrada.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     private void ValidateInputParameters(string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant Ã© obrigatÃ³rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
     }
 
     /// <summary>
-    /// Busca as promoÃ§Ãµes.
+    /// Busca as promoções.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
-    /// <param name="isActive">Filtro opcional para promoÃ§Ãµes ativas.</param>
-    /// <returns>Lista de promoÃ§Ãµes.</returns>
+    /// <param name="isActive">Filtro opcional para promoções ativas.</param>
+    /// <returns>Lista de promoções.</returns>
     private async Task<PagedResult<Domain.Entities.Promotion>> GetPromotionsAsync(string tenantId, bool? isActive, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         return await _promotionRepository.GetByTenantIdAsync(tenantId, isActive, pageNumber, pageSize, sortBy, sortOrder);
@@ -84,7 +84,7 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     /// <summary>
     /// Converte as entidades para DTOs de resposta.
     /// </summary>
-    /// <param name="promotions">Lista de promoÃ§Ãµes.</param>
+    /// <param name="promotions">Lista de promoções.</param>
     /// <returns>Lista de DTOs de resposta.</returns>
     private IEnumerable<PromotionResponse> ConvertToResponseDtos(IEnumerable<Domain.Entities.Promotion> promotions)
     {

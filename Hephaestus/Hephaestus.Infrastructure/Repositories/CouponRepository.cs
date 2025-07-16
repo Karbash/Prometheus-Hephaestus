@@ -1,4 +1,4 @@
-ï»¿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +34,7 @@ public class CouponRepository : ICouponRepository
     public async Task<PagedResult<Coupon>> GetByTenantIdAsync(string tenantId, bool? isActive = null, string? customerPhoneNumber = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
         if (string.IsNullOrEmpty(tenantId))
-            throw new ArgumentException("TenantId Ã© obrigatÃ³rio.");
+            throw new ArgumentException("TenantId é obrigatório.");
 
         var query = _context.Coupons.AsNoTracking().Where(c => c.TenantId == tenantId);
         if (isActive.HasValue)

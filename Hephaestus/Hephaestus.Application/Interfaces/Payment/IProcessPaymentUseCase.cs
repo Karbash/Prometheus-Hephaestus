@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Domain.DTOs.Response;
 using System.Security.Claims;
 

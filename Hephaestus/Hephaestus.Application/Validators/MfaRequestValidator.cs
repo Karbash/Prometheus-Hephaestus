@@ -1,5 +1,5 @@
-ï»¿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 
@@ -8,11 +8,11 @@ public class MfaRequestValidator : AbstractValidator<MfaRequest>
     public MfaRequestValidator()
     {
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("E-mail Ã© obrigatÃ³rio.")
-            .EmailAddress().WithMessage("E-mail invÃ¡lido.");
+            .NotEmpty().WithMessage("E-mail é obrigatório.")
+            .EmailAddress().WithMessage("E-mail inválido.");
 
         RuleFor(x => x.MfaCode)
-            .NotEmpty().WithMessage("CÃ³digo MFA Ã© obrigatÃ³rio.")
-            .Length(6).WithMessage("CÃ³digo MFA deve ter 6 caracteres.");
+            .NotEmpty().WithMessage("Código MFA é obrigatório.")
+            .Length(6).WithMessage("Código MFA deve ter 6 caracteres.");
     }
 }

@@ -1,5 +1,5 @@
-﻿using FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Additional;
 using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Interfaces.Auth;

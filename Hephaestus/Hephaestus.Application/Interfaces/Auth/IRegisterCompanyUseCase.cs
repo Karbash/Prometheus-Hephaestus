@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using System.Security.Claims;
 
 namespace Hephaestus.Application.Interfaces.Auth;
@@ -12,8 +12,8 @@ public interface IRegisterCompanyUseCase
     /// Registra uma nova empresa no sistema.
     /// </summary>
     /// <param name="request">Dados da empresa a ser registrada.</param>
-    /// <param name="user">Informa√ß√µes do usu√°rio autenticado, ou null se n√£o autenticado.</param>
+    /// <param name="user">InformaÁıes do usu·rio autenticado, ou null se n„o autenticado.</param>
     /// <returns>ID da empresa registrada.</returns>
-    /// <exception cref="InvalidOperationException">E-mail ou telefone j√° registrado.</exception>
+    /// <exception cref="InvalidOperationException">E-mail ou telefone j· registrado.</exception>
     Task<string> ExecuteAsync(RegisterCompanyRequest request, ClaimsPrincipal? user);
 }

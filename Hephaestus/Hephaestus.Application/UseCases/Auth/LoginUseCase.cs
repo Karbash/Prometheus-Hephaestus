@@ -1,5 +1,5 @@
-﻿using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Request;
+using Hephaestus.Application.Base;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Exceptions;
 using Hephaestus.Application.Interfaces.Auth;
 using Hephaestus.Application.Services;
@@ -16,7 +16,7 @@ using System.Text;
 namespace Hephaestus.Application.UseCases.Auth;
 
 /// <summary>
-/// Caso de uso para autenticação de usuários.
+/// Caso de uso para autentica��o de usu�rios.
 /// </summary>
 public class LoginUseCase : BaseUseCase, ILoginUseCase
 {
@@ -25,13 +25,13 @@ public class LoginUseCase : BaseUseCase, ILoginUseCase
     private readonly IMfaService _mfaService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="LoginUseCase"/>.
+    /// Inicializa uma nova inst�ncia do <see cref="LoginUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Repositório de empresas.</param>
-    /// <param name="configuration">Configuração da aplicação.</param>
-    /// <param name="mfaService">Serviço de autenticação multifator.</param>
+    /// <param name="companyRepository">Reposit�rio de empresas.</param>
+    /// <param name="configuration">Configura��o da aplica��o.</param>
+    /// <param name="mfaService">Servi�o de autentica��o multifator.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Servi�o de tratamento de exce��es.</param>
     public LoginUseCase(
         ICompanyRepository companyRepository, 
         IConfiguration configuration, 
@@ -46,31 +46,31 @@ public class LoginUseCase : BaseUseCase, ILoginUseCase
     }
 
     /// <summary>
-    /// Autentica um usuário e retorna um token JWT.
+    /// Autentica um usu�rio e retorna um token JWT.
     /// </summary>
     /// <param name="request">Dados de login (e-mail e senha).</param>
-    /// <param name="mfaCode">Código MFA opcional para administradores.</param>
+    /// <param name="mfaCode">C�digo MFA opcional para administradores.</param>
     /// <returns>Token JWT gerado.</returns>
     public async Task<string> ExecuteAsync(LoginRequest request, string? mfaCode = null)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Validação dos dados de entrada
+            // Valida��o dos dados de entrada
             // Remover todas as linhas que usam _validator
 
-            // Autenticação do usuário
+            // Autentica��o do usu�rio
             var company = await AuthenticateUserAsync(request);
 
-            // Validação MFA para administradores
+            // Valida��o MFA para administradores
             await ValidateMfaForAdminAsync(company, mfaCode);
 
-            // Geração do token JWT
+            // Gera��o do token JWT
             return GenerateJwtToken(company);
         });
     }
 
     /// <summary>
-    /// Autentica o usuário com as credenciais fornecidas.
+    /// Autentica o usu�rio com as credenciais fornecidas.
     /// </summary>
     /// <param name="request">Dados de login.</param>
     /// <returns>Empresa autenticada.</returns>
@@ -80,36 +80,36 @@ public class LoginUseCase : BaseUseCase, ILoginUseCase
         
         if (company == null || !BCrypt.Net.BCrypt.Verify(request.Password, company.PasswordHash))
         {
-            throw new UnauthorizedException("Credenciais inválidas.", "LOGIN", "Authentication");
+            throw new UnauthorizedException("Credenciais inv�lidas.", "LOGIN", "Authentication");
         }
 
         return company;
     }
 
     /// <summary>
-    /// Valida o código MFA para administradores.
+    /// Valida o c�digo MFA para administradores.
     /// </summary>
     /// <param name="company">Empresa autenticada.</param>
-    /// <param name="mfaCode">Código MFA.</param>
+    /// <param name="mfaCode">C�digo MFA.</param>
     private async Task ValidateMfaForAdminAsync(Domain.Entities.Company company, string? mfaCode)
     {
         if (company.Role == Role.Admin && !string.IsNullOrEmpty(company.MfaSecret))
         {
             if (string.IsNullOrEmpty(mfaCode))
             {
-                throw new UnauthorizedException("Código MFA necessário para administradores.", "MFA_VALIDATION", "Authentication");
+                throw new UnauthorizedException("C�digo MFA necess�rio para administradores.", "MFA_VALIDATION", "Authentication");
             }
 
             var isValid = await _mfaService.ValidateMfaCodeAsync(company.Email, mfaCode);
             if (!isValid)
             {
-                throw new UnauthorizedException("Código MFA inválido.", "MFA_VALIDATION", "Authentication");
+                throw new UnauthorizedException("C�digo MFA inv�lido.", "MFA_VALIDATION", "Authentication");
             }
         }
     }
 
     /// <summary>
-    /// Gera o token JWT para o usuário autenticado.
+    /// Gera o token JWT para o usu�rio autenticado.
     /// </summary>
     /// <param name="company">Empresa autenticada.</param>
     /// <returns>Token JWT.</returns>

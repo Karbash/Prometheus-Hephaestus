@@ -1,16 +1,16 @@
-Ôªøusing Hephaestus.Domain.DTOs.Request;
-// using Hephaestus.Application.DTOs.Response; // Removido, pois as DTOs n√£o foram fornecidas e a instru√ß√£o √© n√£o alterar m√©todos
+using Hephaestus.Domain.DTOs.Request;
+// using Hephaestus.Domain.DTOs.Response; // Removido, pois as DTOs n„o foram fornecidas e a instruÁ„o È n„o alterar mÈtodos
 using Hephaestus.Application.Interfaces.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations; // Adicionado para as anota√ß√µes do Swagger
+using Swashbuckle.AspNetCore.Annotations; // Adicionado para as anotaÁıes do Swagger
 using System.Security.Claims;
-using Hephaestus.Domain.DTOs.Response; // Necess√°rio para ClaimTypes
+using Hephaestus.Domain.DTOs.Response; // Necess·rio para ClaimTypes
 
 namespace Hephaestus.Api.Controllers;
 
 /// <summary>
-/// Controller para gerenciamento de pedidos, permitindo a cria√ß√£o, consulta, atualiza√ß√£o e rastreamento de status de pedidos.
+/// Controller para gerenciamento de pedidos, permitindo a criaÁ„o, consulta, atualizaÁ„o e rastreamento de status de pedidos.
 /// </summary>
 [Route("api/order")]
 [ApiController]
@@ -25,13 +25,13 @@ public class OrderController : ControllerBase
     private readonly IPatchOrderUseCase _patchOrderUseCase;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="OrderController"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="OrderController"/>.
     /// </summary>
-    /// <param name="createOrderUseCase">Caso de uso para cria√ß√£o de pedidos.</param>
+    /// <param name="createOrderUseCase">Caso de uso para criaÁ„o de pedidos.</param>
     /// <param name="getOrdersUseCase">Caso de uso para listagem de pedidos.</param>
-    /// <param name="getOrderByIdUseCase">Caso de uso para obten√ß√£o de pedido por ID.</param>
-    /// <param name="updateOrderUseCase">Caso de uso para atualiza√ß√£o de pedidos.</param>
-    /// <param name="getCustomerOrderStatusUseCase">Caso de uso para obten√ß√£o do status de pedidos de um cliente.</param>
+    /// <param name="getOrderByIdUseCase">Caso de uso para obtenÁ„o de pedido por ID.</param>
+    /// <param name="updateOrderUseCase">Caso de uso para atualizaÁ„o de pedidos.</param>
+    /// <param name="getCustomerOrderStatusUseCase">Caso de uso para obtenÁ„o do status de pedidos de um cliente.</param>
     public OrderController(
         ICreateOrderUseCase createOrderUseCase,
         IGetOrdersUseCase getOrdersUseCase,
@@ -54,9 +54,9 @@ public class OrderController : ControllerBase
     /// Cria um novo pedido para o tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Este endpoint permite que um tenant registre um novo pedido. A autentica√ß√£o com a role **Tenant** √© obrigat√≥ria.
+    /// Este endpoint permite que um tenant registre um novo pedido. A autenticaÁ„o com a role **Tenant** È obrigatÛria.
     ///
-    /// **Exemplo de Requisi√ß√£o:**
+    /// **Exemplo de RequisiÁ„o:**
     /// ```json
     /// {
     ///   "customerPhoneNumber": "11987654321",
@@ -100,7 +100,7 @@ public class OrderController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "CustomerPhoneNumber": [
-    ///       "O n√∫mero de telefone do cliente √© obrigat√≥rio."
+    ///       "O n˙mero de telefone do cliente È obrigatÛrio."
     ///     ]
     ///   }
     /// }
@@ -116,11 +116,11 @@ public class OrderController : ControllerBase
     /// }
     /// ```
     /// </remarks>
-    /// <param name="request">Dados para a cria√ß√£o do pedido (<see cref="CreateOrderRequest"/>).</param>
+    /// <param name="request">Dados para a criaÁ„o do pedido (<see cref="CreateOrderRequest"/>).</param>
     /// <returns>Um <see cref="CreatedAtActionResult"/> contendo o ID do pedido criado.</returns>
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria um novo pedido", Description = "Cria um novo pedido para o tenant autenticado. Requer autentica√ß√£o com Role=Tenant.")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))] // O tipo √© 'object' porque o retorno √© um tipo an√¥nimo `{ Id = orderId }`
+    [SwaggerOperation(Summary = "Cria um novo pedido", Description = "Cria um novo pedido para o tenant autenticado. Requer autenticaÁ„o com Role=Tenant.")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))] // O tipo È 'object' porque o retorno È um tipo anÙnimo `{ Id = orderId }`
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
@@ -138,8 +138,8 @@ public class OrderController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Este endpoint permite consultar uma lista de pedidos associados ao tenant autenticado.
-    /// √â poss√≠vel filtrar os resultados por n√∫mero de telefone do cliente e/ou pelo status do pedido.
-    /// Requer autentica√ß√£o com a role **Tenant**.
+    /// … possÌvel filtrar os resultados por n˙mero de telefone do cliente e/ou pelo status do pedido.
+    /// Requer autenticaÁ„o com a role **Tenant**.
     ///
     /// **Exemplo de Resposta de Sucesso (Status 200 OK):**
     /// ```json
@@ -176,11 +176,11 @@ public class OrderController : ControllerBase
     /// }
     /// ```
     /// </remarks>
-    /// <param name="customerPhoneNumber">Filtro opcional: n√∫mero de telefone do cliente.</param>
+    /// <param name="customerPhoneNumber">Filtro opcional: n˙mero de telefone do cliente.</param>
     /// <param name="status">Filtro opcional: status do pedido (e.g., 'Pending', 'Processing', 'Completed', 'Cancelled').</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo uma lista de pedidos.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista pedidos", Description = "Retorna uma lista de pedidos do tenant, com filtros opcionais. Requer autentica√ß√£o com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Lista pedidos", Description = "Retorna uma lista de pedidos do tenant, com filtros opcionais. Requer autenticaÁ„o com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<OrderResponse>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
@@ -199,11 +199,11 @@ public class OrderController : ControllerBase
     /// GetOrderById
 
     /// <summary>
-    /// Obt√©m os detalhes de um pedido espec√≠fico por ID.
+    /// ObtÈm os detalhes de um pedido especÌfico por ID.
     /// </summary>
     /// <remarks>
-    /// Este endpoint retorna todas as informa√ß√µes de um pedido, desde que o pedido perten√ßa ao tenant autenticado.
-    /// Requer autentica√ß√£o com a role **Tenant**.
+    /// Este endpoint retorna todas as informaÁıes de um pedido, desde que o pedido pertenÁa ao tenant autenticado.
+    /// Requer autenticaÁ„o com a role **Tenant**.
     ///
     /// **Exemplo de Resposta de Sucesso (Status 200 OK):**
     /// ```json
@@ -230,7 +230,7 @@ public class OrderController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "Pedido com ID '99999999-9999-9999-9999-999999999999' n√£o encontrado para este tenant."
+    ///   "detail": "Pedido com ID '99999999-9999-9999-9999-999999999999' n„o encontrado para este tenant."
     /// }
     /// ```
     ///
@@ -245,10 +245,10 @@ public class OrderController : ControllerBase
     /// ```
     /// </remarks>
     /// <param name="id">O **ID (GUID)** do pedido a ser consultado.</param>
-    /// <returns>Um <see cref="OkObjectResult"/> contendo os detalhes do pedido, ou um <see cref="NotFoundResult"/> se n√£o encontrado.</returns>
+    /// <returns>Um <see cref="OkObjectResult"/> contendo os detalhes do pedido, ou um <see cref="NotFoundResult"/> se n„o encontrado.</returns>
     [HttpGet("{id}")]
-    [SwaggerOperation(Summary = "Obt√©m pedido por ID", Description = "Retorna os detalhes de um pedido espec√≠fico do tenant. Requer autentica√ß√£o com Role=Tenant.")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))] // Usando object, pois o DTO OrderResponse n√£o foi fornecido
+    [SwaggerOperation(Summary = "ObtÈm pedido por ID", Description = "Retorna os detalhes de um pedido especÌfico do tenant. Requer autenticaÁ„o com Role=Tenant.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))] // Usando object, pois o DTO OrderResponse n„o foi fornecido
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
@@ -264,9 +264,9 @@ public class OrderController : ControllerBase
     /// Atualiza um pedido existente para o tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Este endpoint permite atualizar um pedido existente do tenant. A autentica√ß√£o com a role **Tenant** √© obrigat√≥ria.
+    /// Este endpoint permite atualizar um pedido existente do tenant. A autenticaÁ„o com a role **Tenant** È obrigatÛria.
     ///
-    /// **Exemplo de Requisi√ß√£o:**
+    /// **Exemplo de RequisiÁ„o:**
     /// ```json
     /// {
     ///   "status": "Completed",
@@ -292,7 +292,7 @@ public class OrderController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "Status": [
-    ///       "O status fornecido √© inv√°lido."
+    ///       "O status fornecido È inv·lido."
     ///     ]
     ///   }
     /// }
@@ -304,7 +304,7 @@ public class OrderController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "Pedido com ID '99999999-9999-9999-9999-999999999999' n√£o encontrado para atualiza√ß√£o."
+    ///   "detail": "Pedido com ID '99999999-9999-9999-9999-999999999999' n„o encontrado para atualizaÁ„o."
     /// }
     /// ```
     ///
@@ -319,10 +319,10 @@ public class OrderController : ControllerBase
     /// ```
     /// </remarks>
     /// <param name="id">O **ID (GUID)** do pedido a ser atualizado.</param>
-    /// <param name="request">Dados para a atualiza√ß√£o do pedido (<see cref="UpdateOrderRequest"/>).</param>
-    /// <returns>Um <see cref="NoContentResult"/> indicando o sucesso da atualiza√ß√£o.</returns>
+    /// <param name="request">Dados para a atualizaÁ„o do pedido (<see cref="UpdateOrderRequest"/>).</param>
+    /// <returns>Um <see cref="NoContentResult"/> indicando o sucesso da atualizaÁ„o.</returns>
     [HttpPut("{id}")]
-    [SwaggerOperation(Summary = "Atualiza um pedido", Description = "Atualiza os detalhes de um pedido existente para o tenant. Requer autentica√ß√£o com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Atualiza um pedido", Description = "Atualiza os detalhes de um pedido existente para o tenant. Requer autenticaÁ„o com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -338,10 +338,10 @@ public class OrderController : ControllerBase
     /// Atualiza parcialmente um pedido existente para o tenant autenticado.
     /// </summary>
     /// <remarks>
-    /// Envie apenas os campos que deseja alterar. Campos n√£o enviados permanecem inalterados.
+    /// Envie apenas os campos que deseja alterar. Campos n„o enviados permanecem inalterados.
     /// </remarks>
     [HttpPatch("{id}")]
-    [SwaggerOperation(Summary = "Atualiza parcialmente um pedido", Description = "Atualiza apenas os campos enviados do pedido para o tenant. Requer autentica√ß√£o com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Atualiza parcialmente um pedido", Description = "Atualiza apenas os campos enviados do pedido para o tenant. Requer autenticaÁ„o com Role=Tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -361,10 +361,10 @@ public class OrderController : ControllerBase
     /// <param name="request">Novo status do pedido.</param>
     /// <returns>Pedido atualizado.</returns>
     /// <response code="200">Status atualizado com sucesso.</response>
-    /// <response code="400">Transi√ß√£o de status inv√°lida.</response>
-    /// <response code="404">Pedido n√£o encontrado.</response>
+    /// <response code="400">TransiÁ„o de status inv·lida.</response>
+    /// <response code="404">Pedido n„o encontrado.</response>
     [HttpPatch("{id}/status")]
-    [SwaggerOperation(Summary = "Atualizar status do pedido", Description = "Atualiza o status de um pedido. S√≥ permite transi√ß√µes v√°lidas.")]
+    [SwaggerOperation(Summary = "Atualizar status do pedido", Description = "Atualiza o status de um pedido. SÛ permite transiÁıes v·lidas.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -376,25 +376,25 @@ public class OrderController : ControllerBase
 
         var currentStatus = order.Status.ToString();
         var newStatus = request.Status.ToString();
-        // Corrigir para evitar ?. em enum n√£o-nullable
+        // Corrigir para evitar ?. em enum n„o-nullable
         var paymentStatus = order.PaymentStatus.ToString();
 
-        // Regras de transi√ß√£o
+        // Regras de transiÁ„o
         if (currentStatus == "Pending")
         {
             if (newStatus == "Cancelled")
             {
                 if (paymentStatus == "Paid")
-                    return BadRequest("N√£o √© poss√≠vel cancelar um pedido j√° pago.");
+                    return BadRequest("N„o È possÌvel cancelar um pedido j· pago.");
             }
             else if (newStatus == "Completed")
             {
                 if (paymentStatus != "Paid")
-                    return BadRequest("S√≥ √© permitido finalizar um pedido j√° pago.");
+                    return BadRequest("SÛ È permitido finalizar um pedido j· pago.");
             }
             else if (newStatus != "InProduction")
             {
-                return BadRequest("Transi√ß√£o de status inv√°lida para pedido pendente.");
+                return BadRequest("TransiÁ„o de status inv·lida para pedido pendente.");
             }
         }
         else if (currentStatus == "InProduction")
@@ -402,21 +402,21 @@ public class OrderController : ControllerBase
             if (newStatus == "Cancelled")
             {
                 if (paymentStatus == "Paid")
-                    return BadRequest("N√£o √© poss√≠vel cancelar um pedido j√° pago.");
+                    return BadRequest("N„o È possÌvel cancelar um pedido j· pago.");
             }
             else if (newStatus == "Completed")
             {
                 if (paymentStatus != "Paid")
-                    return BadRequest("S√≥ √© permitido finalizar um pedido j√° pago.");
+                    return BadRequest("SÛ È permitido finalizar um pedido j· pago.");
             }
             else if (newStatus != "Pending")
             {
-                return BadRequest("Transi√ß√£o de status inv√°lida para pedido em produ√ß√£o.");
+                return BadRequest("TransiÁ„o de status inv·lida para pedido em produÁ„o.");
             }
         }
         else if (currentStatus == "Completed" || currentStatus == "Cancelled")
         {
-            return BadRequest("N√£o √© permitido alterar o status de um pedido j√° finalizado ou cancelado.");
+            return BadRequest("N„o È permitido alterar o status de um pedido j· finalizado ou cancelado.");
         }
 
         // Atualiza status
@@ -438,17 +438,17 @@ public class OrderController : ControllerBase
     /// <param name="request">Novo status de pagamento.</param>
     /// <returns>Pedido atualizado.</returns>
     /// <response code="200">Status de pagamento atualizado com sucesso.</response>
-    /// <response code="400">Transi√ß√£o de status inv√°lida.</response>
-    /// <response code="404">Pedido n√£o encontrado.</response>
+    /// <response code="400">TransiÁ„o de status inv·lida.</response>
+    /// <response code="404">Pedido n„o encontrado.</response>
     [HttpPatch("{id}/payment-status")]
-    [SwaggerOperation(Summary = "Atualizar status de pagamento do pedido", Description = "Atualiza o status de pagamento de um pedido. S√≥ permite transi√ß√µes v√°lidas. Ao aprovar pagamento, o status do pedido muda automaticamente para InProduction.")]
+    [SwaggerOperation(Summary = "Atualizar status de pagamento do pedido", Description = "Atualiza o status de pagamento de um pedido. SÛ permite transiÁıes v·lidas. Ao aprovar pagamento, o status do pedido muda automaticamente para InProduction.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateOrderPaymentStatus(string id, [FromBody] UpdateOrderPaymentStatusRequest request)
     {
         var patchRequest = new UpdateOrderRequest { OrderId = id, PaymentStatus = request.Status };
-        // Regra: se status for Paid, tamb√©m mover pedido para InProduction
+        // Regra: se status for Paid, tambÈm mover pedido para InProduction
         if (request.Status == Hephaestus.Domain.Enum.PaymentStatus.Paid)
             patchRequest.Status = Hephaestus.Domain.Enum.OrderStatus.InProduction;
         await _patchOrderUseCase.ExecuteAsync(patchRequest, User);
@@ -458,11 +458,11 @@ public class OrderController : ControllerBase
     ///### GetCustomerOrderStatus
 
     /// <summary>
-    /// Obt√©m o status dos pedidos de um cliente espec√≠fico.
+    /// ObtÈm o status dos pedidos de um cliente especÌfico.
     /// </summary>
     /// <remarks>
-    /// Este endpoint permite que um tenant consulte o status atual de todos os pedidos associados a um determinado n√∫mero de telefone de cliente.
-    /// Requer autentica√ß√£o com a role **Tenant**.
+    /// Este endpoint permite que um tenant consulte o status atual de todos os pedidos associados a um determinado n˙mero de telefone de cliente.
+    /// Requer autenticaÁ„o com a role **Tenant**.
     ///
     /// **Exemplo de Resposta de Sucesso (Status 200 OK):**
     /// ```json
@@ -493,7 +493,7 @@ public class OrderController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "CustomerPhoneNumber": [
-    ///       "O n√∫mero de telefone do cliente √© inv√°lido."
+    ///       "O n˙mero de telefone do cliente È inv·lido."
     ///     ]
     ///   }
     /// }
@@ -509,11 +509,11 @@ public class OrderController : ControllerBase
     /// }
     /// ```
     /// </remarks>
-    /// <param name="customerPhoneNumber">O n√∫mero de telefone do cliente para o qual consultar o status dos pedidos.</param>
+    /// <param name="customerPhoneNumber">O n˙mero de telefone do cliente para o qual consultar o status dos pedidos.</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo uma lista com o status dos pedidos do cliente.</returns>
     [HttpGet("customer/status")]
-    [SwaggerOperation(Summary = "Obt√©m status de pedidos do cliente", Description = "Retorna o status atual dos pedidos de um cliente espec√≠fico para o tenant. Requer autentica√ß√£o com Role=Tenant.")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<object>))] // Usando object, pois o DTO n√£o foi fornecido
+    [SwaggerOperation(Summary = "ObtÈm status de pedidos do cliente", Description = "Retorna o status atual dos pedidos de um cliente especÌfico para o tenant. Requer autenticaÁ„o com Role=Tenant.")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<object>))] // Usando object, pois o DTO n„o foi fornecido
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]

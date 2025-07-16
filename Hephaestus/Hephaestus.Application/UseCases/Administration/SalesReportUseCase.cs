@@ -1,6 +1,6 @@
-Ôªøusing FluentValidation.Results;
+using FluentValidation.Results;
 using Hephaestus.Application.Base;
-using Hephaestus.Application.DTOs.Response;
+using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Administration;
 using Hephaestus.Application.Services;
 using Hephaestus.Domain.Repositories;
@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Administration;
 
 /// <summary>
-/// Caso de uso para relat√≥rios de vendas.
+/// Caso de uso para relatÛrios de vendas.
 /// </summary>
 public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
 {
@@ -20,13 +20,13 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="SalesReportUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="SalesReportUseCase"/>.
     /// </summary>
-    /// <param name="salesRepository">Reposit√≥rio de vendas.</param>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
+    /// <param name="salesRepository">RepositÛrio de vendas.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
-    /// <param name="loggedUserService">Servi√ßo do usu√°rio logado.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
+    /// <param name="loggedUserService">ServiÁo do usu·rio logado.</param>
     public SalesReportUseCase(
         ISalesRepository salesRepository, 
         ICompanyRepository companyRepository,
@@ -41,37 +41,37 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
     }
 
     /// <summary>
-    /// Executa a gera√ß√£o do relat√≥rio de vendas.
+    /// Executa a geraÁ„o do relatÛrio de vendas.
     /// </summary>
     /// <param name="startDate">Data inicial (opcional).</param>
     /// <param name="endDate">Data final (opcional).</param>
-    /// <param name="user">Usu√°rio autenticado.</param>
-    /// <returns>Relat√≥rio de vendas.</returns>
+    /// <param name="user">Usu·rio autenticado.</param>
+    /// <returns>RelatÛrio de vendas.</returns>
     public async Task<SalesReportResponse> ExecuteAsync(DateTime? startDate, DateTime? endDate, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o de autoriza√ß√£o
+            // ValidaÁ„o de autorizaÁ„o
             ValidateAuthorization(user);
 
-            // Obter tenantId do usu√°rio logado (se aplic√°vel)
+            // Obter tenantId do usu·rio logado (se aplic·vel)
             var tenantId = GetTenantIdIfApplicable(user);
 
-            // Valida√ß√£o dos par√¢metros
+            // ValidaÁ„o dos par‚metros
             await ValidateParametersAsync(tenantId, startDate, endDate);
 
             // Busca das vendas
             var sales = await GetSalesAsync(startDate, endDate, tenantId);
 
-            // Gera√ß√£o do relat√≥rio
+            // GeraÁ„o do relatÛrio
             return GenerateSalesReport(sales);
-        }, "Gera√ß√£o de Relat√≥rio de Vendas");
+        }, "GeraÁ„o de RelatÛrio de Vendas");
     }
 
     /// <summary>
-    /// Obt√©m o tenantId se o usu√°rio for um tenant, caso contr√°rio retorna null.
+    /// ObtÈm o tenantId se o usu·rio for um tenant, caso contr·rio retorna null.
     /// </summary>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     /// <returns>TenantId ou null.</returns>
     private string? GetTenantIdIfApplicable(ClaimsPrincipal user)
     {
@@ -84,17 +84,17 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
     }
 
     /// <summary>
-    /// Valida a autoriza√ß√£o do usu√°rio.
+    /// Valida a autorizaÁ„o do usu·rio.
     /// </summary>
-    /// <param name="user">Usu√°rio autenticado.</param>
+    /// <param name="user">Usu·rio autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal user)
     {
         var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
-        ValidateAuthorization(userRole == "Admin" || userRole == "Tenant", "Apenas administradores ou tenants podem gerar relat√≥rios de vendas.", "Gerar Relat√≥rio", "Vendas");
+        ValidateAuthorization(userRole == "Admin" || userRole == "Tenant", "Apenas administradores ou tenants podem gerar relatÛrios de vendas.", "Gerar RelatÛrio", "Vendas");
     }
 
     /// <summary>
-    /// Valida os par√¢metros de entrada.
+    /// Valida os par‚metros de entrada.
     /// </summary>
     /// <param name="tenantId">ID do tenant.</param>
     /// <param name="startDate">Data inicial.</param>
@@ -108,7 +108,7 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
         }
 
         if (startDate.HasValue && endDate.HasValue && startDate > endDate)
-            throw new Hephaestus.Application.Exceptions.ValidationException("A data inicial n√£o pode ser posterior √† data final.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("A data inicial n„o pode ser posterior ‡ data final.", new ValidationResult());
     }
 
     /// <summary>
@@ -127,10 +127,10 @@ public class SalesReportUseCase : BaseUseCase, ISalesReportUseCase
     }
 
     /// <summary>
-    /// Gera o relat√≥rio de vendas.
+    /// Gera o relatÛrio de vendas.
     /// </summary>
     /// <param name="sales">Lista de vendas.</param>
-    /// <returns>Relat√≥rio de vendas.</returns>
+    /// <returns>RelatÛrio de vendas.</returns>
     private SalesReportResponse GenerateSalesReport(IEnumerable<Domain.Entities.SalesLog> sales)
     {
         var totalSales = sales.Sum(s => (double)s.TotalAmount);

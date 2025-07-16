@@ -1,5 +1,5 @@
-Ôªøusing FluentValidation;
-using Hephaestus.Application.DTOs.Request;
+using FluentValidation;
+using Hephaestus.Domain.DTOs.Request;
 
 namespace Hephaestus.Application.Validators;
 
@@ -9,32 +9,32 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
     {
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Nome √© obrigat√≥rio.")
+            .WithMessage("Nome È obrigatÛrio.")
             .MaximumLength(100)
-            .WithMessage("Nome deve ter no m√°ximo 100 caracteres.");
+            .WithMessage("Nome deve ter no m·ximo 100 caracteres.");
 
         RuleFor(x => x.Email)
             .NotEmpty()
-            .WithMessage("E-mail √© obrigat√≥rio.")
+            .WithMessage("E-mail È obrigatÛrio.")
             .EmailAddress()
-            .WithMessage("E-mail deve ter um formato v√°lido.");
+            .WithMessage("E-mail deve ter um formato v·lido.");
 
         RuleFor(x => x.PhoneNumber)
             .MaximumLength(20)
             .When(x => !string.IsNullOrEmpty(x.PhoneNumber))
-            .WithMessage("Telefone deve ter no m√°ximo 20 caracteres.");
+            .WithMessage("Telefone deve ter no m·ximo 20 caracteres.");
 
         RuleFor(x => x.ApiKey)
             .NotEmpty()
-            .WithMessage("ApiKey √© obrigat√≥ria.")
+            .WithMessage("ApiKey È obrigatÛria.")
             .MaximumLength(100)
-            .WithMessage("ApiKey deve ter no m√°ximo 100 caracteres.");
+            .WithMessage("ApiKey deve ter no m·ximo 100 caracteres.");
 
         RuleFor(x => x.FeeType)
             .NotEmpty()
-            .WithMessage("Tipo de taxa √© obrigat√≥rio.")
+            .WithMessage("Tipo de taxa È obrigatÛrio.")
             .IsInEnum()
-            .WithMessage("Tipo de taxa inv√°lido.");
+            .WithMessage("Tipo de taxa inv·lido.");
 
         RuleFor(x => x.FeeValue)
             .GreaterThanOrEqualTo(0)
@@ -42,29 +42,29 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
 
         RuleFor(x => x.State)
             .NotEmpty()
-            .WithMessage("Estado √© obrigat√≥rio.")
+            .WithMessage("Estado È obrigatÛrio.")
             .MaximumLength(2)
-            .WithMessage("Estado deve ter no m√°ximo 2 caracteres.");
+            .WithMessage("Estado deve ter no m·ximo 2 caracteres.");
 
         RuleFor(x => x.City)
             .MaximumLength(100)
             .When(x => !string.IsNullOrEmpty(x.City))
-            .WithMessage("Cidade deve ter no m√°ximo 100 caracteres.");
+            .WithMessage("Cidade deve ter no m·ximo 100 caracteres.");
 
         RuleFor(x => x.Neighborhood)
             .MaximumLength(100)
             .When(x => !string.IsNullOrEmpty(x.Neighborhood))
-            .WithMessage("Bairro deve ter no m√°ximo 100 caracteres.");
+            .WithMessage("Bairro deve ter no m·ximo 100 caracteres.");
 
         RuleFor(x => x.Street)
             .MaximumLength(200)
             .When(x => !string.IsNullOrEmpty(x.Street))
-            .WithMessage("Rua deve ter no m√°ximo 200 caracteres.");
+            .WithMessage("Rua deve ter no m·ximo 200 caracteres.");
 
         RuleFor(x => x.Number)
             .MaximumLength(20)
             .When(x => !string.IsNullOrEmpty(x.Number))
-            .WithMessage("N√∫mero deve ter no m√°ximo 20 caracteres.");
+            .WithMessage("N˙mero deve ter no m·ximo 20 caracteres.");
 
         RuleFor(x => x.Latitude)
             .InclusiveBetween(-90, 90)
@@ -79,11 +79,11 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
         RuleFor(x => x.Slogan)
             .MaximumLength(200)
             .When(x => !string.IsNullOrEmpty(x.Slogan))
-            .WithMessage("Slogan deve ter no m√°ximo 200 caracteres.");
+            .WithMessage("Slogan deve ter no m·ximo 200 caracteres.");
 
         RuleFor(x => x.Description)
             .MaximumLength(1000)
             .When(x => !string.IsNullOrEmpty(x.Description))
-            .WithMessage("Descri√ß√£o deve ter no m√°ximo 1000 caracteres.");
+            .WithMessage("DescriÁ„o deve ter no m·ximo 1000 caracteres.");
     }
 }

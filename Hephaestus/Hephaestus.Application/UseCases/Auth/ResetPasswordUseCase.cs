@@ -1,4 +1,4 @@
-Ôªøusing Hephaestus.Application.DTOs.Request;
+using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Application.Interfaces.Auth;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Enum;
@@ -15,7 +15,7 @@ using FluentValidation.Results;
 namespace Hephaestus.Application.UseCases.Auth;
 
 /// <summary>
-/// Caso de uso para redefini√ß√£o de senha de usu√°rios.
+/// Caso de uso para redefiniÁ„o de senha de usu·rios.
 /// </summary>
 public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
 {
@@ -26,15 +26,15 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
     private readonly IConfiguration _configuration;
 
     /// <summary>
-    /// Inicializa uma nova inst√¢ncia do <see cref="ResetPasswordUseCase"/>.
+    /// Inicializa uma nova inst‚ncia do <see cref="ResetPasswordUseCase"/>.
     /// </summary>
-    /// <param name="companyRepository">Reposit√≥rio de empresas.</param>
-    /// <param name="auditLogRepository">Reposit√≥rio de logs de auditoria.</param>
-    /// <param name="passwordResetTokenRepository">Reposit√≥rio de tokens de redefini√ß√£o de senha.</param>
-    /// <param name="messageService">Servi√ßo de envio de mensagens.</param>
-    /// <param name="configuration">Configura√ß√£o da aplica√ß√£o.</param>
+    /// <param name="companyRepository">RepositÛrio de empresas.</param>
+    /// <param name="auditLogRepository">RepositÛrio de logs de auditoria.</param>
+    /// <param name="passwordResetTokenRepository">RepositÛrio de tokens de redefiniÁ„o de senha.</param>
+    /// <param name="messageService">ServiÁo de envio de mensagens.</param>
+    /// <param name="configuration">ConfiguraÁ„o da aplicaÁ„o.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Servi√ßo de tratamento de exce√ß√µes.</param>
+    /// <param name="exceptionHandler">ServiÁo de tratamento de exceÁıes.</param>
     public ResetPasswordUseCase(
         ICompanyRepository companyRepository,
         IAuditLogRepository auditLogRepository,
@@ -53,56 +53,56 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
     }
 
     /// <summary>
-    /// Solicita um token para redefini√ß√£o de senha, enviando-o por WhatsApp ou e-mail.
+    /// Solicita um token para redefiniÁ„o de senha, enviando-o por WhatsApp ou e-mail.
     /// </summary>
-    /// <param name="request">E-mail do usu√°rio.</param>
-    /// <returns>Token de redefini√ß√£o de senha.</returns>
+    /// <param name="request">E-mail do usu·rio.</param>
+    /// <returns>Token de redefiniÁ„o de senha.</returns>
     public async Task<string> RequestResetAsync(ResetPasswordRequest request)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             // Remover todas as linhas que usam _validator ou _confirmValidator
 
-            // Busca e valida√ß√£o da empresa
+            // Busca e validaÁ„o da empresa
             var company = await GetAndValidateCompanyAsync(request.Email);
 
-            // Gera√ß√£o e armazenamento do token
+            // GeraÁ„o e armazenamento do token
             var resetToken = await GenerateAndStoreResetTokenAsync(request.Email);
 
             // Envio da mensagem
             await SendResetMessageAsync(company, resetToken);
 
             return resetToken;
-        }, "Solicita√ß√£o de Reset de Senha");
+        }, "SolicitaÁ„o de Reset de Senha");
     }
 
     /// <summary>
-    /// Confirma a redefini√ß√£o de senha com um token e atualiza a senha do usu√°rio.
+    /// Confirma a redefiniÁ„o de senha com um token e atualiza a senha do usu·rio.
     /// </summary>
     /// <param name="request">E-mail, token e nova senha.</param>
     public async Task ConfirmResetAsync(ResetPasswordConfirmRequest request)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida√ß√£o dos dados de entrada
+            // ValidaÁ„o dos dados de entrada
             // Remover todas as linhas que usam _validator ou _confirmValidator
 
-            // Busca e valida√ß√£o da empresa
+            // Busca e validaÁ„o da empresa
             var company = await GetAndValidateCompanyAsync(request.Email);
 
-            // Valida√ß√£o do token
+            // ValidaÁ„o do token
             await ValidateResetTokenAsync(request.Email, request.ResetToken);
 
-            // Atualiza√ß√£o da senha
+            // AtualizaÁ„o da senha
             await UpdatePasswordAsync(company, request.NewPassword);
 
             // Registro de auditoria
             await CreateAuditLogAsync(company);
 
-            // Remo√ß√£o do token usado
+            // RemoÁ„o do token usado
             await RemoveUsedTokenAsync(request.Email, request.ResetToken);
-        }, "Confirma√ß√£o de Reset de Senha");
+        }, "ConfirmaÁ„o de Reset de Senha");
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
     {
         var company = await _companyRepository.GetByEmailAsync(email);
         EnsureEntityExists(company, "Empresa", email);
-        return company!; // Garantido que n√£o √© null ap√≥s EnsureEntityExists
+        return company!; // Garantido que n„o È null apÛs EnsureEntityExists
     }
 
     /// <summary>
@@ -142,17 +142,17 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
     /// <param name="resetToken">Token de reset.</param>
     private async Task SendResetMessageAsync(Domain.Entities.Company company, string resetToken)
     {
-        var message = $"Seu token de redefini√ß√£o de senha √©: {resetToken}";
+        var message = $"Seu token de redefiniÁ„o de senha È: {resetToken}";
         try
         {
             if (!string.IsNullOrEmpty(company.PhoneNumber))
                 await _messageService.SendWhatsAppAsync(company.PhoneNumber, message);
             else
-                await _messageService.SendEmailAsync(company.Email, "Redefini√ß√£o de Senha", message);
+                await _messageService.SendEmailAsync(company.Email, "RedefiniÁ„o de Senha", message);
         }
         catch (HttpRequestException ex)
         {
-            await _messageService.SendEmailAsync(company.Email, "Redefini√ß√£o de Senha", $"{message}\nWhatsApp falhou: {ex.Message}");
+            await _messageService.SendEmailAsync(company.Email, "RedefiniÁ„o de Senha", $"{message}\nWhatsApp falhou: {ex.Message}");
         }
     }
 
@@ -165,7 +165,7 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
     {
         var tokenEntity = await _passwordResetTokenRepository.GetByEmailAndTokenAsync(email, resetToken);
         if (tokenEntity == null || tokenEntity.ExpiresAt < DateTime.UtcNow)
-            throw new BusinessRuleException("Token inv√°lido ou expirado.", "TOKEN_VALIDATION");
+            throw new BusinessRuleException("Token inv·lido ou expirado.", "TOKEN_VALIDATION");
     }
 
     /// <summary>
@@ -190,7 +190,7 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
             await _auditLogRepository.AddAsync(new AuditLog
             {
                 UserId = "System",
-                Action = "Redefini√ß√£o de Senha",
+                Action = "RedefiniÁ„o de Senha",
                 EntityId = company.Id,
                 Details = $"Senha da empresa {company.Name} redefinida.",
                 CreatedAt = DateTime.UtcNow
@@ -211,7 +211,7 @@ public class ResetPasswordUseCase : BaseUseCase, IResetPasswordUseCase
     }
 
     /// <summary>
-    /// Gera um token de redefini√ß√£o de senha seguro.
+    /// Gera um token de redefiniÁ„o de senha seguro.
     /// </summary>
     /// <returns>Token de 6 caracteres.</returns>
     private string GenerateResetToken()

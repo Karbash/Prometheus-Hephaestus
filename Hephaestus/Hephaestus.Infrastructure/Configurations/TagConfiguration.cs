@@ -1,4 +1,4 @@
-﻿using Hephaestus.Domain.Entities;
+using Hephaestus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,6 +21,6 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
             .HasMaxLength(50);
 
         builder.HasIndex(t => new { t.TenantId, t.Name })
-            .IsUnique(); // Garante que nomes de tags sejam únicos por tenant
+            .IsUnique(); // Garante que nomes de tags sejam �nicos por tenant
     }
 }

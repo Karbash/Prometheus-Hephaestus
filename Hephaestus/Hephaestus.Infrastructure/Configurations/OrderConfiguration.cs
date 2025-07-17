@@ -69,9 +69,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnName("updated_at")
             .IsRequired();
 
-        builder.HasMany(o => o.OrderItems)
-            .WithOne()
-            .HasForeignKey(oi => oi.OrderId);
+        // Removido: builder.HasMany(o => o.OrderItems).WithOne().HasForeignKey(oi => oi.OrderId);
 
         // Índices
         builder.HasIndex(o => o.TenantId);

@@ -14,4 +14,5 @@ public class OrderItem
     public List<Customization> Customizations { get; set; } = new List<Customization>();
     public string AdditionalIds { get; set; } = string.Empty;
     public string Tags { get; set; } = string.Empty;
+    public Order? Order { get; set; } // Propriedade de navegação para Order (agora anulável)
 }

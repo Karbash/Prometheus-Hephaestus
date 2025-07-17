@@ -3,6 +3,7 @@ using System;
 using Hephaestus.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hephaestus.Infrastructure.Migrations
 {
     [DbContext(typeof(HephaestusDbContext))]
-    partial class HephaestusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250717111008_InitDatabase")]
+    partial class InitDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,31 +82,25 @@ namespace Hephaestus.Infrastructure.Migrations
             modelBuilder.Entity("Hephaestus.Domain.Entities.Address", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("city");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Complement")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("complement");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("country");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
@@ -111,28 +108,23 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.Property<string>("EntityId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("entity_id");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("EntityType")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("entity_type");
+                        .HasColumnType("character varying(30)");
 
                     b.Property<double>("Latitude")
-                        .HasColumnType("double precision")
-                        .HasColumnName("latitude");
+                        .HasColumnType("double precision");
 
                     b.Property<double>("Longitude")
-                        .HasColumnType("double precision")
-                        .HasColumnName("longitude");
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Neighborhood")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("neighborhood");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Notes")
                         .HasColumnType("text");
@@ -140,8 +132,7 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.Property<string>("Number")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("number");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Reference")
                         .HasColumnType("text");
@@ -149,30 +140,25 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.Property<string>("State")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("state");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("street");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("tenant_id");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("type");
+                        .HasColumnType("character varying(30)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text");
@@ -180,12 +166,11 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("zip_code");
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.AuditLog", b =>
@@ -436,126 +421,105 @@ namespace Hephaestus.Infrastructure.Migrations
             modelBuilder.Entity("Hephaestus.Domain.Entities.CompanyImage", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("CompanyId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("company_id");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ImageType")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("image_type");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("image_url");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<bool>("IsMain")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_main");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("tenant_id");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("company_images", (string)null);
+                    b.ToTable("CompanyImages");
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.CompanyOperatingHour", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("CloseTime")
                         .HasMaxLength(5)
-                        .HasColumnType("character varying(5)")
-                        .HasColumnName("close_time");
+                        .HasColumnType("character varying(5)");
 
                     b.Property<string>("CompanyId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("company_id");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("DayOfWeek")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("day_of_week");
+                        .HasColumnType("character varying(10)");
 
                     b.Property<bool>("IsClosed")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_closed");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsOpen")
                         .HasColumnType("boolean");
 
                     b.Property<string>("OpenTime")
                         .HasMaxLength(5)
-                        .HasColumnType("character varying(5)")
-                        .HasColumnName("open_time");
+                        .HasColumnType("character varying(5)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId", "DayOfWeek")
                         .IsUnique();
 
-                    b.ToTable("company_operating_hours", (string)null);
+                    b.ToTable("CompanyOperatingHours", (string)null);
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.CompanySocialMedia", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("CompanyId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("company_id");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("Platform")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("platform");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("url");
+                        .HasColumnType("character varying(500)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId", "Platform")
                         .IsUnique();
 
-                    b.ToTable("company_social_media", (string)null);
+                    b.ToTable("CompanySocialMedia", (string)null);
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.Coupon", b =>
@@ -951,39 +915,32 @@ namespace Hephaestus.Infrastructure.Migrations
             modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItemImage", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("image_url");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("MenuItemId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("menu_item_id");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("tenant_id");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("menu_item_images", (string)null);
+                    b.ToTable("MenuItemImages");
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItemTag", b =>
@@ -1176,25 +1133,20 @@ namespace Hephaestus.Infrastructure.Migrations
             modelBuilder.Entity("Hephaestus.Domain.Entities.PasswordResetToken", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("email");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("expires_at");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasMaxLength(6)
-                        .HasColumnType("character varying(6)")
-                        .HasColumnName("token");
+                        .HasColumnType("character varying(6)");
 
                     b.HasKey("Id");
 
@@ -1223,7 +1175,7 @@ namespace Hephaestus.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("production_queues", (string)null);
+                    b.ToTable("ProductionQueues", (string)null);
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.Promotion", b =>

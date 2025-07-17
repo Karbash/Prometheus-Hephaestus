@@ -8,11 +8,35 @@ public class MenuItemImageConfiguration : IEntityTypeConfiguration<MenuItemImage
 {
     public void Configure(EntityTypeBuilder<MenuItemImage> builder)
     {
+        builder.ToTable("menu_item_images");
+
         builder.HasKey(mi => mi.Id);
-        builder.Property(mi => mi.MenuItemId).IsRequired().HasMaxLength(36);
-        builder.Property(mi => mi.TenantId).IsRequired().HasMaxLength(36);
-        builder.Property(mi => mi.ImageUrl).IsRequired().HasMaxLength(500);
-        builder.Property(mi => mi.CreatedAt).IsRequired();
-        builder.Property(mi => mi.UpdatedAt).IsRequired();
+
+        builder.Property(mi => mi.Id)
+            .HasColumnName("id")
+            .ValueGeneratedOnAdd();
+
+        builder.Property(mi => mi.MenuItemId)
+            .HasColumnName("menu_item_id")
+            .IsRequired()
+            .HasMaxLength(36);
+            
+        builder.Property(mi => mi.TenantId)
+            .HasColumnName("tenant_id")
+            .IsRequired()
+            .HasMaxLength(36);
+            
+        builder.Property(mi => mi.ImageUrl)
+            .HasColumnName("image_url")
+            .IsRequired()
+            .HasMaxLength(500);
+            
+        builder.Property(mi => mi.CreatedAt)
+            .HasColumnName("created_at")
+            .IsRequired();
+            
+        builder.Property(mi => mi.UpdatedAt)
+            .HasColumnName("updated_at")
+            .IsRequired();
     }
 }

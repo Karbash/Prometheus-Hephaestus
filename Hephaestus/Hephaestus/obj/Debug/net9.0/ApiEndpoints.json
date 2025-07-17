@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.CreateAdditionalRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.CreateAdditionalRequest",
         "IsRequired": true
       }
     ],
@@ -167,7 +167,7 @@
       },
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.UpdateAdditionalRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.UpdateAdditionalRequest",
         "IsRequired": true
       }
     ],
@@ -277,7 +277,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Application.DTOs.Response.AuditLogResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Hephaestus.Domain.DTOs.Response.AuditLogResponse, Hephaestus.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -384,7 +384,7 @@
       },
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.UpdateCompanyRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.UpdateCompanyRequest",
         "IsRequired": true
       }
     ],
@@ -518,7 +518,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.SalesReportResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.SalesReportResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -561,7 +561,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.LoginRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.LoginRequest",
         "IsRequired": true
       },
       {
@@ -649,7 +649,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.MfaRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.MfaRequest",
         "IsRequired": true
       }
     ],
@@ -741,7 +741,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.RegisterCompanyRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.RegisterCompanyRequest",
         "IsRequired": true
       }
     ],
@@ -799,7 +799,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.ResetPasswordConfirmRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.ResetPasswordConfirmRequest",
         "IsRequired": true
       }
     ],
@@ -844,7 +844,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.ResetPasswordRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.ResetPasswordRequest",
         "IsRequired": true
       }
     ],
@@ -893,7 +893,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.CreateCategoryRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.CreateCategoryRequest",
         "IsRequired": true
       }
     ],
@@ -1069,7 +1069,7 @@
       },
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.UpdateCategoryRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.UpdateCategoryRequest",
         "IsRequired": true
       }
     ],
@@ -1183,7 +1183,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.CompanyProfileResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.CompanyProfileResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1623,7 +1623,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.CustomerRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.CustomerRequest",
         "IsRequired": true
       }
     ],
@@ -1795,13 +1795,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.ExecuteQueryRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.ExecuteQueryRequest",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Hephaestus.Application.DTOs.Response.ExecuteQueryResponse",
+        "Type": "Hephaestus.Domain.DTOs.Response.ExecuteQueryResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1844,7 +1844,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.CreateMenuItemRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.CreateMenuItemRequest",
         "IsRequired": true
       }
     ],
@@ -2020,7 +2020,7 @@
       },
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.UpdateMenuItemRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.UpdateMenuItemRequest",
         "IsRequired": true
       }
     ],
@@ -2128,7 +2128,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.OpenAIRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.OpenAIRequest",
         "IsRequired": true
       }
     ],
@@ -2814,7 +2814,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.CreatePromotionRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.CreatePromotionRequest",
         "IsRequired": true
       }
     ],
@@ -2998,7 +2998,7 @@
       },
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.UpdatePromotionRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.UpdatePromotionRequest",
         "IsRequired": true
       }
     ],
@@ -3199,7 +3199,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "Hephaestus.Application.DTOs.Request.NotifyPromotionRequest",
+        "Type": "Hephaestus.Domain.DTOs.Request.NotifyPromotionRequest",
         "IsRequired": true
       }
     ],

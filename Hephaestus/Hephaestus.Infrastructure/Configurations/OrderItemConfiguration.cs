@@ -54,8 +54,8 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .IsRequired();
 
         // Relacionamentos
-        builder.HasOne<Order>()
-            .WithMany()
+        builder.HasOne(oi => oi.Order)
+            .WithMany(o => o.OrderItems)
             .HasForeignKey(oi => oi.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
 

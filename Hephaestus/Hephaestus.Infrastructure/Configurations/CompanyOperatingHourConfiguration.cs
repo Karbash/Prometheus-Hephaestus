@@ -8,15 +8,37 @@ public class CompanyOperatingHourConfiguration : IEntityTypeConfiguration<Compan
 {
     public void Configure(EntityTypeBuilder<CompanyOperatingHour> builder)
     {
-        builder.ToTable("CompanyOperatingHours");
+        builder.ToTable("company_operating_hours");
 
         builder.HasKey(oh => oh.Id);
 
-        builder.Property(oh => oh.CompanyId).IsRequired().HasMaxLength(36);
-        builder.Property(oh => oh.DayOfWeek).IsRequired().HasMaxLength(10);
-        builder.Property(oh => oh.OpenTime).HasMaxLength(5).IsRequired(false);
-        builder.Property(oh => oh.CloseTime).HasMaxLength(5).IsRequired(false);
-        builder.Property(oh => oh.IsClosed).IsRequired();
+        builder.Property(oh => oh.Id)
+            .HasColumnName("id")
+            .ValueGeneratedOnAdd();
+
+        builder.Property(oh => oh.CompanyId)
+            .HasColumnName("company_id")
+            .IsRequired()
+            .HasMaxLength(36);
+            
+        builder.Property(oh => oh.DayOfWeek)
+            .HasColumnName("day_of_week")
+            .IsRequired()
+            .HasMaxLength(10);
+            
+        builder.Property(oh => oh.OpenTime)
+            .HasColumnName("open_time")
+            .HasMaxLength(5)
+            .IsRequired(false);
+            
+        builder.Property(oh => oh.CloseTime)
+            .HasColumnName("close_time")
+            .HasMaxLength(5)
+            .IsRequired(false);
+            
+        builder.Property(oh => oh.IsClosed)
+            .HasColumnName("is_closed")
+            .IsRequired();
 
         builder.HasIndex(oh => new { oh.CompanyId, oh.DayOfWeek }).IsUnique();
 

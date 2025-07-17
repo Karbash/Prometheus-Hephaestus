@@ -8,7 +8,7 @@ public class ProductionQueueConfiguration : IEntityTypeConfiguration<ProductionQ
 {
     public void Configure(EntityTypeBuilder<ProductionQueue> builder)
     {
-        builder.ToTable("ProductionQueues");
+        builder.ToTable("production_queues");
 
         builder.HasKey(p => p.Id);
 

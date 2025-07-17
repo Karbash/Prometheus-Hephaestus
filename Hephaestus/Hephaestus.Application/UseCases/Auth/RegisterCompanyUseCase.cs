@@ -21,6 +21,7 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
     private readonly ICompanyRepository _companyRepository;
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly ILoggedUserService _loggedUserService;
+    private readonly IAddressRepository _addressRepository;
 
     /// <summary>
     /// Inicializa uma nova inst�ncia do <see cref="RegisterCompanyUseCase"/>.
@@ -34,6 +35,7 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
         ICompanyRepository companyRepository,
         IAuditLogRepository auditLogRepository,
         ILoggedUserService loggedUserService,
+        IAddressRepository addressRepository,
         ILogger<RegisterCompanyUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -41,6 +43,7 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
         _companyRepository = companyRepository;
         _auditLogRepository = auditLogRepository;
         _loggedUserService = loggedUserService;
+        _addressRepository = addressRepository;
     }
 
     /// <summary>
@@ -129,6 +132,29 @@ public class RegisterCompanyUseCase : BaseUseCase, IRegisterCompanyUseCase
         };
 
         await _companyRepository.AddAsync(company);
+
+        // Endereço
+        var address = new Hephaestus.Domain.Entities.Address
+        {
+            TenantId = company.Id,
+            EntityId = company.Id,
+            EntityType = "Company",
+            Street = request.Address.Street,
+            Number = request.Address.Number,
+            Complement = request.Address.Complement,
+            Neighborhood = request.Address.Neighborhood,
+            City = request.Address.City,
+            State = request.Address.State,
+            ZipCode = request.Address.ZipCode,
+            Reference = request.Address.Reference,
+            Notes = request.Address.Notes,
+            Latitude = request.Address.Latitude ?? 0,
+            Longitude = request.Address.Longitude ?? 0,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        await _addressRepository.AddAsync(address);
+
         return company;
     }
 

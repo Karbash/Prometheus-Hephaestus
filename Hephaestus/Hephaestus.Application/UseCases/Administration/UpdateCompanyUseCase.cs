@@ -19,6 +19,7 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
 {
     private readonly ICompanyRepository _companyRepository;
     private readonly IAuditLogRepository _auditLogRepository;
+    private readonly IAddressRepository _addressRepository;
 
     /// <summary>
     /// Inicializa uma nova inst�ncia do <see cref="UpdateCompanyUseCase"/>.
@@ -30,16 +31,18 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
     public UpdateCompanyUseCase(
         ICompanyRepository companyRepository, 
         IAuditLogRepository auditLogRepository,
+        IAddressRepository addressRepository,
         ILogger<UpdateCompanyUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
     {
         _companyRepository = companyRepository;
         _auditLogRepository = auditLogRepository;
+        _addressRepository = addressRepository;
     }
 
     /// <summary>
-    /// Executa a atualiza��o de uma empresa.
+    /// Executa a atualizao de uma empresa.
     /// </summary>
     /// <param name="id">ID da empresa.</param>
     /// <param name="request">Dados atualizados da empresa.</param>
@@ -125,6 +128,29 @@ public class UpdateCompanyUseCase : BaseUseCase, IUpdateCompanyUseCase
         company.Slogan = request.Slogan;
         company.Description = request.Description;
         await _companyRepository.UpdateAsync(company);
+
+        // Atualizar endereço se enviado
+        if (request.Address != null)
+        {
+            var addresses = await _addressRepository.GetByEntityAsync(company.Id, "Company");
+            var address = addresses.FirstOrDefault();
+            if (address != null)
+            {
+                address.Street = request.Address.Street;
+                address.Number = request.Address.Number;
+                address.Complement = request.Address.Complement;
+                address.Neighborhood = request.Address.Neighborhood;
+                address.City = request.Address.City;
+                address.State = request.Address.State;
+                address.ZipCode = request.Address.ZipCode;
+                address.Reference = request.Address.Reference;
+                address.Notes = request.Address.Notes;
+                address.Latitude = request.Address.Latitude ?? 0;
+                address.Longitude = request.Address.Longitude ?? 0;
+                address.UpdatedAt = DateTime.UtcNow;
+                await _addressRepository.UpdateAsync(address);
+            }
+        }
     }
 
     /// <summary>

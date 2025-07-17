@@ -499,9 +499,7 @@ namespace Hephaestus.Infrastructure.Migrations
                     unit_price = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
                     notes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AdditionalIds = table.Column<string>(type: "text", nullable: false),
-                    Tags = table.Column<string>(type: "text", nullable: false)
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

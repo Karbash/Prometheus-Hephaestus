@@ -9,7 +9,6 @@ public class Order
     public string CustomerId { get; set; } = string.Empty;
     public string CustomerPhoneNumber { get; set; } = string.Empty;
     public string CompanyId { get; set; } = string.Empty;
-    public string AddressId { get; set; } = string.Empty;
     public decimal TotalAmount { get; set; }
     public decimal PlatformFee { get; set; }
     public string? PromotionId { get; set; }

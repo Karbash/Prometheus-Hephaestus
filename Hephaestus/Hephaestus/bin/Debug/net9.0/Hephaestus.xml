@@ -12,18 +12,18 @@
         <member name="T:Hephaestus.Controllers.AdditionalController">
             <summary>
             Controller para gerenciamento de adicionais (itens extras) para um tenant.
-            Todas as operações requerem autenticação com a role "Tenant".
+            Todas as opera��es requerem autentica��o com a role "Tenant".
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.#ctor(Hephaestus.Application.Interfaces.Additional.ICreateAdditionalUseCase,Hephaestus.Application.Interfaces.Additional.IGetAdditionalsUseCase,Hephaestus.Application.Interfaces.Additional.IGetAdditionalByIdUseCase,Hephaestus.Application.Interfaces.Additional.IUpdateAdditionalUseCase,Hephaestus.Application.Interfaces.Additional.IDeleteAdditionalUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AdditionalController})">
             <summary>
-            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.AdditionalController"/>.
+            Inicializa uma nova inst�ncia do <see cref="T:Hephaestus.Controllers.AdditionalController"/>.
             </summary>
-            <param name="createAdditionalUseCase">Caso de uso para criação de adicionais.</param>
+            <param name="createAdditionalUseCase">Caso de uso para cria��o de adicionais.</param>
             <param name="getAdditionalsUseCase">Caso de uso para listagem de adicionais.</param>
-            <param name="getAdditionalByIdUseCase">Caso de uso para obtenção de adicional por ID.</param>
-            <param name="updateAdditionalUseCase">Caso de uso para atualização de adicionais.</param>
-            <param name="deleteAdditionalUseCase">Caso de uso para remoção de adicionais.</param>
+            <param name="getAdditionalByIdUseCase">Caso de uso para obten��o de adicional por ID.</param>
+            <param name="updateAdditionalUseCase">Caso de uso para atualiza��o de adicionais.</param>
+            <param name="deleteAdditionalUseCase">Caso de uso para remo��o de adicionais.</param>
             <param name="logger">Logger para registro de eventos.</param>
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.CreateAdditional(Hephaestus.Domain.DTOs.Request.CreateAdditionalRequest)">
@@ -33,7 +33,7 @@
             <remarks>
             Requer **Role: Tenant**.
             
-            Exemplo de requisição:
+            Exemplo de requisi��o:
             ```json
             {
               "name": "Bacon Crocante",
@@ -50,7 +50,7 @@
             }
             ```
             
-            Exemplo de erro de validação (Status 400 Bad Request):
+            Exemplo de erro de valida��o (Status 400 Bad Request):
             ```json
             {
               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -58,7 +58,7 @@
               "status": 400,
               "errors": {
                 "Name": [
-                  "O campo 'Name' é obrigatório."
+                  "O campo 'Name' � obrigat�rio."
                 ]
               }
             }
@@ -100,7 +100,7 @@
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.GetAdditionalById(System.String)">
             <summary>
-            Obtém os detalhes de um adicional específico pelo seu ID.
+            Obt�m os detalhes de um adicional espec�fico pelo seu ID.
             </summary>
             <remarks>
             Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
@@ -120,7 +120,7 @@
             Exemplo de erro (Status 404 Not Found):
             ```json
             {
-              "message": "Adicional com ID 'xyz' não encontrado para o tenant."
+              "message": "Adicional com ID 'xyz' n�o encontrado para o tenant."
             }
             ```
             </remarks>
@@ -129,12 +129,12 @@
         </member>
         <member name="M:Hephaestus.Controllers.AdditionalController.UpdateAdditional(System.String,Hephaestus.Domain.DTOs.Request.UpdateAdditionalRequest)">
             <summary>
-            Atualiza as informações de um adicional existente.
+            Atualiza as informa��es de um adicional existente.
             </summary>
             <remarks>
             Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
             
-            Exemplo de requisição:
+            Exemplo de requisi��o:
             ```json
             {
               "name": "Bacon Premium",
@@ -152,7 +152,7 @@
             Exemplo de erro (Status 404 Not Found):
             ```json
             {
-              "message": "Adicional com ID 'xyz' não encontrado para o tenant."
+              "message": "Adicional com ID 'xyz' n�o encontrado para o tenant."
             }
             ```
             </remarks>
@@ -175,7 +175,7 @@
             Exemplo de erro (Status 404 Not Found):
             ```json
             {
-              "message": "Adicional com ID 'xyz' não encontrado para o tenant."
+              "message": "Adicional com ID 'xyz' n�o encontrado para o tenant."
             }
             ```
             </remarks>
@@ -185,23 +185,23 @@
         <member name="T:Hephaestus.Controllers.AdministrationController">
             <summary>
             Controller para gerenciamento administrativo de empresas, vendas e logs.
-            Todas as operações requerem autenticação com a role "Admin" e a policy "RequireMfa".
+            Todas as opera��es requerem autentica��o com a role "Admin" e a policy "RequireMfa".
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.#ctor(Hephaestus.Application.Interfaces.Administration.IGetCompaniesUseCase,Hephaestus.Application.Interfaces.Administration.IUpdateCompanyUseCase,Hephaestus.Application.Interfaces.Administration.ISalesReportUseCase,Hephaestus.Application.Interfaces.Administration.IAuditLogUseCase,Hephaestus.Application.Interfaces.Administration.IGetCompaniesWithinRadiusUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AdministrationController})">
             <summary>
-            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.AdministrationController"/>.
+            Inicializa uma nova inst�ncia do <see cref="T:Hephaestus.Controllers.AdministrationController"/>.
             </summary>
             <param name="getCompaniesUseCase">Caso de uso para listar empresas.</param>
             <param name="updateCompanyUseCase">Caso de uso para atualizar empresas.</param>
-            <param name="salesReportUseCase">Caso de uso para relatórios de vendas.</param>
+            <param name="salesReportUseCase">Caso de uso para relat�rios de vendas.</param>
             <param name="auditLogUseCase">Caso de uso para logs de auditoria.</param>
             <param name="getCompaniesWithinRadiusUseCase">Caso de uso para buscar empresas dentro de um raio.</param>
             <param name="logger">Logger para registro de erros.</param>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.GetCompanies(System.Nullable{System.Boolean},System.Int32,System.Int32)">
             <summary>
-            Lista todas as empresas registradas no sistema, com opções de filtro e paginação.
+            Lista todas as empresas registradas no sistema, com op��es de filtro e pagina��o.
             </summary>
             <remarks>
             Requer **Role: Admin** e **MFA validado**.
@@ -218,14 +218,14 @@
                   "isEnabled": true,
                   "feeType": "Percentage",
                   "feeValue": 5.0,
-                  "city": "São Paulo",
+                  "city": "S�o Paulo",
                   "neighborhood": "Vila Mariana",
                   "street": "Rua Exemplo",
                   "number": "123",
                   "latitude": -23.550520,
                   "longitude": -46.633308,
                   "slogan": "O melhor da cidade!",
-                  "description": "Descrição da empresa."
+                  "description": "Descri��o da empresa."
                 }
               ],
               "totalCount": 1,
@@ -235,19 +235,19 @@
             ```
             </remarks>
             <param name="isEnabled">Filtro opcional para empresas habilitadas (true) ou desabilitadas (false).</param>
-            <param name="pageNumber">Número da página a ser retornada (padrão: 1).</param>
-            <param name="pageSize">Número de itens por página (padrão: 20).</param>
+            <param name="pageNumber">N�mero da p�gina a ser retornada (padr�o: 1).</param>
+            <param name="pageSize">N�mero de itens por p�gina (padr�o: 20).</param>
             <returns>Uma lista paginada de objetos `CompanyResponse`.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.UpdateCompany(System.String,Hephaestus.Domain.DTOs.Request.UpdateCompanyRequest)">
             <summary>
-            Atualiza as informações de uma empresa específica.
+            Atualiza as informa��es de uma empresa espec�fica.
             </summary>
             <remarks>
             Requer **Role: Admin** e **MFA validado**.
-            O `id` na URL deve corresponder ao `Id` no corpo da requisição.
+            O `id` na URL deve corresponder ao `Id` no corpo da requisi��o.
             
-            Exemplo de requisição:
+            Exemplo de requisi��o:
             ```json
             {
               "id": "123e4567-e89b-12d3-a456-426614174001",
@@ -264,8 +264,8 @@
               "number": "456",
               "latitude": -22.951916,
               "longitude": -43.210487,
-              "slogan": "Inovação a cada passo!",
-              "description": "Empresa líder em tecnologia."
+              "slogan": "Inova��o a cada passo!",
+              "description": "Empresa l�der em tecnologia."
             }
             ```
             
@@ -277,7 +277,7 @@
             Exemplo de erro (Status 404 Not Found):
             ```json
             {
-              "message": "Empresa com ID 'xyz' não encontrada."
+              "message": "Empresa com ID 'xyz' n�o encontrada."
             }
             ```
             </remarks>
@@ -287,7 +287,7 @@
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.GetSalesReport(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Gera um relatório consolidado de vendas de todas as empresas, com filtros opcionais por data.
+            Gera um relat�rio consolidado de vendas de todas as empresas, com filtros opcionais por data.
             </summary>
             <remarks>
             Requer **Role: Admin** e **MFA validado**.
@@ -319,17 +319,17 @@
             Exemplo de erro (Status 400 Bad Request):
             ```json
             {
-              "message": "Data inicial não pode ser maior que a data final."
+              "message": "Data inicial n�o pode ser maior que a data final."
             }
             ```
             </remarks>
             <param name="startDate">Data inicial para filtrar as vendas (opcional, formato ISO 8601).</param>
             <param name="endDate">Data final para filtrar as vendas (opcional, formato ISO 8601).</param>
-            <returns>Um objeto `SalesReportResponse` contendo o relatório de vendas.</returns>
+            <returns>Um objeto `SalesReportResponse` contendo o relat�rio de vendas.</returns>
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.GetAuditLogs(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Lista logs de auditoria de ações administrativas.
+            Lista logs de auditoria de a��es administrativas.
             </summary>
             <remarks>
             Requer **Role: Admin** e **MFA validado**.
@@ -355,7 +355,7 @@
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.GetCompaniesByRadius(System.Double,System.Double,System.Double,System.String,System.String)">
             <summary>
-            Lista empresas localizadas dentro de um raio geográfico específico.
+            Lista empresas localizadas dentro de um raio geogr�fico espec�fico.
             </summary>
             <remarks>
             Requer **Role: Admin** e **MFA validado**.
@@ -365,20 +365,20 @@
             [
               {
                 "id": "123e4567-e89b-12d3-a456-426614174001",
-                "name": "Empresa Próxima",
+                "name": "Empresa Pr�xima",
                 "email": "proxima@empresa.com",
                 "phoneNumber": "123456789",
                 "isEnabled": true,
                 "feeType": "Percentage",
                 "feeValue": 5.0,
-                "city": "São Paulo",
+                "city": "S�o Paulo",
                 "neighborhood": "Vila Mariana",
                 "street": "Rua Exemplo",
                 "number": "123",
                 "latitude": -23.550520,
                 "longitude": -46.633308,
                 "slogan": "O melhor da cidade!",
-                "description": "Descrição da empresa."
+                "description": "Descri��o da empresa."
               }
             ]
             ```
@@ -386,16 +386,16 @@
             Exemplo de erro (Status 400 Bad Request):
             ```json
             {
-              "message": "Parâmetros de localização inválidos. Latitude e Longitude devem ser fornecidos."
+              "message": "Par�metros de localiza��o inv�lidos. Latitude e Longitude devem ser fornecidos."
             }
             ```
             </remarks>
             <param name="centerLat">Latitude do centro do raio.</param>
             <param name="centerLon">Longitude do centro do raio.</param>
-            <param name="radiusKm">Raio em quilômetros para a busca.</param>
+            <param name="radiusKm">Raio em quil�metros para a busca.</param>
             <param name="city">Filtro opcional por cidade.</param>
             <param name="neighborhood">Filtro opcional por bairro.</param>
-            <returns>Uma lista de objetos `CompanyResponse` que estão dentro do raio especificado.</returns>
+            <returns>Uma lista de objetos `CompanyResponse` que est�o dentro do raio especificado.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.AuthController">
             <summary>
@@ -1475,7 +1475,7 @@
                    "id": "123e4567-e89b-12d3-a456-426614174001",
                    "tenantId": "456e7890-e89b-12d3-a456-426614174002",
                    "name": "X-Burger",
-                   "description": "Hambúrguer com queijo e salada",
+                   "description": "Hamb�rguer com queijo e salada",
                    "categoryId": "789e0123-e89b-12d3-a456-426614174003",
                    "price": 25.90,
                    "isAvailable": true,
@@ -1531,7 +1531,7 @@
                "id": "123e4567-e89b-12d3-a456-426614174001",
                "tenantId": "456e7890-e89b-12d3-a456-426614174002",
                "name": "X-Burger",
-               "description": "Hambúrguer com queijo e salada",
+               "description": "Hamb�rguer com queijo e salada",
                "categoryId": "789e0123-e89b-12d3-a456-426614174003",
                "price": 25.90,
                "isAvailable": true,
@@ -1579,7 +1579,7 @@
              ```json
              {
                "name": "X-Burger Deluxe",
-               "description": "Hambúrguer premium com queijo, salada e bacon",
+               "description": "Hamb�rguer premium com queijo, salada e bacon",
                "categoryId": "789e0123-e89b-12d3-a456-426614174003",
                "price": 32.90,
                "isAvailable": true,
@@ -2266,19 +2266,26 @@
             <response code="200">Uso registrado com sucesso.</response>
             <response code="400">Limite de uso atingido ou promo��o inv�lida.</response>
         </member>
+        <member name="M:Hephaestus.Controllers.ReviewController.Create(Hephaestus.Domain.DTOs.Request.CreateReviewRequest)">
+            <summary>
+            Cria um novo review para um pedido.
+            </summary>
+            <param name="request">Dados do review.</param>
+            <returns>Review criado.</returns>
+        </member>
         <member name="T:Hephaestus.Controllers.TagController">
             <summary>
-            Controller para gerenciamento de tags, permitindo a criação, listagem e exclusão de tags
-            associadas aos itens de cardápio de um tenant.
+            Controller para gerenciamento de tags, permitindo a cria��o, listagem e exclus�o de tags
+            associadas aos itens de card�pio de um tenant.
             </summary>
         </member>
         <member name="M:Hephaestus.Controllers.TagController.#ctor(Hephaestus.Application.Interfaces.Tag.ICreateTagUseCase,Hephaestus.Application.Interfaces.Tag.IGetAllTagsByTenantUseCase,Hephaestus.Application.Interfaces.Tag.IDeleteTagUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.TagController})">
             <summary>
-            Inicializa uma nova instância do <see cref="T:Hephaestus.Controllers.TagController"/>.
+            Inicializa uma nova inst�ncia do <see cref="T:Hephaestus.Controllers.TagController"/>.
             </summary>
-            <param name="createTagUseCase">Caso de uso para criação de tags.</param>
+            <param name="createTagUseCase">Caso de uso para cria��o de tags.</param>
             <param name="getAllTagsByTenantUseCase">Caso de uso para listagem de tags por tenant.</param>
-            <param name="deleteTagUseCase">Caso de uso para remoção de tags.</param>
+            <param name="deleteTagUseCase">Caso de uso para remo��o de tags.</param>
             <param name="logger">Logger para registro de eventos.</param>
         </member>
         <member name="M:Hephaestus.Controllers.TagController.CreateTag(Hephaestus.Domain.DTOs.Request.TagRequest)">
@@ -2288,9 +2295,9 @@
              </summary>
              <remarks>
              Este endpoint permite que um **Administrador** ou um **Tenant** crie uma nova tag,
-             que pode ser associada a itens do cardápio para categorização.
+             que pode ser associada a itens do card�pio para categoriza��o.
             
-             **Exemplo de Corpo da Requisição:**
+             **Exemplo de Corpo da Requisi��o:**
              ```json
              {
                "name": "Vegetariano"
@@ -2306,7 +2313,7 @@
              }
              ```
             
-             **Exemplo de Erro de Validação (Status 400 Bad Request):**
+             **Exemplo de Erro de Valida��o (Status 400 Bad Request):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -2314,7 +2321,7 @@
                "status": 400,
                "errors": {
                  "Name": [
-                   "O campo 'Name' é obrigatório e deve ter entre 3 e 50 caracteres."
+                   "O campo 'Name' � obrigat�rio e deve ter entre 3 e 50 caracteres."
                  ]
                }
              }
@@ -2326,17 +2333,17 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
                "title": "Conflict",
                "status": 409,
-               "detail": "A tag com o nome 'Vegetariano' já está registrada para este tenant."
+               "detail": "A tag com o nome 'Vegetariano' j� est� registrada para este tenant."
              }
              ```
             
-             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId não encontrado no token de autenticação ou token inválido."
+               "detail": "TenantId n�o encontrado no token de autentica��o ou token inv�lido."
              }
              ```
             
@@ -2361,9 +2368,9 @@
              </summary>
              <remarks>
              Este endpoint permite que um **Administrador** ou um **Tenant** remova uma tag
-             do sistema. A tag só pode ser excluída se não estiver associada a nenhum item de cardápio.
+             do sistema. A tag s� pode ser exclu�da se n�o estiver associada a nenhum item de card�pio.
             
-             **Exemplo de Requisição:**
+             **Exemplo de Requisi��o:**
              ```http
              DELETE /api/Tag/123e4567-e89b-12d3-a456-426614174001
              ```
@@ -2373,33 +2380,33 @@
              (Nenhum corpo de resposta)
              ```
             
-             **Exemplo de Erro de Requisição Inválida (Status 400 Bad Request):**
+             **Exemplo de Erro de Requisi��o Inv�lida (Status 400 Bad Request):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
                "title": "Bad Request",
                "status": 400,
-               "detail": "O ID da tag 'abc-123' não é um GUID válido."
+               "detail": "O ID da tag 'abc-123' n�o � um GUID v�lido."
              }
              ```
             
-             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId não encontrado no token de autenticação ou token inválido."
+               "detail": "TenantId n�o encontrado no token de autentica��o ou token inv�lido."
              }
              ```
             
-             **Exemplo de Erro Não Encontrado (Status 404 Not Found):**
+             **Exemplo de Erro N�o Encontrado (Status 404 Not Found):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
                "title": "Not Found",
                "status": 404,
-               "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' não encontrada ou não pertence a este tenant."
+               "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' n�o encontrada ou n�o pertence a este tenant."
              }
              ```
             
@@ -2409,7 +2416,7 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
                "title": "Conflict",
                "status": 409,
-               "detail": "A tag 'Vegetariano' não pode ser excluída pois está associada a um ou mais itens de cardápio."
+               "detail": "A tag 'Vegetariano' n�o pode ser exclu�da pois est� associada a um ou mais itens de card�pio."
              }
              ```
             
@@ -2423,8 +2430,8 @@
              }
              ```
              </remarks>
-             <param name="id">O **ID (GUID)** da tag a ser excluída.</param>
-             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicando o sucesso da exclusão.</returns>
+             <param name="id">O **ID (GUID)** da tag a ser exclu�da.</param>
+             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicando o sucesso da exclus�o.</returns>
         </member>
         <member name="T:Hephaestus.Api.Controllers.OrderController">
             <summary>

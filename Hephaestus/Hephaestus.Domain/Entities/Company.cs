@@ -17,7 +17,6 @@ public class Company
     public string? MfaSecret { get; set; }
     public string? Slogan { get; set; }
     public string? Description { get; set; }
-    public string AddressId { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? CreatedBy { get; set; }

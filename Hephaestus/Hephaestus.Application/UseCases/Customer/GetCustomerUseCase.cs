@@ -8,7 +8,6 @@ using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using Hephaestus.Domain.DTOs.Response;
 
 namespace Hephaestus.Application.UseCases.Customer;
 
@@ -20,6 +19,7 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
     private readonly ICustomerRepository _customerRepository;
     private readonly ICompanyRepository _companyRepository;
     private readonly ILoggedUserService _loggedUserService;
+    private readonly IAddressRepository _addressRepository;
 
     /// <summary>
     /// Inicializa uma nova inst�ncia do <see cref="GetCustomerUseCase"/>.
@@ -33,6 +33,7 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
         ILoggedUserService loggedUserService,
+        IAddressRepository addressRepository,
         ILogger<GetCustomerUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -40,6 +41,7 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
         _customerRepository = customerRepository;
         _companyRepository = companyRepository;
         _loggedUserService = loggedUserService;
+        _addressRepository = addressRepository;
     }
 
     /// <summary>
@@ -56,16 +58,40 @@ public class GetCustomerUseCase : BaseUseCase, IGetCustomerUseCase
         {
             var tenantId = _loggedUserService.GetTenantId(user);
             var pagedCustomers = await _customerRepository.GetAllAsync(phoneNumber, tenantId, pageNumber, pageSize, sortBy, sortOrder);
-            return new PagedResult<CustomerResponse>
+            var customerResponses = new List<CustomerResponse>();
+            foreach (var c in pagedCustomers.Items)
             {
-                Items = pagedCustomers.Items.Select(c => new CustomerResponse
+                var address = (await _addressRepository.GetByEntityAsync(c.Id, "Customer")).FirstOrDefault();
+                customerResponses.Add(new CustomerResponse
                 {
                     Id = c.Id,
                     TenantId = c.TenantId,
                     PhoneNumber = c.PhoneNumber,
                     Name = c.Name,
-                    CreatedAt = c.CreatedAt
-                }).ToList(),
+                    DietaryPreferences = c.DietaryPreferences,
+                    PreferredPaymentMethod = c.PreferredPaymentMethod,
+                    NotificationPreferences = c.NotificationPreferences ?? "email,sms",
+                    CreatedAt = c.CreatedAt,
+                    Address = address != null ? new AddressResponse
+                    {
+                        Id = address.Id,
+                        Street = address.Street,
+                        Number = address.Number,
+                        Complement = address.Complement,
+                        Neighborhood = address.Neighborhood,
+                        City = address.City,
+                        State = address.State,
+                        ZipCode = address.ZipCode,
+                        Reference = address.Reference,
+                        Notes = address.Notes,
+                        Latitude = address.Latitude,
+                        Longitude = address.Longitude
+                    } : null
+                });
+            }
+            return new PagedResult<CustomerResponse>
+            {
+                Items = customerResponses,
                 TotalCount = pagedCustomers.TotalCount,
                 PageNumber = pagedCustomers.PageNumber,
                 PageSize = pagedCustomers.PageSize

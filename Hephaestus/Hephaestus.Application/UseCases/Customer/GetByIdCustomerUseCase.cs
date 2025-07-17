@@ -19,6 +19,7 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
     private readonly ICustomerRepository _customerRepository;
     private readonly ICompanyRepository _companyRepository;
     private readonly ILoggedUserService _loggedUserService;
+    private readonly IAddressRepository _addressRepository;
 
     /// <summary>
     /// Inicializa uma nova inst�ncia do <see cref="GetByIdCustomerUseCase"/>.
@@ -32,6 +33,7 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
         ILoggedUserService loggedUserService,
+        IAddressRepository addressRepository,
         ILogger<GetByIdCustomerUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -39,6 +41,7 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
         _customerRepository = customerRepository;
         _companyRepository = companyRepository;
         _loggedUserService = loggedUserService;
+        _addressRepository = addressRepository;
     }
 
     /// <summary>
@@ -63,7 +66,7 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
             var customer = await GetAndValidateCustomerAsync(id, tenantId);
 
             // Convers�o para DTO de resposta
-            return customer != null ? ConvertToResponseDto(customer) : null;
+            return customer != null ? await ConvertToResponseDtoAsync(customer) : null;
         });
     }
 
@@ -118,15 +121,34 @@ public class GetByIdCustomerUseCase : BaseUseCase, IGetByIdCustomerUseCase
     /// </summary>
     /// <param name="customer">Cliente encontrado.</param>
     /// <returns>DTO de resposta.</returns>
-    private CustomerResponse ConvertToResponseDto(Domain.Entities.Customer customer)
+    private async Task<CustomerResponse> ConvertToResponseDtoAsync(Domain.Entities.Customer customer)
     {
+        var address = (await _addressRepository.GetByEntityAsync(customer.Id, "Customer")).FirstOrDefault();
         return new CustomerResponse
         {
             Id = customer.Id,
             TenantId = customer.TenantId,
             PhoneNumber = customer.PhoneNumber,
             Name = customer.Name,
-            CreatedAt = customer.CreatedAt
+            DietaryPreferences = customer.DietaryPreferences,
+            PreferredPaymentMethod = customer.PreferredPaymentMethod,
+            NotificationPreferences = customer.NotificationPreferences ?? "email,sms",
+            CreatedAt = customer.CreatedAt,
+            Address = address != null ? new AddressResponse
+            {
+                Id = address.Id,
+                Street = address.Street,
+                Number = address.Number,
+                Complement = address.Complement,
+                Neighborhood = address.Neighborhood,
+                City = address.City,
+                State = address.State,
+                ZipCode = address.ZipCode,
+                Reference = address.Reference,
+                Notes = address.Notes,
+                Latitude = address.Latitude,
+                Longitude = address.Longitude
+            } : null
         };
     }
 }

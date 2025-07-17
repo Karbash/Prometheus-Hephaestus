@@ -1,6 +1,5 @@
 using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.DTOs.Request;
-using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Administration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,7 @@ namespace Hephaestus.Controllers;
 
 /// <summary>
 /// Controller para gerenciamento administrativo de empresas, vendas e logs.
-/// Todas as operações requerem autenticação com a role "Admin" e a policy "RequireMfa".
+/// Todas as operaï¿½ï¿½es requerem autenticaï¿½ï¿½o com a role "Admin" e a policy "RequireMfa".
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -25,11 +24,11 @@ public class AdministrationController : ControllerBase
     private readonly ILogger<AdministrationController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="AdministrationController"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="AdministrationController"/>.
     /// </summary>
     /// <param name="getCompaniesUseCase">Caso de uso para listar empresas.</param>
     /// <param name="updateCompanyUseCase">Caso de uso para atualizar empresas.</param>
-    /// <param name="salesReportUseCase">Caso de uso para relatórios de vendas.</param>
+    /// <param name="salesReportUseCase">Caso de uso para relatï¿½rios de vendas.</param>
     /// <param name="auditLogUseCase">Caso de uso para logs de auditoria.</param>
     /// <param name="getCompaniesWithinRadiusUseCase">Caso de uso para buscar empresas dentro de um raio.</param>
     /// <param name="logger">Logger para registro de erros.</param>
@@ -50,7 +49,7 @@ public class AdministrationController : ControllerBase
     }
 
     /// <summary>
-    /// Lista todas as empresas registradas no sistema, com opções de filtro e paginação.
+    /// Lista todas as empresas registradas no sistema, com opï¿½ï¿½es de filtro e paginaï¿½ï¿½o.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Admin** e **MFA validado**.
@@ -67,14 +66,14 @@ public class AdministrationController : ControllerBase
     ///       "isEnabled": true,
     ///       "feeType": "Percentage",
     ///       "feeValue": 5.0,
-    ///       "city": "São Paulo",
+    ///       "city": "Sï¿½o Paulo",
     ///       "neighborhood": "Vila Mariana",
     ///       "street": "Rua Exemplo",
     ///       "number": "123",
     ///       "latitude": -23.550520,
     ///       "longitude": -46.633308,
     ///       "slogan": "O melhor da cidade!",
-    ///       "description": "Descrição da empresa."
+    ///       "description": "Descriï¿½ï¿½o da empresa."
     ///     }
     ///   ],
     ///   "totalCount": 1,
@@ -84,11 +83,11 @@ public class AdministrationController : ControllerBase
     /// ```
     /// </remarks>
     /// <param name="isEnabled">Filtro opcional para empresas habilitadas (true) ou desabilitadas (false).</param>
-    /// <param name="pageNumber">Número da página a ser retornada (padrão: 1).</param>
-    /// <param name="pageSize">Número de itens por página (padrão: 20).</param>
+    /// <param name="pageNumber">Nï¿½mero da pï¿½gina a ser retornada (padrï¿½o: 1).</param>
+    /// <param name="pageSize">Nï¿½mero de itens por pï¿½gina (padrï¿½o: 20).</param>
     /// <returns>Uma lista paginada de objetos `CompanyResponse`.</returns>
     [HttpGet("company")]
-    [SwaggerOperation(Summary = "Lista todas as empresas", Description = "Retorna uma lista paginada de empresas, com filtro opcional por status de habilitação (habilitadas ou desabilitadas).")]
+    [SwaggerOperation(Summary = "Lista todas as empresas", Description = "Retorna uma lista paginada de empresas, com filtro opcional por status de habilitaï¿½ï¿½o (habilitadas ou desabilitadas).")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<CompanyResponse>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -103,13 +102,13 @@ public class AdministrationController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza as informações de uma empresa específica.
+    /// Atualiza as informaï¿½ï¿½es de uma empresa especï¿½fica.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Admin** e **MFA validado**.
-    /// O `id` na URL deve corresponder ao `Id` no corpo da requisição.
+    /// O `id` na URL deve corresponder ao `Id` no corpo da requisiï¿½ï¿½o.
     /// 
-    /// Exemplo de requisição:
+    /// Exemplo de requisiï¿½ï¿½o:
     /// ```json
     /// {
     ///   "id": "123e4567-e89b-12d3-a456-426614174001",
@@ -126,8 +125,8 @@ public class AdministrationController : ControllerBase
     ///   "number": "456",
     ///   "latitude": -22.951916,
     ///   "longitude": -43.210487,
-    ///   "slogan": "Inovação a cada passo!",
-    ///   "description": "Empresa líder em tecnologia."
+    ///   "slogan": "Inovaï¿½ï¿½o a cada passo!",
+    ///   "description": "Empresa lï¿½der em tecnologia."
     /// }
     /// ```
     /// 
@@ -139,7 +138,7 @@ public class AdministrationController : ControllerBase
     /// Exemplo de erro (Status 404 Not Found):
     /// ```json
     /// {
-    ///   "message": "Empresa com ID 'xyz' não encontrada."
+    ///   "message": "Empresa com ID 'xyz' nï¿½o encontrada."
     /// }
     /// ```
     /// </remarks>
@@ -147,7 +146,7 @@ public class AdministrationController : ControllerBase
     /// <param name="request">Objeto com os dados atualizados da empresa.</param>
     /// <returns>Um `NoContentResult` em caso de sucesso.</returns>
     [HttpPut("company/{id}")]
-    [SwaggerOperation(Summary = "Atualiza uma empresa", Description = "Atualiza as informações de uma empresa existente. O ID na URL deve coincidir com o da empresa a ser atualizada.")]
+    [SwaggerOperation(Summary = "Atualiza uma empresa", Description = "Atualiza as informaï¿½ï¿½es de uma empresa existente. O ID na URL deve coincidir com o da empresa a ser atualizada.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -160,7 +159,7 @@ public class AdministrationController : ControllerBase
     }
 
     /// <summary>
-    /// Gera um relatório consolidado de vendas de todas as empresas, com filtros opcionais por data.
+    /// Gera um relatï¿½rio consolidado de vendas de todas as empresas, com filtros opcionais por data.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Admin** e **MFA validado**.
@@ -192,15 +191,15 @@ public class AdministrationController : ControllerBase
     /// Exemplo de erro (Status 400 Bad Request):
     /// ```json
     /// {
-    ///   "message": "Data inicial não pode ser maior que a data final."
+    ///   "message": "Data inicial nï¿½o pode ser maior que a data final."
     /// }
     /// ```
     /// </remarks>
     /// <param name="startDate">Data inicial para filtrar as vendas (opcional, formato ISO 8601).</param>
     /// <param name="endDate">Data final para filtrar as vendas (opcional, formato ISO 8601).</param>
-    /// <returns>Um objeto `SalesReportResponse` contendo o relatório de vendas.</returns>
+    /// <returns>Um objeto `SalesReportResponse` contendo o relatï¿½rio de vendas.</returns>
     [HttpGet("sales/admin")]
-    [SwaggerOperation(Summary = "Relatório de vendas consolidado", Description = "Retorna um relatório consolidado de vendas de todas as empresas, com filtros opcionais por período.")]
+    [SwaggerOperation(Summary = "Relatï¿½rio de vendas consolidado", Description = "Retorna um relatï¿½rio consolidado de vendas de todas as empresas, com filtros opcionais por perï¿½odo.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SalesReportResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -212,7 +211,7 @@ public class AdministrationController : ControllerBase
     }
 
     /// <summary>
-    /// Lista logs de auditoria de ações administrativas.
+    /// Lista logs de auditoria de aï¿½ï¿½es administrativas.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Admin** e **MFA validado**.
@@ -236,7 +235,7 @@ public class AdministrationController : ControllerBase
     /// <param name="endDate">Data final para filtrar logs (opcional, formato ISO 8601).</param>
     /// <returns>Uma lista de objetos `AuditLogResponse`.</returns>
     [HttpGet("audit-log")]
-    [SwaggerOperation(Summary = "Lista logs de auditoria", Description = "Retorna logs de auditoria de ações administrativas, com filtros opcionais por período.")]
+    [SwaggerOperation(Summary = "Lista logs de auditoria", Description = "Retorna logs de auditoria de aï¿½ï¿½es administrativas, com filtros opcionais por perï¿½odo.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AuditLogResponse>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -248,7 +247,7 @@ public class AdministrationController : ControllerBase
     }
 
     /// <summary>
-    /// Lista empresas localizadas dentro de um raio geográfico específico.
+    /// Lista empresas localizadas dentro de um raio geogrï¿½fico especï¿½fico.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Admin** e **MFA validado**.
@@ -258,20 +257,20 @@ public class AdministrationController : ControllerBase
     /// [
     ///   {
     ///     "id": "123e4567-e89b-12d3-a456-426614174001",
-    ///     "name": "Empresa Próxima",
+    ///     "name": "Empresa Prï¿½xima",
     ///     "email": "proxima@empresa.com",
     ///     "phoneNumber": "123456789",
     ///     "isEnabled": true,
     ///     "feeType": "Percentage",
     ///     "feeValue": 5.0,
-    ///     "city": "São Paulo",
+    ///     "city": "Sï¿½o Paulo",
     ///     "neighborhood": "Vila Mariana",
     ///     "street": "Rua Exemplo",
     ///     "number": "123",
     ///     "latitude": -23.550520,
     ///     "longitude": -46.633308,
     ///     "slogan": "O melhor da cidade!",
-    ///     "description": "Descrição da empresa."
+    ///     "description": "Descriï¿½ï¿½o da empresa."
     ///   }
     /// ]
     /// ```
@@ -279,18 +278,18 @@ public class AdministrationController : ControllerBase
     /// Exemplo de erro (Status 400 Bad Request):
     /// ```json
     /// {
-    ///   "message": "Parâmetros de localização inválidos. Latitude e Longitude devem ser fornecidos."
+    ///   "message": "Parï¿½metros de localizaï¿½ï¿½o invï¿½lidos. Latitude e Longitude devem ser fornecidos."
     /// }
     /// ```
     /// </remarks>
     /// <param name="centerLat">Latitude do centro do raio.</param>
     /// <param name="centerLon">Longitude do centro do raio.</param>
-    /// <param name="radiusKm">Raio em quilômetros para a busca.</param>
+    /// <param name="radiusKm">Raio em quilï¿½metros para a busca.</param>
     /// <param name="city">Filtro opcional por cidade.</param>
     /// <param name="neighborhood">Filtro opcional por bairro.</param>
-    /// <returns>Uma lista de objetos `CompanyResponse` que estão dentro do raio especificado.</returns>
+    /// <returns>Uma lista de objetos `CompanyResponse` que estï¿½o dentro do raio especificado.</returns>
     [HttpGet("company/radius")]
-    [SwaggerOperation(Summary = "Lista empresas por raio geográfico", Description = "Retorna empresas localizadas dentro de um raio especificado (em km) a partir de uma coordenada central, com filtros opcionais por cidade e bairro.")]
+    [SwaggerOperation(Summary = "Lista empresas por raio geogrï¿½fico", Description = "Retorna empresas localizadas dentro de um raio especificado (em km) a partir de uma coordenada central, com filtros opcionais por cidade e bairro.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CompanyResponse>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

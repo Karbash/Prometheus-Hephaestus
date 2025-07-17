@@ -1,7 +1,6 @@
 using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Additional;
-using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -11,7 +10,7 @@ namespace Hephaestus.Controllers;
 
 /// <summary>
 /// Controller para gerenciamento de adicionais (itens extras) para um tenant.
-/// Todas as operações requerem autenticação com a role "Tenant".
+/// Todas as operaï¿½ï¿½es requerem autenticaï¿½ï¿½o com a role "Tenant".
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -26,13 +25,13 @@ public class AdditionalController : ControllerBase
     private readonly ILogger<AdditionalController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="AdditionalController"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="AdditionalController"/>.
     /// </summary>
-    /// <param name="createAdditionalUseCase">Caso de uso para criação de adicionais.</param>
+    /// <param name="createAdditionalUseCase">Caso de uso para criaï¿½ï¿½o de adicionais.</param>
     /// <param name="getAdditionalsUseCase">Caso de uso para listagem de adicionais.</param>
-    /// <param name="getAdditionalByIdUseCase">Caso de uso para obtenção de adicional por ID.</param>
-    /// <param name="updateAdditionalUseCase">Caso de uso para atualização de adicionais.</param>
-    /// <param name="deleteAdditionalUseCase">Caso de uso para remoção de adicionais.</param>
+    /// <param name="getAdditionalByIdUseCase">Caso de uso para obtenï¿½ï¿½o de adicional por ID.</param>
+    /// <param name="updateAdditionalUseCase">Caso de uso para atualizaï¿½ï¿½o de adicionais.</param>
+    /// <param name="deleteAdditionalUseCase">Caso de uso para remoï¿½ï¿½o de adicionais.</param>
     /// <param name="logger">Logger para registro de eventos.</param>
     public AdditionalController(
         ICreateAdditionalUseCase createAdditionalUseCase,
@@ -56,7 +55,7 @@ public class AdditionalController : ControllerBase
     /// <remarks>
     /// Requer **Role: Tenant**.
     /// 
-    /// Exemplo de requisição:
+    /// Exemplo de requisiï¿½ï¿½o:
     /// ```json
     /// {
     ///   "name": "Bacon Crocante",
@@ -73,7 +72,7 @@ public class AdditionalController : ControllerBase
     /// }
     /// ```
     /// 
-    /// Exemplo de erro de validação (Status 400 Bad Request):
+    /// Exemplo de erro de validaï¿½ï¿½o (Status 400 Bad Request):
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -81,7 +80,7 @@ public class AdditionalController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "Name": [
-    ///       "O campo 'Name' é obrigatório."
+    ///       "O campo 'Name' ï¿½ obrigatï¿½rio."
     ///     ]
     ///   }
     /// }
@@ -90,7 +89,7 @@ public class AdditionalController : ControllerBase
     /// <param name="request">Dados do adicional a ser criado.</param>
     /// <returns>Um `CreatedAtActionResult` contendo o ID do novo adicional.</returns>
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria um novo adicional", Description = "Cria um novo adicional associado ao tenant do usuário autenticado.")]
+    [SwaggerOperation(Summary = "Cria um novo adicional", Description = "Cria um novo adicional associado ao tenant do usuï¿½rio autenticado.")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -146,7 +145,7 @@ public class AdditionalController : ControllerBase
     }
 
     /// <summary>
-    /// Obtém os detalhes de um adicional específico pelo seu ID.
+    /// Obtï¿½m os detalhes de um adicional especï¿½fico pelo seu ID.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
@@ -166,14 +165,14 @@ public class AdditionalController : ControllerBase
     /// Exemplo de erro (Status 404 Not Found):
     /// ```json
     /// {
-    ///   "message": "Adicional com ID 'xyz' não encontrado para o tenant."
+    ///   "message": "Adicional com ID 'xyz' nï¿½o encontrado para o tenant."
     /// }
     /// ```
     /// </remarks>
     /// <param name="id">ID do adicional (GUID).</param>
     /// <returns>Um objeto `AdditionalResponse` contendo os detalhes do adicional.</returns>
     [HttpGet("{id}")]
-    [SwaggerOperation(Summary = "Obtém adicional por ID", Description = "Retorna os detalhes de um adicional específico pelo seu ID, se ele pertencer ao tenant do usuário autenticado.")]
+    [SwaggerOperation(Summary = "Obtï¿½m adicional por ID", Description = "Retorna os detalhes de um adicional especï¿½fico pelo seu ID, se ele pertencer ao tenant do usuï¿½rio autenticado.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AdditionalResponse))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
@@ -185,12 +184,12 @@ public class AdditionalController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza as informações de um adicional existente.
+    /// Atualiza as informaï¿½ï¿½es de um adicional existente.
     /// </summary>
     /// <remarks>
     /// Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.
     /// 
-    /// Exemplo de requisição:
+    /// Exemplo de requisiï¿½ï¿½o:
     /// ```json
     /// {
     ///   "name": "Bacon Premium",
@@ -208,7 +207,7 @@ public class AdditionalController : ControllerBase
     /// Exemplo de erro (Status 404 Not Found):
     /// ```json
     /// {
-    ///   "message": "Adicional com ID 'xyz' não encontrado para o tenant."
+    ///   "message": "Adicional com ID 'xyz' nï¿½o encontrado para o tenant."
     /// }
     /// ```
     /// </remarks>
@@ -216,7 +215,7 @@ public class AdditionalController : ControllerBase
     /// <param name="request">Dados atualizados do adicional.</param>
     /// <returns>Um `NoContentResult` em caso de sucesso.</returns>
     [HttpPut("{id}")]
-    [SwaggerOperation(Summary = "Atualiza um adicional", Description = "Atualiza as informações de um adicional existente, se ele pertencer ao tenant do usuário autenticado.")]
+    [SwaggerOperation(Summary = "Atualiza um adicional", Description = "Atualiza as informaï¿½ï¿½es de um adicional existente, se ele pertencer ao tenant do usuï¿½rio autenticado.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -242,14 +241,14 @@ public class AdditionalController : ControllerBase
     /// Exemplo de erro (Status 404 Not Found):
     /// ```json
     /// {
-    ///   "message": "Adicional com ID 'xyz' não encontrado para o tenant."
+    ///   "message": "Adicional com ID 'xyz' nï¿½o encontrado para o tenant."
     /// }
     /// ```
     /// </remarks>
     /// <param name="id">ID do adicional a ser removido (GUID).</param>
     /// <returns>Um `NoContentResult` em caso de sucesso.</returns>
     [HttpDelete("{id}")]
-    [SwaggerOperation(Summary = "Remove um adicional", Description = "Remove um adicional existente, se ele pertencer ao tenant do usuário autenticado.")]
+    [SwaggerOperation(Summary = "Remove um adicional", Description = "Remove um adicional existente, se ele pertencer ao tenant do usuï¿½rio autenticado.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]

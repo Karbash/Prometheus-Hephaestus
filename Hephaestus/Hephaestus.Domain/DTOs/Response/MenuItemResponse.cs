@@ -10,7 +10,5 @@ public class MenuItemResponse
     public decimal Price { get; set; }
     public bool IsAvailable { get; set; }
     public List<string> TagIds { get; set; } = new List<string>(); // Alterado de Tags para TagIds
-    public List<string> AvailableAdditionalIds { get; set; } = new List<string>();
     public string? ImageUrl { get; set; }
-    public List<string> Tags { get; set; } = new(); // Adicionando campo Tags
 } 

@@ -1,7 +1,6 @@
 using Hephaestus.Domain.DTOs.Request;
-using Hephaestus.Domain.DTOs.Response; // Assuming TagResponse and PagedResult are defined here
-using Hephaestus.Application.Interfaces.Tag;
 using Hephaestus.Domain.DTOs.Response;
+using Hephaestus.Application.Interfaces.Tag;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -9,12 +8,12 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controller para gerenciamento de tags, permitindo a criação, listagem e exclusão de tags
-/// associadas aos itens de cardápio de um tenant.
+/// Controller para gerenciamento de tags, permitindo a criaï¿½ï¿½o, listagem e exclusï¿½o de tags
+/// associadas aos itens de cardï¿½pio de um tenant.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,Tenant")] // Autorização para Admin ou Tenant
+[Authorize(Roles = "Admin,Tenant")] // Autorizaï¿½ï¿½o para Admin ou Tenant
 public class TagController : ControllerBase
 {
     private readonly ICreateTagUseCase _createTagUseCase;
@@ -23,11 +22,11 @@ public class TagController : ControllerBase
     private readonly ILogger<TagController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="TagController"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="TagController"/>.
     /// </summary>
-    /// <param name="createTagUseCase">Caso de uso para criação de tags.</param>
+    /// <param name="createTagUseCase">Caso de uso para criaï¿½ï¿½o de tags.</param>
     /// <param name="getAllTagsByTenantUseCase">Caso de uso para listagem de tags por tenant.</param>
-    /// <param name="deleteTagUseCase">Caso de uso para remoção de tags.</param>
+    /// <param name="deleteTagUseCase">Caso de uso para remoï¿½ï¿½o de tags.</param>
     /// <param name="logger">Logger para registro de eventos.</param>
     public TagController(
         ICreateTagUseCase createTagUseCase,
@@ -48,9 +47,9 @@ public class TagController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Este endpoint permite que um **Administrador** ou um **Tenant** crie uma nova tag,
-    /// que pode ser associada a itens do cardápio para categorização.
+    /// que pode ser associada a itens do cardï¿½pio para categorizaï¿½ï¿½o.
     ///
-    /// **Exemplo de Corpo da Requisição:**
+    /// **Exemplo de Corpo da Requisiï¿½ï¿½o:**
     /// ```json
     /// {
     ///   "name": "Vegetariano"
@@ -66,7 +65,7 @@ public class TagController : ControllerBase
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Validação (Status 400 Bad Request):**
+    /// **Exemplo de Erro de Validaï¿½ï¿½o (Status 400 Bad Request):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -74,7 +73,7 @@ public class TagController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "Name": [
-    ///       "O campo 'Name' é obrigatório e deve ter entre 3 e 50 caracteres."
+    ///       "O campo 'Name' ï¿½ obrigatï¿½rio e deve ter entre 3 e 50 caracteres."
     ///     ]
     ///   }
     /// }
@@ -86,17 +85,17 @@ public class TagController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
     ///   "title": "Conflict",
     ///   "status": 409,
-    ///   "detail": "A tag com o nome 'Vegetariano' já está registrada para este tenant."
+    ///   "detail": "A tag com o nome 'Vegetariano' jï¿½ estï¿½ registrada para este tenant."
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// **Exemplo de Erro de Autorizaï¿½ï¿½o (Status 401 Unauthorized):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
     ///   "title": "Unauthorized",
     ///   "status": 401,
-    ///   "detail": "TenantId não encontrado no token de autenticação ou token inválido."
+    ///   "detail": "TenantId nï¿½o encontrado no token de autenticaï¿½ï¿½o ou token invï¿½lido."
     /// }
     /// ```
     ///
@@ -113,11 +112,11 @@ public class TagController : ControllerBase
     /// <param name="request">Dados da tag a ser criada (<see cref="TagRequest"/>).</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo o objeto <see cref="TagResponse"/> da tag criada.</returns>
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria uma nova tag", Description = "Cria uma nova tag para o tenant autenticado. Requer autenticação de administrador ou tenant.")]
+    [SwaggerOperation(Summary = "Cria uma nova tag", Description = "Cria uma nova tag para o tenant autenticado. Requer autenticaï¿½ï¿½o de administrador ou tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TagResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))] // Adicionado para indicar conflito (tag já existe)
+    [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))] // Adicionado para indicar conflito (tag jï¿½ existe)
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> CreateTag([FromBody] TagRequest request)
     {
@@ -132,9 +131,9 @@ public class TagController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Este endpoint permite que um **Administrador** ou um **Tenant** consulte as tags
-    /// registradas para o tenant autenticado, com suporte a paginação.
+    /// registradas para o tenant autenticado, com suporte a paginaï¿½ï¿½o.
     ///
-    /// **Exemplo de Requisição:**
+    /// **Exemplo de Requisiï¿½ï¿½o:**
     /// ```http
     /// GET /api/Tag?pageNumber=1&pageSize=10
     /// ```
@@ -151,7 +150,7 @@ public class TagController : ControllerBase
     ///     {
     ///       "id": "789e0123-e89b-12d3-a456-426614174003",
     ///       "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-    ///       "name": "Sem Glúten"
+    ///       "name": "Sem Glï¿½ten"
     ///     }
     ///   ],
     ///   "totalCount": 2,
@@ -160,13 +159,13 @@ public class TagController : ControllerBase
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// **Exemplo de Erro de Autorizaï¿½ï¿½o (Status 401 Unauthorized):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
     ///   "title": "Unauthorized",
     ///   "status": 401,
-    ///   "detail": "Acesso não autorizado."
+    ///   "detail": "Acesso nï¿½o autorizado."
     /// }
     /// ```
     ///
@@ -180,11 +179,11 @@ public class TagController : ControllerBase
     /// }
     /// ```
     /// </remarks>
-    /// <param name="pageNumber">Número da página a ser retornada (padrão: 1).</param>
-    /// <param name="pageSize">Número de itens por página (padrão: 20).</param>
+    /// <param name="pageNumber">Nï¿½mero da pï¿½gina a ser retornada (padrï¿½o: 1).</param>
+    /// <param name="pageSize">Nï¿½mero de itens por pï¿½gina (padrï¿½o: 20).</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo um <see cref="PagedResult{TagResponse}"/> com a lista paginada de tags.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista todas as tags do tenant autenticado", Description = "Retorna todas as tags associadas ao tenant do usuário autenticado, com suporte a paginação. Requer autenticação de administrador ou tenant.")]
+    [SwaggerOperation(Summary = "Lista todas as tags do tenant autenticado", Description = "Retorna todas as tags associadas ao tenant do usuï¿½rio autenticado, com suporte a paginaï¿½ï¿½o. Requer autenticaï¿½ï¿½o de administrador ou tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<TagResponse>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
@@ -205,9 +204,9 @@ public class TagController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Este endpoint permite que um **Administrador** ou um **Tenant** remova uma tag
-    /// do sistema. A tag só pode ser excluída se não estiver associada a nenhum item de cardápio.
+    /// do sistema. A tag sï¿½ pode ser excluï¿½da se nï¿½o estiver associada a nenhum item de cardï¿½pio.
     ///
-    /// **Exemplo de Requisição:**
+    /// **Exemplo de Requisiï¿½ï¿½o:**
     /// ```http
     /// DELETE /api/Tag/123e4567-e89b-12d3-a456-426614174001
     /// ```
@@ -217,33 +216,33 @@ public class TagController : ControllerBase
     /// (Nenhum corpo de resposta)
     /// ```
     ///
-    /// **Exemplo de Erro de Requisição Inválida (Status 400 Bad Request):**
+    /// **Exemplo de Erro de Requisiï¿½ï¿½o Invï¿½lida (Status 400 Bad Request):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "O ID da tag 'abc-123' não é um GUID válido."
+    ///   "detail": "O ID da tag 'abc-123' nï¿½o ï¿½ um GUID vï¿½lido."
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
+    /// **Exemplo de Erro de Autorizaï¿½ï¿½o (Status 401 Unauthorized):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
     ///   "title": "Unauthorized",
     ///   "status": 401,
-    ///   "detail": "TenantId não encontrado no token de autenticação ou token inválido."
+    ///   "detail": "TenantId nï¿½o encontrado no token de autenticaï¿½ï¿½o ou token invï¿½lido."
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro Não Encontrado (Status 404 Not Found):**
+    /// **Exemplo de Erro Nï¿½o Encontrado (Status 404 Not Found):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' não encontrada ou não pertence a este tenant."
+    ///   "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' nï¿½o encontrada ou nï¿½o pertence a este tenant."
     /// }
     /// ```
     ///
@@ -253,7 +252,7 @@ public class TagController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
     ///   "title": "Conflict",
     ///   "status": 409,
-    ///   "detail": "A tag 'Vegetariano' não pode ser excluída pois está associada a um ou mais itens de cardápio."
+    ///   "detail": "A tag 'Vegetariano' nï¿½o pode ser excluï¿½da pois estï¿½ associada a um ou mais itens de cardï¿½pio."
     /// }
     /// ```
     ///
@@ -267,12 +266,12 @@ public class TagController : ControllerBase
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">O **ID (GUID)** da tag a ser excluída.</param>
-    /// <returns>Um <see cref="NoContentResult"/> indicando o sucesso da exclusão.</returns>
+    /// <param name="id">O **ID (GUID)** da tag a ser excluï¿½da.</param>
+    /// <returns>Um <see cref="NoContentResult"/> indicando o sucesso da exclusï¿½o.</returns>
     [HttpDelete("{id}")]
-    [SwaggerOperation(Summary = "Exclui uma tag", Description = "Exclui uma tag pelo ID, desde que não esteja associada a itens do cardápio. Requer autenticação de administrador ou tenant.")]
+    [SwaggerOperation(Summary = "Exclui uma tag", Description = "Exclui uma tag pelo ID, desde que nï¿½o esteja associada a itens do cardï¿½pio. Requer autenticaï¿½ï¿½o de administrador ou tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para ID inválido
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para ID invï¿½lido
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))] // Para tags em uso

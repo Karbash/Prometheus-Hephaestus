@@ -1117,10 +1117,6 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("character varying(36)")
                         .HasColumnName("id");
 
-                    b.Property<string>("AdditionalIds")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -1146,10 +1142,6 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer")
                         .HasColumnName("quantity");
-
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("TenantId")
                         .IsRequired()

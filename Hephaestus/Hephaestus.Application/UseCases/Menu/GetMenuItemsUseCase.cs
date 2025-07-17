@@ -88,8 +88,7 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
             IsAvailable = m.IsAvailable,
             TagIds = m.MenuItemTags.Select(mt => mt.TagId).ToList(),
             // AvailableAdditionalIds foi removido da entidade
-            ImageUrl = m.ImageUrl,
-            Tags = m.MenuItemTags.Select(mt => mt.Tag.Name).ToList()
+            ImageUrl = m.ImageUrl
         }).ToList();
     }
 }

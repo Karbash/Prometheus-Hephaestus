@@ -14,4 +14,8 @@ public class CustomerResponse
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string? DietaryPreferences { get; set; }
+    public string? PreferredPaymentMethod { get; set; }
+    public string NotificationPreferences { get; set; } = "email,sms";
+    public AddressResponse? Address { get; set; }
 } 

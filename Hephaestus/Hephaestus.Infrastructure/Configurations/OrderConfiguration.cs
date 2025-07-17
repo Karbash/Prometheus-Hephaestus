@@ -28,10 +28,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnName("company_id")
             .IsRequired();
 
-        builder.Property(o => o.AddressId)
-            .HasColumnName("address_id")
-            .IsRequired();
-
         builder.Property(o => o.TotalAmount)
             .HasColumnName("total_amount")
             .HasColumnType("decimal(10,2)")

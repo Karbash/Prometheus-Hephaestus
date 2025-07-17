@@ -19,7 +19,6 @@ public class Customer
     public string LanguagePreference { get; set; } = "pt-BR";
     public string TimeZone { get; set; } = "America/Sao_Paulo";
     public string NotificationPreferences { get; set; } = "email,sms";
-    public string AddressId { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? CreatedBy { get; set; }

@@ -19,6 +19,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
     private readonly IValidator<UpdateOrderRequest> _validator;
     private readonly ILoggedUserService _loggedUserService;
     private readonly ICompanyRepository _companyRepository;
+    private readonly IAddressRepository _addressRepository;
     // Remover o uso do DbContext
 
     public UpdateOrderUseCase(
@@ -27,6 +28,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
         IValidator<UpdateOrderRequest> validator,
         ILoggedUserService loggedUserService,
         ICompanyRepository companyRepository,
+        IAddressRepository addressRepository,
         ILogger<UpdateOrderUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -36,6 +38,7 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
         _validator = validator;
         _loggedUserService = loggedUserService;
         _companyRepository = companyRepository;
+        _addressRepository = addressRepository;
     }
 
     public async Task ExecuteAsync(UpdateOrderRequest request, ClaimsPrincipal user)
@@ -74,36 +77,67 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                     existingItem.Quantity = item.Quantity;
                     existingItem.UnitPrice = menuItem.Price;
                     existingItem.Notes = item.Notes ?? string.Empty;
-                    existingItem.Tags = string.Join(",", item.Tags ?? new List<string>());
-                    existingItem.AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>());
                     existingItem.Customizations = item.Customizations?
                         .Select(c => new Customization
                         {
                             Type = c.Type,
                             Value = c.Value
                         }).ToList() ?? new List<Customization>();
+                    // Atualiza adicionais
+                    existingItem.OrderItemAdditionals = item.AdditionalIds?.Select(aid => new OrderItemAdditional
+                    {
+                        OrderItemId = existingItem.Id,
+                        AdditionalId = aid,
+                        TenantId = tenantId,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    }).ToList() ?? new List<OrderItemAdditional>();
+                    // Atualiza tags
+                    existingItem.OrderItemTags = item.TagIds?.Select(tid => new OrderItemTag
+                    {
+                        OrderItemId = existingItem.Id,
+                        TagId = tid,
+                        TenantId = tenantId,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    }).ToList() ?? new List<OrderItemTag>();
                     updatedItems.Add(existingItem);
                 }
                 else
                 {
                     // Novo item
+                    var newOrderItemId = Guid.NewGuid().ToString();
                     updatedItems.Add(new OrderItem
                     {
-                        Id = Guid.NewGuid().ToString(),
+                        Id = newOrderItemId,
                         TenantId = tenantId,
                         OrderId = order.Id,
                         MenuItemId = item.MenuItemId,
                         Quantity = item.Quantity,
                         UnitPrice = menuItem.Price,
                         Notes = item.Notes ?? string.Empty,
-                        Tags = string.Join(",", item.Tags ?? new List<string>()),
-                        AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>()),
                         Customizations = item.Customizations?
                             .Select(c => new Customization
                             {
                                 Type = c.Type,
                                 Value = c.Value
-                            }).ToList() ?? new List<Customization>()
+                            }).ToList() ?? new List<Customization>(),
+                        OrderItemAdditionals = item.AdditionalIds?.Select(aid => new OrderItemAdditional
+                        {
+                            OrderItemId = newOrderItemId,
+                            AdditionalId = aid,
+                            TenantId = tenantId,
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        }).ToList() ?? new List<OrderItemAdditional>(),
+                        OrderItemTags = item.TagIds?.Select(tid => new OrderItemTag
+                        {
+                            OrderItemId = newOrderItemId,
+                            TagId = tid,
+                            TenantId = tenantId,
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        }).ToList() ?? new List<OrderItemTag>()
                     });
                 }
                 totalAmount += item.Quantity * menuItem.Price;
@@ -117,6 +151,29 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
             // Atualiza a cole��o
             order.OrderItems = updatedItems;
             order.TotalAmount = totalAmount;
+
+            // Atualizar endereço se enviado
+            if (request.Address != null)
+            {
+                var addresses = await _addressRepository.GetByEntityAsync(order.Id, "Order");
+                var address = addresses.FirstOrDefault();
+                if (address != null)
+                {
+                    address.Street = request.Address.Street;
+                    address.Number = request.Address.Number;
+                    address.Complement = request.Address.Complement;
+                    address.Neighborhood = request.Address.Neighborhood;
+                    address.City = request.Address.City;
+                    address.State = request.Address.State;
+                    address.ZipCode = request.Address.ZipCode;
+                    address.Reference = request.Address.Reference;
+                    address.Notes = request.Address.Notes;
+                    address.Latitude = request.Address.Latitude ?? 0;
+                    address.Longitude = request.Address.Longitude ?? 0;
+                    address.UpdatedAt = DateTime.UtcNow;
+                    await _addressRepository.UpdateAsync(address);
+                }
+            }
 
             // Buscar a empresa e recalcular a taxa de plataforma
             var company = await _companyRepository.GetByIdAsync(tenantId);
@@ -161,14 +218,15 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                         existingItem.Quantity = item.Quantity;
                         existingItem.UnitPrice = menuItem.Price;
                         existingItem.Notes = item.Notes ?? string.Empty;
-                        existingItem.Tags = string.Join(",", item.Tags ?? new List<string>());
-                        existingItem.AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>());
                         existingItem.Customizations = item.Customizations?
                             .Select(c => new Customization
                             {
                                 Type = c.Type,
                                 Value = c.Value
                             }).ToList() ?? new List<Customization>();
+                        // Removido: OrderItemAdditionals = item.AdditionalIds?.Select(...)
+                        // Agora, OrderItemAdditionals deve ser manipulado via entidade de ligação normalizada
+                        // Se necessário, adicione lógica para buscar additionals normalizados aqui
                         updatedItems.Add(existingItem);
                     }
                     else
@@ -182,14 +240,13 @@ public class UpdateOrderUseCase : BaseUseCase, IUpdateOrderUseCase
                             Quantity = item.Quantity,
                             UnitPrice = menuItem.Price,
                             Notes = item.Notes ?? string.Empty,
-                            Tags = string.Join(",", item.Tags ?? new List<string>()),
-                            AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>()),
                             Customizations = item.Customizations?
                                 .Select(c => new Customization
                                 {
                                     Type = c.Type,
                                     Value = c.Value
-                                }).ToList() ?? new List<Customization>()
+                                }).ToList() ?? new List<Customization>(),
+                            // OrderItemAdditionals removido: agora deve ser manipulado via entidade de ligação normalizada
                         });
                     }
                     totalAmount += item.Quantity * menuItem.Price;

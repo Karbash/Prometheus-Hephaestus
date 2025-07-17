@@ -18,10 +18,5 @@ public class CustomerRequest
     public string LanguagePreference { get; set; } = "pt-BR";
     public string TimeZone { get; set; } = "America/Sao_Paulo";
     public string NotificationPreferences { get; set; } = "email,sms";
-    public string State { get; set; } = string.Empty; // Campo obrigatório para endereço
-    public string? City { get; set; }
-    public string? Street { get; set; }
-    public string? Number { get; set; }
-    public double? Latitude { get; set; }
-    public double? Longitude { get; set; }
+    public AddressRequest Address { get; set; } = new AddressRequest();
 }

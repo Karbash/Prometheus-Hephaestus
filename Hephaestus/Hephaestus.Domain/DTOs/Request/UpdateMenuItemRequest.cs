@@ -8,6 +8,5 @@ public class UpdateMenuItemRequest
     public decimal? Price { get; set; }
     public bool? IsAvailable { get; set; }
     public List<string>? TagIds { get; set; } // Alterado de Tags para TagIds
-    public List<string>? AvailableAdditionalIds { get; set; }
     public string? ImageUrl { get; set; }
 }

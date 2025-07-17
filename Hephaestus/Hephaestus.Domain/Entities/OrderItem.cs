@@ -12,7 +12,7 @@ public class OrderItem
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public List<Customization> Customizations { get; set; } = new List<Customization>();
-    public string AdditionalIds { get; set; } = string.Empty;
-    public string Tags { get; set; } = string.Empty;
+    public List<OrderItemAdditional> OrderItemAdditionals { get; set; } = new List<OrderItemAdditional>();
+    public List<OrderItemTag> OrderItemTags { get; set; } = new List<OrderItemTag>();
     public Order? Order { get; set; } // Propriedade de navegação para Order (agora anulável)
 }

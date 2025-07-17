@@ -56,7 +56,7 @@ public class OrderRepository : IOrderRepository
             query = query.Where(o => o.Status.ToString() == status);
         }
 
-        // Ordenação dinâmica
+        // Ordenaï¿½ï¿½o dinï¿½mica
         if (!string.IsNullOrEmpty(sortBy))
         {
             query = sortOrder?.ToLower() == "desc"
@@ -115,8 +115,6 @@ public class OrderRepository : IOrderRepository
                 existingItem.Quantity = item.Quantity;
                 existingItem.UnitPrice = item.UnitPrice;
                 existingItem.Notes = item.Notes;
-                existingItem.Tags = item.Tags;
-                existingItem.AdditionalIds = item.AdditionalIds;
                 existingItem.Customizations = item.Customizations;
             }
             else
@@ -125,7 +123,7 @@ public class OrderRepository : IOrderRepository
                 existingOrder.OrderItems.Add(item);
             }
         }
-        // Remove itens que não estão mais presentes
+        // Remove itens que nï¿½o estï¿½o mais presentes
         var itemsToRemove = existingOrder.OrderItems.Where(oi => !updatedItems.Any(ui => ui.Id == oi.Id)).ToList();
         foreach (var item in itemsToRemove)
         {

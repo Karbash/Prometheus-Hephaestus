@@ -29,6 +29,7 @@ using Hephaestus.Application.UseCases.OpenAI;
 using Hephaestus.Application.UseCases.Order;
 using Hephaestus.Application.UseCases.Promotion;
 using Hephaestus.Application.UseCases.Tag;
+using Hephaestus.Application.UseCases.Review;
 using Hephaestus.Application.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -130,6 +131,7 @@ public static class ApplicationServicesRegistration
 
         //Payment
         services.AddScoped<IProcessPaymentUseCase, ProcessPaymentUseCase>();
+        services.AddScoped<CreateReviewUseCase>();
     }
 
     private static void AddServices(IServiceCollection services)

@@ -19,6 +19,7 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
     private readonly ICompanyImageRepository _companyImageRepository;
     private readonly ICompanyOperatingHourRepository _companyOperatingHourRepository;
     private readonly ICompanySocialMediaRepository _companySocialMediaRepository;
+    private readonly IAddressRepository _addressRepository;
 
     /// <summary>
     /// Inicializa uma nova inst�ncia do <see cref="GetCompanyProfileUseCase"/>.
@@ -34,6 +35,7 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
         ICompanyImageRepository companyImageRepository,
         ICompanyOperatingHourRepository companyOperatingHourRepository,
         ICompanySocialMediaRepository companySocialMediaRepository,
+        IAddressRepository addressRepository,
         ILogger<GetCompanyProfileUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -42,6 +44,7 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
         _companyImageRepository = companyImageRepository;
         _companyOperatingHourRepository = companyOperatingHourRepository;
         _companySocialMediaRepository = companySocialMediaRepository;
+        _addressRepository = addressRepository;
     }
 
     /// <summary>
@@ -61,14 +64,15 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
 
             // Busca dos dados relacionados
             var relatedData = await GetRelatedDataAsync(companyId);
+            var address = (await _addressRepository.GetByEntityAsync(companyId, "Company")).FirstOrDefault();
 
             // Montagem da resposta
-            return BuildCompanyProfileResponse(company, relatedData);
+            return BuildCompanyProfileResponse(company, relatedData, address);
         });
     }
 
     /// <summary>
-    /// Valida os par�metros de entrada.
+    /// Valida os parmetros de entrada.
     /// </summary>
     /// <param name="companyId">ID da empresa.</param>
     private void ValidateInputParameters(string companyId)
@@ -120,9 +124,10 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
         Domain.Entities.Company company,
         (IEnumerable<Domain.Entities.CompanyImage> images, 
          IEnumerable<Domain.Entities.CompanyOperatingHour> operatingHours, 
-         IEnumerable<Domain.Entities.CompanySocialMedia> socialMedia) relatedData)
+         IEnumerable<Domain.Entities.CompanySocialMedia> socialMedia) relatedData,
+        Hephaestus.Domain.Entities.Address? address)
     {
-        // Nunca expor PasswordHash, ApiKey ou MfaSecret em DTOs de resposta. Se adicionar novos campos sens�veis, garantir que n�o sejam expostos aqui.
+        // Nunca expor PasswordHash, ApiKey ou MfaSecret em DTOs de resposta. Se adicionar novos campos sensveis, garantir que no sejam expostos aqui.
         return new CompanyProfileResponse
         {
             Id = company.Id,
@@ -131,6 +136,21 @@ public class GetCompanyProfileUseCase : BaseUseCase, IGetCompanyProfileUseCase
             PhoneNumber = company.PhoneNumber,
             Slogan = company.Slogan,
             Description = company.Description,
+            Address = address != null ? new AddressResponse
+            {
+                Id = address.Id,
+                Street = address.Street,
+                Number = address.Number,
+                Complement = address.Complement,
+                Neighborhood = address.Neighborhood,
+                City = address.City,
+                State = address.State,
+                ZipCode = address.ZipCode,
+                Reference = address.Reference,
+                Notes = address.Notes,
+                Latitude = address.Latitude,
+                Longitude = address.Longitude
+            } : null,
             Images = relatedData.images.Select(i => new CompanyImageResponse
             {
                 Id = i.Id,

@@ -107,28 +107,27 @@ public class CompanyRepository : ICompanyRepository
         try
         {
             const double earthRadius = 6371; // Raio da Terra em km
-            
-            // Query com join para Address
-            var query = from company in _context.Companies
-                       join address in _context.Addresses on company.AddressId equals address.Id
-                       where address.Latitude != 0 && address.Longitude != 0
-                       select new { Company = company, Address = address };
-
-            if (!string.IsNullOrWhiteSpace(city))
-                query = query.Where(x => x.Address.City.ToLower() == city.ToLower());
-
-            if (!string.IsNullOrWhiteSpace(neighborhood))
-                query = query.Where(x => x.Address.Neighborhood.ToLower() == neighborhood.ToLower());
-
-            var companiesWithAddresses = await query
-                .Where(x => earthRadius * 2 * Math.Asin(Math.Sqrt(
-                    Math.Pow(Math.Sin((x.Address.Latitude - centerLat) * Math.PI / 180 / 2), 2) +
-                    Math.Cos(centerLat * Math.PI / 180) * Math.Cos(x.Address.Latitude * Math.PI / 180) *
-                    Math.Pow(Math.Sin((x.Address.Longitude - centerLon) * Math.PI / 180 / 2), 2)
-                )) <= radiusKm)
+            // NOVO: Buscar empresas pelo AddressRepository ou via join normalizado
+            // Exemplo: buscar todos os endereços de empresas, filtrar por distância e retornar as empresas
+            var addresses = await _context.Addresses
+                .Where(a => a.EntityType == "Company" && a.Latitude != 0 && a.Longitude != 0)
                 .ToListAsync();
 
-            var companies = companiesWithAddresses.Select(x => x.Company).ToList();
+            if (!string.IsNullOrWhiteSpace(city))
+                addresses = addresses.Where(a => a.City.ToLower() == city.ToLower()).ToList();
+            if (!string.IsNullOrWhiteSpace(neighborhood))
+                addresses = addresses.Where(a => a.Neighborhood.ToLower() == neighborhood.ToLower()).ToList();
+
+            var filteredAddresses = addresses.Where(a =>
+                earthRadius * 2 * Math.Asin(Math.Sqrt(
+                    Math.Pow(Math.Sin((a.Latitude - centerLat) * Math.PI / 180 / 2), 2) +
+                    Math.Cos(centerLat * Math.PI / 180) * Math.Cos(a.Latitude * Math.PI / 180) *
+                    Math.Pow(Math.Sin((a.Longitude - centerLon) * Math.PI / 180 / 2), 2)
+                )) <= radiusKm
+            ).ToList();
+
+            var companyIds = filteredAddresses.Select(a => a.EntityId).Distinct().ToList();
+            var companies = await _context.Companies.Where(c => companyIds.Contains(c.Id)).ToListAsync();
 
             _logger.LogInformation("Empresas encontradas no raio: {@Companies}", companies);
             return companies;

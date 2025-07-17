@@ -6,5 +6,6 @@ namespace Hephaestus.Domain.DTOs.Response
         public string? OpenTime { get; set; }
         public string? CloseTime { get; set; }
         public bool IsClosed { get; set; }
+        public bool IsOpen { get; set; }
     }
 }

@@ -9,9 +9,15 @@ namespace Hephaestus.Domain.DTOs.Request
         public int Quantity { get; set; }
         public string? Notes { get; set; }
         public string? Id { get; set; }
-        public List<string>? AdditionalIds { get; set; }
-        public List<string>? Tags { get; set; }
         public List<CustomizationRequest>? Customizations { get; set; }
+        /// <summary>
+        /// Lista de IDs dos adicionais selecionados para o item do pedido.
+        /// </summary>
+        public List<string>? AdditionalIds { get; set; }
+        /// <summary>
+        /// Lista de IDs das tags selecionadas para o item do pedido.
+        /// </summary>
+        public List<string>? TagIds { get; set; }
     }
 
     public class CustomizationRequest

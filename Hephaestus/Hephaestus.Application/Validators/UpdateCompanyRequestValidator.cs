@@ -9,81 +9,63 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
     {
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Nome é obrigatório.")
+            .WithMessage("Nome ï¿½ obrigatï¿½rio.")
             .MaximumLength(100)
-            .WithMessage("Nome deve ter no máximo 100 caracteres.");
+            .WithMessage("Nome deve ter no mï¿½ximo 100 caracteres.");
 
         RuleFor(x => x.Email)
             .NotEmpty()
-            .WithMessage("E-mail é obrigatório.")
+            .WithMessage("E-mail ï¿½ obrigatï¿½rio.")
             .EmailAddress()
-            .WithMessage("E-mail deve ter um formato válido.");
+            .WithMessage("E-mail deve ter um formato vï¿½lido.");
 
         RuleFor(x => x.PhoneNumber)
             .MaximumLength(20)
             .When(x => !string.IsNullOrEmpty(x.PhoneNumber))
-            .WithMessage("Telefone deve ter no máximo 20 caracteres.");
+            .WithMessage("Telefone deve ter no mï¿½ximo 20 caracteres.");
 
         RuleFor(x => x.ApiKey)
             .NotEmpty()
-            .WithMessage("ApiKey é obrigatória.")
+            .WithMessage("ApiKey ï¿½ obrigatï¿½ria.")
             .MaximumLength(100)
-            .WithMessage("ApiKey deve ter no máximo 100 caracteres.");
+            .WithMessage("ApiKey deve ter no mï¿½ximo 100 caracteres.");
 
         RuleFor(x => x.FeeType)
             .NotEmpty()
-            .WithMessage("Tipo de taxa é obrigatório.")
+            .WithMessage("Tipo de taxa ï¿½ obrigatï¿½rio.")
             .IsInEnum()
-            .WithMessage("Tipo de taxa inválido.");
+            .WithMessage("Tipo de taxa invï¿½lido.");
 
         RuleFor(x => x.FeeValue)
             .GreaterThanOrEqualTo(0)
             .WithMessage("Valor da taxa deve ser maior ou igual a zero.");
 
-        RuleFor(x => x.State)
-            .NotEmpty()
-            .WithMessage("Estado é obrigatório.")
-            .MaximumLength(2)
-            .WithMessage("Estado deve ter no máximo 2 caracteres.");
-
-        RuleFor(x => x.City)
-            .MaximumLength(100)
-            .When(x => !string.IsNullOrEmpty(x.City))
-            .WithMessage("Cidade deve ter no máximo 100 caracteres.");
-
-        RuleFor(x => x.Neighborhood)
-            .MaximumLength(100)
-            .When(x => !string.IsNullOrEmpty(x.Neighborhood))
-            .WithMessage("Bairro deve ter no máximo 100 caracteres.");
-
-        RuleFor(x => x.Street)
-            .MaximumLength(200)
-            .When(x => !string.IsNullOrEmpty(x.Street))
-            .WithMessage("Rua deve ter no máximo 200 caracteres.");
-
-        RuleFor(x => x.Number)
-            .MaximumLength(20)
-            .When(x => !string.IsNullOrEmpty(x.Number))
-            .WithMessage("Número deve ter no máximo 20 caracteres.");
-
-        RuleFor(x => x.Latitude)
-            .InclusiveBetween(-90, 90)
-            .When(x => x.Latitude.HasValue)
-            .WithMessage("Latitude deve estar entre -90 e 90.");
-
-        RuleFor(x => x.Longitude)
-            .InclusiveBetween(-180, 180)
-            .When(x => x.Longitude.HasValue)
-            .WithMessage("Longitude deve estar entre -180 e 180.");
+        When(x => x.Address != null, () =>
+        {
+            RuleFor(x => x.Address.Street)
+                .NotEmpty().WithMessage("Rua Ã© obrigatÃ³ria.")
+                .MaximumLength(200).WithMessage("Rua deve ter no mÃ¡ximo 200 caracteres.");
+            RuleFor(x => x.Address.Number)
+                .NotEmpty().WithMessage("NÃºmero Ã© obrigatÃ³rio.")
+                .MaximumLength(20).WithMessage("NÃºmero deve ter no mÃ¡ximo 20 caracteres.");
+            RuleFor(x => x.Address.City)
+                .NotEmpty().WithMessage("Cidade Ã© obrigatÃ³ria.")
+                .MaximumLength(100).WithMessage("Cidade deve ter no mÃ¡ximo 100 caracteres.");
+            RuleFor(x => x.Address.State)
+                .NotEmpty().WithMessage("Estado Ã© obrigatÃ³rio.")
+                .MaximumLength(2).WithMessage("Estado deve ter no mÃ¡ximo 2 caracteres.");
+            RuleFor(x => x.Address.ZipCode)
+                .MaximumLength(20).When(x => !string.IsNullOrEmpty(x.Address.ZipCode)).WithMessage("CEP deve ter no mÃ¡ximo 20 caracteres.");
+        });
 
         RuleFor(x => x.Slogan)
             .MaximumLength(200)
             .When(x => !string.IsNullOrEmpty(x.Slogan))
-            .WithMessage("Slogan deve ter no máximo 200 caracteres.");
+            .WithMessage("Slogan deve ter no mï¿½ximo 200 caracteres.");
 
         RuleFor(x => x.Description)
             .MaximumLength(1000)
             .When(x => !string.IsNullOrEmpty(x.Description))
-            .WithMessage("Descrição deve ter no máximo 1000 caracteres.");
+            .WithMessage("Descriï¿½ï¿½o deve ter no mï¿½ximo 1000 caracteres.");
     }
 }

@@ -1,5 +1,3 @@
-using Hephaestus.Domain.DTOs.Request;
-using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Domain.DTOs.Response;

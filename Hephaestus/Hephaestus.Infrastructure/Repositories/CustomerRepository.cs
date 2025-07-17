@@ -1,5 +1,4 @@
 using Hephaestus.Domain.DTOs.Response;
-using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.Entities;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Infrastructure.Data;

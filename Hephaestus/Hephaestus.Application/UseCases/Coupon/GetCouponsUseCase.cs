@@ -2,7 +2,6 @@ using Hephaestus.Application.Base;
 using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Coupon;
 using Hephaestus.Application.Services;
-using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Domain.Repositories;
 using Hephaestus.Domain.Services;
 using Microsoft.Extensions.Logging;

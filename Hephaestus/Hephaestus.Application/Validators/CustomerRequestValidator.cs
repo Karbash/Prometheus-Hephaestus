@@ -8,29 +8,26 @@ public class CustomerRequestValidator : AbstractValidator<CustomerRequest>
     public CustomerRequestValidator()
     {
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage("N˙mero de telefone È obrigatÛrio.")
-            .MaximumLength(15).WithMessage("N˙mero de telefone deve ter no m·ximo 15 caracteres.");
+            .NotEmpty().WithMessage("NÔøΩmero de telefone ÔøΩ obrigatÔøΩrio.")
+            .MaximumLength(15).WithMessage("NÔøΩmero de telefone deve ter no mÔøΩximo 15 caracteres.");
 
         RuleFor(x => x.Name)
-            .MaximumLength(100).When(x => x.Name != null).WithMessage("Nome deve ter no m·ximo 100 caracteres.");
+            .MaximumLength(100).When(x => x.Name != null).WithMessage("Nome deve ter no mÔøΩximo 100 caracteres.");
 
-        RuleFor(x => x.State)
-            .NotEmpty().WithMessage("Estado È obrigatÛrio.")
-            .MaximumLength(50).WithMessage("Estado deve ter no m·ximo 50 caracteres.");
-
-        RuleFor(x => x.City)
-            .MaximumLength(100).When(x => x.City != null).WithMessage("Cidade deve ter no m·ximo 100 caracteres.");
-
-        RuleFor(x => x.Street)
-            .MaximumLength(200).When(x => x.Street != null).WithMessage("Rua deve ter no m·ximo 200 caracteres.");
-
-        RuleFor(x => x.Number)
-            .MaximumLength(20).When(x => x.Number != null).WithMessage("N˙mero deve ter no m·ximo 20 caracteres.");
-
-        RuleFor(x => x.Latitude)
-            .InclusiveBetween(-90, 90).When(x => x.Latitude != null).WithMessage("Latitude deve estar entre -90 e 90 graus.");
-
-        RuleFor(x => x.Longitude)
-            .InclusiveBetween(-180, 180).When(x => x.Longitude != null).WithMessage("Longitude deve estar entre -180 e 180 graus.");
+        RuleFor(x => x.Address).NotNull().WithMessage("Endere√ßo √© obrigat√≥rio.");
+        RuleFor(x => x.Address.Street)
+            .NotEmpty().WithMessage("Rua √© obrigat√≥ria.")
+            .MaximumLength(200).WithMessage("Rua deve ter no m√°ximo 200 caracteres.");
+        RuleFor(x => x.Address.Number)
+            .NotEmpty().WithMessage("N√∫mero √© obrigat√≥rio.")
+            .MaximumLength(20).WithMessage("N√∫mero deve ter no m√°ximo 20 caracteres.");
+        RuleFor(x => x.Address.City)
+            .NotEmpty().WithMessage("Cidade √© obrigat√≥ria.")
+            .MaximumLength(100).WithMessage("Cidade deve ter no m√°ximo 100 caracteres.");
+        RuleFor(x => x.Address.State)
+            .NotEmpty().WithMessage("Estado √© obrigat√≥rio.")
+            .MaximumLength(2).WithMessage("Estado deve ter no m√°ximo 2 caracteres.");
+        RuleFor(x => x.Address.ZipCode)
+            .MaximumLength(20).When(x => !string.IsNullOrEmpty(x.Address.ZipCode)).WithMessage("CEP deve ter no m√°ximo 20 caracteres.");
     }
 }

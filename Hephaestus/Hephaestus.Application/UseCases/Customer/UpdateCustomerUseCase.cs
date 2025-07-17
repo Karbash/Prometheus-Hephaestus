@@ -20,6 +20,7 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
     private readonly ICustomerRepository _customerRepository;
     private readonly ICompanyRepository _companyRepository;
     private readonly ILoggedUserService _loggedUserService;
+    private readonly IAddressRepository _addressRepository;
 
     /// <summary>
     /// Inicializa uma nova inst�ncia do <see cref="UpdateCustomerUseCase"/>.
@@ -33,6 +34,7 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
         ICustomerRepository customerRepository, 
         ICompanyRepository companyRepository,
         ILoggedUserService loggedUserService,
+        IAddressRepository addressRepository,
         ILogger<UpdateCustomerUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -40,6 +42,7 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
         _customerRepository = customerRepository;
         _companyRepository = companyRepository;
         _loggedUserService = loggedUserService;
+        _addressRepository = addressRepository;
     }
 
     /// <summary>
@@ -120,6 +123,9 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
             TenantId = tenantId,
             PhoneNumber = request.PhoneNumber,
             Name = request.Name,
+            DietaryPreferences = request.DietaryPreferences,
+            PreferredPaymentMethod = request.PreferredPaymentMethod,
+            NotificationPreferences = request.NotificationPreferences ?? "email,sms",
             CreatedAt = existingCustomer?.CreatedAt ?? DateTime.UtcNow
         };
 
@@ -127,5 +133,27 @@ public class UpdateCustomerUseCase : BaseUseCase, IUpdateCustomerUseCase
             await _customerRepository.AddAsync(customer);
         else
             await _customerRepository.UpdateAsync(customer);
+
+        // Endereço
+        var address = new Hephaestus.Domain.Entities.Address
+        {
+            TenantId = tenantId,
+            EntityId = customer.Id,
+            EntityType = "Customer",
+            Street = request.Address.Street,
+            Number = request.Address.Number,
+            Complement = request.Address.Complement,
+            Neighborhood = request.Address.Neighborhood,
+            City = request.Address.City,
+            State = request.Address.State,
+            ZipCode = request.Address.ZipCode,
+            Reference = request.Address.Reference,
+            Notes = request.Address.Notes,
+            Latitude = request.Address.Latitude ?? 0,
+            Longitude = request.Address.Longitude ?? 0,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        await _addressRepository.AddAsync(address);
     }
 }

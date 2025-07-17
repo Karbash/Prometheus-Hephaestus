@@ -13,16 +13,19 @@ public class GetOrderByIdUseCase : BaseUseCase, IGetOrderByIdUseCase
 {
     private readonly IOrderRepository _orderRepository;
     private readonly ILoggedUserService _loggedUserService;
+    private readonly IAddressRepository _addressRepository;
 
     public GetOrderByIdUseCase(
         IOrderRepository orderRepository,
         ILoggedUserService loggedUserService,
         ILogger<GetOrderByIdUseCase> logger,
-        IExceptionHandlerService exceptionHandler)
+        IExceptionHandlerService exceptionHandler,
+        IAddressRepository addressRepository)
         : base(logger, exceptionHandler)
     {
         _orderRepository = orderRepository;
         _loggedUserService = loggedUserService;
+        _addressRepository = addressRepository;
     }
 
     public async Task<OrderResponse> ExecuteAsync(string id, ClaimsPrincipal user)
@@ -32,7 +35,7 @@ public class GetOrderByIdUseCase : BaseUseCase, IGetOrderByIdUseCase
             var tenantId = _loggedUserService.GetTenantId(user);
             var order = await _orderRepository.GetByIdAsync(id, tenantId);
             EnsureResourceExists(order, "Order", id);
-
+            var address = (await _addressRepository.GetByEntityAsync(order.Id, "Order")).FirstOrDefault();
             return new OrderResponse
             {
                 Id = order.Id,
@@ -45,6 +48,7 @@ public class GetOrderByIdUseCase : BaseUseCase, IGetOrderByIdUseCase
                 PaymentStatus = order.PaymentStatus,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
+                // Address removido, pois agora é tratado via entidade normalizada
                 Items = order.OrderItems?.Select(oi => new OrderItemResponse
                 {
                     Id = oi.Id,
@@ -52,8 +56,8 @@ public class GetOrderByIdUseCase : BaseUseCase, IGetOrderByIdUseCase
                     Quantity = oi.Quantity,
                     UnitPrice = oi.UnitPrice,
                     Notes = oi.Notes,
-                    Tags = !string.IsNullOrEmpty(oi.Tags) ? oi.Tags.Split(',').ToList() : new List<string>(),
-                    AdditionalIds = !string.IsNullOrEmpty(oi.AdditionalIds) ? oi.AdditionalIds.Split(',').ToList() : new List<string>(),
+                    AdditionalIds = oi.OrderItemAdditionals?.Select(a => a.AdditionalId).ToList() ?? new List<string>(),
+                    TagIds = oi.OrderItemTags?.Select(t => t.TagId).ToList() ?? new List<string>(),
                     Customizations = oi.Customizations?.Select(c => new CustomizationResponse
                     {
                         Type = c.Type,

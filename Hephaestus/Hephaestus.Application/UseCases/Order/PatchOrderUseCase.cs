@@ -105,14 +105,30 @@ namespace Hephaestus.Application.UseCases.Order
                             existingItem.Quantity = item.Quantity;
                             existingItem.UnitPrice = menuItem.Price;
                             existingItem.Notes = item.Notes ?? string.Empty;
-                            existingItem.Tags = string.Join(",", item.Tags ?? new List<string>());
-                            existingItem.AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>());
                             existingItem.Customizations = item.Customizations?
                                 .Select(c => new Customization
                                 {
                                     Type = c.Type,
                                     Value = c.Value
                                 }).ToList() ?? new List<Customization>();
+                            // Atualiza adicionais
+                            existingItem.OrderItemAdditionals = item.AdditionalIds?.Select(aid => new OrderItemAdditional
+                            {
+                                OrderItemId = existingItem.Id,
+                                AdditionalId = aid,
+                                TenantId = tenantId,
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow
+                            }).ToList() ?? new List<OrderItemAdditional>();
+                            // Atualiza tags
+                            existingItem.OrderItemTags = item.TagIds?.Select(tid => new OrderItemTag
+                            {
+                                OrderItemId = existingItem.Id,
+                                TagId = tid,
+                                TenantId = tenantId,
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow
+                            }).ToList() ?? new List<OrderItemTag>();
                             updatedItems.Add(existingItem);
                         }
                         else
@@ -126,8 +142,6 @@ namespace Hephaestus.Application.UseCases.Order
                                 Quantity = item.Quantity,
                                 UnitPrice = menuItem.Price,
                                 Notes = item.Notes ?? string.Empty,
-                                Tags = string.Join(",", item.Tags ?? new List<string>()),
-                                AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>()),
                                 Customizations = item.Customizations?
                                     .Select(c => new Customization
                                     {

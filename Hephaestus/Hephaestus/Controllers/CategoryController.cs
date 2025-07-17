@@ -1,7 +1,6 @@
 using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Category;
-using Hephaestus.Domain.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;

@@ -22,6 +22,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
     private readonly IValidator<CreateOrderRequest> _validator;
     private readonly ILoggedUserService _loggedUserService;
     private readonly ICompanyRepository _companyRepository;
+    private readonly IAddressRepository _addressRepository;
 
     public CreateOrderUseCase(
         IOrderRepository orderRepository,
@@ -31,6 +32,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
         IValidator<CreateOrderRequest> validator,
         ILoggedUserService loggedUserService,
         ICompanyRepository companyRepository,
+        IAddressRepository addressRepository,
         ILogger<CreateOrderUseCase> logger,
         IExceptionHandlerService exceptionHandler)
         : base(logger, exceptionHandler)
@@ -42,6 +44,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
         _validator = validator;
         _loggedUserService = loggedUserService;
         _companyRepository = companyRepository;
+        _addressRepository = addressRepository;
     }
 
     public async Task<string> ExecuteAsync(CreateOrderRequest request, ClaimsPrincipal user)
@@ -60,23 +63,38 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                 var menuItem = await _menuItemRepository.GetByIdAsync(item.MenuItemId, tenantId);
                 EnsureResourceExists(menuItem, "MenuItem", item.MenuItemId);
 
+                var orderItemId = Guid.NewGuid().ToString();
                 var orderItem = new OrderItem
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = orderItemId,
                     TenantId = tenantId,
-                    OrderId = orderId, // Corrigido: todos os itens usam o mesmo OrderId
+                    OrderId = orderId,
                     MenuItemId = item.MenuItemId,
                     Quantity = item.Quantity,
                     UnitPrice = menuItem.Price,
                     Notes = item.Notes ?? string.Empty,
-                    Tags = string.Join(",", item.Tags ?? new List<string>()),
-                    AdditionalIds = string.Join(",", item.AdditionalIds ?? new List<string>()),
                     Customizations = item.Customizations?
                         .Select(c => new Customization
                         {
                             Type = c.Type,
                             Value = c.Value
-                        }).ToList() ?? new List<Customization>()
+                        }).ToList() ?? new List<Customization>(),
+                    OrderItemAdditionals = item.AdditionalIds?.Select(aid => new OrderItemAdditional
+                    {
+                        OrderItemId = orderItemId,
+                        AdditionalId = aid,
+                        TenantId = tenantId,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    }).ToList() ?? new List<OrderItemAdditional>(),
+                    OrderItemTags = item.TagIds?.Select(tid => new OrderItemTag
+                    {
+                        OrderItemId = orderItemId,
+                        TagId = tid,
+                        TenantId = tenantId,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    }).ToList() ?? new List<OrderItemTag>()
                 };
                 orderItems.Add(orderItem);
                 totalAmount += item.Quantity * menuItem.Price;
@@ -149,7 +167,6 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
                 CustomerId = request.CustomerPhoneNumber, // Assumindo que CustomerPhoneNumber é o CustomerId
                 CustomerPhoneNumber = request.CustomerPhoneNumber,
                 CompanyId = tenantId, // Assumindo que CompanyId é o mesmo que TenantId
-                AddressId = string.Empty, // Será preenchido posteriormente se necessário
                 TotalAmount = finalAmount,
                 PlatformFee = platformFee,
                 PromotionId = usedPromotion ? request.PromotionId : null,
@@ -163,6 +180,28 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
             };
 
             await _orderRepository.AddAsync(order);
+
+            // Endereço de entrega
+            var address = new Hephaestus.Domain.Entities.Address
+            {
+                TenantId = tenantId,
+                EntityId = order.Id,
+                EntityType = "Order",
+                Street = request.Address.Street,
+                Number = request.Address.Number,
+                Complement = request.Address.Complement,
+                Neighborhood = request.Address.Neighborhood,
+                City = request.Address.City,
+                State = request.Address.State,
+                ZipCode = request.Address.ZipCode,
+                Reference = request.Address.Reference,
+                Notes = request.Address.Notes,
+                Latitude = request.Address.Latitude ?? 0,
+                Longitude = request.Address.Longitude ?? 0,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _addressRepository.AddAsync(address);
 
             // Registrar uso de cupom/promoção
             if (usedCoupon)

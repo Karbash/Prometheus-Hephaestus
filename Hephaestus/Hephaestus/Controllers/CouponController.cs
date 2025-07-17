@@ -1,6 +1,5 @@
 using Hephaestus.Domain.DTOs.Request;
 using Hephaestus.Domain.DTOs.Response;
-using Hephaestus.Domain.DTOs.Response;
 using Hephaestus.Application.Interfaces.Coupon;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

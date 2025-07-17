@@ -69,9 +69,9 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .HasColumnName("description")
             .HasMaxLength(500);
 
-        builder.Property(c => c.AddressId)
-            .HasColumnName("address_id")
-            .IsRequired();
+        // builder.Property(c => c.AddressId)
+        //     .HasColumnName("address_id")
+        //     .IsRequired();
 
         builder.Property(c => c.CreatedAt)
             .HasColumnName("created_at")

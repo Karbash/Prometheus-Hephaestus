@@ -12,4 +12,5 @@ public class UpdateOrderRequest
     public OrderStatus? Status { get; set; } // Opcional
     public PaymentStatus? PaymentStatus { get; set; } // Opcional
     public List<OrderItemRequest>? Items { get; set; } // Opcional
+    public AddressRequest? Address { get; set; } // Opcional
 }

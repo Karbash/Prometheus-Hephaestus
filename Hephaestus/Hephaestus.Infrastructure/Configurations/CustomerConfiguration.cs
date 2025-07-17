@@ -29,9 +29,9 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasColumnName("name")
             .HasMaxLength(100);
 
-        builder.Property(c => c.AddressId)
-            .HasColumnName("address_id")
-            .IsRequired();
+        // builder.Property(c => c.AddressId)
+        //     .HasColumnName("address_id")
+        //     .IsRequired();
 
         builder.Property(c => c.CreatedAt)
             .HasColumnName("created_at")

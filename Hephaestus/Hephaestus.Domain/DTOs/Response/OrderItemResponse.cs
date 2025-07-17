@@ -7,9 +7,9 @@ namespace Hephaestus.Domain.DTOs.Response
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public string? Notes { get; set; }
-        public List<string>? Tags { get; set; }
-        public List<string>? AdditionalIds { get; set; }
         public List<CustomizationResponse>? Customizations { get; set; }
+        public List<string>? AdditionalIds { get; set; }
+        public List<string>? TagIds { get; set; }
     }
 
     public class CustomizationResponse

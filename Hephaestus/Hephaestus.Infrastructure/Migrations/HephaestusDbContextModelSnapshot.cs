@@ -337,11 +337,6 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddressId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("address_id");
-
                     b.Property<string>("ApiKey")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -724,11 +719,6 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddressId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("address_id");
-
                     b.Property<string>("Allergies")
                         .HasColumnType("text");
 
@@ -1022,11 +1012,6 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("id");
 
-                    b.Property<string>("AddressId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("address_id");
-
                     b.Property<string>("CompanyId")
                         .IsRequired()
                         .HasColumnType("text")
@@ -1114,10 +1099,6 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("character varying(36)")
                         .HasColumnName("id");
 
-                    b.Property<string>("AdditionalIds")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -1144,10 +1125,6 @@ namespace Hephaestus.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("quantity");
 
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasMaxLength(36)
@@ -1171,6 +1148,66 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("order_items", (string)null);
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.OrderItemAdditional", b =>
+                {
+                    b.Property<string>("OrderItemId")
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("orderitemid");
+
+                    b.Property<string>("AdditionalId")
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("additionalid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdat");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tenantid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updatedat");
+
+                    b.HasKey("OrderItemId", "AdditionalId");
+
+                    b.HasIndex("AdditionalId");
+
+                    b.ToTable("orderitemadditional", (string)null);
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.OrderItemTag", b =>
+                {
+                    b.Property<string>("OrderItemId")
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("orderitemid");
+
+                    b.Property<string>("TagId")
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("tagid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdat");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tenantid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updatedat");
+
+                    b.HasKey("OrderItemId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("orderitemtag", (string)null);
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.PasswordResetToken", b =>
@@ -1684,6 +1721,44 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("Hephaestus.Domain.Entities.OrderItemAdditional", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.Additional", "Additional")
+                        .WithMany()
+                        .HasForeignKey("AdditionalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hephaestus.Domain.Entities.OrderItem", "OrderItem")
+                        .WithMany("OrderItemAdditionals")
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Additional");
+
+                    b.Navigation("OrderItem");
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.OrderItemTag", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.OrderItem", "OrderItem")
+                        .WithMany("OrderItemTags")
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hephaestus.Domain.Entities.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("Hephaestus.Domain.Entities.ProductionQueue", b =>
                 {
                     b.HasOne("Hephaestus.Domain.Entities.Order", null)
@@ -1708,6 +1783,10 @@ namespace Hephaestus.Infrastructure.Migrations
             modelBuilder.Entity("Hephaestus.Domain.Entities.OrderItem", b =>
                 {
                     b.Navigation("Customizations");
+
+                    b.Navigation("OrderItemAdditionals");
+
+                    b.Navigation("OrderItemTags");
                 });
 #pragma warning restore 612, 618
         }

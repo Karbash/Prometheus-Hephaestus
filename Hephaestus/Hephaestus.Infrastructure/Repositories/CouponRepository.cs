@@ -102,4 +102,54 @@ public class CouponRepository : ICouponRepository
     {
         return await _context.CouponUsages.CountAsync(u => u.CouponId == couponId && u.TenantId == tenantId && u.CustomerId == customerPhoneNumber);
     }
+
+    public async Task<PagedResult<Coupon>> GetAllAsync(
+        string? companyId = null,
+        string? code = null,
+        string? customerPhoneNumber = null,
+        bool? isActive = null,
+        int pageNumber = 1,
+        int pageSize = 20,
+        string? sortBy = null,
+        string? sortOrder = "asc")
+    {
+        var query = _context.Coupons.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrEmpty(companyId))
+            ; // Não filtrar por CompanyId, pois não existe na entidade Coupon
+        if (!string.IsNullOrEmpty(code))
+            query = query.Where(c => c.Code.Contains(code));
+        if (!string.IsNullOrEmpty(customerPhoneNumber))
+            query = query.Where(c => c.CustomerId == customerPhoneNumber);
+        if (isActive.HasValue)
+            query = query.Where(c => c.IsActive == isActive.Value);
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            if (sortOrder?.ToLower() == "desc")
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            else
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(c => c.CreatedAt);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<Coupon>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
+    public Task<PagedResult<Coupon>> GetAllGlobalAsync(string? code = null, string? companyId = null, string? customerId = null, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -17,5 +17,8 @@ public class CustomerResponse
     public string? DietaryPreferences { get; set; }
     public string? PreferredPaymentMethod { get; set; }
     public string NotificationPreferences { get; set; } = "email,sms";
+    public string? CompanyId { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public AddressResponse? Address { get; set; }
 } 

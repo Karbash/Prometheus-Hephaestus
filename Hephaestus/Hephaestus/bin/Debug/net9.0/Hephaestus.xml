@@ -188,7 +188,7 @@
             Todas as opera��es requerem autentica��o com a role "Admin" e a policy "RequireMfa".
             </summary>
         </member>
-        <member name="M:Hephaestus.Controllers.AdministrationController.#ctor(Hephaestus.Application.Interfaces.Administration.IGetCompaniesUseCase,Hephaestus.Application.Interfaces.Administration.IUpdateCompanyUseCase,Hephaestus.Application.Interfaces.Administration.ISalesReportUseCase,Hephaestus.Application.Interfaces.Administration.IAuditLogUseCase,Hephaestus.Application.Interfaces.Administration.IGetCompaniesWithinRadiusUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AdministrationController})">
+        <member name="M:Hephaestus.Controllers.AdministrationController.#ctor(Hephaestus.Application.Interfaces.Administration.IGetCompaniesUseCase,Hephaestus.Application.Interfaces.Administration.IUpdateCompanyUseCase,Hephaestus.Application.Interfaces.Administration.ISalesReportUseCase,Hephaestus.Application.Interfaces.Administration.IAuditLogUseCase,Hephaestus.Application.Interfaces.Administration.IGetCompaniesWithinRadiusUseCase,Hephaestus.Application.Interfaces.Promotion.IGetAllPromotionsAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalMenuItemAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalTagAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalCategoryAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalCustomerAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalCouponAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalOrderAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalOrderItemAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalAddressAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalAdditionalAdminUseCase,Hephaestus.Application.Interfaces.Administration.IGlobalReviewAdminUseCase,Microsoft.Extensions.Logging.ILogger{Hephaestus.Controllers.AdministrationController})">
             <summary>
             Inicializa uma nova inst�ncia do <see cref="T:Hephaestus.Controllers.AdministrationController"/>.
             </summary>
@@ -201,7 +201,7 @@
         </member>
         <member name="M:Hephaestus.Controllers.AdministrationController.GetCompanies(System.Nullable{System.Boolean},System.Int32,System.Int32)">
             <summary>
-            Lista todas as empresas registradas no sistema, com op��es de filtro e pagina��o.
+            Lista todas as empresas registradas no sistema, com opes de filtro e paginao.
             </summary>
             <remarks>
             Requer **Role: Admin** e **MFA validado**.
@@ -353,50 +353,217 @@
             <param name="endDate">Data final para filtrar logs (opcional, formato ISO 8601).</param>
             <returns>Uma lista de objetos `AuditLogResponse`.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.AdministrationController.GetCompaniesByRadius(System.Double,System.Double,System.Double,System.String,System.String)">
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllPromotions(System.Nullable{System.Boolean},System.String,System.Int32,System.Int32,System.String,System.String)">
             <summary>
-            Lista empresas localizadas dentro de um raio geogr�fico espec�fico.
+            Lista todas as promoções do sistema, com filtros opcionais por status, empresa, paginação e ordenação.
             </summary>
             <remarks>
             Requer **Role: Admin** e **MFA validado**.
-            
-            Exemplo de resposta de sucesso (Status 200 OK):
-            ```json
-            [
-              {
-                "id": "123e4567-e89b-12d3-a456-426614174001",
-                "name": "Empresa Pr�xima",
-                "email": "proxima@empresa.com",
-                "phoneNumber": "123456789",
-                "isEnabled": true,
-                "feeType": "Percentage",
-                "feeValue": 5.0,
-                "city": "S�o Paulo",
-                "neighborhood": "Vila Mariana",
-                "street": "Rua Exemplo",
-                "number": "123",
-                "latitude": -23.550520,
-                "longitude": -46.633308,
-                "slogan": "O melhor da cidade!",
-                "description": "Descri��o da empresa."
-              }
-            ]
-            ```
-            
-            Exemplo de erro (Status 400 Bad Request):
-            ```json
-            {
-              "message": "Par�metros de localiza��o inv�lidos. Latitude e Longitude devem ser fornecidos."
-            }
-            ```
             </remarks>
-            <param name="centerLat">Latitude do centro do raio.</param>
-            <param name="centerLon">Longitude do centro do raio.</param>
-            <param name="radiusKm">Raio em quil�metros para a busca.</param>
-            <param name="city">Filtro opcional por cidade.</param>
-            <param name="neighborhood">Filtro opcional por bairro.</param>
-            <returns>Uma lista de objetos `CompanyResponse` que est�o dentro do raio especificado.</returns>
+            <param name="isActive">Filtro opcional para promoções ativas.</param>
+            <param name="companyId">Filtro opcional por empresa.</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Itens por página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação.</param>
+            <param name="sortOrder">Ordem (asc/desc).</param>
+            <returns>Uma lista paginada de promoções.</returns>
         </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllMenuItems(System.String,System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.String,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todos os itens do cardápio do sistema, com filtros avançados, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer **Role: Admin** e **MFA validado**.
+            </remarks>
+            <param name="companyId">Filtro opcional por empresa.</param>
+            <param name="tagIds">Filtro opcional por tags.</param>
+            <param name="categoryIds">Filtro opcional por categorias.</param>
+            <param name="maxPrice">Filtro opcional por preço máximo.</param>
+            <param name="isAvailable">Filtro opcional por disponibilidade.</param>
+            <param name="promotionActiveNow">Filtro por promoções ativas agora.</param>
+            <param name="promotionDayOfWeek">Filtro por dia da semana da promoção.</param>
+            <param name="promotionTime">Filtro por horário da promoção.</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Itens por página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação.</param>
+            <param name="sortOrder">Ordem (asc/desc).</param>
+            <returns>Uma lista paginada de itens do cardápio.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllTags(System.String,System.String,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todas as tags do sistema, com filtros por empresa, nome, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer **Role: Admin** e **MFA validado**.
+            </remarks>
+            <param name="companyId">Filtro opcional por empresa.</param>
+            <param name="name">Filtro opcional por nome da tag.</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Itens por página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação.</param>
+            <param name="sortOrder">Ordem (asc/desc).</param>
+            <returns>Uma lista paginada de tags.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllCategories(System.String,System.String,System.Nullable{System.Boolean},System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todas as categorias do sistema, com filtros por empresa, nome, status, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer **Role: Admin** e **MFA validado**.
+            </remarks>
+            <param name="companyId">Filtro opcional por empresa.</param>
+            <param name="name">Filtro opcional por nome da categoria.</param>
+            <param name="isActive">Filtro opcional por status de ativação.</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Itens por página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação.</param>
+            <param name="sortOrder">Ordem (asc/desc).</param>
+            <returns>Uma lista paginada de categorias.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllCustomers(System.String,System.String,System.String,System.Nullable{System.Boolean},System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todos os clientes do sistema, com filtros por empresa, nome, telefone, status, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer **Role: Admin** e **MFA validado**.
+            </remarks>
+            <param name="companyId">Filtro opcional por empresa.</param>
+            <param name="name">Filtro opcional por nome do cliente.</param>
+            <param name="phoneNumber">Filtro opcional por telefone.</param>
+            <param name="isActive">Filtro opcional por status de ativação.</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Itens por página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação.</param>
+            <param name="sortOrder">Ordem (asc/desc).</param>
+            <returns>Uma lista paginada de clientes.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllCoupons(System.String,System.String,System.String,System.Nullable{System.Boolean},System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todos os cupons do sistema, com filtros por empresa, código, telefone do cliente, status, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer **Role: Admin** e **MFA validado**.
+            </remarks>
+            <param name="companyId">Filtro opcional por empresa.</param>
+            <param name="code">Filtro opcional por código do cupom.</param>
+            <param name="customerPhoneNumber">Filtro opcional por telefone do cliente.</param>
+            <param name="isActive">Filtro opcional por status de ativação.</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Itens por página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação.</param>
+            <param name="sortOrder">Ordem (asc/desc).</param>
+            <returns>Uma lista paginada de cupons.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllOrders(System.String,System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todos os pedidos do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer <b>Role: Admin</b> e <b>MFA validado</b>.<br/>
+            Permite filtrar por empresa, cliente, telefone, status, datas, valor, etc.
+            </remarks>
+            <param name="companyId">ID da empresa (opcional).</param>
+            <param name="customerId">ID do cliente (opcional).</param>
+            <param name="customerPhoneNumber">Telefone do cliente (opcional).</param>
+            <param name="status">Status do pedido (opcional).</param>
+            <param name="paymentStatus">Status do pagamento (opcional).</param>
+            <param name="dataInicial">Data inicial de criação (opcional).</param>
+            <param name="dataFinal">Data final de criação (opcional).</param>
+            <param name="valorMin">Valor mínimo do pedido (opcional).</param>
+            <param name="valorMax">Valor máximo do pedido (opcional).</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Tamanho da página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação (opcional).</param>
+            <param name="sortOrder">Ordem de ordenação (asc/desc, padrão: asc).</param>
+            <returns>Lista paginada de pedidos.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllOrderItems(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todos os itens de pedido do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer <b>Role: Admin</b> e <b>MFA validado</b>.<br/>
+            Permite filtrar por pedido, empresa, cliente, produto, datas, valor, etc.
+            </remarks>
+            <param name="orderId">ID do pedido (opcional).</param>
+            <param name="companyId">ID da empresa (opcional).</param>
+            <param name="customerId">ID do cliente (opcional).</param>
+            <param name="menuItemId">ID do item do cardápio (opcional).</param>
+            <param name="dataInicial">Data inicial de criação (opcional).</param>
+            <param name="dataFinal">Data final de criação (opcional).</param>
+            <param name="valorMin">Valor unitário mínimo (opcional).</param>
+            <param name="valorMax">Valor unitário máximo (opcional).</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Tamanho da página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação (opcional).</param>
+            <param name="sortOrder">Ordem de ordenação (asc/desc, padrão: asc).</param>
+            <returns>Lista paginada de itens de pedido.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllAddresses(System.String,System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todos os endereços do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer <b>Role: Admin</b> e <b>MFA validado</b>.<br/>
+            Permite filtrar por entidade, tipo, cidade, estado, datas, etc.
+            </remarks>
+            <param name="entityId">ID da entidade (empresa ou cliente, opcional).</param>
+            <param name="entityType">Tipo da entidade ("Company", "Customer", etc., opcional).</param>
+            <param name="city">Cidade (opcional).</param>
+            <param name="state">Estado (opcional).</param>
+            <param name="type">Tipo do endereço (Principal, Entrega, etc., opcional).</param>
+            <param name="dataInicial">Data inicial de criação (opcional).</param>
+            <param name="dataFinal">Data final de criação (opcional).</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Tamanho da página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação (opcional).</param>
+            <param name="sortOrder">Ordem de ordenação (asc/desc, padrão: asc).</param>
+            <returns>Lista paginada de endereços.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllAdditionals(System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todos os adicionais do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer <b>Role: Admin</b> e <b>MFA validado</b>.<br/>
+            Permite filtrar por empresa, nome, disponibilidade, preço, datas, etc.
+            </remarks>
+            <param name="tenantId">ID da empresa (opcional).</param>
+            <param name="name">Nome do adicional (opcional).</param>
+            <param name="isAvailable">Disponibilidade (opcional).</param>
+            <param name="precoMin">Preço mínimo (opcional).</param>
+            <param name="precoMax">Preço máximo (opcional).</param>
+            <param name="dataInicial">Data inicial de criação (opcional).</param>
+            <param name="dataFinal">Data final de criação (opcional).</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Tamanho da página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação (opcional).</param>
+            <param name="sortOrder">Ordem de ordenação (asc/desc, padrão: asc).</param>
+            <returns>Lista paginada de adicionais.</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.AdministrationController.GetAllReviews(System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Boolean},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Lista todas as avaliações do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.
+            </summary>
+            <remarks>
+            Requer <b>Role: Admin</b> e <b>MFA validado</b>.<br/>
+            Permite filtrar por empresa, cliente, pedido, nota, status, datas, etc.
+            </remarks>
+            <param name="companyId">ID da empresa (opcional).</param>
+            <param name="customerId">ID do cliente (opcional).</param>
+            <param name="orderId">ID do pedido (opcional).</param>
+            <param name="ratingMin">Nota mínima (opcional).</param>
+            <param name="ratingMax">Nota máxima (opcional).</param>
+            <param name="isActive">Status de ativação (opcional).</param>
+            <param name="dataInicial">Data inicial de criação (opcional).</param>
+            <param name="dataFinal">Data final de criação (opcional).</param>
+            <param name="pageNumber">Número da página (padrão: 1).</param>
+            <param name="pageSize">Tamanho da página (padrão: 20).</param>
+            <param name="sortBy">Campo de ordenação (opcional).</param>
+            <param name="sortOrder">Ordem de ordenação (asc/desc, padrão: asc).</param>
+            <returns>Lista paginada de avaliações.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Hephaestus.Controllers.AdministrationController.GetCompaniesByRadius(System.Double,System.Double,System.Double,System.String,System.String,System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean},System.Nullable{System.Int32},System.String)" -->
         <member name="T:Hephaestus.Controllers.AuthController">
             <summary>
             Controller para autenticação de usuários e gerenciamento de contas, incluindo login, registro de empresas, redefinição de senha e MFA.
@@ -1459,64 +1626,7 @@
              <param name="request">The data for the menu item to be created.</param>
              <returns>A <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> containing the ID of the created menu item.</returns>
         </member>
-        <member name="M:Hephaestus.Controllers.MenuController.GetMenuItems(System.Int32,System.Int32,System.String,System.String)">
-             <summary>
-             Lists menu items for the authenticated tenant with pagination.
-             </summary>
-             <remarks>
-             This endpoint retrieves a paginated list of menu items belonging to the authenticated tenant.
-             Authentication with the **Tenant** role is required.
-            
-             Example Success Response (Status 200 OK):
-             ```json
-             {
-               "items": [
-                 {
-                   "id": "123e4567-e89b-12d3-a456-426614174001",
-                   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                   "name": "X-Burger",
-                   "description": "Hamb�rguer com queijo e salada",
-                   "categoryId": "789e0123-e89b-12d3-a456-426614174003",
-                   "price": 25.90,
-                   "isAvailable": true,
-                   "tagIds": ["tag1", "tag2"],
-                   "createdAt": "2024-01-01T12:00:00Z"
-                 },
-                 {
-                   "id": "a9b8c7d6-e5f4-3g2h-1i0j-k9l8m7n6o5p4",
-                   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-                   "name": "Refrigerante Cola",
-                   "description": "Lata de 350ml",
-                   "categoryId": "c0d1e2f3-a4b5-c6d7-e8f9-0a1b2c3d4e5f",
-                   "price": 7.00,
-                   "isAvailable": true,
-                   "tagIds": ["bebidas"],
-                   "createdAt": "2024-01-02T10:00:00Z"
-                 }
-               ],
-               "totalCount": 2,
-               "pageNumber": 1,
-               "pageSize": 20
-             }
-             ```
-             Example Bad Request Response (Status 400 Bad Request):
-             ```json
-             {
-               "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
-               "title": "Bad Request",
-               "status": 400,
-               "detail": "Page number must be greater than 0."
-             }
-             ```
-             Example Unauthorized Response (Status 401 Unauthorized):
-             ```
-             (No response body, just 401 status)
-             ```
-             </remarks>
-             <param name="pageNumber">The page number for pagination (defaults to 1).</param>
-             <param name="pageSize">The number of items per page for pagination (defaults to 20).</param>
-             <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing a paginated list of <see cref="T:Hephaestus.Domain.DTOs.Response.MenuItemResponse"/>.</returns>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:Hephaestus.Controllers.MenuController.GetMenuItems(System.Int32,System.Int32,System.String,System.String,System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.String)" -->
         <member name="M:Hephaestus.Controllers.MenuController.GetMenuItemById(System.String)">
              <summary>
              Retrieves a specific menu item by its ID.

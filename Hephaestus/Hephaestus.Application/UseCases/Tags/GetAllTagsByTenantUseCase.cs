@@ -34,21 +34,21 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Obter tenantId do usuário logado
-            var tenantId = _loggedUserService.GetTenantId(user);
+            // Obter tenantId do usuï¿½rio logado
+            var companyId = _loggedUserService.GetCompanyId(user);
 
-            ValidateInputParameters(tenantId);
-            var pagedTags = await _tagRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
+            ValidateInputParameters(companyId);
+            var pagedTags = await _tagRepository.GetByCompanyIdAsync(companyId, pageNumber, pageSize, sortBy, sortOrder);
             if (!pagedTags.Items.Any())
             {
-                throw new NotFoundException("Tags", tenantId);
+                throw new NotFoundException("Tags", companyId);
             }
             return new PagedResult<TagResponse>
             {
                 Items = pagedTags.Items.Select(t => new TagResponse
                 {
                     Id = t.Id,
-                    TenantId = t.TenantId,
+                    CompanyId = t.CompanyId,
                     Name = t.Name
                 }).ToList(),
                 TotalCount = pagedTags.TotalCount,
@@ -58,19 +58,19 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
         });
     }
 
-    private void ValidateInputParameters(string tenantId)
+    private void ValidateInputParameters(string companyId)
     {
-        if (string.IsNullOrEmpty(tenantId))
-            throw new ValidationException("ID do tenant é obrigatório.", new ValidationResult());
-        if (!Guid.TryParse(tenantId, out _))
-            throw new ValidationException("ID do tenant deve ser um GUID válido.", new ValidationResult());
+        if (string.IsNullOrEmpty(companyId))
+            throw new ValidationException("ID da empresa Ã© obrigatÃ³rio.", new ValidationResult());
+        if (!Guid.TryParse(companyId, out _))
+            throw new ValidationException("ID da empresa invÃ¡lido.", new ValidationResult());
     }
 
-    private async Task<IEnumerable<Domain.Entities.Tag>> GetTagsAsync(string tenantId)
+    private async Task<IEnumerable<Domain.Entities.Tag>> GetTagsAsync(string companyId)
     {
-        var pagedTags = await _tagRepository.GetByTenantIdAsync(tenantId);
+        var pagedTags = await _tagRepository.GetByCompanyIdAsync(companyId);
         if (pagedTags == null || !pagedTags.Items.Any())
-            throw new NotFoundException("Tags", tenantId);
+            throw new NotFoundException("Tags", companyId);
         return pagedTags.Items;
     }
 
@@ -80,7 +80,7 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
         {
             Id = tag.Id,
             Name = tag.Name,
-            TenantId = tag.TenantId
+            CompanyId = tag.CompanyId
         });
     }
 }

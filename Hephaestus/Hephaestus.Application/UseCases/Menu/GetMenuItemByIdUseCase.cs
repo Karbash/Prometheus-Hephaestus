@@ -47,13 +47,13 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
-            // Valida��o dos par�metros de entrada
-            ValidateInputParameters(id, tenantId);
+            // Validao dos par�metros de entrada
+            ValidateInputParameters(id, companyId);
 
-            // Busca o item do card�pio
-            var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
+            // Busca o item do cardpio
+            var menuItem = await _menuItemRepository.GetByIdAsync(id, companyId);
             
             // Verifica se o item existe
             EnsureEntityExists(menuItem, "MenuItem", id);
@@ -62,7 +62,7 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
             return new MenuItemResponse
             {
                 Id = menuItem.Id,
-                TenantId = menuItem.TenantId,
+                CompanyId = menuItem.CompanyId,
                 Name = menuItem.Name,
                 Description = menuItem.Description,
                 CategoryId = menuItem.CategoryId,
@@ -79,13 +79,13 @@ public class GetMenuItemByIdUseCase : BaseUseCase, IGetMenuItemByIdUseCase
     /// Valida os par�metros de entrada.
     /// </summary>
     /// <param name="id">ID do item do card�pio.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private void ValidateInputParameters(string id, string tenantId)
+    /// <param name="companyId">ID do company.</param>
+    private void ValidateInputParameters(string id, string companyId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do card�pio � obrigat�rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do cardpio obrigatrio.", new ValidationResult());
 
-        if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant � obrigat�rio.", new ValidationResult());
+        if (string.IsNullOrEmpty(companyId))
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do company obrigatrio.", new ValidationResult());
     }
 }

@@ -3,36 +3,44 @@ using System.Security.Claims;
 namespace Hephaestus.Domain.Services;
 
 /// <summary>
-/// Interface para recuperar informações do usuário logado.
+/// Interface para recuperar informaï¿½ï¿½es do usuï¿½rio logado.
 /// </summary>
 public interface ILoggedUserService
 {
     /// <summary>
-    /// Obtém as informações do usuário logado com base no token JWT.
+    /// Obtï¿½m as informaï¿½ï¿½es do usuï¿½rio logado com base no token JWT.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usuário autenticado.</param>
-    /// <returns>Dados do usuário logado (ID, nome, e-mail, função).</returns>
-    /// <exception cref="InvalidOperationException">Usuário não autenticado ou dados inválidos.</exception>
+    /// <param name="claimsPrincipal">Claims do usuï¿½rio autenticado.</param>
+    /// <returns>Dados do usuï¿½rio logado (ID, nome, e-mail, funï¿½ï¿½o).</returns>
+    /// <exception cref="InvalidOperationException">Usuï¿½rio nï¿½o autenticado ou dados invï¿½lidos.</exception>
     Task<LoggedUser> GetLoggedUserAsync(ClaimsPrincipal claimsPrincipal);
 
     /// <summary>
-    /// Obtém o ID do usuário logado.
+    /// Obtï¿½m o ID do usuï¿½rio logado.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usuário autenticado.</param>
-    /// <returns>ID do usuário.</returns>
-    /// <exception cref="InvalidOperationException">ID não encontrado no token.</exception>
+    /// <param name="claimsPrincipal">Claims do usuï¿½rio autenticado.</param>
+    /// <returns>ID do usuï¿½rio.</returns>
+    /// <exception cref="InvalidOperationException">ID nï¿½o encontrado no token.</exception>
     string GetUserId(ClaimsPrincipal claimsPrincipal);
 
     /// <summary>
-    /// Obtém o ID do tenant do usuário logado.
+    /// Obtï¿½m o ID do tenant do usuï¿½rio logado.
     /// </summary>
-    /// <param name="claimsPrincipal">Claims do usuário autenticado.</param>
+    /// <param name="claimsPrincipal">Claims do usuï¿½rio autenticado.</param>
     /// <returns>ID do tenant.</returns>
-    /// <exception cref="InvalidOperationException">TenantId não encontrado no token.</exception>
+    /// <exception cref="InvalidOperationException">TenantId nï¿½o encontrado no token.</exception>
     string GetTenantId(ClaimsPrincipal claimsPrincipal);
+
+    /// <summary>
+    /// Obtï¿½m o ID da empresa do usurio logado.
+    /// </summary>
+    /// <param name="claimsPrincipal">Claims do usuï¿½rio autenticado.</param>
+    /// <returns>ID da empresa.</returns>
+    /// <exception cref="InvalidOperationException">CompanyId no encontrado no token.</exception>
+    string GetCompanyId(System.Security.Claims.ClaimsPrincipal claimsPrincipal);
 }
 
 /// <summary>
-/// Representa os dados do usuário logado.
+/// Representa os dados do usurio logado.
 /// </summary>
 public record LoggedUser(string Id, string Name, string Email, string Role);

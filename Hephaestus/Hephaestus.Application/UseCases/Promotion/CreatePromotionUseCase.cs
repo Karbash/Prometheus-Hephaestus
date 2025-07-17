@@ -56,18 +56,18 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
-            // Valida��o dos dados de entrada
+            // Validao dos dados de entrada
             await ValidateRequestAsync(request);
 
             // Valida��o das regras de neg�cio
-            await ValidateBusinessRulesAsync(request, tenantId);
+            await ValidateBusinessRulesAsync(request, companyId);
 
-            // Cria��o da promo��o
-            var promotion = await CreatePromotionEntityAsync(request, tenantId);
+            // Criao da promoo
+            var promotion = await CreatePromotionEntityAsync(request, companyId);
 
-            // Persist�ncia no reposit�rio
+            // Persistncia no repositrio
             await _promotionRepository.AddAsync(promotion);
 
             return promotion.Id;
@@ -91,13 +91,13 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     /// Valida as regras de neg�cio.
     /// </summary>
     /// <param name="request">Requisi��o com os dados.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private async Task ValidateBusinessRulesAsync(CreatePromotionRequest request, string tenantId)
+    /// <param name="companyId">ID do tenant.</param>
+    private async Task ValidateBusinessRulesAsync(CreatePromotionRequest request, string companyId)
     {
-        // Valida se o item do card�pio existe para promo��es FreeItem
+        // Valida se o item do cardpio existe para promoes FreeItem
         if (request.DiscountType == DiscountType.FreeItem && !string.IsNullOrEmpty(request.MenuItemId))
         {
-            var menuItem = await _menuItemRepository.GetByIdAsync(request.MenuItemId, tenantId);
+            var menuItem = await _menuItemRepository.GetByIdAsync(request.MenuItemId, companyId);
             if (menuItem == null)
             {
                 throw new NotFoundException("MenuItem", request.MenuItemId);
@@ -109,14 +109,14 @@ public class CreatePromotionUseCase : BaseUseCase, ICreatePromotionUseCase
     /// Cria a entidade de promo��o.
     /// </summary>
     /// <param name="request">Dados da promo��o.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Entidade de promo��o criada.</returns>
-    private Task<Domain.Entities.Promotion> CreatePromotionEntityAsync(CreatePromotionRequest request, string tenantId)
+    /// <param name="companyId">ID do tenant.</param>
+    /// <returns>Entidade de promoo criada.</returns>
+    private Task<Domain.Entities.Promotion> CreatePromotionEntityAsync(CreatePromotionRequest request, string companyId)
     {
         return Task.FromResult(new Domain.Entities.Promotion
         {
             Id = Guid.NewGuid().ToString(),
-            TenantId = tenantId,
+            CompanyId = companyId,
             Name = request.Name,
             Description = request.Description,
             DiscountType = request.DiscountType,

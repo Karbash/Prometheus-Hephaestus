@@ -26,7 +26,7 @@ public class AdditionalRepository : IAdditionalRepository
         var query = _dbContext.Additionals
             .Where(a => a.TenantId == tenantId);
 
-        // Ordenação dinâmica
+        // Ordenaï¿½ï¿½o dinï¿½mica
         if (!string.IsNullOrEmpty(sortBy))
         {
             query = sortOrder?.ToLower() == "desc"
@@ -73,5 +73,62 @@ public class AdditionalRepository : IAdditionalRepository
             _dbContext.Additionals.Remove(additional);
             await _dbContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<PagedResult<Additional>> GetAllGlobalAsync(
+        string? tenantId = null,
+        string? name = null,
+        bool? isAvailable = null,
+        decimal? precoMin = null,
+        decimal? precoMax = null,
+        DateTime? dataInicial = null,
+        DateTime? dataFinal = null,
+        int pageNumber = 1,
+        int pageSize = 20,
+        string? sortBy = null,
+        string? sortOrder = "asc")
+    {
+        var query = _dbContext.Additionals.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrEmpty(tenantId))
+            query = query.Where(a => a.TenantId == tenantId);
+        if (!string.IsNullOrEmpty(name))
+            query = query.Where(a => a.Name.Contains(name));
+        if (isAvailable.HasValue)
+            query = query.Where(a => a.IsAvailable == isAvailable.Value);
+        if (precoMin.HasValue)
+            query = query.Where(a => a.Price >= precoMin.Value);
+        if (precoMax.HasValue)
+            query = query.Where(a => a.Price <= precoMax.Value);
+        if (dataInicial.HasValue)
+            query = query.Where(a => a.CreatedAt >= dataInicial.Value);
+        if (dataFinal.HasValue)
+            query = query.Where(a => a.CreatedAt <= dataFinal.Value);
+
+        // OrdenaÃ§Ã£o dinÃ¢mica
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            query = sortOrder?.ToLower() == "desc"
+                ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
+                : query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(a => a.CreatedAt);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Additional>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 }

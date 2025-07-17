@@ -20,9 +20,8 @@ public class MenuItemAdditionalConfiguration : IEntityTypeConfiguration<MenuItem
             .HasColumnName("additional_id")
             .IsRequired();
 
-        builder.Property(ma => ma.TenantId)
-            .HasColumnName("tenant_id")
-            .HasMaxLength(50)
+        builder.Property(ma => ma.CompanyId)
+            .HasColumnName("company_id")
             .IsRequired();
 
         builder.Property(ma => ma.CreatedAt)

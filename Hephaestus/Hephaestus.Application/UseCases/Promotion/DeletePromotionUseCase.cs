@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Promotion;
 
 /// <summary>
-/// Caso de uso para remoção de promoções.
+/// Caso de uso para remoï¿½ï¿½o de promoï¿½ï¿½es.
 /// </summary>
 public class DeletePromotionUseCase : BaseUseCase, IDeletePromotionUseCase
 {
@@ -20,12 +20,12 @@ public class DeletePromotionUseCase : BaseUseCase, IDeletePromotionUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="DeletePromotionUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="DeletePromotionUseCase"/>.
     /// </summary>
-    /// <param name="promotionRepository">Repositório de promoções.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="promotionRepository">Repositï¿½rio de promoï¿½ï¿½es.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public DeletePromotionUseCase(
         IPromotionRepository promotionRepository,
         ILoggedUserService loggedUserService,
@@ -38,49 +38,49 @@ public class DeletePromotionUseCase : BaseUseCase, IDeletePromotionUseCase
     }
 
     /// <summary>
-    /// Executa a remoção de uma promoção.
+    /// Executa a remoï¿½ï¿½o de uma promoï¿½ï¿½o.
     /// </summary>
-    /// <param name="id">ID da promoção.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="id">ID da promoï¿½ï¿½o.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     public async Task ExecuteAsync(string id, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
-            // Validação dos parâmetros de entrada
-            ValidateInputParameters(id, tenantId);
+            // Validao dos parï¿½metros de entrada
+            ValidateInputParameters(id, companyId);
 
-            // Verifica se a promoção existe antes de tentar removê-la
-            await ValidatePromotionExistsAsync(id, tenantId);
+            // Verifica se a promoo existe antes de tentar remov-la
+            await ValidatePromotionExistsAsync(id, companyId);
 
-            // Remove a promoção
-            await _promotionRepository.DeleteAsync(id, tenantId);
+            // Remove a promoo
+            await _promotionRepository.DeleteAsync(id, companyId);
         });
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parmetros de entrada.
     /// </summary>
-    /// <param name="id">ID da promoção.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private void ValidateInputParameters(string id, string tenantId)
+    /// <param name="id">ID da promoo.</param>
+    /// <param name="companyId">ID da empresa.</param>
+    private void ValidateInputParameters(string id, string companyId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da promoção é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da promoo obrigatrio.", new ValidationResult());
 
-        if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
+        if (string.IsNullOrEmpty(companyId))
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa obrigatrio.", new ValidationResult());
     }
 
     /// <summary>
-    /// Verifica se a promoção existe.
+    /// Verifica se a promoo existe.
     /// </summary>
-    /// <param name="id">ID da promoção.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private async Task ValidatePromotionExistsAsync(string id, string tenantId)
+    /// <param name="id">ID da promoo.</param>
+    /// <param name="companyId">ID da empresa.</param>
+    private async Task ValidatePromotionExistsAsync(string id, string companyId)
     {
-        var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
+        var promotion = await _promotionRepository.GetByIdAsync(id, companyId);
         EnsureEntityExists(promotion, "Promotion", id);
     }
 }

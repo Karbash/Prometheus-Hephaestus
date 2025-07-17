@@ -56,19 +56,19 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
-            // Valida��o dos dados de entrada
+            // Validao dos dados de entrada
             await _validator.ValidateAndThrowAsync(request);
 
             // Valida��o das regras de neg�cio
-            await ValidateBusinessRulesAsync(request, tenantId);
+            await ValidateBusinessRulesAsync(request, companyId);
 
-            // Busca e valida��o do item
-            var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
+            // Busca e validao do item
+            var menuItem = await _menuItemRepository.GetByIdAsync(id, companyId);
             EnsureResourceExists(menuItem, "MenuItem", id);
 
-            // Atualiza��o dos dados
+            // Atualizao dos dados
             await UpdateMenuItemEntityAsync(menuItem!, request);
         });
     }
@@ -77,26 +77,26 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
     /// Valida as regras de neg�cio.
     /// </summary>
     /// <param name="request">Requisi��o com os dados.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private async Task ValidateBusinessRulesAsync(UpdateMenuItemRequest request, string tenantId)
+    /// <param name="companyId">ID do company.</param>
+    private async Task ValidateBusinessRulesAsync(UpdateMenuItemRequest request, string companyId)
     {
         if (request.TagIds != null && request.TagIds.Any())
         {
-            var isValid = await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, tenantId);
+            var isValid = await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, companyId);
             if (!isValid)
             {
-                throw new BusinessRuleException("Um ou mais TagIds s�o inv�lidos para este tenant.", "TAG_VALIDATION_RULE");
+                throw new BusinessRuleException("Um ou mais TagIds so invlidos para este company.", "TAG_VALIDATION_RULE");
             }
         }
     }
 
     /// <summary>
-    /// Atualiza o item do card�pio com os novos dados.
+    /// Atualiza o item do cardpio com os novos dados.
     /// </summary>
     /// <param name="menuItem">Item do card�pio a ser atualizado.</param>
     /// <param name="request">Dados atualizados.</param>
     /// <param name="id">ID do item do card�pio.</param>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="companyId">ID do company.</param>
     private async Task UpdateMenuItemEntityAsync(Domain.Entities.MenuItem menuItem, UpdateMenuItemRequest request)
     {
         // Atualiza as propriedades do item
@@ -111,10 +111,10 @@ public class UpdateMenuItemUseCase : BaseUseCase, IUpdateMenuItemUseCase
         // Atualiza as tags se especificadas
         if (request.TagIds != null)
         {
-            await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, menuItem.TenantId);
+            await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, menuItem.CompanyId);
         }
 
-        // Persiste as altera��es
+        // Persiste as alteraes
         await _menuItemRepository.UpdateAsync(menuItem);
     }
 }

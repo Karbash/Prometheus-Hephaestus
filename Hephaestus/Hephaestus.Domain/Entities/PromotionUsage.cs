@@ -8,7 +8,7 @@ namespace Hephaestus.Domain.Entities;
 public class PromotionUsage
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string TenantId { get; set; } = string.Empty;
+    public string CompanyId { get; set; } = string.Empty;
     public string PromotionId { get; set; } = string.Empty;
     public string CustomerId { get; set; } = string.Empty;
     public string OrderId { get; set; } = string.Empty;

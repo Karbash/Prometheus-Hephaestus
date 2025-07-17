@@ -21,10 +21,9 @@ public class PromotionRepository : IPromotionRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<PagedResult<Promotion>> GetByTenantIdAsync(string tenantId, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    public async Task<PagedResult<Promotion>> GetByCompanyIdAsync(string companyId, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        var query = _dbContext.Promotions
-            .Where(p => p.TenantId == tenantId);
+        var query = _dbContext.Promotions.AsNoTracking().Where(p => p.CompanyId == companyId);
 
         if (isActive.HasValue)
             query = query.Where(p => p.IsActive == isActive.Value);
@@ -56,10 +55,9 @@ public class PromotionRepository : IPromotionRepository
         };
     }
 
-    public async Task<Promotion?> GetByIdAsync(string id, string tenantId)
+    public async Task<Promotion?> GetByIdAsync(string id, string companyId)
     {
-        return await _dbContext.Promotions
-            .FirstOrDefaultAsync(p => p.Id == id && p.TenantId == tenantId);
+        return await _dbContext.Promotions.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id && p.CompanyId == companyId);
     }
 
     public async Task UpdateAsync(Promotion promotion)
@@ -68,9 +66,9 @@ public class PromotionRepository : IPromotionRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(string id, string tenantId)
+    public async Task DeleteAsync(string id, string companyId)
     {
-        var promotion = await GetByIdAsync(id, tenantId);
+        var promotion = await GetByIdAsync(id, companyId);
         if (promotion != null)
         {
             _dbContext.Promotions.Remove(promotion);
@@ -84,13 +82,54 @@ public class PromotionRepository : IPromotionRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<int> GetUsageCountAsync(string promotionId, string tenantId)
+    public async Task<int> GetUsageCountAsync(string promotionId, string companyId)
     {
-        return await _dbContext.PromotionUsages.CountAsync(u => u.PromotionId == promotionId && u.TenantId == tenantId);
+        return await _dbContext.PromotionUsages.CountAsync(u => u.PromotionId == promotionId && u.CompanyId == companyId);
     }
 
-    public async Task<int> GetUsageCountByCustomerAsync(string promotionId, string tenantId, string customerPhoneNumber)
+    public async Task<int> GetUsageCountByCustomerAsync(string promotionId, string companyId, string customerPhoneNumber)
     {
-        return await _dbContext.PromotionUsages.CountAsync(u => u.PromotionId == promotionId && u.TenantId == tenantId && u.CustomerId == customerPhoneNumber);
+        return await _dbContext.PromotionUsages.CountAsync(u => u.PromotionId == promotionId && u.CompanyId == companyId && u.CustomerId == customerPhoneNumber);
+    }
+
+    public async Task<PagedResult<Promotion>> GetAllAsync(bool? isActive = null, string? companyId = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    {
+        var query = _dbContext.Promotions.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrEmpty(companyId))
+            query = query.Where(p => p.CompanyId == companyId);
+        if (isActive.HasValue)
+            query = query.Where(p => p.IsActive == isActive.Value);
+
+        // Ordenação dinâmica
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            query = sortOrder?.ToLower() == "desc"
+                ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
+                : query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(p => p.StartDate);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Promotion>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
+    public Task<PagedResult<Promotion>> GetAllGlobalAsync(string? code = null, bool? isActive = null, string? companyId = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    {
+        throw new NotImplementedException();
     }
 }

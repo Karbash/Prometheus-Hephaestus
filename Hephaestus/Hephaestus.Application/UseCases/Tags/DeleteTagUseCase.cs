@@ -12,7 +12,7 @@ using FluentValidation.Results;
 namespace Hephaestus.Application.UseCases.Tag;
 
 /// <summary>
-/// Caso de uso para exclusão de tags.
+/// Caso de uso para exclusï¿½o de tags.
 /// </summary>
 public class DeleteTagUseCase : BaseUseCase, IDeleteTagUseCase
 {
@@ -21,13 +21,13 @@ public class DeleteTagUseCase : BaseUseCase, IDeleteTagUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="DeleteTagUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="DeleteTagUseCase"/>.
     /// </summary>
-    /// <param name="tagRepository">Repositório de tags.</param>
-    /// <param name="auditLogRepository">Repositório de logs de auditoria.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="tagRepository">Repositï¿½rio de tags.</param>
+    /// <param name="auditLogRepository">Repositï¿½rio de logs de auditoria.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public DeleteTagUseCase(
         ITagRepository tagRepository,
         IAuditLogRepository auditLogRepository,
@@ -42,52 +42,52 @@ public class DeleteTagUseCase : BaseUseCase, IDeleteTagUseCase
     }
 
     /// <summary>
-    /// Executa a exclusão de uma tag.
+    /// Executa a exclusï¿½o de uma tag.
     /// </summary>
-    /// <param name="id">ID da tag a ser excluída.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="id">ID da tag a ser excluï¿½da.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     public async Task ExecuteAsync(string id, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Validação dos parâmetros de entrada
+            // Validaï¿½ï¿½o dos parï¿½metros de entrada
             ValidateInputParameters(id, user);
 
-            // Validação de autorização
+            // Validaï¿½ï¿½o de autorizaï¿½ï¿½o
             ValidateAuthorization(user);
 
-            // Busca e validação da tag
+            // Busca e validaï¿½ï¿½o da tag
             var tag = await GetAndValidateTagAsync(id, user);
 
             // Registro de auditoria
             await CreateAuditLogAsync(tag, user);
 
-            // Exclusão da tag
-            await DeleteTagAsync(id, tag.TenantId);
+            // Exclusï¿½o da tag
+            await DeleteTagAsync(id, tag.CompanyId);
         });
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parï¿½metros de entrada.
     /// </summary>
     /// <param name="id">ID da tag.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     private void ValidateInputParameters(string id, ClaimsPrincipal user)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da tag é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da tag ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (user == null)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Usuário autenticado é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Usuï¿½rio autenticado ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (!Guid.TryParse(id, out _))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da tag deve ser um GUID válido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da tag deve ser um GUID vï¿½lido.", new ValidationResult());
     }
 
     /// <summary>
-    /// Valida a autorização do usuário.
+    /// Valida a autorizaï¿½ï¿½o do usuï¿½rio.
     /// </summary>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal user)
     {
         var userRole = user.FindFirst(ClaimTypes.Role)?.Value;
@@ -99,20 +99,20 @@ public class DeleteTagUseCase : BaseUseCase, IDeleteTagUseCase
     /// Busca e valida a tag.
     /// </summary>
     /// <param name="id">ID da tag.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     /// <returns>Tag encontrada.</returns>
     private async Task<Domain.Entities.Tag> GetAndValidateTagAsync(string id, ClaimsPrincipal user)
     {
-        var tenantId = _loggedUserService.GetTenantId(user);
+        var companyId = _loggedUserService.GetCompanyId(user);
 
-        var tag = await _tagRepository.GetByIdAsync(id, tenantId);
+        var tag = await _tagRepository.GetByIdAsync(id, companyId);
         if (tag == null)
             throw new NotFoundException("Tag", id);
 
-        // Verifica se o usuário tenant está tentando excluir tag de outro tenant
+        // Verifica se o usuï¿½rio tenant estï¿½ tentando excluir tag de outro tenant
         var userRole = user.FindFirst(ClaimTypes.Role)?.Value;
-        if (userRole == "Tenant" && tenantId != tag.TenantId)
-            throw new UnauthorizedException("Tenants só podem excluir suas próprias tags.", "DELETE_TAG", "Tag");
+        if (userRole == "Tenant" && companyId != tag.CompanyId)
+            throw new UnauthorizedException("Tenants s podem excluir suas prprias tags.", "DELETE_TAG", "Tag");
 
         return tag;
     }
@@ -120,8 +120,8 @@ public class DeleteTagUseCase : BaseUseCase, IDeleteTagUseCase
     /// <summary>
     /// Registra o log de auditoria.
     /// </summary>
-    /// <param name="tag">Tag que será excluída.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="tag">Tag que serï¿½ excluï¿½da.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     private async Task CreateAuditLogAsync(Domain.Entities.Tag tag, ClaimsPrincipal user)
     {
         var loggedUser = await _loggedUserService.GetLoggedUserAsync(user);
@@ -131,7 +131,7 @@ public class DeleteTagUseCase : BaseUseCase, IDeleteTagUseCase
             UserId = loggedUser.Id,
             Action = "DELETE_TAG",
             EntityId = tag.Id,
-            Details = $"Tag '{tag.Name}' excluída",
+            Details = $"Tag '{tag.Name}' excluï¿½da",
             CreatedAt = DateTime.UtcNow
         };
 
@@ -139,12 +139,12 @@ public class DeleteTagUseCase : BaseUseCase, IDeleteTagUseCase
     }
 
     /// <summary>
-    /// Exclui a tag do repositório.
+    /// Exclui a tag do repositï¿½rio.
     /// </summary>
     /// <param name="id">ID da tag.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private async Task DeleteTagAsync(string id, string tenantId)
+    /// <param name="companyId">ID do tenant.</param>
+    private async Task DeleteTagAsync(string id, string companyId)
     {
-        await _tagRepository.DeleteAsync(id, tenantId);
+        await _tagRepository.DeleteAsync(id, companyId);
     }
 }

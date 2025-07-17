@@ -21,10 +21,9 @@ public class MenuItemImageConfiguration : IEntityTypeConfiguration<MenuItemImage
             .IsRequired()
             .HasMaxLength(36);
             
-        builder.Property(mi => mi.TenantId)
-            .HasColumnName("tenant_id")
-            .IsRequired()
-            .HasMaxLength(36);
+        builder.Property(mi => mi.CompanyId)
+            .HasColumnName("company_id")
+            .IsRequired();
             
         builder.Property(mi => mi.ImageUrl)
             .HasColumnName("image_url")

@@ -17,8 +17,8 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
             .HasMaxLength(36)
             .IsRequired();
 
-        builder.Property(p => p.TenantId)
-            .HasColumnName("tenant_id")
+        builder.Property(p => p.CompanyId)
+            .HasColumnName("company_id")
             .HasMaxLength(36)
             .IsRequired();
 
@@ -88,7 +88,7 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
             .IsRequired();
 
         // Índices
-        builder.HasIndex(p => p.TenantId);
+        builder.HasIndex(p => p.CompanyId);
         builder.HasIndex(p => p.MenuItemId);
         builder.HasIndex(p => p.IsActive);
         builder.HasIndex(p => p.StartDate);

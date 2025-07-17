@@ -149,4 +149,133 @@ public class OrderRepository : IOrderRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<PagedResult<Order>> GetAllGlobalAsync(
+        string? companyId = null,
+        string? customerId = null,
+        string? customerPhoneNumber = null,
+        string? status = null,
+        string? paymentStatus = null,
+        DateTime? dataInicial = null,
+        DateTime? dataFinal = null,
+        decimal? valorMin = null,
+        decimal? valorMax = null,
+        int pageNumber = 1,
+        int pageSize = 20,
+        string? sortBy = null,
+        string? sortOrder = "asc")
+    {
+        var query = _context.Orders
+            .Include(o => o.OrderItems)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(companyId))
+            query = query.Where(o => o.CompanyId == companyId);
+        if (!string.IsNullOrEmpty(customerId))
+            query = query.Where(o => o.CustomerId == customerId);
+        if (!string.IsNullOrEmpty(customerPhoneNumber))
+            query = query.Where(o => o.CustomerPhoneNumber == customerPhoneNumber);
+        if (!string.IsNullOrEmpty(status))
+            query = query.Where(o => o.Status.ToString() == status);
+        if (!string.IsNullOrEmpty(paymentStatus))
+            query = query.Where(o => o.PaymentStatus.ToString() == paymentStatus);
+        if (dataInicial.HasValue)
+            query = query.Where(o => o.CreatedAt >= dataInicial.Value);
+        if (dataFinal.HasValue)
+            query = query.Where(o => o.CreatedAt <= dataFinal.Value);
+        if (valorMin.HasValue)
+            query = query.Where(o => o.TotalAmount >= valorMin.Value);
+        if (valorMax.HasValue)
+            query = query.Where(o => o.TotalAmount <= valorMax.Value);
+
+        // Ordenação dinâmica
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            query = sortOrder?.ToLower() == "desc"
+                ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
+                : query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(o => o.CreatedAt);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Order>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
+    public async Task<PagedResult<OrderItem>> GetAllOrderItemsGlobalAsync(
+        string? orderId = null,
+        string? companyId = null,
+        string? customerId = null,
+        string? menuItemId = null,
+        DateTime? dataInicial = null,
+        DateTime? dataFinal = null,
+        decimal? valorMin = null,
+        decimal? valorMax = null,
+        int pageNumber = 1,
+        int pageSize = 20,
+        string? sortBy = null,
+        string? sortOrder = "asc")
+    {
+        var query = _context.OrderItems
+            .Include(oi => oi.Order)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(orderId))
+            query = query.Where(oi => oi.OrderId == orderId);
+        if (!string.IsNullOrEmpty(companyId))
+            query = query.Where(oi => oi.Order.CompanyId == companyId);
+        if (!string.IsNullOrEmpty(customerId))
+            query = query.Where(oi => oi.Order.CustomerId == customerId);
+        if (!string.IsNullOrEmpty(menuItemId))
+            query = query.Where(oi => oi.MenuItemId == menuItemId);
+        if (dataInicial.HasValue)
+            query = query.Where(oi => oi.CreatedAt >= dataInicial.Value);
+        if (dataFinal.HasValue)
+            query = query.Where(oi => oi.CreatedAt <= dataFinal.Value);
+        if (valorMin.HasValue)
+            query = query.Where(oi => oi.UnitPrice >= valorMin.Value);
+        if (valorMax.HasValue)
+            query = query.Where(oi => oi.UnitPrice <= valorMax.Value);
+
+        // Ordenação dinâmica
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            query = sortOrder?.ToLower() == "desc"
+                ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
+                : query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(oi => oi.CreatedAt);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<OrderItem>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
 }

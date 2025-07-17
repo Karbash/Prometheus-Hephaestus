@@ -3,7 +3,8 @@
 public class MenuItem
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string TenantId { get; set; } = string.Empty;
+    public string CompanyId { get; set; } = string.Empty;
+    public Company Company { get; set; } = null!;
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string CategoryId { get; set; } = string.Empty;
@@ -14,6 +15,6 @@ public class MenuItem
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
-    public List<MenuItemTag> MenuItemTags { get; set; } = new List<MenuItemTag>();
-    public List<MenuItemAdditional> MenuItemAdditionals { get; set; } = new List<MenuItemAdditional>();
+    public ICollection<MenuItemTag> MenuItemTags { get; set; } = new List<MenuItemTag>();
+    public ICollection<MenuItemAdditional> MenuItemAdditionals { get; set; } = new List<MenuItemAdditional>();
 }

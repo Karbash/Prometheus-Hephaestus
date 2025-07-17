@@ -47,9 +47,9 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
-            ValidateInputParameters(tenantId);
-            var pagedPromotions = await _promotionRepository.GetByTenantIdAsync(tenantId, isActive, pageNumber, pageSize, sortBy, sortOrder);
+            var companyId = _loggedUserService.GetCompanyId(user);
+            ValidateInputParameters(companyId);
+            var pagedPromotions = await _promotionRepository.GetByCompanyIdAsync(companyId, isActive, pageNumber, pageSize, sortBy, sortOrder);
             return new PagedResult<PromotionResponse>
             {
                 Items = ConvertToResponseDtos(pagedPromotions.Items).ToList(),
@@ -63,35 +63,35 @@ public class GetPromotionsUseCase : BaseUseCase, IGetPromotionsUseCase
     /// <summary>
     /// Valida os par�metros de entrada.
     /// </summary>
-    /// <param name="tenantId">ID do tenant.</param>
-    private void ValidateInputParameters(string tenantId)
+    /// <param name="companyId">ID da empresa.</param>
+    private void ValidateInputParameters(string companyId)
     {
-        if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant � obrigat�rio.", new ValidationResult());
+        if (string.IsNullOrEmpty(companyId))
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa é obrigatório.", new ValidationResult());
     }
 
     /// <summary>
-    /// Busca as promo��es.
+    /// Busca as promoes.
     /// </summary>
-    /// <param name="tenantId">ID do tenant.</param>
-    /// <param name="isActive">Filtro opcional para promo��es ativas.</param>
-    /// <returns>Lista de promo��es.</returns>
-    private async Task<PagedResult<Domain.Entities.Promotion>> GetPromotionsAsync(string tenantId, bool? isActive, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    /// <param name="companyId">ID da empresa.</param>
+    /// <param name="isActive">Filtro opcional para promoes ativas.</param>
+    /// <returns>Lista de promoes.</returns>
+    private async Task<PagedResult<Domain.Entities.Promotion>> GetPromotionsAsync(string companyId, bool? isActive, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        return await _promotionRepository.GetByTenantIdAsync(tenantId, isActive, pageNumber, pageSize, sortBy, sortOrder);
+        return await _promotionRepository.GetByCompanyIdAsync(companyId, isActive, pageNumber, pageSize, sortBy, sortOrder);
     }
 
     /// <summary>
     /// Converte as entidades para DTOs de resposta.
     /// </summary>
-    /// <param name="promotions">Lista de promo��es.</param>
+    /// <param name="promotions">Lista de promoes.</param>
     /// <returns>Lista de DTOs de resposta.</returns>
     private IEnumerable<PromotionResponse> ConvertToResponseDtos(IEnumerable<Domain.Entities.Promotion> promotions)
     {
         return promotions.Select(p => new PromotionResponse
         {
             Id = p.Id,
-            TenantId = p.TenantId,
+            CompanyId = p.CompanyId,
             Name = p.Name,
             Description = p.Description,
             DiscountType = p.DiscountType,

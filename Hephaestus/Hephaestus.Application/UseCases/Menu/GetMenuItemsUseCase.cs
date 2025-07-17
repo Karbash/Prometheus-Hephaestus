@@ -43,13 +43,13 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
     /// <param name="pageNumber">N�mero da p�gina (padr�o: 1).</param>
     /// <param name="pageSize">Tamanho da p�gina (padr�o: 20).</param>
     /// <returns>Lista paginada de itens do card�pio.</returns>
-    public async Task<PagedResult<MenuItemResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    public async Task<PagedResult<MenuItemResponse>> ExecuteAsync(ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc", List<string>? tagIds = null, List<string>? categoryIds = null, decimal? maxPrice = null, bool? promotionActiveNow = null, int? promotionDayOfWeek = null, string? promotionTime = null)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
-            ValidateInputParameters(tenantId);
-            var pagedMenuItems = await _menuItemRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
+            var companyId = _loggedUserService.GetCompanyId(user);
+            ValidateInputParameters(companyId);
+            var pagedMenuItems = await _menuItemRepository.GetByCompanyIdAsync(companyId, pageNumber, pageSize, sortBy, sortOrder, tagIds, categoryIds, maxPrice, promotionActiveNow, promotionDayOfWeek, promotionTime);
             return new PagedResult<MenuItemResponse>
             {
                 Items = ConvertToResponseDtos(pagedMenuItems.Items).ToList(),
@@ -63,11 +63,11 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
     /// <summary>
     /// Valida os par�metros de entrada.
     /// </summary>
-    /// <param name="tenantId">ID do tenant.</param>
-    private void ValidateInputParameters(string tenantId)
+    /// <param name="companyId">ID da empresa.</param>
+    private void ValidateInputParameters(string companyId)
     {
-        if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant � obrigat�rio.", new ValidationResult());
+        if (string.IsNullOrEmpty(companyId))
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa é obrigatório.", new ValidationResult());
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public class GetMenuItemsUseCase : BaseUseCase, IGetMenuItemsUseCase
         return menuItems.Select(m => new MenuItemResponse
         {
             Id = m.Id,
-            TenantId = m.TenantId,
+            CompanyId = m.CompanyId,
             Name = m.Name,
             Description = m.Description,
             CategoryId = m.CategoryId,

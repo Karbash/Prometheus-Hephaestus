@@ -16,9 +16,9 @@ public class PromotionUsageConfiguration : IEntityTypeConfiguration<PromotionUsa
             .HasColumnName("id")
             .ValueGeneratedOnAdd();
 
-        builder.Property(pu => pu.TenantId)
-            .HasColumnName("tenant_id")
-            .HasMaxLength(50)
+        builder.Property(pu => pu.CompanyId)
+            .HasColumnName("company_id")
+            .HasMaxLength(36)
             .IsRequired();
 
         builder.Property(pu => pu.PromotionId)
@@ -52,7 +52,7 @@ public class PromotionUsageConfiguration : IEntityTypeConfiguration<PromotionUsa
         builder.HasIndex(pu => pu.PromotionId);
         builder.HasIndex(pu => pu.CustomerId);
         builder.HasIndex(pu => pu.OrderId);
-        builder.HasIndex(pu => pu.TenantId);
+        builder.HasIndex(pu => pu.CompanyId);
         builder.HasIndex(pu => pu.UsedAt);
         builder.HasIndex(pu => new { pu.PromotionId, pu.CustomerId });
         builder.HasIndex(pu => new { pu.CustomerId, pu.UsedAt });

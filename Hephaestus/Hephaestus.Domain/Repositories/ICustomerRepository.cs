@@ -11,5 +11,6 @@ namespace Hephaestus.Domain.Repositories
         Task AddAsync(Customer customer);
         Task UpdateAsync(Customer customer);
         Task DeleteAsync(string id, string tenantId);
+        Task<PagedResult<Customer>> GetAllGlobalAsync(string? companyId = null, string? name = null, string? phoneNumber = null, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
     }
 } 

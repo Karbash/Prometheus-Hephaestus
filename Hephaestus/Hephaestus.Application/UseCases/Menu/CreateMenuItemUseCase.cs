@@ -57,19 +57,19 @@ public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
             // Validação dos dados de entrada
             await _validator.ValidateAndThrowAsync(request);
 
             // Validação das regras de negócio
-            await ValidateBusinessRulesAsync(request, tenantId);
+            await ValidateBusinessRulesAsync(request, companyId);
 
             // Criação do item do cardápio
             var menuItem = new MenuItem
             {
                 Id = Guid.NewGuid().ToString(),
-                TenantId = tenantId,
+                CompanyId = companyId,
                 Name = request.Name,
                 Description = request.Description,
                 CategoryId = request.CategoryId,
@@ -83,7 +83,7 @@ public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
             // Adiciona tags se especificadas
             if (request.TagIds.Any())
             {
-                await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, tenantId);
+                await _menuItemRepository.AddTagsAsync(menuItem.Id, request.TagIds, companyId);
             }
 
             // Adicionais foram removidos da entidade
@@ -96,13 +96,13 @@ public class CreateMenuItemUseCase : BaseUseCase, ICreateMenuItemUseCase
     /// Valida as regras de negócio.
     /// </summary>
     /// <param name="request">Requisição com os dados.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private async Task ValidateBusinessRulesAsync(CreateMenuItemRequest request, string tenantId)
+    /// <param name="companyId">ID do company.</param>
+    private async Task ValidateBusinessRulesAsync(CreateMenuItemRequest request, string companyId)
     {
-        // Valida se as tags pertencem ao tenant
-        if (request.TagIds.Any() && !await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, tenantId))
+        // Valida se as tags pertencem ao company
+        if (request.TagIds.Any() && !await _menuItemRepository.ValidateTagIdsAsync(request.TagIds, companyId))
         {
-            throw new BusinessRuleException("Um ou mais TagIds são inválidos para este tenant.", "TAG_VALIDATION_RULE");
+            throw new BusinessRuleException("Um ou mais TagIds são inválidos para este company.", "TAG_VALIDATION_RULE");
         }
     }
 }

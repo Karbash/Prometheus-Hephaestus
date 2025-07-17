@@ -447,7 +447,6 @@ public class PromotionController : ControllerBase
             MinOrderValue = promotion.MinOrderValue,
             MaxUsesPerCustomer = promotion.MaxUsesPerCustomer,
             MaxTotalUses = promotion.MaxTotalUses,
-            ApplicableToTags = promotion.ApplicableToTags,
             StartDate = promotion.StartDate,
             EndDate = promotion.EndDate,
             IsActive = request.IsActive,
@@ -629,7 +628,7 @@ public class PromotionController : ControllerBase
         // Registrar uso
         await _promotionRepository.AddUsageAsync(new PromotionUsage
         {
-            TenantId = tenantId,
+            CompanyId = tenantId,
             PromotionId = id,
             CustomerId = request.CustomerPhoneNumber, // Usando CustomerPhoneNumber como CustomerId temporariamente
             OrderId = request.OrderId,

@@ -16,4 +16,5 @@ public interface ICouponRepository
     Task AddUsageAsync(CouponUsage usage);
     Task<int> GetUsageCountAsync(string couponId, string tenantId);
     Task<int> GetUsageCountByCustomerAsync(string couponId, string tenantId, string customerPhoneNumber);
+    Task<PagedResult<Coupon>> GetAllGlobalAsync(string? code = null, string? companyId = null, string? customerId = null, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
 }

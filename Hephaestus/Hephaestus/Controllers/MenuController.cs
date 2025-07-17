@@ -113,10 +113,11 @@ public class MenuController : ControllerBase
     }
 
     /// <summary>
-    /// Lists menu items for the authenticated tenant with pagination.
+    /// Lists menu items for the authenticated tenant with pagination and optional filters by tags and categories.
     /// </summary>
     /// <remarks>
     /// This endpoint retrieves a paginated list of menu items belonging to the authenticated tenant.
+    /// You can filter by one or more tag IDs (ex: japonesa, fitness) and/or category IDs.
     /// Authentication with the **Tenant** role is required.
     ///
     /// Example Success Response (Status 200 OK):
@@ -151,6 +152,8 @@ public class MenuController : ControllerBase
     ///   "pageSize": 20
     /// }
     /// ```
+    /// Example Request with filters:
+    /// GET /api/menu?tagIds=tag1&tagIds=tag2&categoryIds=cat1&pageNumber=1&pageSize=20
     /// Example Bad Request Response (Status 400 Bad Request):
     /// ```json
     /// {
@@ -167,9 +170,15 @@ public class MenuController : ControllerBase
     /// </remarks>
     /// <param name="pageNumber">The page number for pagination (defaults to 1).</param>
     /// <param name="pageSize">The number of items per page for pagination (defaults to 20).</param>
+    /// <param name="tagIds">Optional list of tag IDs to filter by type of food (ex: japonesa, fitness).</param>
+    /// <param name="categoryIds">Optional list of category IDs to filter by category.</param>
+    /// <param name="maxPrice">Preço máximo para filtrar itens do cardápio (opcional).</param>
+    /// <param name="promotionActiveNow">Se verdadeiro, retorna apenas itens com promoções ativas no momento (opcional).</param>
+    /// <param name="promotionDayOfWeek">Dia da semana para filtrar promoções ativas (0=domingo, ..., 6=sábado, opcional).</param>
+    /// <param name="promotionTime">Horário (HH:mm) para filtrar promoções ativas em um horário específico (opcional).</param>
     /// <returns>An <see cref="OkObjectResult"/> containing a paginated list of <see cref="MenuItemResponse"/>.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista itens do menu", Description = "Retorna uma lista paginada de itens do menu do tenant autenticado.")]
+    [SwaggerOperation(Summary = "Lista itens do menu", Description = "Retorna uma lista paginada de itens do menu do tenant autenticado. Permite filtrar por tags (tipo de comida), categorias, preço máximo e promoções ativas.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<MenuItemResponse>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -178,9 +187,15 @@ public class MenuController : ControllerBase
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 20,
         [FromQuery] string? sortBy = null,
-        [FromQuery] string? sortOrder = "asc")
+        [FromQuery] string? sortOrder = "asc",
+        [FromQuery] List<string>? tagIds = null,
+        [FromQuery] List<string>? categoryIds = null,
+        [FromQuery] decimal? maxPrice = null,
+        [FromQuery] bool? promotionActiveNow = null,
+        [FromQuery] int? promotionDayOfWeek = null,
+        [FromQuery] string? promotionTime = null)
     {
-        var menuItems = await _getMenuItemsUseCase.ExecuteAsync(User, pageNumber, pageSize, sortBy, sortOrder);
+        var menuItems = await _getMenuItemsUseCase.ExecuteAsync(User, pageNumber, pageSize, sortBy, sortOrder, tagIds, categoryIds, maxPrice, promotionActiveNow, promotionDayOfWeek, promotionTime);
         return Ok(menuItems);
     }
 

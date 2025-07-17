@@ -21,4 +21,5 @@ public class Company
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
+    public ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
 }

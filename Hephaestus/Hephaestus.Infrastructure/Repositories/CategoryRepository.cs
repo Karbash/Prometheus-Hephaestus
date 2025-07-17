@@ -65,6 +65,48 @@ public class CategoryRepository : ICategoryRepository
         };
     }
 
+    public async Task<PagedResult<Category>> GetAllAsync(
+        string? companyId = null,
+        string? name = null,
+        bool? isActive = null,
+        int pageNumber = 1,
+        int pageSize = 20,
+        string? sortBy = null,
+        string? sortOrder = "asc")
+    {
+        var query = _context.Categories.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrEmpty(companyId))
+            ; // Não filtrar por CompanyId, pois não existe na entidade Category
+        if (!string.IsNullOrEmpty(name))
+            query = query.Where(c => c.Name.Contains(name));
+        if (isActive.HasValue)
+            query = query.Where(c => c.IsActive == isActive.Value);
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            if (sortOrder?.ToLower() == "desc")
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            else
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(c => c.CreatedAt);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<Category>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
     public async Task<IEnumerable<Category>> GetAllActiveAsync(string tenantId)
     {
         if (string.IsNullOrEmpty(tenantId))
@@ -126,5 +168,10 @@ public class CategoryRepository : ICategoryRepository
 
         return await _context.Categories
             .AnyAsync(c => c.Name == name && c.TenantId == tenantId);
+    }
+
+    public Task<PagedResult<Category>> GetAllGlobalAsync(string? name = null, string? companyId = null, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    {
+        throw new NotImplementedException();
     }
 } 

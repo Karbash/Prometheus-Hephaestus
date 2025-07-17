@@ -4,16 +4,16 @@ using System.Security.Claims;
 namespace Hephaestus.Application.Interfaces.Menu;
 
 /// <summary>
-/// Interface para o caso de uso de listagem de itens do cardápio.
+/// Interface para o caso de uso de listagem de itens do cardï¿½pio.
 /// </summary>
 public interface IGetMenuItemsUseCase
 {
     /// <summary>
-    /// Lista itens do cardápio do tenant.
+    /// Lista itens do cardï¿½pio do tenant.
     /// </summary>
-    /// <param name="user">Usuário autenticado.</param>
-    /// <param name="pageNumber">Número da página.</param>
-    /// <param name="pageSize">Tamanho da página.</param>
-    /// <returns>Lista de itens do cardápio.</returns>
-    Task<PagedResult<MenuItemResponse>> ExecuteAsync(System.Security.Claims.ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
+    /// <param name="user">Usuï¿½rio autenticado.</param>
+    /// <param name="pageNumber">Nï¿½mero da pï¿½gina.</param>
+    /// <param name="pageSize">Tamanho da pï¿½gina.</param>
+    /// <returns>Lista de itens do cardï¿½pio.</returns>
+    Task<PagedResult<MenuItemResponse>> ExecuteAsync(System.Security.Claims.ClaimsPrincipal user, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc", List<string>? tagIds = null, List<string>? categoryIds = null, decimal? maxPrice = null, bool? promotionActiveNow = null, int? promotionDayOfWeek = null, string? promotionTime = null);
 }

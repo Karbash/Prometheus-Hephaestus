@@ -48,57 +48,57 @@ public class GetPromotionByIdUseCase : BaseUseCase, IGetPromotionByIdUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
-            // Valida��o dos par�metros de entrada
-            ValidateInputParameters(id, tenantId);
+            // Validao dos par�metros de entrada
+            ValidateInputParameters(id, companyId);
 
-            // Busca e valida��o da promo��o
-            var promotion = await GetAndValidatePromotionAsync(id, tenantId);
+            // Busca e validao da promoo
+            var promotion = await GetAndValidatePromotionAsync(id, companyId);
 
-            // Convers�o para DTO de resposta
+            // Converso para DTO de resposta
             return ConvertToResponseDto(promotion);
         });
     }
 
     /// <summary>
-    /// Valida os par�metros de entrada.
+    /// Valida os parmetros de entrada.
     /// </summary>
     /// <param name="id">ID da promo��o.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private void ValidateInputParameters(string id, string tenantId)
+    /// <param name="companyId">ID da empresa.</param>
+    private void ValidateInputParameters(string id, string companyId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID da promo��o � obrigat�rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da promoo obrigatrio.", new ValidationResult());
 
-        if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant � obrigat�rio.", new ValidationResult());
+        if (string.IsNullOrEmpty(companyId))
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa obrigatrio.", new ValidationResult());
     }
 
     /// <summary>
-    /// Busca e valida a promo��o.
+    /// Busca e valida a promoo.
     /// </summary>
-    /// <param name="id">ID da promo��o.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Promo��o encontrada.</returns>
-    private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string id, string tenantId)
+    /// <param name="id">ID da promoo.</param>
+    /// <param name="companyId">ID da empresa.</param>
+    /// <returns>Promoo encontrada.</returns>
+    private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string id, string companyId)
     {
-        var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
+        var promotion = await _promotionRepository.GetByIdAsync(id, companyId);
         EnsureEntityExists(promotion, "Promotion", id);
-        return promotion!; // Garantido que n�o � null ap�s EnsureEntityExists
+        return promotion!; // Garantido que no null aps EnsureEntityExists
     }
 
     /// <summary>
     /// Converte a entidade para DTO de resposta.
     /// </summary>
-    /// <param name="promotion">Promo��o encontrada.</param>
+    /// <param name="promotion">Promoo encontrada.</param>
     /// <returns>DTO de resposta.</returns>
     private PromotionResponse ConvertToResponseDto(Domain.Entities.Promotion promotion)
     {
         return new PromotionResponse
         {
             Id = promotion.Id,
-            TenantId = promotion.TenantId,
+            CompanyId = promotion.CompanyId,
             Name = promotion.Name,
             Description = promotion.Description,
             DiscountType = promotion.DiscountType,

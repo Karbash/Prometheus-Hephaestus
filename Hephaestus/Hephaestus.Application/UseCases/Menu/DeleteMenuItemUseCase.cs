@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace Hephaestus.Application.UseCases.Menu;
 
 /// <summary>
-/// Caso de uso para remoção de itens do cardápio.
+/// Caso de uso para remoï¿½ï¿½o de itens do cardï¿½pio.
 /// </summary>
 public class DeleteMenuItemUseCase : BaseUseCase, IDeleteMenuItemUseCase
 {
@@ -19,12 +19,12 @@ public class DeleteMenuItemUseCase : BaseUseCase, IDeleteMenuItemUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="DeleteMenuItemUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="DeleteMenuItemUseCase"/>.
     /// </summary>
-    /// <param name="menuItemRepository">Repositório de itens do cardápio.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="menuItemRepository">Repositï¿½rio de itens do cardï¿½pio.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public DeleteMenuItemUseCase(
         IMenuItemRepository menuItemRepository,
         ILoggedUserService loggedUserService,
@@ -37,49 +37,49 @@ public class DeleteMenuItemUseCase : BaseUseCase, IDeleteMenuItemUseCase
     }
 
     /// <summary>
-    /// Executa a remoção de um item do cardápio.
+    /// Executa a remoï¿½ï¿½o de um item do cardï¿½pio.
     /// </summary>
-    /// <param name="id">ID do item do cardápio.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="id">ID do item do cardï¿½pio.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     public async Task ExecuteAsync(string id, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
-            // Validação dos parâmetros de entrada
-            ValidateInputParameters(id, tenantId);
+            // Validao dos parï¿½metros de entrada
+            ValidateInputParameters(id, companyId);
 
-            // Verifica se o item existe antes de tentar removê-lo
-            await ValidateMenuItemExistsAsync(id, tenantId);
+            // Verifica se o item existe antes de tentar remov-lo
+            await ValidateMenuItemExistsAsync(id, companyId);
 
-            // Remove o item do cardápio
-            await _menuItemRepository.DeleteAsync(id, tenantId);
+            // Remove o item do cardpio
+            await _menuItemRepository.DeleteAsync(id, companyId);
         });
     }
 
     /// <summary>
-    /// Valida os parâmetros de entrada.
+    /// Valida os parmetros de entrada.
     /// </summary>
-    /// <param name="id">ID do item do cardápio.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private void ValidateInputParameters(string id, string tenantId)
+    /// <param name="id">ID do item do cardpio.</param>
+    /// <param name="companyId">ID da empresa.</param>
+    private void ValidateInputParameters(string id, string companyId)
     {
         if (string.IsNullOrEmpty(id))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do cardápio é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID do item do cardpio obrigatrio.", new ValidationResult());
 
-        if (string.IsNullOrEmpty(tenantId))
-            throw new Hephaestus.Application.Exceptions.ValidationException("ID do tenant é obrigatório.", new ValidationResult());
+        if (string.IsNullOrEmpty(companyId))
+            throw new Hephaestus.Application.Exceptions.ValidationException("ID da empresa obrigatrio.", new ValidationResult());
     }
 
     /// <summary>
-    /// Verifica se o item do cardápio existe.
+    /// Verifica se o item do cardpio existe.
     /// </summary>
-    /// <param name="id">ID do item do cardápio.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private async Task ValidateMenuItemExistsAsync(string id, string tenantId)
+    /// <param name="id">ID do item do cardpio.</param>
+    /// <param name="companyId">ID da empresa.</param>
+    private async Task ValidateMenuItemExistsAsync(string id, string companyId)
     {
-        var menuItem = await _menuItemRepository.GetByIdAsync(id, tenantId);
+        var menuItem = await _menuItemRepository.GetByIdAsync(id, companyId);
         EnsureEntityExists(menuItem, "MenuItem", id);
     }
 }

@@ -41,7 +41,7 @@ public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinR
     /// <param name="city">Filtro opcional por cidade.</param>
     /// <param name="neighborhood">Filtro opcional por bairro.</param>
     /// <returns>Lista de empresas dentro do raio.</returns>
-    public async Task<IEnumerable<CompanyResponse>> ExecuteAsync(double centerLat, double centerLon, double radiusKm, string? city = null, string? neighborhood = null)
+    public async Task<IEnumerable<CompanyResponse>> ExecuteAsync(double centerLat, double centerLon, double radiusKm, string? city = null, string? neighborhood = null, List<string>? tagIds = null, List<string>? categoryIds = null, decimal? maxPrice = null, bool? openNow = null, int? dayOfWeek = null, string? time = null, bool? promotionActiveNow = null, int? promotionDayOfWeek = null, string? promotionTime = null)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
@@ -49,7 +49,7 @@ public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinR
             ValidateInputParameters(centerLat, centerLon, radiusKm, city, neighborhood);
 
             // Busca das empresas
-            var companies = await GetCompaniesAsync(centerLat, centerLon, radiusKm, city, neighborhood);
+            var companies = await GetCompaniesAsync(centerLat, centerLon, radiusKm, city, neighborhood, tagIds, categoryIds, maxPrice, openNow, dayOfWeek, time, promotionActiveNow, promotionDayOfWeek, promotionTime);
 
             // Conversão para DTOs de resposta
             return ConvertToResponseDtos(companies);
@@ -91,9 +91,9 @@ public class GetCompaniesWithinRadiusUseCase : BaseUseCase, IGetCompaniesWithinR
     /// <param name="city">Filtro opcional por cidade.</param>
     /// <param name="neighborhood">Filtro opcional por bairro.</param>
     /// <returns>Lista de empresas.</returns>
-    private async Task<IEnumerable<Domain.Entities.Company>> GetCompaniesAsync(double centerLat, double centerLon, double radiusKm, string? city, string? neighborhood)
+    private async Task<IEnumerable<Domain.Entities.Company>> GetCompaniesAsync(double centerLat, double centerLon, double radiusKm, string? city, string? neighborhood, List<string>? tagIds, List<string>? categoryIds, decimal? maxPrice, bool? openNow, int? dayOfWeek, string? time, bool? promotionActiveNow, int? promotionDayOfWeek, string? promotionTime)
     {
-        return await _companyRepository.GetCompaniesWithinRadiusAsync(centerLat, centerLon, radiusKm, city, neighborhood);
+        return await _companyRepository.GetCompaniesWithinRadiusAsync(centerLat, centerLon, radiusKm, city, neighborhood, tagIds, categoryIds, maxPrice, openNow, dayOfWeek, time, promotionActiveNow, promotionDayOfWeek, promotionTime);
     }
 
     /// <summary>

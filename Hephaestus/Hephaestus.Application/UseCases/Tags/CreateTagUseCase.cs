@@ -60,13 +60,13 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
             ValidateAuthorization(user);
 
             // Obten��o do tenant ID
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
 
-            // Valida��o das regras de neg�cio
-            await ValidateBusinessRulesAsync(request, tenantId);
+            // Validao das regras de neg�cio
+            await ValidateBusinessRulesAsync(request, companyId);
 
-            // Cria��o da tag
-            var tag = await CreateTagEntityAsync(request, tenantId);
+            // Criao da tag
+            var tag = await CreateTagEntityAsync(request, companyId);
 
             // Registro de auditoria
             await CreateAuditLogAsync(tag, user);
@@ -75,16 +75,16 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
             return new TagResponse
             {
                 Id = tag.Id,
-                TenantId = tag.TenantId,
+                CompanyId = tag.CompanyId,
                 Name = tag.Name
             };
         });
     }
 
     /// <summary>
-    /// Valida os dados da requisi��o.
+    /// Valida os dados da requisio.
     /// </summary>
-    /// <param name="request">Requisi��o a ser validada.</param>
+    /// <param name="request">Requisio a ser validada.</param>
     private void ValidateRequest(TagRequest request)
     {
         if (request == null)
@@ -111,13 +111,13 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     /// Valida as regras de neg�cio.
     /// </summary>
     /// <param name="request">Requisi��o com os dados.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private async Task ValidateBusinessRulesAsync(TagRequest request, string tenantId)
+    /// <param name="companyId">ID do tenant.</param>
+    private async Task ValidateBusinessRulesAsync(TagRequest request, string companyId)
     {
-        var existingTag = await _tagRepository.GetByNameAsync(request.Name, tenantId);
+        var existingTag = await _tagRepository.GetByNameAsync(request.Name, companyId);
         if (existingTag != null)
         {
-            throw new ConflictException("Tag j� registrada para este tenant.", "Tag", "Name", request.Name);
+            throw new ConflictException("Tag j registrada para este tenant.", "Tag", "Name", request.Name);
         }
     }
 
@@ -125,14 +125,14 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     /// Cria a entidade de tag.
     /// </summary>
     /// <param name="request">Dados da tag.</param>
-    /// <param name="tenantId">ID do tenant.</param>
+    /// <param name="companyId">ID do tenant.</param>
     /// <returns>Entidade de tag criada.</returns>
-    private async Task<Domain.Entities.Tag> CreateTagEntityAsync(TagRequest request, string tenantId)
+    private async Task<Domain.Entities.Tag> CreateTagEntityAsync(TagRequest request, string companyId)
     {
         var tag = new Domain.Entities.Tag
         {
             Id = Guid.NewGuid().ToString(),
-            TenantId = tenantId,
+            CompanyId = companyId,
             Name = request.Name
         };
 
@@ -153,7 +153,7 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
             UserId = loggedUser.Id,
             Action = "Cria��o de Tag",
             EntityId = tag.Id,
-            Details = $"Tag {tag.Name} criada para tenant {tag.TenantId}.",
+            Details = $"Tag {tag.Name} criada para empresa {tag.CompanyId}.",
             CreatedAt = DateTime.UtcNow
         });
     }

@@ -14,7 +14,7 @@ using ValidationException = Hephaestus.Application.Exceptions.ValidationExceptio
 namespace Hephaestus.Application.UseCases.Promotion;
 
 /// <summary>
-/// Caso de uso para notificação de promoções.
+/// Caso de uso para notificaï¿½ï¿½o de promoï¿½ï¿½es.
 /// </summary>
 public class NotifyPromotionUseCase : BaseUseCase, INotifyPromotionUseCase
 {
@@ -23,13 +23,13 @@ public class NotifyPromotionUseCase : BaseUseCase, INotifyPromotionUseCase
     private readonly ILoggedUserService _loggedUserService;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="NotifyPromotionUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="NotifyPromotionUseCase"/>.
     /// </summary>
-    /// <param name="promotionRepository">Repositório de promoções.</param>
-    /// <param name="validator">Validador para a requisição.</param>
-    /// <param name="loggedUserService">Serviço para obter informações do usuário logado.</param>
+    /// <param name="promotionRepository">Repositï¿½rio de promoï¿½ï¿½es.</param>
+    /// <param name="validator">Validador para a requisiï¿½ï¿½o.</param>
+    /// <param name="loggedUserService">Serviï¿½o para obter informaï¿½ï¿½es do usuï¿½rio logado.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public NotifyPromotionUseCase(
         IPromotionRepository promotionRepository,
         IValidator<NotifyPromotionRequest> validator,
@@ -44,31 +44,31 @@ public class NotifyPromotionUseCase : BaseUseCase, INotifyPromotionUseCase
     }
 
     /// <summary>
-    /// Executa a notificação de uma promoção.
+    /// Executa a notificaï¿½ï¿½o de uma promoï¿½ï¿½o.
     /// </summary>
-    /// <param name="request">Dados da notificação.</param>
-    /// <param name="user">Usuário autenticado.</param>
+    /// <param name="request">Dados da notificaï¿½ï¿½o.</param>
+    /// <param name="user">Usuï¿½rio autenticado.</param>
     public async Task ExecuteAsync(NotifyPromotionRequest request, ClaimsPrincipal user)
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
-            // Validação dos dados de entrada
+            // Validao dos dados de entrada
             await ValidateRequestAsync(request);
 
-            // Busca e validação da promoção
-            var promotion = await GetAndValidatePromotionAsync(request.PromotionId, tenantId);
+            // Busca e validaï¿½ï¿½o da promoï¿½ï¿½o
+            var promotion = await GetAndValidatePromotionAsync(request.PromotionId, companyId);
 
-            // Envio da notificação
+            // Envio da notificao
             await SendNotificationAsync(promotion, request);
         });
     }
 
     /// <summary>
-    /// Valida os dados da requisição.
+    /// Valida os dados da requisiï¿½ï¿½o.
     /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
+    /// <param name="request">Requisiï¿½ï¿½o a ser validada.</param>
     private async Task ValidateRequestAsync(NotifyPromotionRequest request)
     {
         var validationResult = await _validator.ValidateAsync(request);
@@ -79,30 +79,31 @@ public class NotifyPromotionUseCase : BaseUseCase, INotifyPromotionUseCase
     }
 
     /// <summary>
-    /// Busca e valida a promoção.
+    /// Busca e valida a promoï¿½ï¿½o.
     /// </summary>
-    /// <param name="promotionId">ID da promoção.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Promoção encontrada.</returns>
-    private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string promotionId, string tenantId)
+    /// <param name="promotionId">ID da promoï¿½ï¿½o.</param>
+    /// <param name="companyId">ID da empresa.</param>
+    /// <returns>Promoo encontrada.</returns>
+    private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string promotionId, string companyId)
     {
-        var promotion = await _promotionRepository.GetByIdAsync(promotionId, tenantId);
-        EnsureEntityExists(promotion, "Promoção", promotionId);
-        return promotion!; // Garantido que não é null após EnsureEntityExists
+        var promotion = await _promotionRepository.GetByIdAsync(promotionId, companyId);
+        if (promotion == null)
+            throw new NotFoundException("Promotion", promotionId);
+        return promotion;
     }
 
     /// <summary>
-    /// Envia a notificação da promoção.
+    /// Envia a notificao da promoo.
     /// </summary>
-    /// <param name="promotion">Promoção a ser notificada.</param>
-    /// <param name="request">Dados da notificação.</param>
+    /// <param name="promotion">Promoï¿½ï¿½o a ser notificada.</param>
+    /// <param name="request">Dados da notificaï¿½ï¿½o.</param>
     private Task SendNotificationAsync(Domain.Entities.Promotion promotion, NotifyPromotionRequest request)
     {
-        // Placeholder: futura integração com API WhatsApp
+        // Placeholder: futura integraï¿½ï¿½o com API WhatsApp
         // Exemplo: await _whatsappService.SendMessageAsync(promotion, request.MessageTemplate);
         
-        // Por enquanto, apenas valida que a promoção existe e está ativa
-        ValidateBusinessRule(promotion.IsActive, "Promoção deve estar ativa para ser notificada.", "PROMOTION_ACTIVE_RULE");
+        // Por enquanto, apenas valida que a promoï¿½ï¿½o existe e estï¿½ ativa
+        ValidateBusinessRule(promotion.IsActive, "Promoï¿½ï¿½o deve estar ativa para ser notificada.", "PROMOTION_ACTIVE_RULE");
         return Task.CompletedTask; // Adicionado para retornar uma Task
     }
 }

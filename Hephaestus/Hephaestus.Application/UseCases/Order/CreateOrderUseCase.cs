@@ -219,7 +219,7 @@ public class CreateOrderUseCase : BaseUseCase, ICreateOrderUseCase
             {
                 await _promotionRepository.AddUsageAsync(new PromotionUsage
                 {
-                    TenantId = tenantId,
+                    CompanyId = tenantId,
                     PromotionId = request.PromotionId!,
                     CustomerId = request.CustomerPhoneNumber,
                     OrderId = orderId,

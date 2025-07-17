@@ -17,8 +17,8 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
             .HasMaxLength(36)
             .IsRequired();
 
-        builder.Property(t => t.TenantId)
-            .HasColumnName("tenant_id")
+        builder.Property(t => t.CompanyId)
+            .HasColumnName("company_id")
             .HasMaxLength(36)
             .IsRequired();
 
@@ -40,7 +40,7 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
             .IsRequired();
 
         // Índices
-        builder.HasIndex(t => t.TenantId);
+        builder.HasIndex(t => t.CompanyId);
         builder.HasIndex(t => t.Name);
     }
 }

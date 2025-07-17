@@ -12,7 +12,7 @@
           "Additional"
         ],
         "summary": "Cria um novo adicional para o tenant autenticado.",
-        "description": "Requer **Role: Tenant**.\r\n\r\nExemplo de requisição:\r\n```json\r\n{\r\n  \"name\": \"Bacon Crocante\",\r\n  \"description\": \"Fatias crocantes de bacon\",\r\n  \"price\": 4.99,\r\n  \"isAvailable\": true\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 201 Created):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\n\r\nExemplo de erro de validação (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório.\"\r\n    ]\r\n  }\r\n}\r\n```",
+        "description": "Requer **Role: Tenant**.\r\n\r\nExemplo de requisi��o:\r\n```json\r\n{\r\n  \"name\": \"Bacon Crocante\",\r\n  \"description\": \"Fatias crocantes de bacon\",\r\n  \"price\": 4.99,\r\n  \"isAvailable\": true\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 201 Created):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\n\r\nExemplo de erro de valida��o (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' � obrigat�rio.\"\r\n    ]\r\n  }\r\n}\r\n```",
         "requestBody": {
           "description": "Dados do adicional a ser criado.",
           "content": {
@@ -186,8 +186,8 @@
         "tags": [
           "Additional"
         ],
-        "summary": "Obtém os detalhes de um adicional específico pelo seu ID.",
-        "description": "Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Queijo Extra\",\r\n  \"description\": \"Adicional de queijo\",\r\n  \"price\": 3.50,\r\n  \"isAvailable\": true\r\n}\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"message\": \"Adicional com ID 'xyz' não encontrado para o tenant.\"\r\n}\r\n```",
+        "summary": "Obt�m os detalhes de um adicional espec�fico pelo seu ID.",
+        "description": "Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Queijo Extra\",\r\n  \"description\": \"Adicional de queijo\",\r\n  \"price\": 3.50,\r\n  \"isAvailable\": true\r\n}\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"message\": \"Adicional com ID 'xyz' n�o encontrado para o tenant.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -269,8 +269,8 @@
         "tags": [
           "Additional"
         ],
-        "summary": "Atualiza as informações de um adicional existente.",
-        "description": "Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.\r\n\r\nExemplo de requisição:\r\n```json\r\n{\r\n  \"name\": \"Bacon Premium\",\r\n  \"description\": \"Fatias de bacon artesanal\",\r\n  \"price\": 6.50,\r\n  \"isAvailable\": true\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta)\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"message\": \"Adicional com ID 'xyz' não encontrado para o tenant.\"\r\n}\r\n```",
+        "summary": "Atualiza as informa��es de um adicional existente.",
+        "description": "Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.\r\n\r\nExemplo de requisi��o:\r\n```json\r\n{\r\n  \"name\": \"Bacon Premium\",\r\n  \"description\": \"Fatias de bacon artesanal\",\r\n  \"price\": 6.50,\r\n  \"isAvailable\": true\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta)\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"message\": \"Adicional com ID 'xyz' n�o encontrado para o tenant.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -376,7 +376,7 @@
           "Additional"
         ],
         "summary": "Remove um adicional existente.",
-        "description": "Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta)\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"message\": \"Adicional com ID 'xyz' não encontrado para o tenant.\"\r\n}\r\n```",
+        "description": "Requer **Role: Tenant**. O adicional deve pertencer ao tenant autenticado.\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta)\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"message\": \"Adicional com ID 'xyz' n�o encontrado para o tenant.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -443,8 +443,8 @@
         "tags": [
           "Administration"
         ],
-        "summary": "Lista todas as empresas registradas no sistema, com opções de filtro e paginação.",
-        "description": "Requer **Role: Admin** e **MFA validado**.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"items\": [\r\n    {\r\n      \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n      \"name\": \"Empresa Exemplo\",\r\n      \"email\": \"exemplo@empresa.com\",\r\n      \"phoneNumber\": \"123456789\",\r\n      \"isEnabled\": true,\r\n      \"feeType\": \"Percentage\",\r\n      \"feeValue\": 5.0,\r\n      \"city\": \"São Paulo\",\r\n      \"neighborhood\": \"Vila Mariana\",\r\n      \"street\": \"Rua Exemplo\",\r\n      \"number\": \"123\",\r\n      \"latitude\": -23.550520,\r\n      \"longitude\": -46.633308,\r\n      \"slogan\": \"O melhor da cidade!\",\r\n      \"description\": \"Descrição da empresa.\"\r\n    }\r\n  ],\r\n  \"totalCount\": 1,\r\n  \"pageNumber\": 1,\r\n  \"pageSize\": 20\r\n}\r\n```",
+        "summary": "Lista todas as empresas registradas no sistema, com opes de filtro e paginao.",
+        "description": "Requer **Role: Admin** e **MFA validado**.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"items\": [\r\n    {\r\n      \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n      \"name\": \"Empresa Exemplo\",\r\n      \"email\": \"exemplo@empresa.com\",\r\n      \"phoneNumber\": \"123456789\",\r\n      \"isEnabled\": true,\r\n      \"feeType\": \"Percentage\",\r\n      \"feeValue\": 5.0,\r\n      \"city\": \"S�o Paulo\",\r\n      \"neighborhood\": \"Vila Mariana\",\r\n      \"street\": \"Rua Exemplo\",\r\n      \"number\": \"123\",\r\n      \"latitude\": -23.550520,\r\n      \"longitude\": -46.633308,\r\n      \"slogan\": \"O melhor da cidade!\",\r\n      \"description\": \"Descri��o da empresa.\"\r\n    }\r\n  ],\r\n  \"totalCount\": 1,\r\n  \"pageNumber\": 1,\r\n  \"pageSize\": 20\r\n}\r\n```",
         "parameters": [
           {
             "name": "isEnabled",
@@ -457,7 +457,7 @@
           {
             "name": "pageNumber",
             "in": "query",
-            "description": "Número da página a ser retornada (padrão: 1).",
+            "description": "N�mero da p�gina a ser retornada (padr�o: 1).",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -467,7 +467,7 @@
           {
             "name": "pageSize",
             "in": "query",
-            "description": "Número de itens por página (padrão: 20).",
+            "description": "N�mero de itens por p�gina (padr�o: 20).",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -547,8 +547,8 @@
         "tags": [
           "Administration"
         ],
-        "summary": "Atualiza as informações de uma empresa específica.",
-        "description": "Requer **Role: Admin** e **MFA validado**.\r\nO `id` na URL deve corresponder ao `Id` no corpo da requisição.\r\n\r\nExemplo de requisição:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Empresa Atualizada Ltda.\",\r\n  \"email\": \"contato_novo@empresa.com\",\r\n  \"phoneNumber\": \"998877665\",\r\n  \"apiKey\": \"nova_api_key_xyz\",\r\n  \"feeType\": \"Fixed\",\r\n  \"feeValue\": 2.50,\r\n  \"isEnabled\": true,\r\n  \"city\": \"Rio de Janeiro\",\r\n  \"neighborhood\": \"Botafogo\",\r\n  \"street\": \"Rua Exemplo Nova\",\r\n  \"number\": \"456\",\r\n  \"latitude\": -22.951916,\r\n  \"longitude\": -43.210487,\r\n  \"slogan\": \"Inovação a cada passo!\",\r\n  \"description\": \"Empresa líder em tecnologia.\"\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta)\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"message\": \"Empresa com ID 'xyz' não encontrada.\"\r\n}\r\n```",
+        "summary": "Atualiza as informa��es de uma empresa espec�fica.",
+        "description": "Requer **Role: Admin** e **MFA validado**.\r\nO `id` na URL deve corresponder ao `Id` no corpo da requisi��o.\r\n\r\nExemplo de requisi��o:\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Empresa Atualizada Ltda.\",\r\n  \"email\": \"contato_novo@empresa.com\",\r\n  \"phoneNumber\": \"998877665\",\r\n  \"apiKey\": \"nova_api_key_xyz\",\r\n  \"feeType\": \"Fixed\",\r\n  \"feeValue\": 2.50,\r\n  \"isEnabled\": true,\r\n  \"city\": \"Rio de Janeiro\",\r\n  \"neighborhood\": \"Botafogo\",\r\n  \"street\": \"Rua Exemplo Nova\",\r\n  \"number\": \"456\",\r\n  \"latitude\": -22.951916,\r\n  \"longitude\": -43.210487,\r\n  \"slogan\": \"Inova��o a cada passo!\",\r\n  \"description\": \"Empresa l�der em tecnologia.\"\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta)\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"message\": \"Empresa com ID 'xyz' n�o encontrada.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -655,8 +655,8 @@
         "tags": [
           "Administration"
         ],
-        "summary": "Gera um relatório consolidado de vendas de todas as empresas, com filtros opcionais por data.",
-        "description": "Requer **Role: Admin** e **MFA validado**.\r\nAs datas devem estar no formato ISO 8601 (ex: `2024-01-01`).\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"totalSales\": 1000.00,\r\n  \"totalTransactions\": 50,\r\n  \"averageTicket\": 20.00,\r\n  \"byCompany\": [\r\n    {\r\n      \"companyId\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n      \"companyName\": \"Empresa Exemplo\",\r\n      \"totalSales\": 500.00,\r\n      \"totalTransactions\": 25\r\n    },\r\n    {\r\n      \"companyId\": \"a7b8c9d0-e1f2-3g4h-5i6j-7k8l9m0n1o2p\",\r\n      \"companyName\": \"Outra Empresa\",\r\n      \"totalSales\": 500.00,\r\n      \"totalTransactions\": 25\r\n    }\r\n  ]\r\n}\r\n```\r\n\r\nExemplo de erro (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"message\": \"Data inicial não pode ser maior que a data final.\"\r\n}\r\n```",
+        "summary": "Gera um relat�rio consolidado de vendas de todas as empresas, com filtros opcionais por data.",
+        "description": "Requer **Role: Admin** e **MFA validado**.\r\nAs datas devem estar no formato ISO 8601 (ex: `2024-01-01`).\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"totalSales\": 1000.00,\r\n  \"totalTransactions\": 50,\r\n  \"averageTicket\": 20.00,\r\n  \"byCompany\": [\r\n    {\r\n      \"companyId\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n      \"companyName\": \"Empresa Exemplo\",\r\n      \"totalSales\": 500.00,\r\n      \"totalTransactions\": 25\r\n    },\r\n    {\r\n      \"companyId\": \"a7b8c9d0-e1f2-3g4h-5i6j-7k8l9m0n1o2p\",\r\n      \"companyName\": \"Outra Empresa\",\r\n      \"totalSales\": 500.00,\r\n      \"totalTransactions\": 25\r\n    }\r\n  ]\r\n}\r\n```\r\n\r\nExemplo de erro (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"message\": \"Data inicial n�o pode ser maior que a data final.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "startDate",
@@ -749,7 +749,7 @@
         "tags": [
           "Administration"
         ],
-        "summary": "Lista logs de auditoria de ações administrativas.",
+        "summary": "Lista logs de auditoria de a��es administrativas.",
         "description": "Requer **Role: Admin** e **MFA validado**.\r\nAs datas devem estar no formato ISO 8601 (ex: `2024-01-01`).\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"userId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"action\": \"UpdateCompany\",\r\n    \"entityId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n    \"description\": \"Empresa 'XYZ Corp' atualizada com sucesso\",\r\n    \"timestamp\": \"2024-07-14T15:30:00Z\"\r\n  }\r\n]\r\n```",
         "parameters": [
           {
@@ -847,18 +847,1780 @@
         }
       }
     },
+    "/api/Administration/promotion": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todas as promoções do sistema, com filtros opcionais por status, empresa, paginação e ordenação.",
+        "description": "Requer **Role: Admin** e **MFA validado**.",
+        "parameters": [
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "Filtro opcional para promoções ativas.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "Filtro opcional por empresa.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Itens por página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem (asc/desc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/menu-item": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todos os itens do cardápio do sistema, com filtros avançados, paginação e ordenação.",
+        "description": "Requer **Role: Admin** e **MFA validado**.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "Filtro opcional por empresa.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagIds",
+            "in": "query",
+            "description": "Filtro opcional por tags.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "categoryIds",
+            "in": "query",
+            "description": "Filtro opcional por categorias.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "description": "Filtro opcional por preço máximo.",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "isAvailable",
+            "in": "query",
+            "description": "Filtro opcional por disponibilidade.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "promotionActiveNow",
+            "in": "query",
+            "description": "Filtro por promoções ativas agora.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "promotionDayOfWeek",
+            "in": "query",
+            "description": "Filtro por dia da semana da promoção.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "promotionTime",
+            "in": "query",
+            "description": "Filtro por horário da promoção.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Itens por página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem (asc/desc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuItemResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/tag": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todas as tags do sistema, com filtros por empresa, nome, paginação e ordenação.",
+        "description": "Requer **Role: Admin** e **MFA validado**.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "Filtro opcional por empresa.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filtro opcional por nome da tag.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Itens por página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem (asc/desc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/category": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todas as categorias do sistema, com filtros por empresa, nome, status, paginação e ordenação.",
+        "description": "Requer **Role: Admin** e **MFA validado**.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "Filtro opcional por empresa.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filtro opcional por nome da categoria.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "Filtro opcional por status de ativação.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Itens por página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem (asc/desc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/customer": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todos os clientes do sistema, com filtros por empresa, nome, telefone, status, paginação e ordenação.",
+        "description": "Requer **Role: Admin** e **MFA validado**.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "Filtro opcional por empresa.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filtro opcional por nome do cliente.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "description": "Filtro opcional por telefone.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "Filtro opcional por status de ativação.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Itens por página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem (asc/desc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/coupon": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todos os cupons do sistema, com filtros por empresa, código, telefone do cliente, status, paginação e ordenação.",
+        "description": "Requer **Role: Admin** e **MFA validado**.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "Filtro opcional por empresa.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Filtro opcional por código do cupom.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerPhoneNumber",
+            "in": "query",
+            "description": "Filtro opcional por telefone do cliente.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "Filtro opcional por status de ativação.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Itens por página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem (asc/desc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/order": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todos os pedidos do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.",
+        "description": "Requer <b>Role: Admin</b> e <b>MFA validado</b>.\r\n\r\nPermite filtrar por empresa, cliente, telefone, status, datas, valor, etc.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "ID da empresa (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "description": "ID do cliente (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerPhoneNumber",
+            "in": "query",
+            "description": "Telefone do cliente (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status do pedido (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "in": "query",
+            "description": "Status do pagamento (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataInicial",
+            "in": "query",
+            "description": "Data inicial de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dataFinal",
+            "in": "query",
+            "description": "Data final de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "valorMin",
+            "in": "query",
+            "description": "Valor mínimo do pedido (opcional).",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "valorMax",
+            "in": "query",
+            "description": "Valor máximo do pedido (opcional).",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem de ordenação (asc/desc, padrão: asc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/order-item": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todos os itens de pedido do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.",
+        "description": "Requer <b>Role: Admin</b> e <b>MFA validado</b>.\r\n\r\nPermite filtrar por pedido, empresa, cliente, produto, datas, valor, etc.",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "description": "ID do pedido (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "ID da empresa (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "description": "ID do cliente (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "menuItemId",
+            "in": "query",
+            "description": "ID do item do cardápio (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataInicial",
+            "in": "query",
+            "description": "Data inicial de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dataFinal",
+            "in": "query",
+            "description": "Data final de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "valorMin",
+            "in": "query",
+            "description": "Valor unitário mínimo (opcional).",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "valorMax",
+            "in": "query",
+            "description": "Valor unitário máximo (opcional).",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem de ordenação (asc/desc, padrão: asc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderItemResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderItemResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderItemResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/address": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todos os endereços do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.",
+        "description": "Requer <b>Role: Admin</b> e <b>MFA validado</b>.\r\n\r\nPermite filtrar por entidade, tipo, cidade, estado, datas, etc.",
+        "parameters": [
+          {
+            "name": "entityId",
+            "in": "query",
+            "description": "ID da entidade (empresa ou cliente, opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "description": "Tipo da entidade (\"Company\", \"Customer\", etc., opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "description": "Cidade (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "Estado (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Tipo do endereço (Principal, Entrega, etc., opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataInicial",
+            "in": "query",
+            "description": "Data inicial de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dataFinal",
+            "in": "query",
+            "description": "Data final de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem de ordenação (asc/desc, padrão: asc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/additional": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todos os adicionais do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.",
+        "description": "Requer <b>Role: Admin</b> e <b>MFA validado</b>.\r\n\r\nPermite filtrar por empresa, nome, disponibilidade, preço, datas, etc.",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "description": "ID da empresa (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Nome do adicional (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAvailable",
+            "in": "query",
+            "description": "Disponibilidade (opcional).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "precoMin",
+            "in": "query",
+            "description": "Preço mínimo (opcional).",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "precoMax",
+            "in": "query",
+            "description": "Preço máximo (opcional).",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "dataInicial",
+            "in": "query",
+            "description": "Data inicial de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dataFinal",
+            "in": "query",
+            "description": "Data final de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem de ordenação (asc/desc, padrão: asc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdditionalResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdditionalResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdditionalResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/Administration/review": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Lista todas as avaliações do sistema, sem restrição de tenant, com filtros avançados, paginação e ordenação.",
+        "description": "Requer <b>Role: Admin</b> e <b>MFA validado</b>.\r\n\r\nPermite filtrar por empresa, cliente, pedido, nota, status, datas, etc.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "description": "ID da empresa (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "description": "ID do cliente (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "in": "query",
+            "description": "ID do pedido (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ratingMin",
+            "in": "query",
+            "description": "Nota mínima (opcional).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "ratingMax",
+            "in": "query",
+            "description": "Nota máxima (opcional).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "Status de ativação (opcional).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "dataInicial",
+            "in": "query",
+            "description": "Data inicial de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dataFinal",
+            "in": "query",
+            "description": "Data final de criação (opcional).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página (padrão: 1).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página (padrão: 20).",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Campo de ordenação (opcional).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Ordem de ordenação (asc/desc, padrão: asc).",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponsePagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponsePagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponsePagedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/Administration/company/radius": {
       "get": {
         "tags": [
           "Administration"
         ],
-        "summary": "Lista empresas localizadas dentro de um raio geográfico específico.",
-        "description": "Requer **Role: Admin** e **MFA validado**.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"name\": \"Empresa Próxima\",\r\n    \"email\": \"proxima@empresa.com\",\r\n    \"phoneNumber\": \"123456789\",\r\n    \"isEnabled\": true,\r\n    \"feeType\": \"Percentage\",\r\n    \"feeValue\": 5.0,\r\n    \"city\": \"São Paulo\",\r\n    \"neighborhood\": \"Vila Mariana\",\r\n    \"street\": \"Rua Exemplo\",\r\n    \"number\": \"123\",\r\n    \"latitude\": -23.550520,\r\n    \"longitude\": -46.633308,\r\n    \"slogan\": \"O melhor da cidade!\",\r\n    \"description\": \"Descrição da empresa.\"\r\n  }\r\n]\r\n```\r\n\r\nExemplo de erro (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"message\": \"Parâmetros de localização inválidos. Latitude e Longitude devem ser fornecidos.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "centerLat",
             "in": "query",
-            "description": "Latitude do centro do raio.",
             "schema": {
               "type": "number",
               "format": "double"
@@ -867,7 +2629,6 @@
           {
             "name": "centerLon",
             "in": "query",
-            "description": "Longitude do centro do raio.",
             "schema": {
               "type": "number",
               "format": "double"
@@ -876,7 +2637,6 @@
           {
             "name": "radiusKm",
             "in": "query",
-            "description": "Raio em quilômetros para a busca.",
             "schema": {
               "type": "number",
               "format": "double"
@@ -885,7 +2645,6 @@
           {
             "name": "city",
             "in": "query",
-            "description": "Filtro opcional por cidade.",
             "schema": {
               "type": "string"
             }
@@ -893,7 +2652,78 @@
           {
             "name": "neighborhood",
             "in": "query",
-            "description": "Filtro opcional por bairro.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "categoryIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "openNow",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "dayOfWeek",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "promotionActiveNow",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "promotionDayOfWeek",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "promotionTime",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -2141,7 +3971,7 @@
           "Coupon"
         ],
         "summary": "Cria um novo cupom para o tenant autenticado.",
-        "description": "Este endpoint permite que um administrador ou um tenant crie um novo cupom de desconto.\r\nRequer autenticação com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de requisição:\r\n```json\r\n{\r\n  \"code\": \"VERAO2025\",\r\n  \"description\": \"Desconto especial de verão\",\r\n  \"discountValue\": 15.00,\r\n  \"isActive\": true,\r\n  \"startDate\": \"2025-07-15T00:00:00Z\",\r\n  \"endDate\": \"2025-09-30T23:59:59Z\"\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 201 Created):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\n\r\nExemplo de erro de validação (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Code\": [\r\n      \"O código do cupom é obrigatório.\"\r\n    ]\r\n  }\r\n}\r\n```\r\nExemplo de erro de conflito (Status 409 Conflict):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"O código 'VERAO2025' já existe para este tenant.\"\r\n}\r\n```",
+        "description": "Este endpoint permite que um administrador ou um tenant crie um novo cupom de desconto.\r\nRequer autentica��o com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de requisi��o:\r\n```json\r\n{\r\n  \"code\": \"VERAO2025\",\r\n  \"description\": \"Desconto especial de ver�o\",\r\n  \"discountValue\": 15.00,\r\n  \"isActive\": true,\r\n  \"startDate\": \"2025-07-15T00:00:00Z\",\r\n  \"endDate\": \"2025-09-30T23:59:59Z\"\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 201 Created):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\n\r\nExemplo de erro de valida��o (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Code\": [\r\n      \"O c�digo do cupom � obrigat�rio.\"\r\n    ]\r\n  }\r\n}\r\n```\r\nExemplo de erro de conflito (Status 409 Conflict):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"O c�digo 'VERAO2025' j� existe para este tenant.\"\r\n}\r\n```",
         "requestBody": {
           "description": "Dados do cupom a ser criado.",
           "content": {
@@ -2246,8 +4076,8 @@
         "tags": [
           "Coupon"
         ],
-        "summary": "Lista os cupons disponíveis para o tenant autenticado, com filtros opcionais.",
-        "description": "Este endpoint permite filtrar cupons por status de ativação (`isActive`) e pelo número de telefone de um cliente associado (`customerPhoneNumber`).\r\nRequer autenticação com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"code\": \"DESCONTO10\",\r\n    \"description\": \"10% de desconto\",\r\n    \"discountValue\": 10.00,\r\n    \"isActive\": true,\r\n    \"startDate\": \"2025-07-14T00:00:00Z\",\r\n    \"endDate\": \"2025-12-31T23:59:59Z\"\r\n  },\r\n  {\r\n    \"id\": \"a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"code\": \"FRETEGRATIS\",\r\n    \"description\": \"Frete Grátis na primeira compra\",\r\n    \"discountValue\": 0.00,\r\n    \"isActive\": false,\r\n    \"startDate\": \"2025-06-01T00:00:00Z\",\r\n    \"endDate\": \"2025-06-30T23:59:59Z\"\r\n  }\r\n]\r\n```\r\nExemplo de erro de autenticação (Status 401 Unauthorized):\r\n```\r\n(Nenhum corpo de resposta, apenas status 401)\r\n```",
+        "summary": "Lista os cupons dispon�veis para o tenant autenticado, com filtros opcionais.",
+        "description": "Este endpoint permite filtrar cupons por status de ativa��o (`isActive`) e pelo n�mero de telefone de um cliente associado (`customerPhoneNumber`).\r\nRequer autentica��o com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"code\": \"DESCONTO10\",\r\n    \"description\": \"10% de desconto\",\r\n    \"discountValue\": 10.00,\r\n    \"isActive\": true,\r\n    \"startDate\": \"2025-07-14T00:00:00Z\",\r\n    \"endDate\": \"2025-12-31T23:59:59Z\"\r\n  },\r\n  {\r\n    \"id\": \"a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"code\": \"FRETEGRATIS\",\r\n    \"description\": \"Frete Gr�tis na primeira compra\",\r\n    \"discountValue\": 0.00,\r\n    \"isActive\": false,\r\n    \"startDate\": \"2025-06-01T00:00:00Z\",\r\n    \"endDate\": \"2025-06-30T23:59:59Z\"\r\n  }\r\n]\r\n```\r\nExemplo de erro de autentica��o (Status 401 Unauthorized):\r\n```\r\n(Nenhum corpo de resposta, apenas status 401)\r\n```",
         "parameters": [
           {
             "name": "isActive",
@@ -2260,7 +4090,7 @@
           {
             "name": "customerPhoneNumber",
             "in": "query",
-            "description": "Filtro opcional para listar cupons associados a um número de telefone de cliente específico.",
+            "description": "Filtro opcional para listar cupons associados a um n�mero de telefone de cliente espec�fico.",
             "schema": {
               "type": "string"
             }
@@ -2360,8 +4190,8 @@
         "tags": [
           "Coupon"
         ],
-        "summary": "Obtém os detalhes de um cupom específico por seu ID.",
-        "description": "Este endpoint retorna todas as informações de um cupom, desde que pertença ao tenant autenticado.\r\nRequer autenticação com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"code\": \"DESCONTO10\",\r\n  \"description\": \"10% de desconto\",\r\n  \"discountValue\": 10.00,\r\n  \"isActive\": true,\r\n  \"startDate\": \"2025-07-14T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\"\r\n}\r\n```\r\n\r\nExemplo de erro (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID do cupom 'invalido-id' não é um GUID válido.\"\r\n}\r\n```\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant.\"\r\n}\r\n```",
+        "summary": "Obt�m os detalhes de um cupom espec�fico por seu ID.",
+        "description": "Este endpoint retorna todas as informa��es de um cupom, desde que perten�a ao tenant autenticado.\r\nRequer autentica��o com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"code\": \"DESCONTO10\",\r\n  \"description\": \"10% de desconto\",\r\n  \"discountValue\": 10.00,\r\n  \"isActive\": true,\r\n  \"startDate\": \"2025-07-14T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\"\r\n}\r\n```\r\n\r\nExemplo de erro (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID do cupom 'invalido-id' n�o � um GUID v�lido.\"\r\n}\r\n```\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Cupom com ID '99999999-9999-9999-9999-999999999999' n�o encontrado para o tenant.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -2464,7 +4294,7 @@
           "Coupon"
         ],
         "summary": "Atualiza um cupom existente para o tenant autenticado.",
-        "description": "Permite a modificação das propriedades de um cupom existente.\r\nRequer autenticação com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de requisição:\r\n```json\r\n{\r\n  \"code\": \"SUPERDESCONTO20\",\r\n  \"description\": \"20% de desconto em toda a loja\",\r\n  \"discountValue\": 20.00,\r\n  \"isActive\": true,\r\n  \"startDate\": \"2025-07-14T00:00:00Z\",\r\n  \"endDate\": \"2026-01-31T23:59:59Z\"\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n\r\nExemplo de erro de validação (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"DiscountValue\": [\r\n      \"O valor de desconto deve ser maior que zero.\"\r\n    ]\r\n  }\r\n}\r\n```\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para atualização.\"\r\n}\r\n```\r\nExemplo de erro de conflito (Status 409 Conflict):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"O código de cupom 'SUPERDESCONTO20' já está em uso por outro cupom.\"\r\n}\r\n```",
+        "description": "Permite a modifica��o das propriedades de um cupom existente.\r\nRequer autentica��o com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de requisi��o:\r\n```json\r\n{\r\n  \"code\": \"SUPERDESCONTO20\",\r\n  \"description\": \"20% de desconto em toda a loja\",\r\n  \"discountValue\": 20.00,\r\n  \"isActive\": true,\r\n  \"startDate\": \"2025-07-14T00:00:00Z\",\r\n  \"endDate\": \"2026-01-31T23:59:59Z\"\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n\r\nExemplo de erro de valida��o (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"DiscountValue\": [\r\n      \"O valor de desconto deve ser maior que zero.\"\r\n    ]\r\n  }\r\n}\r\n```\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Cupom com ID '99999999-9999-9999-9999-999999999999' n�o encontrado para atualiza��o.\"\r\n}\r\n```\r\nExemplo de erro de conflito (Status 409 Conflict):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"O c�digo de cupom 'SUPERDESCONTO20' j� est� em uso por outro cupom.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -2590,7 +4420,7 @@
           "Coupon"
         ],
         "summary": "Remove um cupom do tenant autenticado.",
-        "description": "Este endpoint permite que um administrador ou um tenant remova um cupom existente.\r\nRequer autenticação com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n\r\nExemplo de erro (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID do cupom 'invalido-id' não é um GUID válido.\"\r\n}\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Cupom com ID '99999999-9999-9999-9999-999999999999' não encontrado para o tenant.\"\r\n}\r\n```\r\n\r\nExemplo de erro de conflito (Status 409 Conflict):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"Não é possível remover um cupom que está sendo usado em pedidos ativos.\"\r\n}\r\n```",
+        "description": "Este endpoint permite que um administrador ou um tenant remova um cupom existente.\r\nRequer autentica��o com as roles **Admin** ou **Tenant**.\r\n\r\nExemplo de resposta de sucesso (Status 204 No Content):\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n\r\nExemplo de erro (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID do cupom 'invalido-id' n�o � um GUID v�lido.\"\r\n}\r\n```\r\n\r\nExemplo de erro (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Cupom com ID '99999999-9999-9999-9999-999999999999' n�o encontrado para o tenant.\"\r\n}\r\n```\r\n\r\nExemplo de erro de conflito (Status 409 Conflict):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"N�o � poss�vel remover um cupom que est� sendo usado em pedidos ativos.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -2697,7 +4527,7 @@
         "tags": [
           "Coupon"
         ],
-        "summary": "Atualiza o status de ativação de um cupom (ativo/inativo).",
+        "summary": "Atualiza o status de ativa��o de um cupom (ativo/inativo).",
         "parameters": [
           {
             "name": "id",
@@ -2710,7 +4540,7 @@
           }
         ],
         "requestBody": {
-          "description": "Novo status de ativação.",
+          "description": "Novo status de ativa��o.",
           "content": {
             "application/json": {
               "schema": {
@@ -2751,7 +4581,7 @@
             }
           },
           "400": {
-            "description": "Regras de negócio violadas.",
+            "description": "Regras de neg�cio violadas.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2771,7 +4601,7 @@
             }
           },
           "404": {
-            "description": "Cupom não encontrado.",
+            "description": "Cupom n�o encontrado.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2835,7 +4665,7 @@
             "description": "Uso registrado com sucesso."
           },
           "400": {
-            "description": "Limite de uso atingido ou cupom inválido.",
+            "description": "Limite de uso atingido ou cupom inv�lido.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -3164,7 +4994,7 @@
         "summary": "Executa uma query SQL de consulta (SELECT) no banco de dados.",
         "description": "Este endpoint permite a execução de queries SQL do tipo **SELECT** para consulta de dados.\r\nÉ uma operação altamente privilegiada e requer que o usuário autenticado possua a role **Admin** e tenha passado pela validação de **MFA (Autenticação Multifator)**.\r\n\r\nExemplo de requisição:\r\n```json\r\n{\r\n  \"query\": \"SELECT Id, Name, Email FROM Companies WHERE IsEnabled = TRUE LIMIT 10\"\r\n}\r\n```\r\n\r\nExemplo de resposta de sucesso (Status 200 OK):\r\n```json\r\n{\r\n  \"columns\": [\"Id\", \"Name\", \"Email\"],\r\n  \"rows\": [\r\n    [\"123e4567-e89b-12d3-a456-426614174001\", \"Empresa A\", \"contato@empresaA.com\"],\r\n    [\"987f6543-d2c1-b0a9-8765-43210fedcba9\", \"Empresa B\", \"info@empresaB.com\"]\r\n  ],\r\n  \"rowCount\": 2\r\n}\r\n```\r\n\r\nExemplo de erro de requisição inválida (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"Apenas comandos SELECT são permitidos. Query recebida: 'DELETE FROM Users'.\"\r\n}\r\n```\r\nExemplo de erro de autenticação (Status 401 Unauthorized):\r\n```\r\n(Nenhum corpo de resposta, apenas status 401)\r\n```\r\nExemplo de erro interno do servidor (Status 500 Internal Server Error):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao executar a query: Timeout de banco de dados.\"\r\n}\r\n```",
         "requestBody": {
-          "description": "Um objeto Hephaestus.Application.DTOs.Request.ExecuteQueryRequest contendo a query SQL a ser executada.",
+          "description": "Um objeto Hephaestus.Domain.DTOs.Request.ExecuteQueryRequest contendo a query SQL a ser executada.",
           "content": {
             "application/json": {
               "schema": {
@@ -3341,13 +5171,10 @@
         "tags": [
           "Menu"
         ],
-        "summary": "Lists menu items for the authenticated tenant with pagination.",
-        "description": "This endpoint retrieves a paginated list of menu items belonging to the authenticated tenant.\r\nAuthentication with the **Tenant** role is required.\r\n            \r\nExample Success Response (Status 200 OK):\r\n```json\r\n{\r\n  \"items\": [\r\n    {\r\n      \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n      \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n      \"name\": \"X-Burger\",\r\n      \"description\": \"Hambúrguer com queijo e salada\",\r\n      \"categoryId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n      \"price\": 25.90,\r\n      \"isAvailable\": true,\r\n      \"tagIds\": [\"tag1\", \"tag2\"],\r\n      \"createdAt\": \"2024-01-01T12:00:00Z\"\r\n    },\r\n    {\r\n      \"id\": \"a9b8c7d6-e5f4-3g2h-1i0j-k9l8m7n6o5p4\",\r\n      \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n      \"name\": \"Refrigerante Cola\",\r\n      \"description\": \"Lata de 350ml\",\r\n      \"categoryId\": \"c0d1e2f3-a4b5-c6d7-e8f9-0a1b2c3d4e5f\",\r\n      \"price\": 7.00,\r\n      \"isAvailable\": true,\r\n      \"tagIds\": [\"bebidas\"],\r\n      \"createdAt\": \"2024-01-02T10:00:00Z\"\r\n    }\r\n  ],\r\n  \"totalCount\": 2,\r\n  \"pageNumber\": 1,\r\n  \"pageSize\": 20\r\n}\r\n```\r\nExample Bad Request Response (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"Page number must be greater than 0.\"\r\n}\r\n```\r\nExample Unauthorized Response (Status 401 Unauthorized):\r\n```\r\n(No response body, just 401 status)\r\n```",
         "parameters": [
           {
             "name": "pageNumber",
             "in": "query",
-            "description": "The page number for pagination (defaults to 1).",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -3357,7 +5184,6 @@
           {
             "name": "pageSize",
             "in": "query",
-            "description": "The number of items per page for pagination (defaults to 20).",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -3377,6 +5203,56 @@
             "schema": {
               "type": "string",
               "default": "asc"
+            }
+          },
+          {
+            "name": "tagIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "categoryIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "promotionActiveNow",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "promotionDayOfWeek",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "promotionTime",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -3453,7 +5329,7 @@
           "Menu"
         ],
         "summary": "Retrieves a specific menu item by its ID.",
-        "description": "This endpoint returns the detailed information of a single menu item, provided it belongs to the authenticated tenant.\r\nAuthentication with the **Tenant** role is required.\r\n            \r\nExample Success Response (Status 200 OK):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"X-Burger\",\r\n  \"description\": \"Hambúrguer com queijo e salada\",\r\n  \"categoryId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n  \"price\": 25.90,\r\n  \"isAvailable\": true,\r\n  \"tagIds\": [\"tag1\", \"tag2\"],\r\n  \"availableAdditionalIds\": [\"add1\", \"add2\"],\r\n  \"imageUrl\": \"[https://example.com/images/x-burger.jpg](https://example.com/images/x-burger.jpg)\"\r\n}\r\n```\r\n            \r\nExample Bad Request Response (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The provided ID 'invalid-guid' is not a valid GUID.\"\r\n}\r\n```\r\nExample Not Found Response (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"MenuItem with ID '99999999-9999-9999-9999-999999999999' not found for the tenant.\"\r\n}\r\n```\r\nExample Unauthorized Response (Status 401 Unauthorized):\r\n```\r\n(No response body, just 401 status)\r\n```",
+        "description": "This endpoint returns the detailed information of a single menu item, provided it belongs to the authenticated tenant.\r\nAuthentication with the **Tenant** role is required.\r\n            \r\nExample Success Response (Status 200 OK):\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"X-Burger\",\r\n  \"description\": \"Hamb�rguer com queijo e salada\",\r\n  \"categoryId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n  \"price\": 25.90,\r\n  \"isAvailable\": true,\r\n  \"tagIds\": [\"tag1\", \"tag2\"],\r\n  \"availableAdditionalIds\": [\"add1\", \"add2\"],\r\n  \"imageUrl\": \"[https://example.com/images/x-burger.jpg](https://example.com/images/x-burger.jpg)\"\r\n}\r\n```\r\n            \r\nExample Bad Request Response (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"The provided ID 'invalid-guid' is not a valid GUID.\"\r\n}\r\n```\r\nExample Not Found Response (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"MenuItem with ID '99999999-9999-9999-9999-999999999999' not found for the tenant.\"\r\n}\r\n```\r\nExample Unauthorized Response (Status 401 Unauthorized):\r\n```\r\n(No response body, just 401 status)\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -3556,7 +5432,7 @@
           "Menu"
         ],
         "summary": "Updates an existing menu item.",
-        "description": "This endpoint allows a tenant to update an existing menu item. Only the fields provided in the request will be updated.\r\nAuthentication with the **Tenant** role is required.\r\n            \r\nExample Request:\r\n```json\r\n{\r\n  \"name\": \"X-Burger Deluxe\",\r\n  \"description\": \"Hambúrguer premium com queijo, salada e bacon\",\r\n  \"categoryId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n  \"price\": 32.90,\r\n  \"isAvailable\": true,\r\n  \"tagIds\": [\"tag1\", \"tag2\", \"premium\"],\r\n  \"availableAdditionalIds\": [\"add1\", \"add2\", \"add3\"],\r\n  \"imageUrl\": \"[https://example.com/images/x-burger-deluxe.jpg](https://example.com/images/x-burger-deluxe.jpg)\"\r\n}\r\n```\r\n            \r\nExample Success Response (Status 204 No Content):\r\n```\r\n(No response body, just 204 status)\r\n```\r\n            \r\nExample Validation Error Response (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Price\": [\r\n      \"The Price field must be a positive value.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\nExample Not Found Response (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"MenuItem with ID '99999999-9999-9999-9999-999999999999' not found for the tenant.\"\r\n}\r\n```\r\n            \r\nExample Unauthorized Response (Status 401 Unauthorized):\r\n```\r\n(No response body, just 401 status)\r\n```",
+        "description": "This endpoint allows a tenant to update an existing menu item. Only the fields provided in the request will be updated.\r\nAuthentication with the **Tenant** role is required.\r\n            \r\nExample Request:\r\n```json\r\n{\r\n  \"name\": \"X-Burger Deluxe\",\r\n  \"description\": \"Hamb�rguer premium com queijo, salada e bacon\",\r\n  \"categoryId\": \"789e0123-e89b-12d3-a456-426614174003\",\r\n  \"price\": 32.90,\r\n  \"isAvailable\": true,\r\n  \"tagIds\": [\"tag1\", \"tag2\", \"premium\"],\r\n  \"availableAdditionalIds\": [\"add1\", \"add2\", \"add3\"],\r\n  \"imageUrl\": \"[https://example.com/images/x-burger-deluxe.jpg](https://example.com/images/x-burger-deluxe.jpg)\"\r\n}\r\n```\r\n            \r\nExample Success Response (Status 204 No Content):\r\n```\r\n(No response body, just 204 status)\r\n```\r\n            \r\nExample Validation Error Response (Status 400 Bad Request):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Price\": [\r\n      \"The Price field must be a positive value.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\nExample Not Found Response (Status 404 Not Found):\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"MenuItem with ID '99999999-9999-9999-9999-999999999999' not found for the tenant.\"\r\n}\r\n```\r\n            \r\nExample Unauthorized Response (Status 401 Unauthorized):\r\n```\r\n(No response body, just 401 status)\r\n```",
         "parameters": [
           {
             "name": "id",
@@ -3752,7 +5628,7 @@
         "summary": "Envia uma consulta (prompt) para o modelo de chat da OpenAI e retorna a resposta.",
         "description": "Este endpoint permite interagir com a API de chat da OpenAI, enviando um prompt e, opcionalmente,\r\nespecificando o formato de resposta desejado (texto ou JSON).\r\n\r\n\r\n\r\n**Requisitos de Autorização:**\r\nPara acessar este endpoint, o usuário autenticado deve possuir a role **Admin**\r\ne ter passado pela validação de **MFA (Autenticação Multifator)**.\r\n\r\n\r\n\r\n**Exemplo de Requisição:**\r\n```json\r\n{\r\n  \"prompt\": \"Qual a capital da França?\",\r\n  \"responseFormat\": \"text\"\r\n}\r\n```\r\nou\r\n```json\r\n{\r\n  \"prompt\": \"Me forneça informações sobre a Torre Eiffel em formato JSON com campos 'nome', 'cidade' e 'altura'.\",\r\n  \"responseFormat\": \"json_object\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK - 'text' format):**\r\n```json\r\n{\r\n  \"response\": \"A capital da França é Paris.\",\r\n  \"usage\": {\r\n    \"promptTokens\": 8,\r\n    \"completionTokens\": 5,\r\n    \"totalTokens\": 13\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK - 'json_object' format):**\r\n```json\r\n{\r\n  \"response\": \"{\\\"nome\\\": \\\"Torre Eiffel\\\", \\\"cidade\\\": \\\"Paris\\\", \\\"altura\\\": \\\"330 metros\\\"}\",\r\n  \"usage\": {\r\n    \"promptTokens\": 25,\r\n    \"completionTokens\": 20,\r\n    \"totalTokens\": 45\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Prompt\": [\r\n      \"O campo 'Prompt' é obrigatório e não pode ser vazio.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 401)\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao se comunicar com a API da OpenAI. Detalhes: Serviço indisponível.\"\r\n}\r\n```",
         "requestBody": {
-          "description": "Um objeto Hephaestus.Application.DTOs.Request.OpenAIRequest contendo o prompt e configurações adicionais para a consulta.",
+          "description": "Um objeto Hephaestus.Domain.DTOs.Request.OpenAIRequest contendo o prompt e configurações adicionais para a consulta.",
           "content": {
             "application/json": {
               "schema": {
@@ -5063,10 +6939,10 @@
         "tags": [
           "Promotion"
         ],
-        "summary": "Cria uma nova promoção para o tenant autenticado.",
-        "description": "Este endpoint permite que um tenant registre uma nova promoção em seu catálogo.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"name\": \"Desconto de 10% no Verão\",\r\n  \"description\": \"10% de desconto em todos os pedidos acima de R$50 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsesPerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 201 Created):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório.\"\r\n    ],\r\n    \"DiscountValue\": [\r\n      \"O valor do desconto deve ser positivo.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar a promoção.\"\r\n}\r\n```",
+        "summary": "Cria uma nova promo��o para o tenant autenticado.",
+        "description": "Este endpoint permite que um tenant registre uma nova promo��o em seu cat�logo.\r\nRequer autentica��o com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisi��o:**\r\n```json\r\n{\r\n  \"name\": \"Desconto de 10% no Ver�o\",\r\n  \"description\": \"10% de desconto em todos os pedidos acima de R$50 durante o ver�o.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsesPerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 201 Created):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Valida��o (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' � obrigat�rio.\"\r\n    ],\r\n    \"DiscountValue\": [\r\n      \"O valor do desconto deve ser positivo.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId n�o encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar a promo��o.\"\r\n}\r\n```",
         "requestBody": {
-          "description": "Dados da promoção a ser criada (Hephaestus.Application.DTOs.Request.CreatePromotionRequest).",
+          "description": "Dados da promo��o a ser criada (Hephaestus.Domain.DTOs.Request.CreatePromotionRequest).",
           "content": {
             "application/json": {
               "schema": {
@@ -5166,13 +7042,13 @@
         "tags": [
           "Promotion"
         ],
-        "summary": "Lista as promoções do tenant autenticado.",
-        "description": "Este endpoint retorna uma lista de promoções registradas para o tenant.\r\nÉ possível filtrar as promoções por status de ativação (`isActive`).\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Requisição:**\r\n```http\r\nGET /api/Promotion?isActive=true\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Desconto de 10% no Verão\",\r\n    \"description\": \"10% de desconto em todos os pedidos.\",\r\n    \"discountType\": \"Percentage\",\r\n    \"discountValue\": 10.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 50.00,\r\n    \"maxUsesPerCustomer\": 1,\r\n    \"maxTotalUses\": 100,\r\n    \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n    \"startDate\": \"2025-07-12T00:00:00Z\",\r\n    \"endDate\": \"2025-12-31T23:59:59Z\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n  },\r\n  {\r\n    \"id\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Frete Grátis para Novos Clientes\",\r\n    \"description\": \"Frete grátis na primeira compra.\",\r\n    \"discountType\": \"FreeShipping\",\r\n    \"discountValue\": 0.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 30.00,\r\n    \"maxUsesPerCustomer\": 1,\r\n    \"maxTotalUses\": 50,\r\n    \"applicableToTags\": [],\r\n    \"startDate\": \"2025-07-01T00:00:00Z\",\r\n    \"endDate\": \"2025-08-31T23:59:59Z\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": null\r\n  }\r\n]\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao listar as promoções.\"\r\n}\r\n```",
+        "summary": "Lista as promo��es do tenant autenticado.",
+        "description": "Este endpoint retorna uma lista de promo��es registradas para o tenant.\r\n� poss�vel filtrar as promo��es por status de ativa��o (`isActive`).\r\nRequer autentica��o com a role **Tenant**.\r\n            \r\n**Exemplo de Requisi��o:**\r\n```http\r\nGET /api/Promotion?isActive=true\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n[\r\n  {\r\n    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Desconto de 10% no Ver�o\",\r\n    \"description\": \"10% de desconto em todos os pedidos.\",\r\n    \"discountType\": \"Percentage\",\r\n    \"discountValue\": 10.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 50.00,\r\n    \"maxUsesPerCustomer\": 1,\r\n    \"maxTotalUses\": 100,\r\n    \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n    \"startDate\": \"2025-07-12T00:00:00Z\",\r\n    \"endDate\": \"2025-12-31T23:59:59Z\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n  },\r\n  {\r\n    \"id\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\",\r\n    \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n    \"name\": \"Frete Gr�tis para Novos Clientes\",\r\n    \"description\": \"Frete gr�tis na primeira compra.\",\r\n    \"discountType\": \"FreeShipping\",\r\n    \"discountValue\": 0.00,\r\n    \"menuItemId\": null,\r\n    \"minOrderValue\": 30.00,\r\n    \"maxUsesPerCustomer\": 1,\r\n    \"maxTotalUses\": 50,\r\n    \"applicableToTags\": [],\r\n    \"startDate\": \"2025-07-01T00:00:00Z\",\r\n    \"endDate\": \"2025-08-31T23:59:59Z\",\r\n    \"isActive\": true,\r\n    \"imageUrl\": null\r\n  }\r\n]\r\n```\r\n            \r\n**Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId n�o encontrado no token.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao listar as promo��es.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "isActive",
             "in": "query",
-            "description": "Filtro opcional: `true` para promoções ativas, `false` para inativas. Se omitido, retorna todas as promoções.",
+            "description": "Filtro opcional: `true` para promo��es ativas, `false` para inativas. Se omitido, retorna todas as promo��es.",
             "schema": {
               "type": "boolean"
             }
@@ -5280,13 +7156,13 @@
         "tags": [
           "Promotion"
         ],
-        "summary": "Obtém os detalhes de uma promoção específica por ID.",
-        "description": "Este endpoint retorna todas as informações de uma promoção, desde que a promoção pertença ao tenant autenticado.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Requisição:**\r\n```http\r\nGET /api/Promotion/123e4567-e89b-12d3-a456-426614174001\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Desconto de 10% no Verão\",\r\n  \"description\": \"10% de desconto em todos os pedidos acima de R$50 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsesPerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID da promoção 'invalido-id' não é um GUID válido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
+        "summary": "Obt�m os detalhes de uma promo��o espec�fica por ID.",
+        "description": "Este endpoint retorna todas as informa��es de uma promo��o, desde que a promo��o perten�a ao tenant autenticado.\r\nRequer autentica��o com a role **Tenant**.\r\n            \r\n**Exemplo de Requisi��o:**\r\n```http\r\nGET /api/Promotion/123e4567-e89b-12d3-a456-426614174001\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Desconto de 10% no Ver�o\",\r\n  \"description\": \"10% de desconto em todos os pedidos acima de R$50 durante o ver�o.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 10.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 50.00,\r\n  \"maxUsesPerCustomer\": 1,\r\n  \"maxTotalUses\": 100,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao.jpg](https://exemplo.com/promocao-verao.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID da promo��o 'invalido-id' n�o � um GUID v�lido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promo��o com ID '99999999-9999-9999-9999-999999999999' n�o encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId n�o encontrado no token.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "O **ID (GUID)** da promoção a ser consultada.",
+            "description": "O **ID (GUID)** da promo��o a ser consultada.",
             "required": true,
             "schema": {
               "type": "string"
@@ -5400,13 +7276,13 @@
         "tags": [
           "Promotion"
         ],
-        "summary": "Atualiza uma promoção existente para o tenant autenticado.",
-        "description": "Este endpoint permite que um tenant atualize os dados de uma promoção existente.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Desconto de 15% no Verão\",\r\n  \"description\": \"15% de desconto em todos os pedidos acima de R$60 durante o verão.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 15.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 60.00,\r\n  \"maxUsesPerCustomer\": 2,\r\n  \"maxTotalUses\": 150,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\", \"bebidas\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao-atualizada.jpg](https://exemplo.com/promocao-verao-atualizada.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório.\"\r\n    ],\r\n    \"DiscountValue\": [\r\n      \"O valor do desconto deve ser positivo.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
+        "summary": "Atualiza uma promo��o existente para o tenant autenticado.",
+        "description": "Este endpoint permite que um tenant atualize os dados de uma promo��o existente.\r\nRequer autentica��o com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisi��o:**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"name\": \"Desconto de 15% no Ver�o\",\r\n  \"description\": \"15% de desconto em todos os pedidos acima de R$60 durante o ver�o.\",\r\n  \"discountType\": \"Percentage\",\r\n  \"discountValue\": 15.00,\r\n  \"menuItemId\": null,\r\n  \"minOrderValue\": 60.00,\r\n  \"maxUsesPerCustomer\": 2,\r\n  \"maxTotalUses\": 150,\r\n  \"applicableToTags\": [\"pizza\", \"lanche\", \"bebidas\"],\r\n  \"startDate\": \"2025-07-12T00:00:00Z\",\r\n  \"endDate\": \"2025-12-31T23:59:59Z\",\r\n  \"isActive\": true,\r\n  \"imageUrl\": \"[https://exemplo.com/promocao-verao-atualizada.jpg](https://exemplo.com/promocao-verao-atualizada.jpg)\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n            \r\n**Exemplo de Erro de Valida��o (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' � obrigat�rio.\"\r\n    ],\r\n    \"DiscountValue\": [\r\n      \"O valor do desconto deve ser positivo.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promo��o com ID '99999999-9999-9999-9999-999999999999' n�o encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId n�o encontrado no token.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "O **ID (GUID)** da promoção a ser atualizada.",
+            "description": "O **ID (GUID)** da promo��o a ser atualizada.",
             "required": true,
             "schema": {
               "type": "string"
@@ -5414,7 +7290,7 @@
           }
         ],
         "requestBody": {
-          "description": "Dados atualizados da promoção (Hephaestus.Application.DTOs.Request.UpdatePromotionRequest).",
+          "description": "Dados atualizados da promo��o (Hephaestus.Domain.DTOs.Request.UpdatePromotionRequest).",
           "content": {
             "application/json": {
               "schema": {
@@ -5523,13 +7399,13 @@
         "tags": [
           "Promotion"
         ],
-        "summary": "Remove uma promoção do tenant autenticado.",
-        "description": "Este endpoint permite que um tenant remova uma promoção existente.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Requisição:**\r\n```http\r\nDELETE /api/Promotion/123e4567-e89b-12d3-a456-426614174001\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID da promoção 'invalido-id' não é um GUID válido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
+        "summary": "Remove uma promo��o do tenant autenticado.",
+        "description": "Este endpoint permite que um tenant remova uma promo��o existente.\r\nRequer autentica��o com a role **Tenant**.\r\n            \r\n**Exemplo de Requisi��o:**\r\n```http\r\nDELETE /api/Promotion/123e4567-e89b-12d3-a456-426614174001\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n            \r\n**Exemplo de Erro (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID da promo��o 'invalido-id' n�o � um GUID v�lido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promo��o com ID '99999999-9999-9999-9999-999999999999' n�o encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId n�o encontrado no token.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "O **ID (GUID)** da promoção a ser removida.",
+            "description": "O **ID (GUID)** da promo��o a ser removida.",
             "required": true,
             "schema": {
               "type": "string"
@@ -5628,12 +7504,12 @@
         "tags": [
           "Promotion"
         ],
-        "summary": "Atualiza o status de ativação de uma promoção (ativa/inativa).",
+        "summary": "Atualiza o status de ativa��o de uma promo��o (ativa/inativa).",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "ID da promoção.",
+            "description": "ID da promo��o.",
             "required": true,
             "schema": {
               "type": "string"
@@ -5641,7 +7517,7 @@
           }
         ],
         "requestBody": {
-          "description": "Novo status de ativação.",
+          "description": "Novo status de ativa��o.",
           "content": {
             "application/json": {
               "schema": {
@@ -5682,7 +7558,7 @@
             }
           },
           "400": {
-            "description": "Regras de negócio violadas.",
+            "description": "Regras de neg�cio violadas.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -5702,7 +7578,7 @@
             }
           },
           "404": {
-            "description": "Promoção não encontrada.",
+            "description": "Promo��o n�o encontrada.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -5729,10 +7605,10 @@
         "tags": [
           "Promotion"
         ],
-        "summary": "Envia notificação de uma promoção via WhatsApp.",
-        "description": "Este endpoint permite que um tenant envie notificações de promoções para seus clientes via WhatsApp.\r\nRequer autenticação com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"promotionId\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"messageTemplate\": \"🎉 Promoção especial! {promotionName} - {promotionDescription} Válida até {endDate}. Aproveite!\",\r\n  \"customerPhoneNumbers\": [\"11987654321\", \"21987654321\"]\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"PromotionId\": [\r\n      \"O ID da promoção é obrigatório.\"\r\n    ],\r\n    \"MessageTemplate\": [\r\n      \"O template da mensagem é obrigatório.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promoção com ID '99999999-9999-9999-9999-999999999999' não encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token.\"\r\n}\r\n```",
+        "summary": "Envia notifica��o de uma promo��o via WhatsApp.",
+        "description": "Este endpoint permite que um tenant envie notifica��es de promo��es para seus clientes via WhatsApp.\r\nRequer autentica��o com a role **Tenant**.\r\n            \r\n**Exemplo de Corpo da Requisi��o:**\r\n```json\r\n{\r\n  \"promotionId\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"messageTemplate\": \"?? Promo��o especial! {promotionName} - {promotionDescription} V�lida at� {endDate}. Aproveite!\",\r\n  \"customerPhoneNumbers\": [\"11987654321\", \"21987654321\"]\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta, apenas status 204)\r\n```\r\n            \r\n**Exemplo de Erro de Valida��o (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"PromotionId\": [\r\n      \"O ID da promo��o � obrigat�rio.\"\r\n    ],\r\n    \"MessageTemplate\": [\r\n      \"O template da mensagem � obrigat�rio.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Promo��o com ID '99999999-9999-9999-9999-999999999999' n�o encontrada para o tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId n�o encontrado no token.\"\r\n}\r\n```",
         "requestBody": {
-          "description": "Dados da notificação (Hephaestus.Application.DTOs.Request.NotifyPromotionRequest).",
+          "description": "Dados da notifica��o (Hephaestus.Domain.DTOs.Request.NotifyPromotionRequest).",
           "content": {
             "application/json": {
               "schema": {
@@ -5843,12 +7719,12 @@
         "tags": [
           "Promotion"
         ],
-        "summary": "Registra o uso de uma promoção por um cliente em um pedido.",
+        "summary": "Registra o uso de uma promo��o por um cliente em um pedido.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "ID da promoção.",
+            "description": "ID da promo��o.",
             "required": true,
             "schema": {
               "type": "string"
@@ -5880,7 +7756,7 @@
             "description": "Uso registrado com sucesso."
           },
           "400": {
-            "description": "Limite de uso atingido ou promoção inválida.",
+            "description": "Limite de uso atingido ou promo��o inv�lida.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -5902,13 +7778,63 @@
         }
       }
     },
+    "/api/Review": {
+      "post": {
+        "tags": [
+          "Review"
+        ],
+        "summary": "Cria um novo review para um pedido.",
+        "requestBody": {
+          "description": "Dados do review.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Tag": {
       "post": {
         "tags": [
           "Tag"
         ],
         "summary": "Cria uma nova tag para o tenant autenticado.",
-        "description": "Este endpoint permite que um **Administrador** ou um **Tenant** crie uma nova tag,\r\nque pode ser associada a itens do cardápio para categorização.\r\n            \r\n**Exemplo de Corpo da Requisição:**\r\n```json\r\n{\r\n  \"name\": \"Vegetariano\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Vegetariano\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Validação (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' é obrigatório e deve ter entre 3 e 50 caracteres.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Conflito (Status 409 Conflict):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"A tag com o nome 'Vegetariano' já está registrada para este tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token de autenticação ou token inválido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar a tag.\"\r\n}\r\n```",
+        "description": "Este endpoint permite que um **Administrador** ou um **Tenant** crie uma nova tag,\r\nque pode ser associada a itens do card�pio para categoriza��o.\r\n            \r\n**Exemplo de Corpo da Requisi��o:**\r\n```json\r\n{\r\n  \"name\": \"Vegetariano\"\r\n}\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 200 OK):**\r\n```json\r\n{\r\n  \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"tenantId\": \"456e7890-e89b-12d3-a456-426614174002\",\r\n  \"name\": \"Vegetariano\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Valida��o (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"One or more validation errors occurred.\",\r\n  \"status\": 400,\r\n  \"errors\": {\r\n    \"Name\": [\r\n      \"O campo 'Name' � obrigat�rio e deve ter entre 3 e 50 caracteres.\"\r\n    ]\r\n  }\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Conflito (Status 409 Conflict):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"A tag com o nome 'Vegetariano' j� est� registrada para este tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId n�o encontrado no token de autentica��o ou token inv�lido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao criar a tag.\"\r\n}\r\n```",
         "requestBody": {
           "description": "Dados da tag a ser criada (Hephaestus.Domain.DTOs.Request.TagRequest).",
           "content": {
@@ -6141,12 +8067,12 @@
           "Tag"
         ],
         "summary": "Exclui uma tag existente.",
-        "description": "Este endpoint permite que um **Administrador** ou um **Tenant** remova uma tag\r\ndo sistema. A tag só pode ser excluída se não estiver associada a nenhum item de cardápio.\r\n            \r\n**Exemplo de Requisição:**\r\n```http\r\nDELETE /api/Tag/123e4567-e89b-12d3-a456-426614174001\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta)\r\n```\r\n            \r\n**Exemplo de Erro de Requisição Inválida (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID da tag 'abc-123' não é um GUID válido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autorização (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId não encontrado no token de autenticação ou token inválido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Não Encontrado (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Tag com ID '99999999-9999-9999-9999-999999999999' não encontrada ou não pertence a este tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Conflito (Status 409 Conflict):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"A tag 'Vegetariano' não pode ser excluída pois está associada a um ou mais itens de cardápio.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao excluir a tag.\"\r\n}\r\n```",
+        "description": "Este endpoint permite que um **Administrador** ou um **Tenant** remova uma tag\r\ndo sistema. A tag s� pode ser exclu�da se n�o estiver associada a nenhum item de card�pio.\r\n            \r\n**Exemplo de Requisi��o:**\r\n```http\r\nDELETE /api/Tag/123e4567-e89b-12d3-a456-426614174001\r\n```\r\n            \r\n**Exemplo de Resposta de Sucesso (Status 204 No Content):**\r\n```\r\n(Nenhum corpo de resposta)\r\n```\r\n            \r\n**Exemplo de Erro de Requisi��o Inv�lida (Status 400 Bad Request):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)\",\r\n  \"title\": \"Bad Request\",\r\n  \"status\": 400,\r\n  \"detail\": \"O ID da tag 'abc-123' n�o � um GUID v�lido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)\",\r\n  \"title\": \"Unauthorized\",\r\n  \"status\": 401,\r\n  \"detail\": \"TenantId n�o encontrado no token de autentica��o ou token inv�lido.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro N�o Encontrado (Status 404 Not Found):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)\",\r\n  \"title\": \"Not Found\",\r\n  \"status\": 404,\r\n  \"detail\": \"Tag com ID '99999999-9999-9999-9999-999999999999' n�o encontrada ou n�o pertence a este tenant.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro de Conflito (Status 409 Conflict):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)\",\r\n  \"title\": \"Conflict\",\r\n  \"status\": 409,\r\n  \"detail\": \"A tag 'Vegetariano' n�o pode ser exclu�da pois est� associada a um ou mais itens de card�pio.\"\r\n}\r\n```\r\n            \r\n**Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**\r\n```json\r\n{\r\n  \"type\": \"[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)\",\r\n  \"title\": \"Internal Server Error\",\r\n  \"status\": 500,\r\n  \"detail\": \"Ocorreu um erro inesperado ao excluir a tag.\"\r\n}\r\n```",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "O **ID (GUID)** da tag a ser excluída.",
+            "description": "O **ID (GUID)** da tag a ser exclu�da.",
             "required": true,
             "schema": {
               "type": "string"
@@ -6281,6 +8207,29 @@
           "price": {
             "type": "number",
             "format": "double"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -6292,6 +8241,163 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AdditionalResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddressRequest": {
+        "type": "object",
+        "properties": {
+          "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "complement": {
+            "type": "string",
+            "nullable": true
+          },
+          "neighborhood": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddressResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "complement": {
+            "type": "string",
+            "nullable": true
+          },
+          "neighborhood": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "entityId": {
+            "type": "string",
+            "nullable": true
+          },
+          "entityType": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddressResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AddressResponse"
             },
             "nullable": true
           },
@@ -6369,6 +8475,10 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "companyId": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -6433,6 +8543,9 @@
           },
           "isClosed": {
             "type": "boolean"
+          },
+          "isOpen": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -6456,35 +8569,8 @@
             "type": "string",
             "nullable": true
           },
-          "state": {
-            "type": "string",
-            "nullable": true
-          },
-          "city": {
-            "type": "string",
-            "nullable": true
-          },
-          "neighborhood": {
-            "type": "string",
-            "nullable": true
-          },
-          "street": {
-            "type": "string",
-            "nullable": true
-          },
-          "number": {
-            "type": "string",
-            "nullable": true
-          },
-          "latitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+          "address": {
+            "$ref": "#/components/schemas/AddressResponse"
           },
           "slogan": {
             "type": "string",
@@ -6547,35 +8633,8 @@
             "type": "number",
             "format": "double"
           },
-          "state": {
-            "type": "string",
-            "nullable": true
-          },
-          "city": {
-            "type": "string",
-            "nullable": true
-          },
-          "neighborhood": {
-            "type": "string",
-            "nullable": true
-          },
-          "street": {
-            "type": "string",
-            "nullable": true
-          },
-          "number": {
-            "type": "string",
-            "nullable": true
-          },
-          "latitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+          "address": {
+            "$ref": "#/components/schemas/AddressResponse"
           },
           "slogan": {
             "type": "string",
@@ -6672,6 +8731,14 @@
             "type": "string",
             "nullable": true
           },
+          "companyId": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -6689,6 +8756,31 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CouponResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CouponResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -6790,13 +8882,6 @@
             },
             "nullable": true
           },
-          "availableAdditionalIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
           "imageUrl": {
             "type": "string",
             "nullable": true
@@ -6825,6 +8910,9 @@
               "$ref": "#/components/schemas/OrderItemRequest"
             },
             "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressRequest"
           }
         },
         "additionalProperties": false
@@ -6891,6 +8979,32 @@
         },
         "additionalProperties": false
       },
+      "CreateReviewRequest": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "orderId": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CustomerRequest": {
         "type": "object",
         "properties": {
@@ -6906,31 +9020,57 @@
             "type": "string",
             "nullable": true
           },
-          "state": {
+          "email": {
             "type": "string",
             "nullable": true
           },
-          "city": {
+          "isActive": {
+            "type": "boolean"
+          },
+          "emailVerified": {
+            "type": "boolean"
+          },
+          "phoneVerified": {
+            "type": "boolean"
+          },
+          "mfaEnabled": {
+            "type": "boolean"
+          },
+          "preferredPaymentMethod": {
             "type": "string",
             "nullable": true
           },
-          "street": {
+          "dietaryPreferences": {
             "type": "string",
             "nullable": true
           },
-          "number": {
+          "allergies": {
             "type": "string",
             "nullable": true
           },
-          "latitude": {
-            "type": "number",
-            "format": "double",
+          "birthDate": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           },
-          "longitude": {
-            "type": "number",
-            "format": "double",
+          "gender": {
+            "type": "string",
             "nullable": true
+          },
+          "languagePreference": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeZone": {
+            "type": "string",
+            "nullable": true
+          },
+          "notificationPreferences": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressRequest"
           }
         },
         "additionalProperties": false
@@ -6987,6 +9127,32 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "dietaryPreferences": {
+            "type": "string",
+            "nullable": true
+          },
+          "preferredPaymentMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "notificationPreferences": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyId": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressResponse"
           }
         },
         "additionalProperties": false
@@ -7135,7 +9301,7 @@
             "type": "string",
             "nullable": true
           },
-          "tenantId": {
+          "companyId": {
             "type": "string",
             "nullable": true
           },
@@ -7165,13 +9331,6 @@
             },
             "nullable": true
           },
-          "availableAdditionalIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
           "imageUrl": {
             "type": "string",
             "nullable": true
@@ -7179,9 +9338,24 @@
           "tags": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/TagResponse"
             },
             "nullable": true
+          },
+          "additionals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalResponse"
+            },
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -7292,6 +9466,13 @@
             "type": "string",
             "nullable": true
           },
+          "customizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomizationRequest"
+            },
+            "nullable": true
+          },
           "additionalIds": {
             "type": "array",
             "items": {
@@ -7299,17 +9480,10 @@
             },
             "nullable": true
           },
-          "tags": {
+          "tagIds": {
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "nullable": true
-          },
-          "customizations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CustomizationRequest"
             },
             "nullable": true
           }
@@ -7339,10 +9513,10 @@
             "type": "string",
             "nullable": true
           },
-          "tags": {
+          "customizations": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/CustomizationResponse"
             },
             "nullable": true
           },
@@ -7353,12 +9527,37 @@
             },
             "nullable": true
           },
-          "customizations": {
+          "tagIds": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CustomizationResponse"
+              "type": "string"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderItemResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -7563,7 +9762,7 @@
             "type": "string",
             "nullable": true
           },
-          "tenantId": {
+          "companyId": {
             "type": "string",
             "nullable": true
           },
@@ -7601,11 +9800,12 @@
             "format": "int32",
             "nullable": true
           },
-          "applicableToTags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
+          "daysOfWeek": {
+            "type": "string",
+            "nullable": true
+          },
+          "hours": {
+            "type": "string",
             "nullable": true
           },
           "startDate": {
@@ -7622,6 +9822,14 @@
           "imageUrl": {
             "type": "string",
             "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -7731,35 +9939,8 @@
           "isEnabled": {
             "type": "boolean"
           },
-          "state": {
-            "type": "string",
-            "nullable": true
-          },
-          "city": {
-            "type": "string",
-            "nullable": true
-          },
-          "neighborhood": {
-            "type": "string",
-            "nullable": true
-          },
-          "street": {
-            "type": "string",
-            "nullable": true
-          },
-          "number": {
-            "type": "string",
-            "nullable": true
-          },
-          "latitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+          "address": {
+            "$ref": "#/components/schemas/AddressRequest"
           },
           "slogan": {
             "type": "string",
@@ -7796,6 +9977,84 @@
           "email": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReviewResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "tenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "orderId": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stars": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedBy": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReviewResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewResponse"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -7860,13 +10119,25 @@
             "type": "string",
             "nullable": true
           },
-          "tenantId": {
+          "companyId": {
             "type": "string",
             "nullable": true
           },
           "name": {
             "type": "string",
             "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -7958,35 +10229,8 @@
           "isEnabled": {
             "type": "boolean"
           },
-          "state": {
-            "type": "string",
-            "nullable": true
-          },
-          "city": {
-            "type": "string",
-            "nullable": true
-          },
-          "neighborhood": {
-            "type": "string",
-            "nullable": true
-          },
-          "street": {
-            "type": "string",
-            "nullable": true
-          },
-          "number": {
-            "type": "string",
-            "nullable": true
-          },
-          "latitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+          "address": {
+            "$ref": "#/components/schemas/AddressRequest"
           },
           "slogan": {
             "type": "string",
@@ -8082,13 +10326,6 @@
             },
             "nullable": true
           },
-          "availableAdditionalIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
           "imageUrl": {
             "type": "string",
             "nullable": true
@@ -8139,6 +10376,9 @@
               "$ref": "#/components/schemas/OrderItemRequest"
             },
             "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressRequest"
           }
         },
         "additionalProperties": false
@@ -8336,11 +10576,11 @@
     },
     {
       "name": "Additional",
-      "description": "Controller para gerenciamento de adicionais (itens extras) para um tenant.\r\nTodas as operações requerem autenticação com a role \"Tenant\"."
+      "description": "Controller para gerenciamento de adicionais (itens extras) para um tenant.\r\nTodas as opera��es requerem autentica��o com a role \"Tenant\"."
     },
     {
       "name": "Administration",
-      "description": "Controller para gerenciamento administrativo de empresas, vendas e logs.\r\nTodas as operações requerem autenticação com a role \"Admin\" e a policy \"RequireMfa\"."
+      "description": "Controller para gerenciamento administrativo de empresas, vendas e logs.\r\nTodas as opera��es requerem autentica��o com a role \"Admin\" e a policy \"RequireMfa\"."
     },
     {
       "name": "Auth",
@@ -8356,7 +10596,7 @@
     },
     {
       "name": "Coupon",
-      "description": "Controller para gerenciamento de cupons, permitindo operações como criação, listagem, obtenção, atualização e exclusão de cupons."
+      "description": "Controller para gerenciamento de cupons, permitindo opera��es como cria��o, listagem, obten��o, atualiza��o e exclus�o de cupons."
     },
     {
       "name": "Customer",
@@ -8380,11 +10620,11 @@
     },
     {
       "name": "Promotion",
-      "description": "Controller para gerenciamento completo de promoções de um tenant, incluindo criação, listagem,\r\nobtenção por ID, atualização, exclusão e notificação de promoções."
+      "description": "Controller para gerenciamento completo de promo��es de um tenant, incluindo cria��o, listagem,\r\nobten��o por ID, atualiza��o, exclus�o e notifica��o de promo��es."
     },
     {
       "name": "Tag",
-      "description": "Controller para gerenciamento de tags, permitindo a criação, listagem e exclusão de tags\r\nassociadas aos itens de cardápio de um tenant."
+      "description": "Controller para gerenciamento de tags, permitindo a cria��o, listagem e exclus�o de tags\r\nassociadas aos itens de card�pio de um tenant."
     }
   ]
 }

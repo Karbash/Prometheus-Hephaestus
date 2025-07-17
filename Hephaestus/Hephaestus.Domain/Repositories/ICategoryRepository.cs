@@ -14,4 +14,5 @@ public interface ICategoryRepository
     Task DeleteAsync(string id, string tenantId);
     Task<bool> ExistsAsync(string id, string tenantId);
     Task<bool> ExistsByNameAsync(string name, string tenantId);
+    Task<PagedResult<Category>> GetAllGlobalAsync(string? name = null, string? companyId = null, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
 } 

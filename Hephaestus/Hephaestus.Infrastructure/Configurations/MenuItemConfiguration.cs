@@ -16,10 +16,6 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             .HasColumnName("id")
             .ValueGeneratedOnAdd();
 
-        builder.Property(mi => mi.TenantId)
-            .HasColumnName("tenant_id")
-            .IsRequired();
-
         builder.Property(mi => mi.Name)
             .HasColumnName("name")
             .HasMaxLength(100)
@@ -46,6 +42,15 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             .HasColumnName("image_url")
             .HasMaxLength(500);
 
+        builder.Property(mi => mi.CompanyId)
+            .HasColumnName("company_id")
+            .IsRequired();
+
+        builder.HasOne(mi => mi.Company)
+            .WithMany(c => c.MenuItems)
+            .HasForeignKey(mi => mi.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(mi => mi.CreatedAt)
             .HasColumnName("created_at")
             .IsRequired();
@@ -63,7 +68,6 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             .HasForeignKey(ma => ma.MenuItemId);
 
         // Índices
-        builder.HasIndex(mi => mi.TenantId);
         builder.HasIndex(mi => mi.CategoryId);
         builder.HasIndex(mi => mi.IsAvailable);
         builder.HasIndex(mi => mi.CreatedAt);

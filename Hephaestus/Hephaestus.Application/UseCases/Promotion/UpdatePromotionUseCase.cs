@@ -57,18 +57,18 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     {
         await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var tenantId = _loggedUserService.GetTenantId(user);
+            var companyId = _loggedUserService.GetCompanyId(user);
             
-            // Valida��o dos dados de entrada
+            // Validao dos dados de entrada
             await ValidateRequestAsync(request, id);
 
             // Busca e valida��o da promo��o
-            var promotion = await GetAndValidatePromotionAsync(id, tenantId);
+            var promotion = await GetAndValidatePromotionAsync(id, companyId);
 
-            // Valida��o das regras de neg�cio
-            await ValidateBusinessRulesAsync(request, tenantId);
+            // Validao das regras de negcio
+            await ValidateBusinessRulesAsync(request, companyId);
 
-            // Atualiza��o da promo��o
+            // Atualizao da promoo
             await UpdatePromotionAsync(promotion, request);
         });
     }
@@ -91,31 +91,32 @@ public class UpdatePromotionUseCase : BaseUseCase, IUpdatePromotionUseCase
     /// Busca e valida a promo��o.
     /// </summary>
     /// <param name="id">ID da promo��o.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    /// <returns>Promo��o encontrada.</returns>
-    private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string id, string tenantId)
+    /// <param name="companyId">ID do tenant.</param>
+    /// <returns>Promoo encontrada.</returns>
+    private async Task<Domain.Entities.Promotion> GetAndValidatePromotionAsync(string id, string companyId)
     {
-        var promotion = await _promotionRepository.GetByIdAsync(id, tenantId);
-        EnsureEntityExists(promotion, "Promotion", id);
-        return promotion!; // Garantido que n�o � null ap�s EnsureEntityExists
+        var promotion = await _promotionRepository.GetByIdAsync(id, companyId);
+        if (promotion == null)
+            throw new NotFoundException("Promotion", id);
+        return promotion;
     }
 
     /// <summary>
-    /// Valida as regras de neg�cio.
+    /// Valida as regras de negcio.
     /// </summary>
     /// <param name="request">Requisi��o com os dados.</param>
-    /// <param name="tenantId">ID do tenant.</param>
-    private async Task ValidateBusinessRulesAsync(UpdatePromotionRequest request, string tenantId)
+    /// <param name="companyId">ID do tenant.</param>
+    private async Task ValidateBusinessRulesAsync(UpdatePromotionRequest request, string companyId)
     {
         if (request.DiscountType == DiscountType.FreeItem && !string.IsNullOrEmpty(request.MenuItemId))
         {
-            var menuItem = await _menuItemRepository.GetByIdAsync(request.MenuItemId, tenantId);
+            var menuItem = await _menuItemRepository.GetByIdAsync(request.MenuItemId, companyId);
             EnsureEntityExists(menuItem, "MenuItem", request.MenuItemId);
         }
     }
 
     /// <summary>
-    /// Atualiza a promo��o com os novos dados.
+    /// Atualiza a promoo com os novos dados.
     /// </summary>
     /// <param name="promotion">Promo��o a ser atualizada.</param>
     /// <param name="request">Dados atualizados.</param>

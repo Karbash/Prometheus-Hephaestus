@@ -27,10 +27,8 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<PagedResult<Customer>> GetAllAsync(string? phoneNumber, string tenantId, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        if (string.IsNullOrEmpty(tenantId))
-            throw new ArgumentException("TenantId é obrigatório.");
-
         var query = _context.Customers.AsNoTracking().Where(c => c.TenantId == tenantId);
+
         if (!string.IsNullOrEmpty(phoneNumber))
             query = query.Where(c => c.PhoneNumber == phoneNumber);
 
@@ -40,6 +38,10 @@ public class CustomerRepository : ICustomerRepository
                 query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
             else
                 query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(c => c.CreatedAt);
         }
 
         var totalCount = await query.CountAsync();
@@ -95,5 +97,10 @@ public class CustomerRepository : ICustomerRepository
             return;
         _context.Customers.Remove(customer);
         await _context.SaveChangesAsync();
+    }
+
+    public Task<PagedResult<Customer>> GetAllGlobalAsync(string? companyId = null, string? name = null, string? phoneNumber = null, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    {
+        throw new NotImplementedException();
     }
 }

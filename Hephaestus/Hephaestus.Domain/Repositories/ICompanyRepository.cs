@@ -11,6 +11,6 @@ namespace Hephaestus.Domain.Repositories
         Task<Company?> GetByPhoneNumberAsync(string phoneNumber);
         Task AddAsync(Company company);
         Task UpdateAsync(Company company);
-        Task<IEnumerable<Company>> GetCompaniesWithinRadiusAsync(double centerLat, double centerLon, double radiusKm, string? city = null, string? neighborhood = null);
+        Task<IEnumerable<Company>> GetCompaniesWithinRadiusAsync(double centerLat, double centerLon, double radiusKm, string? city = null, string? neighborhood = null, List<string>? tagIds = null, List<string>? categoryIds = null, decimal? maxPrice = null, bool? openNow = null, int? dayOfWeek = null, string? time = null, bool? promotionActiveNow = null, int? promotionDayOfWeek = null, string? promotionTime = null);
     }
 } 

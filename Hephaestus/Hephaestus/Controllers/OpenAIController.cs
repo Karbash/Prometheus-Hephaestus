@@ -85,6 +85,24 @@ public class OpenAIController : ControllerBase
     ///   }
     /// }
     /// </code>
+    /// <br/>
+    /// <b>Exemplos de uso de SQL:</b>
+    /// <ul>
+    ///   <li><b>WHERE</b>:<br/>
+    ///   <code>{ "query": "SELECT Id, Name, Email FROM \"companies\" WHERE \"email\" = 'jordane.almeida@hotmail.com'" }</code></li>
+    ///   <li><b>LIKE</b>:<br/>
+    ///   <code>{ "query": "SELECT Id, Name, Email FROM \"companies\" WHERE \"email\" LIKE '%@gmail.com'" }</code></li>
+    ///   <li><b>INNER JOIN</b>:<br/>
+    ///   <code>{ "query": "SELECT c.Id, c.Name, a.City FROM \"companies\" c INNER JOIN \"addresses\" a ON c.Id = a.EntityId WHERE a.EntityType = 'Company'" }</code></li>
+    ///   <li><b>LEFT JOIN</b>:<br/>
+    ///   <code>{ "query": "SELECT c.Id, c.Name, a.City FROM \"companies\" c LEFT JOIN \"addresses\" a ON c.Id = a.EntityId" }</code></li>
+    ///   <li><b>ORDER BY</b>:<br/>
+    ///   <code>{ "query": "SELECT Id, Name FROM \"companies\" ORDER BY \"Name\" ASC LIMIT 10" }</code></li>
+    ///   <li><b>GROUP BY e função agregada</b>:<br/>
+    ///   <code>{ "query": "SELECT \"city\", COUNT(*) as total FROM \"addresses\" GROUP BY \"city\" ORDER BY total DESC" }</code></li>
+    ///   <li><b>Paginação (LIMIT e OFFSET)</b>:<br/>
+    ///   <code>{ "query": "SELECT Id, Name FROM \"companies\" ORDER BY \"Name\" ASC LIMIT 10 OFFSET 20" }</code></li>
+    /// </ul>
     /// </remarks>
     /// <param name="request">Um objeto <see cref="OpenAIRequest"/> contendo o prompt e configura��es adicionais para a consulta.</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo a resposta da OpenAI em um <see cref="OpenAIResponse"/>.</returns>

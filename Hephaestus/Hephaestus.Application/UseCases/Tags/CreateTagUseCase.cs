@@ -92,22 +92,26 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
                 Id = tag.Id,
                 CompanyId = tag.CompanyId,
                 Name = tag.Name,
+                Description = tag.Description,
                 IsGlobal = tag.IsGlobal
             };
         });
     }
 
     /// <summary>
-    /// Valida os dados da requisio.
+    /// Valida os dados da requisição.
     /// </summary>
-    /// <param name="request">Requisio a ser validada.</param>
+    /// <param name="request">Requisição a ser validada.</param>
     private void ValidateRequest(TagRequest request)
     {
         if (request == null)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da tag s�o obrigat�rios.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da tag são obrigatórios.", new ValidationResult());
 
         if (string.IsNullOrEmpty(request.Name))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Nome da tag � obrigat�rio.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Nome da tag é obrigatório.", new ValidationResult());
+
+        if (!string.IsNullOrEmpty(request.Description) && request.Description.Length > 500)
+            throw new Hephaestus.Application.Exceptions.ValidationException("Descrição da tag deve ter no máximo 500 caracteres.", new ValidationResult());
     }
 
     /// <summary>
@@ -165,6 +169,7 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
             Id = Guid.NewGuid().ToString(),
             CompanyId = companyId ?? string.Empty, // Vazio para tags globais
             Name = request.Name,
+            Description = request.Description,
             IsGlobal = isGlobal
         };
 

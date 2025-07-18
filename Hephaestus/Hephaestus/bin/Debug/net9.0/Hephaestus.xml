@@ -4,11 +4,6 @@
         <name>Hephaestus</name>
     </assembly>
     <members>
-        <member name="T:Hephaestus.Application.PendingOrderCleanupService">
-            <summary>
-            Serviço em background para exclusão automática de pedidos Pending não pagos após X minutos.
-            </summary>
-        </member>
         <member name="T:Hephaestus.Controllers.AdditionalController">
             <summary>
             Controller para gerenciamento de adicionais (itens extras) para um tenant.
@@ -2940,6 +2935,11 @@
             Configura o pipeline de middleware da aplica��o.
             </summary>
             <param name="app">Aplica��o web configurada.</param>
+        </member>
+        <member name="T:Hephaestus.Application.Services.PendingOrderCleanupService">
+            <summary>
+            Serviço em background para exclusão automática de pedidos Pending não pagos após X minutos.
+            </summary>
         </member>
     </members>
 </doc>

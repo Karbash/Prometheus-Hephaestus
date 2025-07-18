@@ -1,12 +1,6 @@
 using Hephaestus.Application.UseCases.Order;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Hephaestus.Application;
+namespace Hephaestus.Application.Services;
 
 /// <summary>
 /// Serviço em background para exclusão automática de pedidos Pending não pagos após X minutos.

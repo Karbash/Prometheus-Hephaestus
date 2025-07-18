@@ -13,7 +13,7 @@ using System.Text.Json;
 namespace Hephaestus.Application.UseCases.OpenAI;
 
 /// <summary>
-/// Caso de uso para comunicação com a API do OpenAI.
+/// Caso de uso para comunicaï¿½ï¿½o com a API do OpenAI.
 /// </summary>
 public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
 {
@@ -21,12 +21,12 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="ChatWithOpenAIUseCase"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="ChatWithOpenAIUseCase"/>.
     /// </summary>
-    /// <param name="configuration">Configuração da aplicação.</param>
+    /// <param name="configuration">Configuraï¿½ï¿½o da aplicaï¿½ï¿½o.</param>
     /// <param name="httpClient">Cliente HTTP.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="exceptionHandler">Serviço de tratamento de exceções.</param>
+    /// <param name="exceptionHandler">Serviï¿½o de tratamento de exceï¿½ï¿½es.</param>
     public ChatWithOpenAIUseCase(
         IConfiguration configuration, 
         HttpClient httpClient,
@@ -39,66 +39,66 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
     }
 
     /// <summary>
-    /// Executa a comunicação com a API do OpenAI.
+    /// Executa a comunicaï¿½ï¿½o com a API do OpenAI.
     /// </summary>
-    /// <param name="request">Dados da requisição para o OpenAI.</param>
+    /// <param name="request">Dados da requisiï¿½ï¿½o para o OpenAI.</param>
     /// <returns>Resposta do OpenAI.</returns>
     public async Task<OpenAIResponse> ExecuteAsync(OpenAIRequest request)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Validação dos dados de entrada
+            // Validaï¿½ï¿½o dos dados de entrada
             ValidateRequest(request);
 
-            // Validação da configuração
+            // Validaï¿½ï¿½o da configuraï¿½ï¿½o
             ValidateConfiguration();
 
-            // Preparação da requisição
+            // Preparaï¿½ï¿½o da requisiï¿½ï¿½o
             var httpRequest = await PrepareHttpRequestAsync(request);
 
-            // Execução da requisição
+            // Execuï¿½ï¿½o da requisiï¿½ï¿½o
             var response = await ExecuteHttpRequestAsync(httpRequest);
 
             // Processamento da resposta
             return await ProcessResponseAsync(response);
-        }, "Comunicação com OpenAI");
+        }, "Comunicaï¿½ï¿½o com OpenAI");
     }
 
     /// <summary>
-    /// Valida os dados da requisição.
+    /// Valida os dados da requisiï¿½ï¿½o.
     /// </summary>
-    /// <param name="request">Requisição a ser validada.</param>
+    /// <param name="request">Requisiï¿½ï¿½o a ser validada.</param>
     private void ValidateRequest(OpenAIRequest request)
     {
         if (request == null)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da requisição são obrigatórios.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Dados da requisiï¿½ï¿½o sï¿½o obrigatï¿½rios.", new ValidationResult());
 
         if (string.IsNullOrEmpty(request.Prompt))
-            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt é obrigatório.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt ï¿½ obrigatï¿½rio.", new ValidationResult());
 
         if (request.Prompt.Length > 4000)
-            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt muito longo. Máximo de 4.000 caracteres permitido.", new ValidationResult());
+            throw new Hephaestus.Application.Exceptions.ValidationException("Prompt muito longo. Mï¿½ximo de 4.000 caracteres permitido.", new ValidationResult());
     }
 
     /// <summary>
-    /// Valida a configuração necessária.
+    /// Valida a configuraï¿½ï¿½o necessï¿½ria.
     /// </summary>
     private void ValidateConfiguration()
     {
         var apiKey = _configuration["OpenAI:ApiKey"];
         if (string.IsNullOrEmpty(apiKey))
-            throw new BusinessRuleException("Chave da API do OpenAI não configurada.", "OPENAI_CONFIG");
+            throw new BusinessRuleException("Chave da API do OpenAI nï¿½o configurada.", "OPENAI_CONFIG");
 
         var baseUrl = _configuration["OpenAI:BaseUrl"];
         if (string.IsNullOrEmpty(baseUrl))
-            throw new BusinessRuleException("URL base do OpenAI não configurada.", "OPENAI_CONFIG");
+            throw new BusinessRuleException("URL base do OpenAI nï¿½o configurada.", "OPENAI_CONFIG");
     }
 
     /// <summary>
-    /// Prepara a requisição HTTP.
+    /// Prepara a requisiï¿½ï¿½o HTTP.
     /// </summary>
-    /// <param name="request">Dados da requisição.</param>
-    /// <returns>Requisição HTTP preparada.</returns>
+    /// <param name="request">Dados da requisiï¿½ï¿½o.</param>
+    /// <returns>Requisiï¿½ï¿½o HTTP preparada.</returns>
     private Task<HttpRequestMessage> PrepareHttpRequestAsync(OpenAIRequest request)
     {
         var apiKey = _configuration["OpenAI:ApiKey"];
@@ -125,9 +125,9 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
     }
 
     /// <summary>
-    /// Executa a requisição HTTP.
+    /// Executa a requisiï¿½ï¿½o HTTP.
     /// </summary>
-    /// <param name="httpRequest">Requisição HTTP.</param>
+    /// <param name="httpRequest">Requisiï¿½ï¿½o HTTP.</param>
     /// <returns>Resposta HTTP.</returns>
     private async Task<HttpResponseMessage> ExecuteHttpRequestAsync(HttpRequestMessage httpRequest)
     {
@@ -137,7 +137,7 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
         }
         catch (HttpRequestException ex)
         {
-            throw new BusinessRuleException($"Erro na comunicação com a API do OpenAI: {ex.Message}", "OPENAI_COMMUNICATION");
+            throw new BusinessRuleException($"Erro na comunicaï¿½ï¿½o com a API do OpenAI: {ex.Message}", "OPENAI_COMMUNICATION");
         }
     }
 
@@ -155,30 +155,45 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
         }
 
         var responseContent = await response.Content.ReadAsStringAsync();
-        var openAIResponse = JsonSerializer.Deserialize<dynamic>(responseContent);
-
-        // Processa a resposta e converte para o formato esperado
         var responseData = new Dictionary<string, string>();
-        
+
         try
         {
-            // Extrai a resposta do modelo
-            var choices = openAIResponse?.GetProperty("choices");
-            if (choices != null && choices.GetArrayLength() > 0)
+            using var doc = JsonDocument.Parse(responseContent);
+            var root = doc.RootElement;
+            if (root.TryGetProperty("choices", out var choices) && choices.ValueKind == JsonValueKind.Array && choices.GetArrayLength() > 0)
             {
                 var firstChoice = choices[0];
-                var message = firstChoice?.GetProperty("message");
-                var content = message?.GetProperty("content")?.GetString();
-                
-                if (!string.IsNullOrEmpty(content))
+                if (firstChoice.TryGetProperty("message", out var message) && message.TryGetProperty("content", out var contentElement))
                 {
-                    responseData["response"] = content;
+                    var content = contentElement.GetString();
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        responseData["response"] = content;
+                    }
+                }
+                // Suporte para resposta no formato antigo (apenas 'text')
+                else if (firstChoice.TryGetProperty("text", out var textElement))
+                {
+                    var text = textElement.GetString();
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        responseData["response"] = text;
+                    }
                 }
             }
+            else
+            {
+                throw new BusinessRuleException("Resposta da API do OpenAI nÃ£o contÃ©m o campo 'choices' ou estÃ¡ vazia.", "OPENAI_RESPONSE_INVALID");
+            }
         }
-        catch
+        catch (JsonException ex)
         {
-            throw new BusinessRuleException("Resposta inválida da API do OpenAI.", "OPENAI_RESPONSE_INVALID");
+            throw new BusinessRuleException($"Falha ao processar JSON da resposta do OpenAI: {ex.Message}", "OPENAI_RESPONSE_INVALID");
+        }
+        catch (Exception ex)
+        {
+            throw new BusinessRuleException($"Erro inesperado ao processar resposta do OpenAI: {ex.Message}", "OPENAI_RESPONSE_INVALID");
         }
 
         return new OpenAIResponse

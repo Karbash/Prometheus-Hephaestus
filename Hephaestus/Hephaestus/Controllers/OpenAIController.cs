@@ -1,5 +1,5 @@
 using Hephaestus.Domain.DTOs.Request;
-using Hephaestus.Domain.DTOs.Response; // Certifique-se de que este DTO é usado, se OpenAIResponse é o tipo de retorno
+using Hephaestus.Domain.DTOs.Response; // Certifique-se de que este DTO ï¿½ usado, se OpenAIResponse ï¿½ o tipo de retorno
 using Hephaestus.Application.Interfaces.OpenAI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Hephaestus.Controllers;
 
 /// <summary>
-/// Controller para integração segura com a API da OpenAI, permitindo a comunicação com modelos de chat.
+/// Controller para integraï¿½ï¿½o segura com a API da OpenAI, permitindo a comunicaï¿½ï¿½o com modelos de chat.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -19,9 +19,9 @@ public class OpenAIController : ControllerBase
     private readonly ILogger<OpenAIController> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instância do <see cref="OpenAIController"/>.
+    /// Inicializa uma nova instï¿½ncia do <see cref="OpenAIController"/>.
     /// </summary>
-    /// <param name="chatWithOpenAIUseCase">Caso de uso para comunicação com a API de chat da OpenAI.</param>
+    /// <param name="chatWithOpenAIUseCase">Caso de uso para comunicaï¿½ï¿½o com a API de chat da OpenAI.</param>
     /// <param name="logger">Logger para registro de eventos e erros.</param>
     public OpenAIController(IChatWithOpenAIUseCase chatWithOpenAIUseCase, ILogger<OpenAIController> logger)
     {
@@ -36,82 +36,60 @@ public class OpenAIController : ControllerBase
     /// Este endpoint permite interagir com a API de chat da OpenAI, enviando um prompt e, opcionalmente,
     /// especificando o formato de resposta desejado (texto ou JSON).
     /// <br/><br/>
-    /// **Requisitos de Autorização:**
-    /// Para acessar este endpoint, o usuário autenticado deve possuir a role **Admin**
-    /// e ter passado pela validação de **MFA (Autenticação Multifator)**.
-    /// <br/><br/>
-    /// **Exemplo de Requisição:**
-    /// ```json
+    /// <b>responseFormat</b>:
+    /// <ul>
+    ///   <li><b>type</b>:<ul>
+    ///     <li><code>text</code> - resposta simples em texto</li>
+    ///     <li><code>json_object</code> - resposta estruturada em JSON, com os campos adicionais especificados</li>
+    ///   </ul></li>
+    ///   <li>Os demais campos (alÃ©m de <b>type</b>) definem o nome e o tipo esperado de cada campo no JSON de resposta.</li>
+    /// </ul>
+    /// <br/>
+    /// <b>Exemplo de request para resposta em texto:</b>
+    /// <code>
     /// {
-    ///   "prompt": "Qual a capital da França?",
-    ///   "responseFormat": "text"
+    ///   "prompt": "Qual a capital da FranÃ§a?",
+    ///   "responseFormat": { "type": "text" }
     /// }
-    /// ```
-    /// ou
-    /// ```json
+    /// </code>
+    /// <br/>
+    /// <b>Exemplo de request para resposta estruturada:</b>
+    /// <code>
     /// {
-    ///   "prompt": "Me forneça informações sobre a Torre Eiffel em formato JSON com campos 'nome', 'cidade' e 'altura'.",
-    ///   "responseFormat": "json_object"
-    /// }
-    /// ```
-    ///
-    /// **Exemplo de Resposta de Sucesso (Status 200 OK - 'text' format):**
-    /// ```json
-    /// {
-    ///   "response": "A capital da França é Paris.",
-    ///   "usage": {
-    ///     "promptTokens": 8,
-    ///     "completionTokens": 5,
-    ///     "totalTokens": 13
+    ///   "prompt": "Quem Ã© Bolsonaro?",
+    ///   "responseFormat": {
+    ///     "type": "json_object",
+    ///     "historia": "resumo",
+    ///     "idade": "numero"
     ///   }
     /// }
-    /// ```
-    ///
-    /// **Exemplo de Resposta de Sucesso (Status 200 OK - 'json_object' format):**
-    /// ```json
+    /// </code>
+    /// <br/>
+    /// <b>Exemplo de resposta (campo response como string):</b>
+    /// <code>
     /// {
-    ///   "response": "{\"nome\": \"Torre Eiffel\", \"cidade\": \"Paris\", \"altura\": \"330 metros\"}",
-    ///   "usage": {
-    ///     "promptTokens": 25,
-    ///     "completionTokens": 20,
-    ///     "totalTokens": 45
+    ///   "responseJson": {
+    ///     "response": "Jair Bolsonaro Ã© um polÃ­tico brasileiro..."
     ///   }
     /// }
-    /// ```
-    ///
-    /// **Exemplo de Erro de Validação (Status 400 Bad Request):**
-    /// ```json
+    /// </code>
+    /// <br/>
+    /// <b>Exemplo de resposta (campo response como objeto JSON):</b>
+    /// <code>
     /// {
-    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
-    ///   "title": "One or more validation errors occurred.",
-    ///   "status": 400,
-    ///   "errors": {
-    ///     "Prompt": [
-    ///       "O campo 'Prompt' é obrigatório e não pode ser vazio."
-    ///     ]
+    ///   "responseJson": {
+    ///     "response": {
+    ///       "historia": "Jair Bolsonaro Ã© um polÃ­tico brasileiro...",
+    ///       "idade": 66
+    ///     }
     ///   }
     /// }
-    /// ```
-    ///
-    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
-    /// ```
-    /// (Nenhum corpo de resposta, apenas status 401)
-    /// ```
-    ///
-    /// **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
-    /// ```json
-    /// {
-    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
-    ///   "title": "Internal Server Error",
-    ///   "status": 500,
-    ///   "detail": "Ocorreu um erro inesperado ao se comunicar com a API da OpenAI. Detalhes: Serviço indisponível."
-    /// }
-    /// ```
+    /// </code>
     /// </remarks>
-    /// <param name="request">Um objeto <see cref="OpenAIRequest"/> contendo o prompt e configurações adicionais para a consulta.</param>
+    /// <param name="request">Um objeto <see cref="OpenAIRequest"/> contendo o prompt e configuraï¿½ï¿½es adicionais para a consulta.</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo a resposta da OpenAI em um <see cref="OpenAIResponse"/>.</returns>
     [HttpPost("chat")]
-    [SwaggerOperation(Summary = "Consulta o chat da OpenAI", Description = "Envia um prompt e dados à API da OpenAI e retorna a resposta no formato especificado ('text' ou 'json_object'). Requer autenticação com Role='Admin' e validação MFA.")]
+    [SwaggerOperation(Summary = "Consulta o chat da OpenAI", Description = "Envia um prompt e dados ï¿½ API da OpenAI e retorna a resposta no formato especificado ('text' ou 'json_object'). Requer autenticaï¿½ï¿½o com Role='Admin' e validaï¿½ï¿½o MFA.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OpenAIResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

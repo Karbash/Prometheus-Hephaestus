@@ -171,7 +171,7 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
         }
 
         var responseContent = await response.Content.ReadAsStringAsync();
-        var responseData = new Dictionary<string, string>();
+        var responseData = new Dictionary<string, object>();
 
         try
         {
@@ -185,7 +185,17 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
                     var content = contentElement.GetString();
                     if (!string.IsNullOrEmpty(content))
                     {
-                        responseData["response"] = content;
+                        // Tenta desserializar como JSON
+                        try
+                        {
+                            var jsonElement = JsonSerializer.Deserialize<JsonElement>(content);
+                            responseData["response"] = jsonElement;
+                        }
+                        catch
+                        {
+                            // Se não for JSON válido, retorna como string
+                            responseData["response"] = content;
+                        }
                     }
                 }
                 // Suporte para resposta no formato antigo (apenas 'text')
@@ -194,7 +204,16 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
                     var text = textElement.GetString();
                     if (!string.IsNullOrEmpty(text))
                     {
-                        responseData["response"] = text;
+                        // Tenta desserializar como JSON
+                        try
+                        {
+                            var jsonElement = JsonSerializer.Deserialize<JsonElement>(text);
+                            responseData["response"] = jsonElement;
+                        }
+                        catch
+                        {
+                            responseData["response"] = text;
+                        }
                     }
                 }
             }

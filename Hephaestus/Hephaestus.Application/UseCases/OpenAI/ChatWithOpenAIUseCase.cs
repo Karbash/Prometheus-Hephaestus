@@ -104,8 +104,15 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
         var apiKey = _configuration["OpenAI:ApiKey"];
         var baseUrl = _configuration["OpenAI:BaseUrl"];
 
-        // Monta o prompt final considerando o responseFormat
+        // Monta o prompt final considerando o responseFormat e dados adicionais
         string finalPrompt = request.Prompt;
+        
+        // Adiciona os dados se fornecidos
+        if (!string.IsNullOrEmpty(request.Data))
+        {
+            finalPrompt += $"\n\nDados disponíveis:\n{request.Data}";
+        }
+        
         if (request.ResponseFormat != null &&
             request.ResponseFormat.TryGetValue("type", out var type) &&
             type == "json_object")

@@ -36,15 +36,6 @@ public class OpenAIController : ControllerBase
     /// Este endpoint permite interagir com a API de chat da OpenAI, enviando um prompt e, opcionalmente,
     /// especificando o formato de resposta desejado (texto ou JSON).
     /// <br/><br/>
-    /// <b>responseFormat</b>:
-    /// <ul>
-    ///   <li><b>type</b>:<ul>
-    ///     <li><code>text</code> - resposta simples em texto</li>
-    ///     <li><code>json_object</code> - resposta estruturada em JSON, com os campos adicionais especificados</li>
-    ///   </ul></li>
-    ///   <li>Os demais campos (além de <b>type</b>) definem o nome e o tipo esperado de cada campo no JSON de resposta.</li>
-    /// </ul>
-    /// <br/>
     /// <b>Exemplo de request para resposta em texto:</b>
     /// <code>
     /// {
@@ -56,11 +47,11 @@ public class OpenAIController : ControllerBase
     /// <b>Exemplo de request para resposta estruturada:</b>
     /// <code>
     /// {
-    ///   "prompt": "Quem é Bolsonaro?",
+    ///   "prompt": "Quem é Albert Einstein?",
     ///   "responseFormat": {
     ///     "type": "json_object",
-    ///     "historia": "resumo",
-    ///     "idade": "numero"
+    ///     "biografia": "resumo",
+    ///     "nacionalidade": "texto"
     ///   }
     /// }
     /// </code>
@@ -69,7 +60,7 @@ public class OpenAIController : ControllerBase
     /// <code>
     /// {
     ///   "responseJson": {
-    ///     "response": "Jair Bolsonaro é um político brasileiro..."
+    ///     "response": "A capital da França é Paris."
     ///   }
     /// }
     /// </code>
@@ -79,32 +70,14 @@ public class OpenAIController : ControllerBase
     /// {
     ///   "responseJson": {
     ///     "response": {
-    ///       "historia": "Jair Bolsonaro é um político brasileiro...",
-    ///       "idade": 66
+    ///       "biografia": "Albert Einstein foi um físico teórico alemão...",
+    ///       "nacionalidade": "Alemã"
     ///     }
     ///   }
     /// }
     /// </code>
-    /// <br/>
-    /// <b>Exemplos de uso de SQL:</b>
-    /// <ul>
-    ///   <li><b>WHERE</b>:<br/>
-    ///   <code>{ "query": "SELECT Id, Name, Email FROM \"companies\" WHERE \"email\" = 'jordane.almeida@hotmail.com'" }</code></li>
-    ///   <li><b>LIKE</b>:<br/>
-    ///   <code>{ "query": "SELECT Id, Name, Email FROM \"companies\" WHERE \"email\" LIKE '%@gmail.com'" }</code></li>
-    ///   <li><b>INNER JOIN</b>:<br/>
-    ///   <code>{ "query": "SELECT c.Id, c.Name, a.City FROM \"companies\" c INNER JOIN \"addresses\" a ON c.Id = a.EntityId WHERE a.EntityType = 'Company'" }</code></li>
-    ///   <li><b>LEFT JOIN</b>:<br/>
-    ///   <code>{ "query": "SELECT c.Id, c.Name, a.City FROM \"companies\" c LEFT JOIN \"addresses\" a ON c.Id = a.EntityId" }</code></li>
-    ///   <li><b>ORDER BY</b>:<br/>
-    ///   <code>{ "query": "SELECT Id, Name FROM \"companies\" ORDER BY \"Name\" ASC LIMIT 10" }</code></li>
-    ///   <li><b>GROUP BY e função agregada</b>:<br/>
-    ///   <code>{ "query": "SELECT \"city\", COUNT(*) as total FROM \"addresses\" GROUP BY \"city\" ORDER BY total DESC" }</code></li>
-    ///   <li><b>Paginação (LIMIT e OFFSET)</b>:<br/>
-    ///   <code>{ "query": "SELECT Id, Name FROM \"companies\" ORDER BY \"Name\" ASC LIMIT 10 OFFSET 20" }</code></li>
-    /// </ul>
     /// </remarks>
-    /// <param name="request">Um objeto <see cref="OpenAIRequest"/> contendo o prompt e configura��es adicionais para a consulta.</param>
+    /// <param name="request">Um objeto <see cref="OpenAIRequest"/> contendo o prompt e configurações adicionais para a consulta.</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo a resposta da OpenAI em um <see cref="OpenAIResponse"/>.</returns>
     [HttpPost("chat")]
     [SwaggerOperation(Summary = "Consulta o chat da OpenAI", Description = "Envia um prompt e dados � API da OpenAI e retorna a resposta no formato especificado ('text' ou 'json_object'). Requer autentica��o com Role='Admin' e valida��o MFA.")]

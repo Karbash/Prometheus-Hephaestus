@@ -104,6 +104,22 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
         var apiKey = _configuration["OpenAI:ApiKey"];
         var baseUrl = _configuration["OpenAI:BaseUrl"];
 
+        // Monta o prompt final considerando o responseFormat
+        string finalPrompt = request.Prompt;
+        if (request.ResponseFormat != null &&
+            request.ResponseFormat.TryGetValue("type", out var type) &&
+            type == "json_object")
+        {
+            // Monta instrução para o modelo responder em JSON
+            var campos = request.ResponseFormat
+                .Where(kv => kv.Key != "type")
+                .Select(kv => $"\"{kv.Key}\": {kv.Value}")
+                .ToList();
+            var nomesCampos = string.Join(", ", request.ResponseFormat.Keys.Where(k => k != "type"));
+            var exemplo = $"{{ {string.Join(", ", campos)} }}";
+            finalPrompt += $"\nResponda APENAS em JSON, com os seguintes campos: {nomesCampos}. Exemplo:\n{exemplo}";
+        }
+
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/v1/chat/completions");
         httpRequest.Headers.Add("Authorization", $"Bearer {apiKey}");
 
@@ -112,7 +128,7 @@ public class ChatWithOpenAIUseCase : BaseUseCase, IChatWithOpenAIUseCase
             model = "gpt-3.5-turbo",
             messages = new[]
             {
-                new { role = "user", content = request.Prompt }
+                new { role = "user", content = finalPrompt }
             },
             max_tokens = 1000,
             temperature = 0.7

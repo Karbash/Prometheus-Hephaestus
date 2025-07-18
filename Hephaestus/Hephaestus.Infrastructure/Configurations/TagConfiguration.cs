@@ -20,7 +20,8 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
         builder.Property(t => t.CompanyId)
             .HasColumnName("company_id")
             .HasMaxLength(36)
-            .IsRequired();
+            .IsRequired(false) // Permite valores vazios para tags globais
+            .HasDefaultValue(string.Empty); // Valor padrão vazio
 
         builder.Property(t => t.Name)
             .HasColumnName("name")
@@ -30,6 +31,11 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
         builder.Property(t => t.Description)
             .HasColumnName("description")
             .HasMaxLength(500);
+
+        builder.Property(t => t.IsGlobal)
+            .HasColumnName("is_global")
+            .IsRequired()
+            .HasDefaultValue(false);
 
         builder.Property(t => t.CreatedAt)
             .HasColumnName("created_at")

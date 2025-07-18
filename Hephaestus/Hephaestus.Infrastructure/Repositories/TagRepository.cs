@@ -88,11 +88,21 @@ public class TagRepository : ITagRepository
         return await _context.Tags.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id && t.CompanyId == companyId);
     }
 
-    public async Task<Tag?> GetByNameAsync(string name, string companyId)
+    public async Task<Tag?> GetByNameAsync(string name, string? companyId = null)
     {
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(companyId))
-            throw new ArgumentException("Name e CompanyId são obrigatórios.");
-        return await _context.Tags.AsNoTracking().FirstOrDefaultAsync(t => t.Name == name && t.CompanyId == companyId);
+        if (string.IsNullOrEmpty(name))
+            throw new ArgumentException("Name é obrigatório.");
+        
+        if (companyId == null)
+        {
+            // Busca tag global
+            return await _context.Tags.AsNoTracking().FirstOrDefaultAsync(t => t.Name == name && t.IsGlobal);
+        }
+        else
+        {
+            // Busca tag local
+            return await _context.Tags.AsNoTracking().FirstOrDefaultAsync(t => t.Name == name && t.CompanyId == companyId);
+        }
     }
 
     public async Task AddAsync(Tag tag)
@@ -123,8 +133,67 @@ public class TagRepository : ITagRepository
         await _context.SaveChangesAsync();
     }
 
-    public Task<PagedResult<Tag>> GetAllGlobalAsync(string? name = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    public async Task<PagedResult<Tag>> GetAllGlobalAsync(string? name = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        throw new NotImplementedException();
+        var query = _context.Tags.AsNoTracking().Where(t => t.IsGlobal);
+
+        if (!string.IsNullOrEmpty(name))
+            query = query.Where(t => t.Name.Contains(name));
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            if (sortOrder?.ToLower() == "desc")
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            else
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(t => t.CreatedAt);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<Tag>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
+    public async Task<PagedResult<Tag>> GetHybridTagsAsync(string companyId, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    {
+        if (string.IsNullOrEmpty(companyId))
+            throw new ArgumentException("CompanyId é obrigatório.");
+
+        // Busca tags locais da empresa + tags globais
+        var query = _context.Tags.AsNoTracking().Where(t => t.CompanyId == companyId || t.IsGlobal);
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            if (sortOrder?.ToLower() == "desc")
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            else
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            // Ordena por tipo (globais primeiro) e depois por nome
+            query = query.OrderBy(t => !t.IsGlobal).ThenBy(t => t.Name);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<Tag>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 } 

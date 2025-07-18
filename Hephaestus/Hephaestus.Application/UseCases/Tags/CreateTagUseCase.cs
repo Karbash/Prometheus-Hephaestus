@@ -44,28 +44,43 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     }
 
     /// <summary>
-    /// Executa a cria��o de uma tag.
+    /// Executa a criação de uma tag.
     /// </summary>
     /// <param name="request">Dados da tag a ser criada.</param>
-    /// <param name="user">Usu�rio autenticado.</param>
+    /// <param name="user">Usuário autenticado.</param>
     /// <returns>Tag criada.</returns>
     public async Task<TagResponse> ExecuteAsync(TagRequest request, ClaimsPrincipal user)
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Valida��o dos dados de entrada
+            // Validação dos dados de entrada
             ValidateRequest(request);
 
-            // Valida��o de autoriza��o
+            // Validação de autorização
             ValidateAuthorization(user);
 
-            // Obten��o do tenant ID
-            var companyId = _loggedUserService.GetCompanyId(user);
+            // Obtenção do role do usuário
+            var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
+            
+            // Lógica híbrida: Admin cria tags globais, Tenant cria tags locais
+            string? companyId = null;
+            if (userRole == "Tenant")
+            {
+                try
+                {
+                    companyId = _loggedUserService.GetCompanyId(user);
+                }
+                catch (InvalidOperationException)
+                {
+                    throw new InvalidOperationException("CompanyId não encontrado no token.");
+                }
+            }
+            // Para Admin, companyId permanece null (tag global)
 
-            // Validao das regras de neg�cio
+            // Validação das regras de negócio
             await ValidateBusinessRulesAsync(request, companyId);
 
-            // Criao da tag
+            // Criação da tag
             var tag = await CreateTagEntityAsync(request, companyId);
 
             // Registro de auditoria
@@ -76,7 +91,8 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
             {
                 Id = tag.Id,
                 CompanyId = tag.CompanyId,
-                Name = tag.Name
+                Name = tag.Name,
+                IsGlobal = tag.IsGlobal
             };
         });
     }
@@ -95,9 +111,9 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     }
 
     /// <summary>
-    /// Valida a autoriza��o do usu�rio.
+    /// Valida a autorização do usuário.
     /// </summary>
-    /// <param name="user">Usu�rio autenticado.</param>
+    /// <param name="user">Usuário autenticado.</param>
     private void ValidateAuthorization(ClaimsPrincipal user)
     {
         var userRole = user?.FindFirst(ClaimTypes.Role)?.Value;
@@ -108,16 +124,30 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     }
 
     /// <summary>
-    /// Valida as regras de neg�cio.
+    /// Valida as regras de negócio.
     /// </summary>
-    /// <param name="request">Requisi��o com os dados.</param>
-    /// <param name="companyId">ID do tenant.</param>
-    private async Task ValidateBusinessRulesAsync(TagRequest request, string companyId)
+    /// <param name="request">Requisição com os dados.</param>
+    /// <param name="companyId">ID do tenant (null para tags globais).</param>
+    private async Task ValidateBusinessRulesAsync(TagRequest request, string? companyId)
     {
-        var existingTag = await _tagRepository.GetByNameAsync(request.Name, companyId);
-        if (existingTag != null)
+        // Para tags locais (tenant), verificar se já existe na empresa
+        if (!string.IsNullOrEmpty(companyId))
         {
-            throw new ConflictException("Tag j registrada para este tenant.", "Tag", "Name", request.Name);
+            var existingTag = await _tagRepository.GetByNameAsync(request.Name, companyId);
+            if (existingTag != null)
+            {
+                throw new ConflictException("Tag já registrada para este tenant.", "Tag", "Name", request.Name);
+            }
+        }
+        
+        // Para tags globais (admin), verificar se já existe globalmente
+        if (string.IsNullOrEmpty(companyId))
+        {
+            var existingGlobalTag = await _tagRepository.GetByNameAsync(request.Name, null);
+            if (existingGlobalTag != null)
+            {
+                throw new ConflictException("Tag global já registrada.", "Tag", "Name", request.Name);
+            }
         }
     }
 
@@ -125,15 +155,17 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     /// Cria a entidade de tag.
     /// </summary>
     /// <param name="request">Dados da tag.</param>
-    /// <param name="companyId">ID do tenant.</param>
+    /// <param name="companyId">ID do tenant (null para tags globais).</param>
     /// <returns>Entidade de tag criada.</returns>
-    private async Task<Domain.Entities.Tag> CreateTagEntityAsync(TagRequest request, string companyId)
+    private async Task<Domain.Entities.Tag> CreateTagEntityAsync(TagRequest request, string? companyId)
     {
+        var isGlobal = string.IsNullOrEmpty(companyId);
         var tag = new Domain.Entities.Tag
         {
             Id = Guid.NewGuid().ToString(),
-            CompanyId = companyId,
-            Name = request.Name
+            CompanyId = companyId ?? string.Empty, // Vazio para tags globais
+            Name = request.Name,
+            IsGlobal = isGlobal
         };
 
         await _tagRepository.AddAsync(tag);
@@ -144,16 +176,17 @@ public class CreateTagUseCase : BaseUseCase, ICreateTagUseCase
     /// Cria o log de auditoria.
     /// </summary>
     /// <param name="tag">Tag criada.</param>
-    /// <param name="user">Usu�rio autenticado.</param>
+    /// <param name="user">Usuário autenticado.</param>
     private async Task CreateAuditLogAsync(Domain.Entities.Tag tag, ClaimsPrincipal user)
     {
         var loggedUser = await _loggedUserService.GetLoggedUserAsync(user);
+        var tagType = string.IsNullOrEmpty(tag.CompanyId) ? "global" : "local";
         await _auditLogRepository.AddAsync(new AuditLog
         {
             UserId = loggedUser.Id,
-            Action = "Cria��o de Tag",
+            Action = "Criação de Tag",
             EntityId = tag.Id,
-            Details = $"Tag {tag.Name} criada para empresa {tag.CompanyId}.",
+            Details = $"Tag {tag.Name} criada como {tagType} {(string.IsNullOrEmpty(tag.CompanyId) ? "" : $"para empresa {tag.CompanyId}")}.",
             CreatedAt = DateTime.UtcNow
         });
     }

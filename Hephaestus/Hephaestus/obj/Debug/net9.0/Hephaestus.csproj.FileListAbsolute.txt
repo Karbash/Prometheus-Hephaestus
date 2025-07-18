@@ -157,5 +157,4 @@ C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hepha
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\Hephaestus.pdb
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\Hephaestus.genruntimeconfig.cache
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\ref\Hephaestus.dll
-C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\jorda\OneDrive\Área de Trabalho\prometheus-hephaestus\Hephaestus\Hephaestus\obj\Debug\net9.0\Hephaestus.MvcApplicationPartsAssemblyInfo.cs

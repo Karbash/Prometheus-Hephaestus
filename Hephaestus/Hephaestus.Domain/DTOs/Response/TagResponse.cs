@@ -8,5 +8,6 @@ namespace Hephaestus.Domain.DTOs.Response
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public bool IsGlobal { get; set; } = false; // Indica se é uma tag global (criada por admin)
     }
 }

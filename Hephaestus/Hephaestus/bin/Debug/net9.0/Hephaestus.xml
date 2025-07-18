@@ -1783,15 +1783,6 @@
             Este endpoint permite interagir com a API de chat da OpenAI, enviando um prompt e, opcionalmente,
             especificando o formato de resposta desejado (texto ou JSON).
             <br/><br/>
-            <b>responseFormat</b>:
-            <ul>
-              <li><b>type</b>:<ul>
-                <li><code>text</code> - resposta simples em texto</li>
-                <li><code>json_object</code> - resposta estruturada em JSON, com os campos adicionais especificados</li>
-              </ul></li>
-              <li>Os demais campos (além de <b>type</b>) definem o nome e o tipo esperado de cada campo no JSON de resposta.</li>
-            </ul>
-            <br/>
             <b>Exemplo de request para resposta em texto:</b>
             <code>
             {
@@ -1803,11 +1794,11 @@
             <b>Exemplo de request para resposta estruturada:</b>
             <code>
             {
-              "prompt": "Quem é Bolsonaro?",
+              "prompt": "Quem é Albert Einstein?",
               "responseFormat": {
                 "type": "json_object",
-                "historia": "resumo",
-                "idade": "numero"
+                "biografia": "resumo",
+                "nacionalidade": "texto"
               }
             }
             </code>
@@ -1816,7 +1807,7 @@
             <code>
             {
               "responseJson": {
-                "response": "Jair Bolsonaro é um político brasileiro..."
+                "response": "A capital da França é Paris."
               }
             }
             </code>
@@ -1826,32 +1817,14 @@
             {
               "responseJson": {
                 "response": {
-                  "historia": "Jair Bolsonaro é um político brasileiro...",
-                  "idade": 66
+                  "biografia": "Albert Einstein foi um físico teórico alemão...",
+                  "nacionalidade": "Alemã"
                 }
               }
             }
             </code>
-            <br/>
-            <b>Exemplos de uso de SQL:</b>
-            <ul>
-              <li><b>WHERE</b>:<br/>
-              <code>{ "query": "SELECT Id, Name, Email FROM \"companies\" WHERE \"email\" = 'jordane.almeida@hotmail.com'" }</code></li>
-              <li><b>LIKE</b>:<br/>
-              <code>{ "query": "SELECT Id, Name, Email FROM \"companies\" WHERE \"email\" LIKE '%@gmail.com'" }</code></li>
-              <li><b>INNER JOIN</b>:<br/>
-              <code>{ "query": "SELECT c.Id, c.Name, a.City FROM \"companies\" c INNER JOIN \"addresses\" a ON c.Id = a.EntityId WHERE a.EntityType = 'Company'" }</code></li>
-              <li><b>LEFT JOIN</b>:<br/>
-              <code>{ "query": "SELECT c.Id, c.Name, a.City FROM \"companies\" c LEFT JOIN \"addresses\" a ON c.Id = a.EntityId" }</code></li>
-              <li><b>ORDER BY</b>:<br/>
-              <code>{ "query": "SELECT Id, Name FROM \"companies\" ORDER BY \"Name\" ASC LIMIT 10" }</code></li>
-              <li><b>GROUP BY e função agregada</b>:<br/>
-              <code>{ "query": "SELECT \"city\", COUNT(*) as total FROM \"addresses\" GROUP BY \"city\" ORDER BY total DESC" }</code></li>
-              <li><b>Paginação (LIMIT e OFFSET)</b>:<br/>
-              <code>{ "query": "SELECT Id, Name FROM \"companies\" ORDER BY \"Name\" ASC LIMIT 10 OFFSET 20" }</code></li>
-            </ul>
             </remarks>
-            <param name="request">Um objeto <see cref="T:Hephaestus.Domain.DTOs.Request.OpenAIRequest"/> contendo o prompt e configura��es adicionais para a consulta.</param>
+            <param name="request">Um objeto <see cref="T:Hephaestus.Domain.DTOs.Request.OpenAIRequest"/> contendo o prompt e configurações adicionais para a consulta.</param>
             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> contendo a resposta da OpenAI em um <see cref="T:OpenAIResponse"/>.</returns>
         </member>
         <member name="T:Hephaestus.Controllers.PaymentController">
@@ -2392,29 +2365,44 @@
         <member name="M:Hephaestus.Controllers.TagController.CreateTag(Hephaestus.Domain.DTOs.Request.TagRequest)">
             CreateTag
              <summary>
-             Cria uma nova tag para o tenant autenticado.
+             Cria uma nova tag com funcionalidade híbrida.
              </summary>
              <remarks>
              Este endpoint permite que um **Administrador** ou um **Tenant** crie uma nova tag,
-             que pode ser associada a itens do card�pio para categoriza��o.
+             com comportamento diferente baseado no role do usuário:
             
-             **Exemplo de Corpo da Requisi��o:**
+             **Comportamento por Role:**
+             - **Admin**: Cria tags **globais** (disponíveis para todas as empresas)
+             - **Tenant**: Cria tags **locais** (apenas para sua empresa)
+            
+             **Exemplo de Corpo da Requisição:**
              ```json
              {
                "name": "Vegetariano"
              }
              ```
             
-             **Exemplo de Resposta de Sucesso (Status 200 OK):**
+             **Exemplo de Resposta de Sucesso (Status 200 OK) - Tag Local:**
              ```json
              {
                "id": "123e4567-e89b-12d3-a456-426614174001",
-               "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-               "name": "Vegetariano"
+               "companyId": "456e7890-e89b-12d3-a456-426614174002",
+               "name": "Vegetariano",
+               "isGlobal": false
              }
              ```
             
-             **Exemplo de Erro de Valida��o (Status 400 Bad Request):**
+             **Exemplo de Resposta de Sucesso (Status 200 OK) - Tag Global:**
+             ```json
+             {
+               "id": "123e4567-e89b-12d3-a456-426614174001",
+               "companyId": "",
+               "name": "Vegetariano",
+               "isGlobal": true
+             }
+             ```
+            
+             **Exemplo de Erro de Validação (Status 400 Bad Request):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -2422,7 +2410,7 @@
                "status": 400,
                "errors": {
                  "Name": [
-                   "O campo 'Name' � obrigat�rio e deve ter entre 3 e 50 caracteres."
+                   "O campo 'Name' é obrigatório e deve ter entre 3 e 50 caracteres."
                  ]
                }
              }
@@ -2434,27 +2422,18 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
                "title": "Conflict",
                "status": 409,
-               "detail": "A tag com o nome 'Vegetariano' j� est� registrada para este tenant."
+               "detail": "Tag já registrada para este tenant."
              }
              ```
             
-             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
+             **Exemplo de Erro de Operação Inválida (Status 400 Bad Request):**
              ```json
              {
-               "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
-               "title": "Unauthorized",
-               "status": 401,
-               "detail": "TenantId n�o encontrado no token de autentica��o ou token inv�lido."
-             }
-             ```
-            
-             **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
-             ```json
-             {
-               "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
-               "title": "Internal Server Error",
-               "status": 500,
-               "detail": "Ocorreu um erro inesperado ao criar a tag."
+               "error": {
+                 "code": "INVALID_OPERATION",
+                 "message": "CompanyId não encontrado no token.",
+                 "type": "InvalidOperationError"
+               }
              }
              ```
              </remarks>
@@ -2469,9 +2448,9 @@
              </summary>
              <remarks>
              Este endpoint permite que um **Administrador** ou um **Tenant** remova uma tag
-             do sistema. A tag s� pode ser exclu�da se n�o estiver associada a nenhum item de card�pio.
+             do sistema. A tag só pode ser excluída se não estiver associada a nenhum item de cardápio.
             
-             **Exemplo de Requisi��o:**
+             **Exemplo de Requisição:**
              ```http
              DELETE /api/Tag/123e4567-e89b-12d3-a456-426614174001
              ```
@@ -2481,33 +2460,33 @@
              (Nenhum corpo de resposta)
              ```
             
-             **Exemplo de Erro de Requisi��o Inv�lida (Status 400 Bad Request):**
+             **Exemplo de Erro de Requisição Inválida (Status 400 Bad Request):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
                "title": "Bad Request",
                "status": 400,
-               "detail": "O ID da tag 'abc-123' n�o � um GUID v�lido."
+               "detail": "O ID da tag 'abc-123' não é um GUID válido."
              }
              ```
             
-             **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
+             **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
                "title": "Unauthorized",
                "status": 401,
-               "detail": "TenantId n�o encontrado no token de autentica��o ou token inv�lido."
+               "detail": "TenantId não encontrado no token de autenticação ou token inválido."
              }
              ```
             
-             **Exemplo de Erro N�o Encontrado (Status 404 Not Found):**
+             **Exemplo de Erro Não Encontrado (Status 404 Not Found):**
              ```json
              {
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
                "title": "Not Found",
                "status": 404,
-               "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' n�o encontrada ou n�o pertence a este tenant."
+               "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' não encontrada ou não pertence a este tenant."
              }
              ```
             
@@ -2517,7 +2496,7 @@
                "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
                "title": "Conflict",
                "status": 409,
-               "detail": "A tag 'Vegetariano' n�o pode ser exclu�da pois est� associada a um ou mais itens de card�pio."
+               "detail": "A tag 'Vegetariano' não pode ser excluída pois está associada a um ou mais itens de cardápio."
              }
              ```
             
@@ -2531,8 +2510,8 @@
              }
              ```
              </remarks>
-             <param name="id">O **ID (GUID)** da tag a ser exclu�da.</param>
-             <returns>Um <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> indicando o sucesso da exclus�o.</returns>
+             <param name="id">ID da tag a ser excluída.</param>
+             <returns>Status 204 No Content em caso de sucesso.</returns>
         </member>
         <member name="T:Hephaestus.Api.Controllers.OrderController">
             <summary>

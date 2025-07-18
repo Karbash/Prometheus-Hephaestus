@@ -34,22 +34,30 @@ public class GetAllTagsByTenantUseCase : BaseUseCase, IGetAllTagsByTenantUseCase
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            // Obter tenantId do usu�rio logado
+            // Obter tenantId do usuário logado
             var companyId = _loggedUserService.GetCompanyId(user);
 
             ValidateInputParameters(companyId);
-            var pagedTags = await _tagRepository.GetByCompanyIdAsync(companyId, pageNumber, pageSize, sortBy, sortOrder);
+            
+            // Usar busca híbrida: tags locais + tags globais
+            var pagedTags = await _tagRepository.GetHybridTagsAsync(companyId, pageNumber, pageSize, sortBy, sortOrder);
+            
             if (!pagedTags.Items.Any())
             {
                 throw new NotFoundException("Tags", companyId);
             }
+            
             return new PagedResult<TagResponse>
             {
                 Items = pagedTags.Items.Select(t => new TagResponse
                 {
                     Id = t.Id,
                     CompanyId = t.CompanyId,
-                    Name = t.Name
+                    Name = t.Name,
+                    Description = t.Description,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt,
+                    IsGlobal = t.IsGlobal // Usar a propriedade da entidade
                 }).ToList(),
                 TotalCount = pagedTags.TotalCount,
                 PageNumber = pagedTags.PageNumber,

@@ -43,29 +43,44 @@ public class TagController : ControllerBase
     /// CreateTag
 
     /// <summary>
-    /// Cria uma nova tag para o tenant autenticado.
+    /// Cria uma nova tag com funcionalidade híbrida.
     /// </summary>
     /// <remarks>
     /// Este endpoint permite que um **Administrador** ou um **Tenant** crie uma nova tag,
-    /// que pode ser associada a itens do card�pio para categoriza��o.
+    /// com comportamento diferente baseado no role do usuário:
     ///
-    /// **Exemplo de Corpo da Requisi��o:**
+    /// **Comportamento por Role:**
+    /// - **Admin**: Cria tags **globais** (disponíveis para todas as empresas)
+    /// - **Tenant**: Cria tags **locais** (apenas para sua empresa)
+    ///
+    /// **Exemplo de Corpo da Requisição:**
     /// ```json
     /// {
     ///   "name": "Vegetariano"
     /// }
     /// ```
     ///
-    /// **Exemplo de Resposta de Sucesso (Status 200 OK):**
+    /// **Exemplo de Resposta de Sucesso (Status 200 OK) - Tag Local:**
     /// ```json
     /// {
     ///   "id": "123e4567-e89b-12d3-a456-426614174001",
-    ///   "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-    ///   "name": "Vegetariano"
+    ///   "companyId": "456e7890-e89b-12d3-a456-426614174002",
+    ///   "name": "Vegetariano",
+    ///   "isGlobal": false
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Valida��o (Status 400 Bad Request):**
+    /// **Exemplo de Resposta de Sucesso (Status 200 OK) - Tag Global:**
+    /// ```json
+    /// {
+    ///   "id": "123e4567-e89b-12d3-a456-426614174001",
+    ///   "companyId": "",
+    ///   "name": "Vegetariano",
+    ///   "isGlobal": true
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Erro de Validação (Status 400 Bad Request):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
@@ -73,7 +88,7 @@ public class TagController : ControllerBase
     ///   "status": 400,
     ///   "errors": {
     ///     "Name": [
-    ///       "O campo 'Name' � obrigat�rio e deve ter entre 3 e 50 caracteres."
+    ///       "O campo 'Name' é obrigatório e deve ter entre 3 e 50 caracteres."
     ///     ]
     ///   }
     /// }
@@ -85,38 +100,29 @@ public class TagController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
     ///   "title": "Conflict",
     ///   "status": 409,
-    ///   "detail": "A tag com o nome 'Vegetariano' j� est� registrada para este tenant."
+    ///   "detail": "Tag já registrada para este tenant."
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
+    /// **Exemplo de Erro de Operação Inválida (Status 400 Bad Request):**
     /// ```json
     /// {
-    ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
-    ///   "title": "Unauthorized",
-    ///   "status": 401,
-    ///   "detail": "TenantId n�o encontrado no token de autentica��o ou token inv�lido."
-    /// }
-    /// ```
-    ///
-    /// **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
-    /// ```json
-    /// {
-    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
-    ///   "title": "Internal Server Error",
-    ///   "status": 500,
-    ///   "detail": "Ocorreu um erro inesperado ao criar a tag."
+    ///   "error": {
+    ///     "code": "INVALID_OPERATION",
+    ///     "message": "CompanyId não encontrado no token.",
+    ///     "type": "InvalidOperationError"
+    ///   }
     /// }
     /// ```
     /// </remarks>
     /// <param name="request">Dados da tag a ser criada (<see cref="TagRequest"/>).</param>
     /// <returns>Um <see cref="OkObjectResult"/> contendo o objeto <see cref="TagResponse"/> da tag criada.</returns>
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria uma nova tag", Description = "Cria uma nova tag para o tenant autenticado. Requer autentica��o de administrador ou tenant.")]
+    [SwaggerOperation(Summary = "Cria uma nova tag (híbrida)", Description = "Cria uma nova tag com funcionalidade híbrida: Admin cria tags globais, Tenant cria tags locais. Requer autenticação de administrador ou tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TagResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))] // Adicionado para indicar conflito (tag j� existe)
+    [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> CreateTag([FromBody] TagRequest request)
     {
@@ -127,13 +133,14 @@ public class TagController : ControllerBase
     /// GetTags
 
     /// <summary>
-    /// Lista todas as tags associadas ao tenant autenticado.
+    /// Lista todas as tags disponíveis para o tenant autenticado (híbridas).
     /// </summary>
     /// <remarks>
-    /// Este endpoint permite que um **Administrador** ou um **Tenant** consulte as tags
-    /// registradas para o tenant autenticado, com suporte a pagina��o.
+    /// Este endpoint retorna uma lista híbrida de tags disponíveis para o tenant:
+    /// - **Tags Locais**: Criadas pela própria empresa
+    /// - **Tags Globais**: Criadas por administradores (disponíveis para todas as empresas)
     ///
-    /// **Exemplo de Requisi��o:**
+    /// **Exemplo de Requisição:**
     /// ```http
     /// GET /api/Tag?pageNumber=1&pageSize=10
     /// ```
@@ -144,13 +151,15 @@ public class TagController : ControllerBase
     ///   "items": [
     ///     {
     ///       "id": "123e4567-e89b-12d3-a456-426614174001",
-    ///       "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-    ///       "name": "Vegetariano"
+    ///       "companyId": "",
+    ///       "name": "Vegetariano",
+    ///       "isGlobal": true
     ///     },
     ///     {
     ///       "id": "789e0123-e89b-12d3-a456-426614174003",
-    ///       "tenantId": "456e7890-e89b-12d3-a456-426614174002",
-    ///       "name": "Sem Gl�ten"
+    ///       "companyId": "456e7890-e89b-12d3-a456-426614174002",
+    ///       "name": "Especial da Casa",
+    ///       "isGlobal": false
     ///     }
     ///   ],
     ///   "totalCount": 2,
@@ -159,31 +168,21 @@ public class TagController : ControllerBase
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
+    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
     ///   "title": "Unauthorized",
     ///   "status": 401,
-    ///   "detail": "Acesso n�o autorizado."
-    /// }
-    /// ```
-    ///
-    /// **Exemplo de Erro Interno do Servidor (Status 500 Internal Server Error):**
-    /// ```json
-    /// {
-    ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.6.1](https://tools.ietf.org/html/rfc7231#section-6.6.1)",
-    ///   "title": "Internal Server Error",
-    ///   "status": 500,
-    ///   "detail": "Ocorreu um erro inesperado ao listar as tags."
+    ///   "detail": "Acesso não autorizado."
     /// }
     /// ```
     /// </remarks>
-    /// <param name="pageNumber">N�mero da p�gina a ser retornada (padr�o: 1).</param>
-    /// <param name="pageSize">N�mero de itens por p�gina (padr�o: 20).</param>
-    /// <returns>Um <see cref="OkObjectResult"/> contendo um <see cref="PagedResult{TagResponse}"/> com a lista paginada de tags.</returns>
+    /// <param name="pageNumber">Número da página a ser retornada (padrão: 1).</param>
+    /// <param name="pageSize">Número de itens por página (padrão: 20).</param>
+    /// <returns>Um <see cref="OkObjectResult"/> contendo um <see cref="PagedResult{TagResponse}"/> com a lista paginada de tags híbridas.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista todas as tags do tenant autenticado", Description = "Retorna todas as tags associadas ao tenant do usu�rio autenticado, com suporte a pagina��o. Requer autentica��o de administrador ou tenant.")]
+    [SwaggerOperation(Summary = "Lista tags híbridas do tenant", Description = "Retorna tags locais da empresa + tags globais criadas por administradores. Requer autenticação de administrador ou tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<TagResponse>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
@@ -204,9 +203,9 @@ public class TagController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Este endpoint permite que um **Administrador** ou um **Tenant** remova uma tag
-    /// do sistema. A tag s� pode ser exclu�da se n�o estiver associada a nenhum item de card�pio.
+    /// do sistema. A tag só pode ser excluída se não estiver associada a nenhum item de cardápio.
     ///
-    /// **Exemplo de Requisi��o:**
+    /// **Exemplo de Requisição:**
     /// ```http
     /// DELETE /api/Tag/123e4567-e89b-12d3-a456-426614174001
     /// ```
@@ -216,33 +215,33 @@ public class TagController : ControllerBase
     /// (Nenhum corpo de resposta)
     /// ```
     ///
-    /// **Exemplo de Erro de Requisi��o Inv�lida (Status 400 Bad Request):**
+    /// **Exemplo de Erro de Requisição Inválida (Status 400 Bad Request):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.1](https://tools.ietf.org/html/rfc7231#section-6.5.1)",
     ///   "title": "Bad Request",
     ///   "status": 400,
-    ///   "detail": "O ID da tag 'abc-123' n�o � um GUID v�lido."
+    ///   "detail": "O ID da tag 'abc-123' não é um GUID válido."
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro de Autoriza��o (Status 401 Unauthorized):**
+    /// **Exemplo de Erro de Autorização (Status 401 Unauthorized):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7235#section-3.1](https://tools.ietf.org/html/rfc7235#section-3.1)",
     ///   "title": "Unauthorized",
     ///   "status": 401,
-    ///   "detail": "TenantId n�o encontrado no token de autentica��o ou token inv�lido."
+    ///   "detail": "TenantId não encontrado no token de autenticação ou token inválido."
     /// }
     /// ```
     ///
-    /// **Exemplo de Erro N�o Encontrado (Status 404 Not Found):**
+    /// **Exemplo de Erro Não Encontrado (Status 404 Not Found):**
     /// ```json
     /// {
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.4](https://tools.ietf.org/html/rfc7231#section-6.5.4)",
     ///   "title": "Not Found",
     ///   "status": 404,
-    ///   "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' n�o encontrada ou n�o pertence a este tenant."
+    ///   "detail": "Tag com ID '99999999-9999-9999-9999-999999999999' não encontrada ou não pertence a este tenant."
     /// }
     /// ```
     ///
@@ -252,7 +251,7 @@ public class TagController : ControllerBase
     ///   "type": "[https://tools.ietf.org/html/rfc7231#section-6.5.8](https://tools.ietf.org/html/rfc7231#section-6.5.8)",
     ///   "title": "Conflict",
     ///   "status": 409,
-    ///   "detail": "A tag 'Vegetariano' n�o pode ser exclu�da pois est� associada a um ou mais itens de card�pio."
+    ///   "detail": "A tag 'Vegetariano' não pode ser excluída pois está associada a um ou mais itens de cardápio."
     /// }
     /// ```
     ///
@@ -266,15 +265,15 @@ public class TagController : ControllerBase
     /// }
     /// ```
     /// </remarks>
-    /// <param name="id">O **ID (GUID)** da tag a ser exclu�da.</param>
-    /// <returns>Um <see cref="NoContentResult"/> indicando o sucesso da exclus�o.</returns>
+    /// <param name="id">ID da tag a ser excluída.</param>
+    /// <returns>Status 204 No Content em caso de sucesso.</returns>
     [HttpDelete("{id}")]
-    [SwaggerOperation(Summary = "Exclui uma tag", Description = "Exclui uma tag pelo ID, desde que n�o esteja associada a itens do card�pio. Requer autentica��o de administrador ou tenant.")]
+    [SwaggerOperation(Summary = "Exclui uma tag", Description = "Exclui uma tag pelo ID, desde que não esteja associada a itens do cardápio. Requer autenticação de administrador ou tenant.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))] // Para ID inv�lido
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))] // Para tags em uso
+    [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> DeleteTag(string id)
     {

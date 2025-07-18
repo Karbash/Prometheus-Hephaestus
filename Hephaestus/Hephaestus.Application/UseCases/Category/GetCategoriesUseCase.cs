@@ -30,7 +30,10 @@ public class GetCategoriesUseCase : BaseUseCase, IGetCategoriesUseCase
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
             var tenantId = _loggedUserService.GetTenantId(user);
-            var pagedCategories = await _categoryRepository.GetByTenantIdAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
+            
+            // Usar busca híbrida: categorias locais + categorias globais
+            var pagedCategories = await _categoryRepository.GetHybridCategoriesAsync(tenantId, pageNumber, pageSize, sortBy, sortOrder);
+            
             return new PagedResult<CategoryResponse>
             {
                 Items = pagedCategories.Items.Select(c => new CategoryResponse
@@ -40,6 +43,7 @@ public class GetCategoriesUseCase : BaseUseCase, IGetCategoriesUseCase
                     Name = c.Name,
                     Description = c.Description,
                     IsActive = c.IsActive,
+                    IsGlobal = c.IsGlobal, // Usar a propriedade da entidade
                     CreatedAt = c.CreatedAt,
                     UpdatedAt = c.UpdatedAt
                 }).ToList(),

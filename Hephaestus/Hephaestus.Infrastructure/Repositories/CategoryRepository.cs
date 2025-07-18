@@ -28,14 +28,21 @@ public class CategoryRepository : ICategoryRepository
             .FirstOrDefaultAsync(c => c.Id == id && c.TenantId == tenantId);
     }
 
-    public async Task<Category?> GetByNameAsync(string name, string tenantId)
+    public async Task<Category?> GetByNameAsync(string name, string? tenantId = null)
     {
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(tenantId))
-            throw new ArgumentException("Name e TenantId são obrigatórios.");
-
-        return await _context.Categories
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Name == name && c.TenantId == tenantId);
+        if (string.IsNullOrEmpty(name))
+            throw new ArgumentException("Name é obrigatório.");
+        
+        if (tenantId == null)
+        {
+            // Busca categoria global
+            return await _context.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Name == name && c.IsGlobal);
+        }
+        else
+        {
+            // Busca categoria local
+            return await _context.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Name == name && c.TenantId == tenantId);
+        }
     }
 
     public async Task<PagedResult<Category>> GetByTenantIdAsync(string tenantId, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
@@ -170,8 +177,69 @@ public class CategoryRepository : ICategoryRepository
             .AnyAsync(c => c.Name == name && c.TenantId == tenantId);
     }
 
-    public Task<PagedResult<Category>> GetAllGlobalAsync(string? name = null, string? companyId = null, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    public async Task<PagedResult<Category>> GetAllGlobalAsync(string? name = null, string? companyId = null, bool? isActive = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        throw new NotImplementedException();
+        var query = _context.Categories.AsNoTracking().Where(c => c.IsGlobal);
+
+        if (!string.IsNullOrEmpty(name))
+            query = query.Where(c => c.Name.Contains(name));
+        if (isActive.HasValue)
+            query = query.Where(c => c.IsActive == isActive.Value);
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            if (sortOrder?.ToLower() == "desc")
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            else
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(c => c.CreatedAt);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<Category>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
+    public async Task<PagedResult<Category>> GetHybridCategoriesAsync(string tenantId, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    {
+        if (string.IsNullOrEmpty(tenantId))
+            throw new ArgumentException("TenantId é obrigatório.");
+
+        // Busca categorias locais da empresa + categorias globais
+        var query = _context.Categories.AsNoTracking().Where(c => c.TenantId == tenantId || c.IsGlobal);
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            if (sortOrder?.ToLower() == "desc")
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            else
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+        else
+        {
+            // Ordena por tipo (globais primeiro) e depois por nome
+            query = query.OrderBy(c => !c.IsGlobal).ThenBy(c => c.Name);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<Category>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 } 

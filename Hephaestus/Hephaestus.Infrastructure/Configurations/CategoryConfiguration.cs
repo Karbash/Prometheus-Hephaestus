@@ -20,7 +20,8 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(c => c.TenantId)
             .HasColumnName("tenant_id")
             .HasMaxLength(36)
-            .IsRequired();
+            .IsRequired(false) // Permite valores vazios para categorias globais
+            .HasDefaultValue(string.Empty); // Valor padrão vazio
 
         builder.Property(c => c.Name)
             .HasColumnName("name")
@@ -38,6 +39,11 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(c => c.IsActive)
             .HasColumnName("is_active")
             .HasDefaultValue(true);
+
+        builder.Property(c => c.IsGlobal)
+            .HasColumnName("is_global")
+            .IsRequired()
+            .HasDefaultValue(false);
 
         builder.Property(c => c.CreatedAt)
             .HasColumnName("created_at")

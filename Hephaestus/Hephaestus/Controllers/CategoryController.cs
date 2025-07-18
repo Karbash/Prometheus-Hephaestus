@@ -12,7 +12,7 @@ namespace Hephaestus.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Tenant")]
+[Authorize(Roles = "Admin,Tenant")]
 public class CategoryController : ControllerBase
 {
     private readonly ICreateCategoryUseCase _createCategoryUseCase;
@@ -39,17 +39,29 @@ public class CategoryController : ControllerBase
     }
 
     /// <summary>
-    /// Cria uma nova categoria para o tenant autenticado.
+    /// Cria uma nova categoria com funcionalidade híbrida.
     /// </summary>
     /// <remarks>
-    /// Este endpoint permite que um tenant crie uma nova categoria para organizar seus itens de menu.
-    /// Requer autenticação com a role **Tenant**.
+    /// Este endpoint permite criar categorias com comportamento híbrido baseado no role do usuário:
+    /// - **Admin**: Cria categorias globais (acessíveis por todos os tenants)
+    /// - **Tenant**: Cria categorias locais (específicas da empresa)
+    /// 
+    /// Requer autenticação com a role **Admin** ou **Tenant**.
     ///
-    /// **Exemplo de Request:**
+    /// **Exemplo de Request para Admin (Categoria Global):**
     /// ```json
     /// {
     ///   "name": "Bebidas",
-    ///   "description": "Categoria para todas as bebidas disponíveis",
+    ///   "description": "Categoria global para todas as bebidas",
+    ///   "isActive": true
+    /// }
+    /// ```
+    ///
+    /// **Exemplo de Request para Tenant (Categoria Local):**
+    /// ```json
+    /// {
+    ///   "name": "Especial da Casa",
+    ///   "description": "Categoria específica da empresa",
     ///   "isActive": true
     /// }
     /// ```
@@ -64,7 +76,7 @@ public class CategoryController : ControllerBase
     /// <param name="request">Dados da categoria a ser criada.</param>
     /// <returns>ID da categoria criada.</returns>
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria uma nova categoria", Description = "Cria uma nova categoria para o tenant autenticado. Requer autenticação com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Cria uma nova categoria", Description = "Cria uma nova categoria com funcionalidade híbrida. Admin cria categorias globais, Tenant cria categorias locais. Requer autenticação com Role=Admin ou Tenant.")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(object))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -76,11 +88,14 @@ public class CategoryController : ControllerBase
     }
 
     /// <summary>
-    /// Lista as categorias do tenant autenticado com paginação.
+    /// Lista as categorias com funcionalidade híbrida.
     /// </summary>
     /// <remarks>
-    /// Este endpoint retorna uma lista paginada de categorias pertencentes ao tenant autenticado.
-    /// Requer autenticação com a role **Tenant**.
+    /// Este endpoint retorna uma lista paginada de categorias híbridas:
+    /// - **Para Tenants**: Retorna categorias locais da empresa + todas as categorias globais
+    /// - **Para Admins**: Retorna todas as categorias (locais e globais)
+    /// 
+    /// Requer autenticação com a role **Admin** ou **Tenant**.
     ///
     /// **Exemplo de Response (Status 200 OK):**
     /// ```json
@@ -88,15 +103,26 @@ public class CategoryController : ControllerBase
     ///   "items": [
     ///     {
     ///       "id": "123e4567-e89b-12d3-a456-426614174001",
-    ///       "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///       "tenantId": "",
     ///       "name": "Bebidas",
-    ///       "description": "Categoria para todas as bebidas disponíveis",
+    ///       "description": "Categoria global para todas as bebidas",
     ///       "isActive": true,
+    ///       "isGlobal": true,
+    ///       "createdAt": "2024-01-01T12:00:00Z",
+    ///       "updatedAt": "2024-01-01T12:00:00Z"
+    ///     },
+    ///     {
+    ///       "id": "789e0123-e89b-12d3-a456-426614174003",
+    ///       "tenantId": "456e7890-e89b-12d3-a456-426614174002",
+    ///       "name": "Especial da Casa",
+    ///       "description": "Categoria específica da empresa",
+    ///       "isActive": true,
+    ///       "isGlobal": false,
     ///       "createdAt": "2024-01-01T12:00:00Z",
     ///       "updatedAt": "2024-01-01T12:00:00Z"
     ///     }
     ///   ],
-    ///   "totalCount": 1,
+    ///   "totalCount": 2,
     ///   "pageNumber": 1,
     ///   "pageSize": 20
     /// }
@@ -104,9 +130,11 @@ public class CategoryController : ControllerBase
     /// </remarks>
     /// <param name="pageNumber">Número da página para paginação (padrão: 1).</param>
     /// <param name="pageSize">Número de itens por página para paginação (padrão: 20).</param>
-    /// <returns>Lista paginada de categorias.</returns>
+    /// <param name="sortBy">Campo para ordenação.</param>
+    /// <param name="sortOrder">Direção da ordenação (asc/desc).</param>
+    /// <returns>Lista paginada de categorias híbridas.</returns>
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista categorias", Description = "Retorna uma lista paginada de categorias para o tenant autenticado. Requer autenticação com Role=Tenant.")]
+    [SwaggerOperation(Summary = "Lista categorias híbridas", Description = "Retorna uma lista paginada de categorias híbridas (locais + globais). Requer autenticação com Role=Admin ou Tenant.")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<CategoryResponse>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -1,4 +1,4 @@
 public class OpenAIResponse
 {
-    public Dictionary<string, string>? ResponseJson { get; set; }
+    public Dictionary<string, object>? ResponseJson { get; set; }
 }

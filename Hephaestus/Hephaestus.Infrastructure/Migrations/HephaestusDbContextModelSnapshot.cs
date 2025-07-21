@@ -560,6 +560,113 @@ namespace Hephaestus.Infrastructure.Migrations
                     b.ToTable("company_social_media", (string)null);
                 });
 
+            modelBuilder.Entity("Hephaestus.Domain.Entities.ConversationMessage", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Intent")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("intent");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("message");
+
+                    b.Property<string>("Response")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("response");
+
+                    b.Property<string>("SessionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("session_id");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("timestamp");
+
+                    b.Property<bool>("UsedOpenAI")
+                        .HasColumnType("boolean")
+                        .HasColumnName("used_openai");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SessionId");
+
+                    b.HasIndex("Timestamp");
+
+                    b.HasIndex("UsedOpenAI");
+
+                    b.ToTable("conversation_messages", (string)null);
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.ConversationSession", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ConversationStep")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("conversation_step");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<DateTime>("LastActivity")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_activity");
+
+                    b.Property<string>("LastIntent")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("last_intent");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("phone_number");
+
+                    b.Property<string>("SessionDataJson")
+                        .HasColumnType("text")
+                        .HasColumnName("session_data_json");
+
+                    b.Property<string>("SessionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("session_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("LastActivity");
+
+                    b.HasIndex("PhoneNumber");
+
+                    b.HasIndex("SessionId")
+                        .IsUnique();
+
+                    b.ToTable("conversation_sessions", (string)null);
+                });
+
             modelBuilder.Entity("Hephaestus.Domain.Entities.Coupon", b =>
                 {
                     b.Property<string>("Id")
@@ -1677,6 +1784,16 @@ namespace Hephaestus.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Hephaestus.Domain.Entities.ConversationMessage", b =>
+                {
+                    b.HasOne("Hephaestus.Domain.Entities.ConversationSession", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("SessionId")
+                        .HasPrincipalKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Hephaestus.Domain.Entities.Customization", b =>
                 {
                     b.HasOne("Hephaestus.Domain.Entities.OrderItem", null)
@@ -1800,6 +1917,11 @@ namespace Hephaestus.Infrastructure.Migrations
             modelBuilder.Entity("Hephaestus.Domain.Entities.Company", b =>
                 {
                     b.Navigation("MenuItems");
+                });
+
+            modelBuilder.Entity("Hephaestus.Domain.Entities.ConversationSession", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Hephaestus.Domain.Entities.MenuItem", b =>

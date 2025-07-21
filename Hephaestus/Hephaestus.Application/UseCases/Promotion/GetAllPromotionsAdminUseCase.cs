@@ -25,7 +25,7 @@ public class GetAllPromotionsAdminUseCase : BaseUseCase, IGetAllPromotionsAdminU
     {
         return await ExecuteWithExceptionHandlingAsync(async () =>
         {
-            var pagedPromotions = await _promotionRepository.GetAllGlobalAsync(null, isActive, companyId, pageNumber, pageSize, sortBy, sortOrder);
+            var pagedPromotions = await _promotionRepository.GetAllGlobalAsync(isActive, companyId, pageNumber, pageSize, sortBy, sortOrder);
             return new PagedResult<PromotionResponse>
             {
                 Items = pagedPromotions.Items.Select(p => new PromotionResponse

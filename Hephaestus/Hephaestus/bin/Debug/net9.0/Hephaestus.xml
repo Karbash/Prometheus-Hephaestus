@@ -2541,6 +2541,101 @@
              <param name="id">ID da tag a ser excluída.</param>
              <returns>Status 204 No Content em caso de sucesso.</returns>
         </member>
+        <member name="T:Hephaestus.Controllers.WhatsAppController">
+            <summary>
+            Controller para integração com WhatsApp Business API
+            </summary>
+        </member>
+        <member name="M:Hephaestus.Controllers.WhatsAppController.ProcessMessage(Hephaestus.Domain.DTOs.Request.ProcessMessageRequest)">
+            <summary>
+            Processa mensagens de chat de forma inteligente
+            </summary>
+            <remarks>
+            Este endpoint processa mensagens de chat de forma inteligente usando IA e dados dinâmicos do sistema.
+            Pode ser usado por qualquer aplicação que precise de processamento inteligente de mensagens.
+            
+            **Exemplo de requisição:**
+            ```json
+            {
+              "phoneNumber": "5511999999999",
+              "message": "Preciso saber onde há restaurantes perto de onde estou",
+              "contextData": {
+                "latitude": -23.5505,
+                "longitude": -46.6333
+              },
+              "sessionId": "session_123"
+            }
+            ```
+            
+            **Exemplo de resposta:**
+            ```json
+            {
+              "message": "🏪 Restaurantes próximos encontrados:\n\n📍 Restaurante Italiano\n📞 (11) 9999-9999\n📍 Rua das Flores, 123\n🏙️ Centro, São Paulo",
+              "waitForResponse": true,
+              "data": {
+                "found_companies": ["company_id_1", "company_id_2"]
+              }
+            }
+            ```
+            </remarks>
+            <param name="request">Dados da mensagem</param>
+            <returns>Resposta processada</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.WhatsAppController.Webhook(Hephaestus.Domain.DTOs.Request.WhatsAppMessageRequest)">
+            <summary>
+            Recebe mensagens do WhatsApp Business API
+            </summary>
+            <remarks>
+            Este endpoint recebe mensagens do WhatsApp Business API e processa automaticamente
+            usando inteligência artificial para classificar intenções e executar ações apropriadas.
+            
+            **Exemplo de mensagem de texto:**
+            ```json
+            {
+              "messageId": "wamid.123456789",
+              "from": "5511999999999",
+              "to": "5511888888888",
+              "type": "text",
+              "text": "Preciso saber onde há restaurantes perto de onde estou",
+              "timestamp": "2024-01-20T10:30:00Z"
+            }
+            ```
+            
+            **Exemplo de mensagem de localização:**
+            ```json
+            {
+              "messageId": "wamid.123456790",
+              "from": "5511999999999",
+              "to": "5511888888888",
+              "type": "location",
+              "latitude": -23.5505,
+              "longitude": -46.6333,
+              "timestamp": "2024-01-20T10:31:00Z"
+            }
+            ```
+            
+            **Exemplo de resposta:**
+            ```json
+            {
+              "message": "🏪 Restaurantes próximos encontrados:\n\n📍 Restaurante Italiano\n📞 (11) 9999-9999\n📍 Rua das Flores, 123\n⏰ 11:00 - 22:00",
+              "codes": [1001],
+              "waitForResponse": true,
+              "conversationContext": "restaurants_found"
+            }
+            ```
+            </remarks>
+            <param name="request">Dados da mensagem do WhatsApp</param>
+            <returns>Resposta processada para enviar ao usuário</returns>
+        </member>
+        <member name="M:Hephaestus.Controllers.WhatsAppController.VerifyWebhook(System.String,System.String,System.String)">
+            <summary>
+            Endpoint de verificação para configuração do webhook do WhatsApp
+            </summary>
+            <param name="hubMode">Modo do hub</param>
+            <param name="hubVerifyToken">Token de verificação</param>
+            <param name="hubChallenge">Desafio do hub</param>
+            <returns>Desafio do hub para verificação</returns>
+        </member>
         <member name="T:Hephaestus.Api.Controllers.OrderController">
             <summary>
             Controller para gerenciamento de pedidos, permitindo a criação, consulta, atualização e rastreamento de status de pedidos.

@@ -14,6 +14,7 @@ using Hephaestus.Application.Interfaces.Order;
 using Hephaestus.Application.Interfaces.Payment;
 using Hephaestus.Application.Interfaces.Promotion;
 using Hephaestus.Application.Interfaces.Tag;
+using Hephaestus.Application.Interfaces.WhatsApp;
 using Hephaestus.Application.Services;
 using Hephaestus.Application.UseCases;
 using Hephaestus.Application.UseCases.Additional;
@@ -30,6 +31,7 @@ using Hephaestus.Application.UseCases.Order;
 using Hephaestus.Application.UseCases.Promotion;
 using Hephaestus.Application.UseCases.Tag;
 using Hephaestus.Application.UseCases.Review;
+using Hephaestus.Application.UseCases.WhatsApp;
 using Hephaestus.Application.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -84,6 +86,11 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IGetAllTagsByTenantUseCase, Hephaestus.Application.UseCases.Tags.GetAllTagsByTenantUseCase>();
         services.AddScoped<IDeleteTagUseCase, DeleteTagUseCase>();
 
+        // WhatsApp UseCases
+        services.AddScoped<IProcessWhatsAppMessageUseCase, ProcessWhatsAppMessageUseCase>();
+        services.AddScoped<IIntentClassifierUseCase, IntentClassifierUseCase>();
+        services.AddScoped<IActionPipelineUseCase, ActionPipelineUseCase>();
+
         // Promotion UseCases
         services.AddScoped<ICreatePromotionUseCase, CreatePromotionUseCase>();
         services.AddScoped<IGetPromotionsUseCase, GetPromotionsUseCase>();
@@ -121,13 +128,20 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IDeleteCouponUseCase, DeleteCouponUseCase>();
 
         //Order
-
         services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
         services.AddScoped<IGetOrdersUseCase, GetOrdersUseCase>();
         services.AddScoped<IGetOrderByIdUseCase, GetOrderByIdUseCase>();
         services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
         services.AddScoped<IGetCustomerOrderStatusUseCase, GetCustomerOrderStatusUseCase>();
         services.AddScoped<IPatchOrderUseCase, PatchOrderUseCase>();
+        
+        // Global Admin UseCases
+        services.AddScoped<Hephaestus.Application.Interfaces.Order.IGlobalOrderAdminUseCase, GlobalOrderAdminUseCase>();
+        services.AddScoped<Hephaestus.Application.Interfaces.Administration.IGlobalCategoryAdminUseCase, GlobalCategoryAdminUseCase>();
+        services.AddScoped<IGetAllPromotionsAdminUseCase, GetAllPromotionsAdminUseCase>();
+        services.AddScoped<IGlobalTagAdminUseCase, GlobalTagAdminUseCase>();
+        services.AddScoped<IGlobalMenuItemAdminUseCase, GlobalMenuItemAdminUseCase>();
+        services.AddScoped<IGlobalCouponAdminUseCase, GlobalCouponAdminUseCase>();
 
         //Payment
         services.AddScoped<IProcessPaymentUseCase, ProcessPaymentUseCase>();
@@ -138,6 +152,7 @@ public static class ApplicationServicesRegistration
     {
         // Exception Handling
         services.AddSingleton<IExceptionHandlerService, ExceptionHandlerService>();
+        services.AddScoped<IConversationContextService, ConversationContextService>();
     }
 
     private static void AddValidators(IServiceCollection services)

@@ -49,6 +49,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<IConversationSessionRepository, ConversationSessionRepository>();
     }
 
     private static void AddServices(IServiceCollection services)

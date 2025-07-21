@@ -4549,5 +4549,111 @@
         "StatusCode": 500
       }
     ]
+  },
+  {
+    "ContainingType": "Hephaestus.Controllers.WhatsAppController",
+    "Method": "ProcessMessage",
+    "RelativePath": "api/WhatsApp/process",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Hephaestus.Domain.DTOs.Request.ProcessMessageRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Hephaestus.Domain.DTOs.Response.WhatsAppResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "Hephaestus.Controllers.WhatsAppController",
+    "Method": "Webhook",
+    "RelativePath": "api/WhatsApp/webhook",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Hephaestus.Domain.DTOs.Request.WhatsAppMessageRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Hephaestus.Domain.DTOs.Response.WhatsAppResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "Hephaestus.Controllers.WhatsAppController",
+    "Method": "VerifyWebhook",
+    "RelativePath": "api/WhatsApp/webhook",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hubMode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "hubVerifyToken",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "hubChallenge",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

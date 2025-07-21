@@ -34,6 +34,8 @@ public class HephaestusDbContext : DbContext
     public DbSet<MenuItemAdditional> MenuItemAdditionals { get; set; }
     public DbSet<OrderItemAdditional> OrderItemAdditionals { get; set; }
     public DbSet<OrderItemTag> OrderItemTags { get; set; }
+    public DbSet<ConversationSession> ConversationSessions { get; set; }
+    public DbSet<ConversationMessage> ConversationMessages { get; set; }
 
     public HephaestusDbContext(DbContextOptions<HephaestusDbContext> options) : base(options) { }
 
@@ -66,5 +68,7 @@ public class HephaestusDbContext : DbContext
         modelBuilder.ApplyConfiguration(new MenuItemAdditionalConfiguration());
         modelBuilder.ApplyConfiguration(new OrderItemAdditionalConfiguration());
         modelBuilder.ApplyConfiguration(new OrderItemTagConfiguration());
+        modelBuilder.ApplyConfiguration(new ConversationSessionConfiguration());
+        modelBuilder.ApplyConfiguration(new ConversationMessageConfiguration());
     }
 }

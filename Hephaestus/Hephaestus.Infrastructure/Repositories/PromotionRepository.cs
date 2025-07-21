@@ -128,8 +128,69 @@ public class PromotionRepository : IPromotionRepository
         };
     }
 
-    public Task<PagedResult<Promotion>> GetAllGlobalAsync(string? code = null, bool? isActive = null, string? companyId = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
+    public async Task<PagedResult<Promotion>> GetAllGlobalAsync(bool? isActive = null, string? companyId = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc")
     {
-        throw new NotImplementedException();
+        var query = _dbContext.Promotions.AsNoTracking().AsQueryable();
+
+        // Filtros
+        if (!string.IsNullOrEmpty(companyId))
+            query = query.Where(p => p.CompanyId == companyId);
+        if (isActive.HasValue)
+            query = query.Where(p => p.IsActive == isActive.Value);
+
+        // Ordenação com mapeamento estático para evitar problemas com EF
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            switch (sortBy.ToLower())
+            {
+                case "enddate":
+                    query = sortOrder?.ToLower() == "desc" 
+                        ? query.OrderByDescending(p => p.EndDate)
+                        : query.OrderBy(p => p.EndDate);
+                    break;
+                case "startdate":
+                    query = sortOrder?.ToLower() == "desc" 
+                        ? query.OrderByDescending(p => p.StartDate)
+                        : query.OrderBy(p => p.StartDate);
+                    break;
+                case "name":
+                    query = sortOrder?.ToLower() == "desc" 
+                        ? query.OrderByDescending(p => p.Name)
+                        : query.OrderBy(p => p.Name);
+                    break;
+                case "discountvalue":
+                    query = sortOrder?.ToLower() == "desc" 
+                        ? query.OrderByDescending(p => p.DiscountValue)
+                        : query.OrderBy(p => p.DiscountValue);
+                    break;
+                case "createdat":
+                    query = sortOrder?.ToLower() == "desc" 
+                        ? query.OrderByDescending(p => p.CreatedAt)
+                        : query.OrderBy(p => p.CreatedAt);
+                    break;
+                default:
+                    // Ordenação padrão
+                    query = query.OrderByDescending(p => p.StartDate);
+                    break;
+            }
+        }
+        else
+        {
+            query = query.OrderByDescending(p => p.StartDate);
+        }
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Promotion>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 }

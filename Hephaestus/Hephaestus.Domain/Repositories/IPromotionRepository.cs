@@ -13,5 +13,5 @@ public interface IPromotionRepository
     Task AddUsageAsync(PromotionUsage usage);
     Task<int> GetUsageCountAsync(string promotionId, string companyId);
     Task<int> GetUsageCountByCustomerAsync(string promotionId, string companyId, string customerPhoneNumber);
-    Task<PagedResult<Promotion>> GetAllGlobalAsync(string? code = null, bool? isActive = null, string? companyId = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
+    Task<PagedResult<Promotion>> GetAllGlobalAsync(bool? isActive = null, string? companyId = null, int pageNumber = 1, int pageSize = 20, string? sortBy = null, string? sortOrder = "asc");
 }
